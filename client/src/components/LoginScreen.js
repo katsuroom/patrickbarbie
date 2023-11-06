@@ -24,6 +24,11 @@ export default function LoginPage() {
         event.preventDefault();
         setError(null);
 
+        auth.loginUser(
+            email, 
+            password
+        );
+
         // try {
         //     const response = await axios.post('http://localhost:8000/login', { email, password });
 
