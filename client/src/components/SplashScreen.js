@@ -7,7 +7,14 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 
+import AuthContext from '../auth';
+import { useContext } from 'react';
+
 export default function SplashScreen() {
+
+  const { auth } = useContext(AuthContext);
+  auth.registerUser("btesttest", "test1234@gmail.com", "Az123456!");
+
   return (
     <div style={{backgroundColor: "#FFCDD2", paddingTop: "20px"}}>
       <Grid container>
