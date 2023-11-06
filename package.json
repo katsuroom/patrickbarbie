@@ -4,7 +4,8 @@
   "description": "",
   "main": "connectDB.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node server/index.js",
+    "heroku-postbuild": "cd client && npm install && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
