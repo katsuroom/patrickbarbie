@@ -1,11 +1,15 @@
 import { useState } from "react";
 import axios from "axios"; 
 
+import AuthContext from '../auth';
+import { useContext } from 'react';
+
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
+    const { auth } = useContext(AuthContext);
 
     // const handleSubmit = async (event) => {
     //     event.preventDefault();
