@@ -1,6 +1,17 @@
 # patrickbarbie
 
 
+# patrickbarbie
+
+terminal1:
+cd server
+npm install
+npm start
+
+terminal2:
+cd client
+npm install
+npm start
 
 
 
