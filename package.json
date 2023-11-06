@@ -1,11 +1,35 @@
 {
-    "name": "package",
-    "version": "1.0.0",
-    "main": "",
-    "scripts": {
-        "start": "npm start --prefix server",
-        "install-client": "cd client && npm install && npm run build && cd ..",
-        "install-server": "cd server && npm install && cd .. ",
-        "heroku-postbuild": "npm run install-client && npm run install-server && cd client && npm start"
-    }
+  "name": "repositoryof316copy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "connectDB.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client npm run build --prefix client"
+  },
+  "engines": {
+    "node": "20.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lenzlaww/RepositoryOf316Copy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lenzlaww/RepositoryOf316Copy/issues"
+  },
+  "homepage": "https://github.com/lenzlaww/RepositoryOf316Copy#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "4.1",
+    "cors": "^2.8.5",
+    "mongoose": "^8.0.0"
+  }
 }
