@@ -117,12 +117,10 @@ function AuthContextProvider(props) {
                         errorMessage: null
                     }
                 })
-                alert("login success");
                 history.push("/");
                 
             }
         } catch(error){
-            alert("login failure");
             authReducer({
                 type: AuthActionType.LOGIN_USER,
                 payload: {
