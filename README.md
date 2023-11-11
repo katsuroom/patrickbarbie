@@ -1,31 +1,24 @@
 # patrickbarbie
 
+start server:
+```
+npm install
+npm run dev
+```
 
-# patrickbarbie
-
-terminal1:
-cd server ->
-npm install ->
+start client:
+```
+cd client
+npm install
 npm start
-
-terminal2:
-cd client ->
-npm install ->
-npm start
-
-
-
-
-
-
-
+```
 
 BEFORE MERGING TO MAIN:
-git checkout main --> go to main
-git pull --> get most remote changes for main
-git checkout [your branch] --> go to your branch
-git merge main --> merge main into your branch
-if you have merge conflicts fix them...
-create pull request on github
-get someone else to look over it
-and merge
+- git checkout main --> go to main
+- git pull --> get most remote changes for main
+- git checkout [your branch] --> go to your branch
+- git merge main --> merge main into your branch
+- if you have merge conflicts fix them...
+- create pull request on github
+- get someone else to look over it
+- and merge

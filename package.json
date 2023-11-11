@@ -1,11 +1,14 @@
 {
-  "name": "repositoryof316copy",
+  "name": "patrickbarbie",
   "version": "1.0.0",
   "description": "",
   "main": "connectDB.js",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev-client": "cd client && npm start",
+    "dev-server": "node index.js",
+    "dev": "set NODE_ENV=dev && nodemon index.js",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "engines": {
@@ -24,13 +27,15 @@
   "homepage": "https://github.com/lenzlaww/RepositoryOf316Copy#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "concurrently": "^8.2.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "4.1",
-    "mongoose": "^8.0.0"
+    "mongoose": "^8.0.0",
+    "nodemon": "^3.0.1"
   },
   "devDependencies": {
     "cypress": "^13.4.0"
