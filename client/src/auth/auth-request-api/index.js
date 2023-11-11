@@ -12,8 +12,9 @@
 
 import axios from 'axios'
 axios.defaults.withCredentials = true;
+const baseURL = process.env.URL + "/auth"
 const api = axios.create({
-    baseURL: 'https://patrick-barbie-a2f18d08630b.herokuapp.com/auth',
+    baseURL: baseURL,
 })
 
 // THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A

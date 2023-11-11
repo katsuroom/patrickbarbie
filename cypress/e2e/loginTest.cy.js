@@ -1,6 +1,7 @@
+
 describe('template spec', () => {
   it('visit splash screen and login', () => {
-    cy.visit('https://patrick-barbie-a2f18d08630b.herokuapp.com/')
+    cy.visit(process.env.URL);
 
     cy.wait(500);
 

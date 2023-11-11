@@ -1,7 +1,8 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true;
+const baseURL = process.env.URL + "/api"
 const api = axios.create({
-    baseURL: 'https://patrick-barbie-a2f18d08630b.herokuapp.com/api',
+    baseURL: baseURL,
 })
 
 export const createMap = (mapData, userEmail, mapName) => {
