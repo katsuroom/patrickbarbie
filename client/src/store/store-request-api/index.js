@@ -1,6 +1,6 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true;
-const baseURL = process.env.URL + "/api"
+const baseURL = process.env.URL + "api"
 const api = axios.create({
     baseURL: baseURL,
 })

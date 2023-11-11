@@ -12,7 +12,7 @@
 
 import axios from 'axios'
 axios.defaults.withCredentials = true;
-const baseURL = process.env.URL + "/auth"
+const baseURL = process.env.URL + "auth"
 const api = axios.create({
     baseURL: baseURL,
 })
