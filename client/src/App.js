@@ -6,30 +6,36 @@ import {
     SplashScreen,
     LoginScreen,
     RegisterScreen,
+    PasswordRecoveryPage,
+    MUIPublishMap,
+    MUIDeleteMap,
+    MUISaveChanges,
+    MUIForkMap,
+    MUIUploadMap,
+    MUICreateMap,
+    MUIExportMap,
 } from './components'
-/*
-    This is our application's top-level component.
-    
-    @author McKilla Gorilla
-*/
-/*
-  This is the entry-point for our application. Notice that we
-  inject our store into all the components in our application.
-  
-  @author McKilla Gorilla
-*/
-const App = () => {   
+
+const App = () => {
     return (
         <BrowserRouter>
             <AuthContextProvider>
-                           
-                    <Switch>
-                        <Route path="/" exact component={SplashScreen} />
-                        <Route path="/login/" exact component={LoginScreen} />
-                        <Route path="/register/" exact component={RegisterScreen} />
-                        
-                    </Switch>
-            
+
+                <Switch>
+                    <Route path="/" exact component={SplashScreen} />
+                    <Route path="/login/" exact component={LoginScreen} />
+                    <Route path="/register/" exact component={RegisterScreen} />
+                    <Route path="/recovery/" exact component={PasswordRecoveryPage} />
+                    <Route path="/publishMap/" exact component={MUIPublishMap} />
+                    <Route path="/deleteMap/" exact component={MUIDeleteMap} />
+                    <Route path="/saveMap/" exact component={MUISaveChanges} />
+                    <Route path="/forkMap/" exact component={MUIForkMap} />
+                    <Route path="/uploadMap/" exact component={MUIUploadMap} />
+                    <Route path="/createMap/" exact component={MUICreateMap} />
+                    <Route path="/exportMap/" exact component={MUIExportMap} />
+
+                </Switch>
+
             </AuthContextProvider>
         </BrowserRouter>
     )
