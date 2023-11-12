@@ -76,14 +76,13 @@ const MUISaveChanges = () => {
     const confirmationInfo = "Do you want to save your changes before leaving this page?";
 
     const handleSave = () => {
-        // Handle the confirmation logic
-        console.log("Map published!");
+        console.log("Map Saved!");
         handleClose();
     };
 
     return (
         <div>
-            {/* //publish button should link to here */}
+            {/* //Save button should link to here */}
             <Button onClick={handleOpen}>Open Confirmation</Button>
             <ConfirmationDialog
                 open={open}

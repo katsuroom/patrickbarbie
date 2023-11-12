@@ -91,7 +91,7 @@ const MUICreateMap = () => {
     const confirmationInfo = "Enter the new name of the forked map:";
 
     const handleSave = () => {
-        console.log("Map published!");
+        console.log("Map Created!");
         handleClose();
     };
 

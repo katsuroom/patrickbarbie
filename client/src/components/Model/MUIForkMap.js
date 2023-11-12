@@ -80,8 +80,7 @@ const MUIForkMap = () => {
     const confirmationInfo = "Enter the new name of the forked map:";
 
     const handleSave = () => {
-        // Handle the confirmation logic
-        console.log("Map published!");
+        console.log("Map Forked!");
         handleClose();
     };
 
@@ -92,7 +91,7 @@ const MUIForkMap = () => {
 
     return (
         <div>
-            {/* //publish button should link to here */}
+            {/* //fork button should link to here */}
             <Button onClick={handleOpen}>Open Confirmation</Button>
             <ConfirmationDialog
                 open={open}

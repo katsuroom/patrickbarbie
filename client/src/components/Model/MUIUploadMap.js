@@ -74,21 +74,20 @@ const MUIUploadMap = () => {
 
     const confirmationInfo = "Browse for Shapefile, GeoJson, Keyhole (KML), PBJson files:";
 
-    const handleSave = () => {
-        // Handle the confirmation logic
-        console.log("Map published!");
-        handleClose();
-    };
+    // const handleSave = () => {
+    //     console.log("Map published!");
+    //     handleClose();
+    // };
 
     return (
         <div>
-            {/* //publish button should link to here */}
+            {/* // button should link to here */}
             <Button onClick={handleOpen}>Open Confirmation</Button>
             <ConfirmationDialog
                 open={open}
                 onClose={handleClose}
                 onDiscard={handleClose}
-                onConfirm={handleSave}
+                // onConfirm={handleSave}
                 confirmationInfo={confirmationInfo}
             />
         </div>

@@ -11,7 +11,6 @@ const MUIDeleteMap = () => {
     const confirmationInfo = "Are you sure you want to delete this map? This action cannot be reversed.";
 
     const handleConfirm = () => {
-        // Handle the confirmation logic
         console.log("Map Deleted!");
         handleClose();
     };

@@ -76,11 +76,10 @@ const MUIExportMap = () => {
     const handleClose = () => setOpen(false);
 
 
-    const handleConfirm = () => {
-        // Handle the confirmation logic
-        console.log("Map published!");
-        handleClose();
-    };
+    // const handleConfirm = () => {
+    //     console.log("Map published!");
+    //     handleClose();
+    // };
 
     return (
         <div>
@@ -89,7 +88,7 @@ const MUIExportMap = () => {
             <ConfirmationDialog
                 open={open}
                 onClose={handleClose}
-                onConfirm={handleConfirm}
+                // onConfirm={handleConfirm}
                 // confirmationInfo={confirmationInfo}
             />
         </div>

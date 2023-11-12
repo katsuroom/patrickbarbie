@@ -70,7 +70,6 @@ const MUIPublishMap = () => {
     const confirmationInfo = "Are you sure you want to publish this map?";
 
     const handleConfirm = () => {
-        // Handle the confirmation logic
         console.log("Map published!");
         handleClose();
     };
