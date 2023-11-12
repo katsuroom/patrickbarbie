@@ -1,37 +1,51 @@
-import React from "react";
-import { useState } from "react";
-import InputLabel from '@mui/material/InputLabel';
+import * as React from 'react';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 
-// this file include search bar and sort
-export default function SearchBar() {
 
-    const [age, setAge] = React.useState('');
+export default function SelectVariants() {
+  const [age, setAge] = React.useState('');
+  const [text, setText] = React.useState('');
 
   const handleChange = (event) => {
     setAge(event.target.value);
   };
+  const handleSearch = (event) =>{
+    setText(event.target.value);
+    console.log(event.target.value);
+  }
+  const handleKeyPress = (event) =>{
+    if (event.code === "Enter") {
+      console.log("enter key");
+      console.log(text,", ", age);
+      
+    }
+  }
 
   return (
     <div>
-      <FormControl variant="standard" sx={{ m: 1, minWidth: 100 }}>
-        <InputLabel id="demo-simple-select-standard-label">Map Name</InputLabel>
         <Select
           labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
+          id="searchOn"
           value={age}
+          required
           onChange={handleChange}
-          label="Map Name"
+          variant="standard"
+          sx={{ m: 3, minWidth: 20 }}
         >
-          <MenuItem value={10}>Map ID</MenuItem>
-          <MenuItem value={20}>Map Name</MenuItem>
-          <MenuItem value={30}>Proporty</MenuItem>
+          <MenuItem value={'Map ID'}>Map ID</MenuItem>
+          <MenuItem value={'Map Name'}>Map Name</MenuItem>
+          <MenuItem value={'Proporty'}>Proporty</MenuItem>
         </Select>
-      </FormControl>
-      <TextField id="standard-basic" label="Standard" variant="standard" sx={{ m: 1, minWidth: 30 }}/>
+          <TextField 
+          id="search" 
+          required
+          label="search" 
+          variant="standard"
+          onChange = {handleSearch}
+          onKeyPress = {handleKeyPress}
+          sx={{ m: 1, minWidth: 120 }}/>
     </div>
   );
 }

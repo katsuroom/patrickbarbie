@@ -1,3 +1,6 @@
+const dotenv = require('dotenv')
+dotenv.config()
+console.log(process.env.MONGO_URI);
 
 describe('template spec', () => {
   it('visit splash screen and login', () => {
