@@ -80,11 +80,6 @@ const MUISaveChanges = () => {
         console.log("Map published!");
         handleClose();
     };
-    // const handleDiscard = () => {
-    //     // Handle the confirmation logic
-    //     console.log("Map published!");
-    //     handleClose();
-    // };
 
     return (
         <div>

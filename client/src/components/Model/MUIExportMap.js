@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-// import './MUIPublishMap.css'
 
 export const ConfirmationDialog = ({ open, onClose, onConfirm }) => {
     const buttonStyle = {
@@ -37,9 +36,6 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm }) => {
                 }}
             >
                 <div className="alertContainer" style={{ height: '60%' }}>
-                    {/* <div className="alert">
-                        {confirmationInfo}
-                    </div> */}
                     <div >
                         <Button onClick={onClose}
                             variant="contained"
