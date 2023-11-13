@@ -21,7 +21,7 @@ const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "auth"
 const api = axios.create({
     baseURL: baseURL,
 })
-
+ 
 // THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A
 // REQUEST METHOD (like get) AND PATH (like /register). SOME ALSO
 // REQUIRE AN id SO THAT THE SERVER KNOWS ON WHICH LIST TO DO ITS
