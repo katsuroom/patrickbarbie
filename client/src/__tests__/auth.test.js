@@ -1,26 +1,32 @@
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
-import AuthContextProvider, { AuthContext } from '../auth/index.js';
+import apis from "../auth/auth-request-api";
 
-describe('AuthContextProvider', () => {
-  it('provides auth context with loginUser function', () => {
-    const TestComponent = () => {
-      const { loginUser } = React.useContext(AuthContext);
-      return (<button onClick={() => loginUser('test@test.com', 'password')}>Login</button>);
-    };
+describe("Auth Test", () => {
+  let username, email, password;
+  it("register a new account", async () => {
+    var currentdate = new Date();
+    username =
+      "Test User: " +
+      currentdate.getDate() +
+      "/" +
+      (currentdate.getMonth() + 1) +
+      "/" +
+      currentdate.getFullYear() +
+      " @ " +
+      currentdate.getHours() +
+      ":" +
+      currentdate.getMinutes() +
+      ":" +
+      currentdate.getSeconds();
 
-    const mockLoginUser = jest.fn();
-
-    const { getByText } = render(
-      <AuthContext.Provider value={{ loginUser: mockLoginUser }}>
-        <TestComponent />
-      </AuthContext.Provider>
-    );
-
-    fireEvent.click(getByText('Login'));
-
-    expect(mockLoginUser).toHaveBeenCalledWith('test@test.com', 'password');
+    email = Date.now() + "@gmail.com";
+    password = "Asdfghjkl;'!";
+    const response = await apis.registerUser(username, email, password);
+    expect(response.status).toEqual(200);
   });
 
+  it("log in account", async () => {
+    const response = await apis.loginUser(email, password);
 
+    expect(response.status).toEqual(200);
+  });
 });
