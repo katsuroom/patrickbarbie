@@ -4,16 +4,16 @@ describe('template spec', () => {
 
     cy.wait(500);
 
-    cy.contains('Login in').click()
+    cy.contains('Log in').click()
 
     cy.url().should('include', '/login')
 
-    cy.get('input[type="email"]').type('yuwenqianchen@gmail.com')
-    cy.get('input[type="password"]').type('Cywq1234567890!')
+    cy.get('input[type="email"]').type('Yuwenqianchen@gmail.com')
+    cy.get('input[type="password"]').type('Yuwenqianchen@gmail.com')
 
-    cy.contains('Login').click()
+    cy.get('button[type="submit"]').click();
 
     // cy.contains('Welcome to Patrick Barbie, lenzlaww.')
-    cy.url().should('include', '/');
+    cy.url().should('include', '/main');
   })
 })
