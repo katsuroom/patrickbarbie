@@ -6,146 +6,104 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
+import Header from "./Header";
+import StatusBar from "./StatusBar";
+import splashScreenDemo from "../images/splashScreenDemo.png";
+import "./font.css"
 
-import AuthContext from '../auth';
-import { useContext } from 'react';
+
+import AuthContext from "../auth";
+import { useContext } from "react";
+
+const MenuButton = (displayText) => {
+  return (
+    <Button
+      type="submit"
+      variant="contained"
+      sx={{
+        mt: 1,
+        mb: 1,
+        backgroundColor: "#F06292",
+        color: "black",
+        ":hover": {
+          backgroundColor: "pink",
+        },
+        border: "3px solid white",
+        width: "340px",
+      }}
+    >
+      {displayText}
+    </Button>
+  );
+};
 
 export default function SplashScreen() {
-
   const { auth } = useContext(AuthContext);
   // auth.registerUser("btesttest", "test1234@gmail.com", "Az123456!");
 
   return (
-    <div style={{backgroundColor: "#FFCDD2", paddingTop: "20px"}}>
-      <Grid container>
-        {/* Left Screen */}
-        <Grid item xs={5}>
-          <Box
-            display="flex"
-            alignItems="flex-end"
-            justifyContent="center"
-            sx={{ padding: "50px" }}
-          >
-          </Box>
-
-          <Box
-            display="flex"
-            height="20%"
-            alignItems="flex-end"
-            justifyContent="center"
-            sx={{ padding: "50px" }}
-          >
-            <Typography variant="h6" component="div">
-              Create Edit and Share Maps!
-            </Typography>
-          </Box>
-        </Grid>
-
-        {/* Right Screen */}
-        <Grid item xs={7}>
-          <Grid
-            container
-            component="main"
-            sx={{ height: "100vh", paddingLeft: "120px" }}
-          >
+    <>
+      <Header />
+      <div style={{ backgroundColor: "#ffabd1" }}>
+        <Grid container>
+          {/* Left Screen */}
+          <Grid item xs={6}>
             <Box
-            display="flex"
-            sx={{ paddingLeft: "50px", alignItems: "center"}}
-          >
-            <Typography variant="h2" component="div">
-              Patrick Barbie
-            </Typography>
-
-          </Box>
-
-          <Box
-            display="flex"
-            sx={{ paddingLeft: "20px", alignItems: "center"}}
-          >
-            <Typography variant="h6" component="div">
-            A friendly community for map creators and enjoyers.
-            </Typography>
-
-          </Box>
-            <CssBaseline />
-            <Grid
-              sx={{
-                flexDirection: "column",
-                alignItems: "center",
-              }}
+              display="flex"
+              alignItems="flex-end"
+              justifyContent="center"
+              sx={{ padding: "50px" }}
             >
-              <Grid item xs={12} sx={{ marginLeft: { xs: 13 } }}>
-              <Link href="/register">
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{
-                  mt: 1,
-                  mb: 1,
-                  backgroundColor: "#F06292",
-                  color: "black",
-                  ":hover": {
-                    backgroundColor: "lightpink",
-                  },
-                  border: "3px solid white",
-                  width: "300px"
+              <img src={splashScreenDemo} alt="" width="100%"/>
+            </Box>
 
-                }}
-              >
-          
-                Create Account
-              </Button>
-              </Link>
+            <Box
+              display="flex"
+              alignItems="flex-end"
+              justifyContent="center"
+
+            >
+              <Typography variant="h5" component="div" sx={{ fontFamily: 'Sen' }}>
+                Create Edit and Share Maps!
+              </Typography>
+            </Box>
+          </Grid>
+
+          {/* Right Screen */}
+          <Grid item xs={6}>
+            <Grid container component="main" sx={{ height: "83vh" }}>
+              <Grid item xs={12} sx={{ marginLeft: { xs: "10%" } }}>
+                <Typography variant="h1" component="div" sx={{ fontFamily: 'Rouge Script' }}>
+                  Patrick Barbie
+                </Typography>
               </Grid>
-              <Grid item xs={12} sx={{ marginLeft: { xs: 13 } }}>
-              <Link href="/login">
-
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{
-                  mt: 1,
-                  mb: 1,
-                  backgroundColor: "#F06292",
-                  color: "black",
-                  ":hover": {
-                    backgroundColor: "lightpink",
-                  },
-                  border: "3px solid white",
-                  width: "300px"
-
-
-                }}
-              >
-                Login in
-              </Button>
-              </Link>
-
+              <Grid item xs={12} sx={{ margin: { xs: "10%" }, marginRight: { xs: "20%" } , marginLeft: { xs: "15%" }}}>
+                  <Typography variant="h5" component="div" sx={{ fontFamily: 'Sen' }}>
+                  A friendly community for map creators and enjoyers.
+                </Typography>
               </Grid>
-              <Grid item xs={12} sx={{ marginLeft: { xs: 13 } }}>
-              <Button
-                type="submit"
-                variant="contained"
+              <CssBaseline />
+              <Grid
                 sx={{
-                  mt: 1,
-                  mb: 1,
-                  backgroundColor: "#F06292",
-                  color: "black",
-                  ":hover": {
-                    backgroundColor: "lightpink",
-                  },
-                  border: "3px solid white",
-                  width: "300px"
-
+                  flexDirection: "column",
+                  alignItems: "center",
                 }}
               >
-                Continue as Guest
-              </Button>
+                <Grid item xs={12} sx={{ marginLeft: { xs: "30%" } }}>
+                  <Link href="/register">{MenuButton("Create Account")}</Link>
+                </Grid>
+                <Grid item xs={12} sx={{ marginLeft: { xs: "30%" } }}>
+                  <Link href="/login">{MenuButton("Log in")}</Link>
+                </Grid>
+                <Grid item xs={12} sx={{ marginLeft: { xs: "30%" } }}>
+                  {MenuButton("Continue as Guest")}
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
-      </Grid>
-    </div>
+      </div>
+      <StatusBar />
+    </>
   );
 }

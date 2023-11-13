@@ -11,9 +11,13 @@
 */
 
 import axios from 'axios'
+// // const dotenv = require('dotenv')
+// require('dotenv').config({path:__dirname+'/./../../.env'})
+console.log("process.env.url", process.env.URL);
 axios.defaults.withCredentials = true;
+const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "auth"
 const api = axios.create({
-    baseURL: 'https://patrick-barbie-a2f18d08630b.herokuapp.com/auth',
+    baseURL: baseURL,
 })
 
 // THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A
@@ -32,6 +36,7 @@ export const loginUser = (email, password) => {
 }
 // export const logoutUser = () => api.get(`/logout/`)
 export const registerUser = (username, email, password) => {
+    console.log("inregister: ", baseURL);
     return api.post(`/register/`, {
         username : username,
         email : email,

@@ -14,6 +14,8 @@ import {
     MUIUploadMap,
     MUICreateMap,
     MUIExportMap,
+    PHeatmap,
+    Sort,
 } from './components'
 
 const App = () => {
@@ -33,7 +35,8 @@ const App = () => {
                     <Route path="/uploadMap/" exact component={MUIUploadMap} />
                     <Route path="/createMap/" exact component={MUICreateMap} />
                     <Route path="/exportMap/" exact component={MUIExportMap} />
-
+                    <Route path="/heatmap/" exact component={PHeatmap} />
+                    <Route path="/sort/" exact component={Sort} />
                 </Switch>
 
             </AuthContextProvider>
