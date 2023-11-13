@@ -15,7 +15,9 @@ jobs:
       uses: cypress-io/github-action@v6
       with:
         start: npm start
-     - name: Install dependencies
-        run: npm install
     - name: Run Jest tests
-      run: npm test
+      uses: actions/setup-node@v2
+        with:
+          node-version: 14
+    - run: npm test
+
