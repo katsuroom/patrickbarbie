@@ -47,7 +47,9 @@
   "main": "index.js",
   "author": "",
   "license": "ISC",
+
   "devDependencies": {
+    "msw": "^2.0.6",
     "@mui/joy": "^5.0.0-beta.14",
     "dotenv-webpack": "^8.0.1",
     "path-browserify": "^1.0.1"
