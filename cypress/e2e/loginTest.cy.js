@@ -1,10 +1,6 @@
-const dotenv = require('dotenv')
-dotenv.config()
-console.log(process.env.MONGO_URI);
-
 describe('template spec', () => {
   it('visit splash screen and login', () => {
-    cy.visit(process.env.URL);
+    cy.visit("https://patrick-barbie-f64046e3bb4b.herokuapp.com/");
 
     cy.wait(500);
 
