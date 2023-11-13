@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import Compact from '@uiw/react-color-compact';
+import './property.css'
 
 function createData(name, calories) {
   return { name, calories};
@@ -51,11 +52,11 @@ export default function PHeatmap() {
 
   return (
     <div>
-      <div>Property</div>
-      <Button variant="solid" startDecorator={<Add />}>
-  CSV file
-</Button>
-    <Table sx={{ '& thead th::nth-of-type(1)': { width: '40%' } }}>
+      <div className='propertyTitle'>Property</div>
+      <Button className='CSV-button' variant="solid" startDecorator={<Add />} sx={{margin: 1}}>
+      CSV file
+      </Button>
+    <Table className='property-table' sx={{ '& thead th::nth-of-type(1)': { width: '40%' } }}>
       <thead>
         <tr>
           <th>Country Name</th>
@@ -64,17 +65,16 @@ export default function PHeatmap() {
           labelId="demo-simple-select-helper-label"
           id="demo-simple-select-helper"
           value={age}
-          label="Age"
           onChange={handleChange}
-          sx={{ minWidth: 20 }}
-        >
+          sx={{ minWidth: 20, height: '30px'  }}>
+
           <MenuItem value={'GDP'}>GDP</MenuItem>
           <MenuItem value={'Population'}>Population</MenuItem>
           <MenuItem value={'Color'}>Color</MenuItem>
           <MenuItem>
           <Button variant="text" startDecorator={<Add />}>New Property</Button>
           </MenuItem>
-        </Select>
+          </Select>
         </th>
         </tr>
       </thead>
@@ -93,7 +93,7 @@ export default function PHeatmap() {
       </tbody>
     </Table>
     <div>
-    <FormControl sx={{ m: 2, minWidth: 100 }}>
+    <FormControl className='formcolor' sx={{ m: 2, minWidth: 100 }}>
         <InputLabel id="demo-simple-select-helper-label">Property</InputLabel>
           <Select
           labelId="demo-simple-select-helper-label"
@@ -108,7 +108,7 @@ export default function PHeatmap() {
         </Select>
     </FormControl>
 
-    <FormControl sx={{ m: 2, minWidth: 100 }}>
+    <FormControl className='formcolor' sx={{ m: 2, minWidth: 100 }}>
         <InputLabel id="demo-simple-select-helper-label">Min</InputLabel>
           <Select
           labelId="demo-simple-select-helper-label"
@@ -123,7 +123,7 @@ export default function PHeatmap() {
         </Select>
     </FormControl>
 
-    <FormControl sx={{ m: 2, minWidth: 100 }}>
+    <FormControl className='formcolor' sx={{ m: 2, minWidth: 100 }}>
         <InputLabel id="demo-simple-select-helper-label">Max</InputLabel>
           <Select
           labelId="demo-simple-select-helper-label"
@@ -140,8 +140,8 @@ export default function PHeatmap() {
 
     
     </div>
-    <Button variant="solid">SAVE</Button>
-    <Button variant="solid">EXIT</Button>
+    <Button variant="solid" className='exit' sx={{margin: 1}}>EXIT</Button>
+    <Button variant="solid" className='save' sx={{margin: 1}}>SAVE</Button>
     </div>
   );
 }

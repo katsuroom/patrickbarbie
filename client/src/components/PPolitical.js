@@ -5,6 +5,7 @@ import Add from '@mui/icons-material/Add';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import './property.css'
 
 function createData(name, calories) {
   return { name, calories};
@@ -37,11 +38,11 @@ export default function PPolitical() {
 
   return (
     <div>
-      <div>Property</div>
-      <Button variant="solid" startDecorator={<Add />}>
+      <div className='propertyTitle'>Property</div>
+      <Button variant="solid" startDecorator={<Add />} className='CSV-button' >
   CSV file
 </Button>
-    <Table sx={{ '& thead th::nth-of-type(1)': { width: '40%' } }}>
+    <Table   className='property-table' sx={{ '& thead th::nth-of-type(1)': { width: '40%' } }}>
       <thead>
         <tr>
           <th>Country Name</th>
