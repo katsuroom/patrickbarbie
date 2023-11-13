@@ -24,7 +24,6 @@ export default function RegisterScreen() {
 
     return (
         <div>
-            <TitleBar />
             <form onSubmit={handleSubmit} className='registerInfo'>
                 <h1>Create Account</h1>
                 {error && <p className='errorMessage'>{error}</p>}
@@ -108,7 +107,6 @@ export default function RegisterScreen() {
                     Already have an account? <Link to='/login'>LOGIN</Link>
                 </div>
             </form>
-            <StatusBar />
         </div>
     );
 }

@@ -43,7 +43,6 @@ export default function SplashScreen() {
 
   return (
     <>
-      <TitleBar />
       <div style={{ backgroundColor: "#fcc0db" }}>
         <Grid container>
           {/* Left Screen */}
@@ -103,7 +102,6 @@ export default function SplashScreen() {
           </Grid>
         </Grid>
       </div>
-      <StatusBar />
     </>
   );
 }

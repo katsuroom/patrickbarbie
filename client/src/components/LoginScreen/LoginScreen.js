@@ -55,7 +55,6 @@ export default function LoginPage() {
 
     return (
         <div>
-            <TitleBar />
             <form onSubmit={handleSubmit} className='loginInfo'>
                 <h1>Login</h1>
 
@@ -99,7 +98,6 @@ export default function LoginPage() {
                     Need an account? <Link to='/register'>SIGN UP</Link>
                 </div>
             </form>
-            <StatusBar />
         </div>
     );
 }

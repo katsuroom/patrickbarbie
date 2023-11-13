@@ -6,11 +6,9 @@ export default function MainScreen()
 {
     return(
         <div>
-            <TitleBar />
             <div >
                 <MapCardList />
             </div>
-            <StatusBar />
         </div>
     );
 }
