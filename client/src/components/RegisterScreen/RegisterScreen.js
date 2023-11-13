@@ -4,6 +4,8 @@ import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import "./RegisterScreen.css";
 import Button from "@mui/material/Button";
+import TitleBar from '../TitleBar';
+import StatusBar from '../StatusBar';
 
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
@@ -21,7 +23,8 @@ export default function RegisterScreen() {
     console.log(auth);
 
     return (
-        <div style={{ flex: 1, marginTop: '100px' }}>
+        <div>
+            <TitleBar />
             <form onSubmit={handleSubmit} className='registerInfo'>
                 <h1>Create Account</h1>
                 {error && <p className='errorMessage'>{error}</p>}
@@ -105,6 +108,7 @@ export default function RegisterScreen() {
                     Already have an account? <Link to='/login'>LOGIN</Link>
                 </div>
             </form>
+            <StatusBar />
         </div>
     );
 }

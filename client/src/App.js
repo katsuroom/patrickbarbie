@@ -17,6 +17,7 @@ import {
     PHeatmap,
     Sort,
     MUIExit,
+    MainScreen
 } from './components'
 
 const App = () => {
@@ -29,6 +30,7 @@ const App = () => {
                     <Route path="/login/" exact component={LoginScreen} />
                     <Route path="/register/" exact component={RegisterScreen} />
                     <Route path="/recovery/" exact component={PasswordRecoveryPage} />
+                    <Route path="/main/" exact component={MainScreen} />
                     <Route path="/publishMap/" exact component={MUIPublishMap} />
                     <Route path="/deleteMap/" exact component={MUIDeleteMap} />
                     <Route path="/saveMap/" exact component={MUISaveChanges} />

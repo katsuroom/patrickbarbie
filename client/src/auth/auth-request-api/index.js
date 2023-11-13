@@ -17,7 +17,7 @@ console.log("process.env.url", process.env.URL);
 axios.defaults.withCredentials = true;
 // const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "auth"
 
-const baseURL = "http://localhost:4000/"  + "auth"
+const baseURL = "http://localhost:4000/auth"
 const api = axios.create({
     baseURL: baseURL,
 })

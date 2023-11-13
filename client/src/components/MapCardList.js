@@ -21,10 +21,10 @@ const MapCardList = () => {
 
   return (
     <Box sx={{ 
-        width: '12.5%', 
+        width: '25%', 
         bgcolor: '#ffabd1', 
         float: 'left', 
-        height: '100vh', 
+        height: '83vh', 
         position: 'relative',
       }}>
       <List component="nav" aria-label="map folders" sx={{ 

@@ -1,6 +1,5 @@
 /* Set background color */
 body {
-  background-color: lightpink;
   margin: 0;
 }
 
@@ -13,7 +12,7 @@ p {
   /* display: flex; */
   /* justify-content: center; */
   /* align-items: center; */
-  height: 75vh;
+  height: 80vh;
   width: 100%;
   background-color: white;
 }
