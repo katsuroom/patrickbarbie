@@ -149,12 +149,13 @@ const MapEditorToolbar = () => {
         {isFontDropdownVisible && <FontDropdown />}
       </div>
 
+
+
+      <button style={buttonStyle} onClick={handleTextIncreaseClick}><TextIncreaseIcon /></button>
       <div style={{ position: 'relative' }}>
         <button style={buttonStyle} onClick={handleTextSizeClick}><FormatSizeIcon /></button>
         {isTextSizePopupVisible && <TextSizePopup />}
       </div>
-
-      <button style={buttonStyle} onClick={handleTextIncreaseClick}><TextIncreaseIcon /></button>
       <button style={buttonStyle} onClick={handleTextDecreaseClick}><TextDecreaseIcon /></button>
       <button style={buttonStyle} onClick={handleBoldClick}><FormatBoldIcon /></button>
       <button style={buttonStyle} onClick={handleItalicClick}><FormatItalicIcon /></button>
