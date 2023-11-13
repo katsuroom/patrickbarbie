@@ -1,6 +1,9 @@
 import LoginScreen from './LoginScreen'
 import RegisterScreen from './RegisterScreen'
 import SplashScreen from './SplashScreen'
+import Sort from './Sort'
+import PHeatmap from './PHeatmap'
+import PPolitical from './PPolitical'
 import Header from './Header'
 import StatusBar from './StatusBar'
 /*
@@ -14,5 +17,9 @@ export {
     RegisterScreen,
     SplashScreen,
     Header,
-    StatusBar
+    StatusBar,
+    Sort,
+    PHeatmap,
+    PPolitical
+
  }
