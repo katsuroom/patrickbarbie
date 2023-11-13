@@ -8,8 +8,8 @@ describe('template spec', () => {
 
     cy.url().should('include', '/login')
 
-    cy.get('input[type="email"]').type('yuwenqian.chen@stonybrook.edu')
-    cy.get('input[type="password"]').type('1234567890')
+    cy.get('input[type="email"]').type('yuwenqianchen@gmail.com')
+    cy.get('input[type="password"]').type('Cywq1234567890!')
 
     cy.contains('Login').click()
 

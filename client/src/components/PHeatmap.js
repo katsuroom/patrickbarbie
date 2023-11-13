@@ -9,6 +9,7 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import Compact from '@uiw/react-color-compact';
 import './property.css'
+import { useHistory } from 'react-router-dom';
 
 function createData(name, calories) {
   return { name, calories};
@@ -30,6 +31,7 @@ const rows = [
 
 
 export default function PHeatmap() {
+  const history = useHistory();
   const [MinHex, setMinHex] = React.useState("#fff");
   const [MaxHex, setMaxHex] = React.useState("#fff");
 
@@ -45,6 +47,14 @@ export default function PHeatmap() {
 
   const handleMaxColorChange = (event) => {
     setMaxHex(event.hex);
+  }
+
+  const openExitModal = () => {
+    history.push('/MUIExit');
+  }
+
+  const openSaveModal = () => {
+    history.push('/saveMap');
   }
 
   console.log(Data.population);
@@ -140,8 +150,10 @@ export default function PHeatmap() {
 
     
     </div>
-    <Button variant="solid" className='exit' sx={{margin: 1}}>EXIT</Button>
-    <Button variant="solid" className='save' sx={{margin: 1}}>SAVE</Button>
+    <Button variant="solid" className='exit' sx={{margin: 1}}
+    onClick={openExitModal}>EXIT</Button>
+    <Button variant="solid" className='save' sx={{margin: 1}}
+    onClick={openSaveModal}>SAVE</Button>
     </div>
   );
 }
