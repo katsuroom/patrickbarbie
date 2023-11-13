@@ -6,6 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import './property.css'
+import { useHistory } from 'react-router-dom';
 
 function createData(name, calories) {
   return { name, calories};
@@ -27,12 +28,20 @@ const rows = [
 
 
 export default function PPolitical() {
-
+  const history = useHistory();
   const [age, setAge] = React.useState('GDP');
 
   const handleChange = (event) => {
     setAge(event.target.value);
   };
+
+  const openExitModal = () => {
+    history.push('/MUIExit');
+  }
+
+  const openSaveModal = () => {
+    history.push('/saveMap');
+  }
 
   console.log(Data.population);
 
@@ -77,8 +86,10 @@ export default function PPolitical() {
         ))}
       </tbody>
     </Table>
-    <Button variant="solid">SAVE</Button>
-    <Button variant="solid">EXIT</Button>
+    <Button variant="solid" className='exit' sx={{margin: 1}}
+    onClick={openExitModal}>EXIT</Button>
+    <Button variant="solid" className='save' sx={{margin: 1}}
+    onClick={openSaveModal}>SAVE</Button>
     </div>
   );
 }

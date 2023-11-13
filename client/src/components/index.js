@@ -9,6 +9,7 @@ import MUIForkMap from './Model/MUIForkMap'
 import MUIUploadMap from './Model/MUIUploadMap'
 import MUICreateMap from './Model/MUICreateMap'
 import MUIExportMap from './Model/MUIExportMap'
+import MUIExit from './Model/MUIExitModal'
 
 
 import Sort from './Sort'
@@ -38,6 +39,7 @@ export {
     StatusBar,
     Sort,
     PHeatmap,
-    PPolitical
+    PPolitical,
+    MUIExit,
 
  }
