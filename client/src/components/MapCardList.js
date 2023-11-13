@@ -15,6 +15,7 @@ const MapCardList = () => {
     { id: 1, name: 'Korea Map' },
     { id: 2, name: 'Japan Map' },
     { id: 3, name: 'USA Map' },
+    { id: 4, name: 'World Map' }
   ]);
 
   const addMapCard = () => {
@@ -45,7 +46,7 @@ const MapCardList = () => {
           <React.Fragment key={map.id}>
             {index > 0 && <Divider />}
             <ListItem button>
-              <ListItemText primary={map.name} />
+              <ListItemText primary={map.name} style={{padding: "0px", backgroundColor: index === maps.length - 1 ? '#f6c0fa' : '#F7D3E4' }}/>
             </ListItem>
           </React.Fragment>
         ))}
