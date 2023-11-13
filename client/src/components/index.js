@@ -9,12 +9,13 @@ import MUIForkMap from './Model/MUIForkMap'
 import MUIUploadMap from './Model/MUIUploadMap'
 import MUICreateMap from './Model/MUICreateMap'
 import MUIExportMap from './Model/MUIExportMap'
+import MainScreen from './MainScreen'
 
 
 import Sort from './Sort'
 import PHeatmap from './PHeatmap'
 import PPolitical from './PPolitical'
-import Header from './Header'
+import TitleBar from './TitleBar'
 import StatusBar from './StatusBar'
 /*
     This serves as a module so that we can import
@@ -27,6 +28,7 @@ export {
     RegisterScreen,
     SplashScreen,
     PasswordRecoveryPage,
+    MainScreen,
     MUIPublishMap,
     MUIDeleteMap,
     MUISaveChanges,
@@ -34,7 +36,7 @@ export {
     MUIUploadMap,
     MUICreateMap,
     MUIExportMap,
-    Header,
+    TitleBar,
     StatusBar,
     Sort,
     PHeatmap,
