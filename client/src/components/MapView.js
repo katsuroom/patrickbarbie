@@ -7,9 +7,11 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Grid } from "@mui/material";
 import { Delete, CloudUpload, Edit, Download, Share } from '@mui/icons-material';
+import { useHistory } from 'react-router-dom';
 
 export default function MapView()
 {
+    const history = useHistory();
     useEffect(() => {
         let map = L.map('map').setView([51.505, -0.09], 2);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -18,15 +20,25 @@ export default function MapView()
         }).addTo(map);
     });
 
-    function handleDeleteClick() {}
+    function handleDeleteClick() {
+        history.push("/deleteMap");
+    }
 
-    function handlePublishClick() {}
+    function handlePublishClick() {
+        history.push("/publishMap");
+    }
 
-    function handleEditClick() {}
+    function handleEditClick() {
+        history.push("/edit");
+    }
 
-    function handleDownloadClick() {}
+    function handleDownloadClick() {
+        history.push("/exportMap");
+    }
 
-    function handleForkClick() {}
+    function handleForkClick() {
+        history.push("/forkMap");
+    }
     
 
   return (
@@ -62,10 +74,14 @@ export default function MapView()
                 </Grid>
 
                 <Grid item xs={0.5}>
+                <IconButton>
                     <Delete onClick={handleDeleteClick} />
+                    </IconButton>
                 </Grid>
                 <Grid item xs={0.5}>
+                 <IconButton>
                     <CloudUpload onClick={handlePublishClick} />
+                    </IconButton>
                 </Grid>
                 <Grid item xs={0.5}>
                     <IconButton>
@@ -73,10 +89,14 @@ export default function MapView()
                     </IconButton>
                 </Grid>
                 <Grid item xs={0.5}>
+                <IconButton>
                     <Download onClick={handleDownloadClick} />
+                    </IconButton>
                 </Grid>
                 <Grid item xs={0.5}>
+                <IconButton>
                     <Share onClick={handleForkClick} />
+                    </IconButton>
                 </Grid>
             </Grid>
         </div>

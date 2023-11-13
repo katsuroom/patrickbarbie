@@ -1,12 +1,17 @@
 import { ConfirmationDialog } from "./MUIPublishMap";
 import React, { useState } from "react";
 import Button from "@mui/material/Button";
+import { useHistory } from 'react-router-dom';
 
 const MUIDeleteMap = () => {
+    const history = useHistory();
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        history.push("/main");
+    }
 
     const confirmationInfo = "Are you sure you want to delete this map? This action cannot be reversed.";
 
@@ -18,9 +23,9 @@ const MUIDeleteMap = () => {
     return (
         <div>
             {/* //publish button should link to here */}
-            <Button onClick={handleOpen}>Open Confirmation</Button>
+            {/* <Button onClick={handleOpen}>Open Confirmation</Button> */}
             <ConfirmationDialog
-                open={open}
+                open={true}
                 onClose={handleClose}
                 onConfirm={handleConfirm}
                 confirmationInfo={confirmationInfo}
