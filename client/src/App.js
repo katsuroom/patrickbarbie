@@ -6,18 +6,10 @@ import {
     SplashScreen,
     LoginScreen,
     RegisterScreen,
-} from './components'
-/*
-    This is our application's top-level component.
-    
-    @author McKilla Gorilla
-*/
-/*
-  This is the entry-point for our application. Notice that we
-  inject our store into all the components in our application.
-  
-  @author McKilla Gorilla
-*/
+    Sort,
+    PHeatmap
+} from './components';
+
 const App = () => {   
     return (
         <BrowserRouter>
@@ -27,7 +19,8 @@ const App = () => {
                         <Route path="/" exact component={SplashScreen} />
                         <Route path="/login/" exact component={LoginScreen} />
                         <Route path="/register/" exact component={RegisterScreen} />
-                        
+                        <Route path="/heatmap/" exact component={PHeatmap} />
+                        <Route path="/sort/" exact component={Sort} />
                     </Switch>
             
             </AuthContextProvider>

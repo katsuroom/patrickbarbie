@@ -26,6 +26,8 @@
   },
   "homepage": "https://github.com/lenzlaww/RepositoryOf316Copy#readme",
   "dependencies": {
+    "@mui/joy": "^5.0.0-beta.14",
+    "@uiw/react-color": "^2.0.1",
     "bcryptjs": "^2.4.3",
     "concurrently": "^8.2.2",
     "cookie-parser": "^1.4.6",

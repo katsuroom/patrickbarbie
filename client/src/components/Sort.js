@@ -6,7 +6,7 @@ import MenuButton from '@mui/joy/MenuButton';
 import MenuItem from '@mui/joy/MenuItem';
 import SortIcon from '@mui/icons-material/Sort';
 
-export default function IconButtonMenu() {
+export default function Sort() {
 
   const handleLike = () => {
     console.log('Liked!');
