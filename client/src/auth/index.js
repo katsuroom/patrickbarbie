@@ -121,7 +121,7 @@ function AuthContextProvider(props) {
                         errorMessage: null
                     }
                 })
-                history.push("/");
+                history.push("/main");
                 
             }
         } catch(error){
