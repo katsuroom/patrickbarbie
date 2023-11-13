@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import './MUIPublishMap.css'
+import {useHistory} from 'react-router-dom';
 
 export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo }) => {
     const buttonStyle = {
@@ -47,12 +48,6 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo 
                         >
                             Cancel
                         </Button>
-                        <Button onClick={onClose}
-                            variant="contained"
-                            sx={buttonStyle}
-                        >
-                            Discard
-                        </Button>
                         <Button onClick={onConfirm}
                             variant="contained"
                             sx={buttonStyle}
@@ -68,16 +63,21 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo 
 
 
 const MUISaveChanges = () => {
+    const history = useHistory();
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        history.push("/edit");
+    }
 
     const confirmationInfo = "Do you want to save your changes before leaving this page?";
 
     const handleSave = () => {
-        console.log("Map Saved!");
+        window.alert("Map Saved!");
         handleClose();
+        history.push("/edit");
     };
 
     return (
@@ -87,7 +87,6 @@ const MUISaveChanges = () => {
             <ConfirmationDialog
                 open={true}
                 onClose={handleClose}
-                onDiscard={handleClose}
                 onConfirm={handleSave}
                 confirmationInfo={confirmationInfo}
             />
