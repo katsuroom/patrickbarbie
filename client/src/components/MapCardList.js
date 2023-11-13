@@ -6,8 +6,11 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import AddIcon from '@mui/icons-material/Add';
+import MUICreateMap from './Model/MUICreateMap';
+import {useHistory} from 'react-router-dom';
 
 const MapCardList = () => {
+  const history = useHistory();
   const [maps, setMaps] = useState([
     { id: 1, name: 'Korea Map' },
     { id: 2, name: 'Japan Map' },
@@ -15,6 +18,7 @@ const MapCardList = () => {
   ]);
 
   const addMapCard = () => {
+    history.push('/createMap');
     const newMap = { id: maps.length + 1, name: `Map Title ${maps.length + 1}` };
     setMaps([...maps, newMap]);
   };

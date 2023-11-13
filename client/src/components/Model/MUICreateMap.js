@@ -5,6 +5,7 @@ import Modal from "@mui/material/Modal";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import './MUIPublishMap.css';
+import { useHistory } from 'react-router-dom';
 
 export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo, projectName, handleInputChange }) => {
     const [mapType, setMapType] = useState("Map Type");
@@ -82,17 +83,22 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo,
 };
 
 const MUICreateMap = () => {
+    const history = useHistory();
     const [projectName, setProjectName] = useState("");
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        history.push('/main');
+    }
 
     const confirmationInfo = "Enter the new name of the forked map:";
 
     const handleSave = () => {
         console.log("Map Created!");
         handleClose();
+        history.push("/edit");
     };
 
     const handleInputChange = (e) => {
@@ -101,9 +107,9 @@ const MUICreateMap = () => {
 
     return (
         <div>
-            <Button onClick={handleOpen}>Open Confirmation</Button>
+            {/* <Button onClick={handleOpen}>Open Confirmation</Button> */}
             <ConfirmationDialog
-                open={open}
+                open={true}
                 onClose={handleClose}
                 onDiscard={handleClose}
                 onConfirm={handleSave}

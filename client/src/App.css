@@ -1,3 +1,11 @@
+:root {
+    --color-0: #FB5E96;
+    --color-1: #FC9ABD;
+    --color-2: #F7D3E4;
+    --color-3: #F1B3CD;
+    --color-4: #FDF4F3;
+}
+
 #edit-toolbar {
     transform: translate(41%, 0%);
     background-color: #F1B3CD;

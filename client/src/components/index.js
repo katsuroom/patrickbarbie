@@ -11,6 +11,7 @@ import MUICreateMap from './Model/MUICreateMap'
 import MUIExportMap from './Model/MUIExportMap'
 import MUIExit from './Model/MUIExitModal'
 import MainScreen from './MainScreen'
+import EditScreen from './EditScreen'
 
 
 import Sort from './Sort'
@@ -43,5 +44,6 @@ export {
     PHeatmap,
     PPolitical,
     MUIExit,
+    EditScreen,
 
  }
