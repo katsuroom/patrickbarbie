@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PPolitical from "./PPolitical";
 import MapEditorToolbar from "./MapEditorToolBar";
-import editScreenDemo from "../images/editScreenDemo.png"
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 export default function EditScreen() {
     const layoutStyle = {
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
-        padding: '20vh 0',
+        padding: '10vh 0',
         boxSizing: 'border-box',
     };
 
@@ -34,12 +35,22 @@ export default function EditScreen() {
         paddingBottom: '10%',
     };
 
+    useEffect(() => {
+        let map = L.map('map').setView([51.505, -0.09], 2);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+    });
+
     return (
         <div style={layoutStyle}>
             <div style={toolbarStyle}>
                 <MapEditorToolbar />
             </div>
-            <img src={editScreenDemo} alt="Edit Screen Demo" style={imageStyle} /> {/* Apply the image style */}
+            {/* <img src={editScreenDemo} alt="Edit Screen Demo" style={imageStyle} /> */}
+            <div id="map" style={{width: 1000, height: 400}}></div>
+
             <div style={politicalStyle}>
                 <PPolitical />
             </div>
