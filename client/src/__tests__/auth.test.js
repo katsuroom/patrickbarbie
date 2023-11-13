@@ -61,12 +61,12 @@ describe("Auth Test", () => {
     email = Date.now() + "@gmail.com";
     password = "Asdfghjkl;'!";
     const response = await apis.registerUser(username, email, password);
-    // expect(response.status).toEqual(200);
+    expect(response.status).toEqual(200);
   });
 
   it("log in account", async () => {
     const response = await apis.loginUser(email, password);
 
-    // expect(response.status).toEqual(200);
+    expect(response.status).toEqual(200);
   });
 });
