@@ -7,6 +7,7 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
+import Compact from '@uiw/react-color-compact';
 
 function createData(name, calories) {
   return { name, calories};
@@ -28,6 +29,8 @@ const rows = [
 
 
 export default function PHeatmap() {
+  const [MinHex, setMinHex] = React.useState("#fff");
+  const [MaxHex, setMaxHex] = React.useState("#fff");
 
   const [age, setAge] = React.useState('');
 
@@ -35,7 +38,16 @@ export default function PHeatmap() {
     setAge(event.target.value);
   };
 
+  const handleMinColorChange = (event) => {
+    setMinHex(event.hex);
+  }
+
+  const handleMaxColorChange = (event) => {
+    setMaxHex(event.hex);
+  }
+
   console.log(Data.population);
+  console.log(MinHex);
 
   return (
     <div>
@@ -96,7 +108,37 @@ export default function PHeatmap() {
         </Select>
     </FormControl>
 
+    <FormControl sx={{ m: 2, minWidth: 100 }}>
+        <InputLabel id="demo-simple-select-helper-label">Min</InputLabel>
+          <Select
+          labelId="demo-simple-select-helper-label"
+          id="demo-simple-select-helper"
+          label="Age"
+          sx={{ minWidth: 130 }}
+        >
+          <MenuItem value={MinHex}><Compact
+          onChange={handleMinColorChange}
+          color={MinHex}/>
+    </MenuItem>
+        </Select>
+    </FormControl>
 
+    <FormControl sx={{ m: 2, minWidth: 100 }}>
+        <InputLabel id="demo-simple-select-helper-label">Max</InputLabel>
+          <Select
+          labelId="demo-simple-select-helper-label"
+          id="demo-simple-select-helper"
+          label="Age"
+          sx={{ minWidth: 130 }}
+        >
+          <MenuItem value={MaxHex}><Compact
+          onChange={handleMaxColorChange}
+          color={MaxHex}/>
+    </MenuItem>
+        </Select>
+    </FormControl>
+
+    
     </div>
     <Button variant="solid">SAVE</Button>
     <Button variant="solid">EXIT</Button>
