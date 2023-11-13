@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./font.css";
@@ -18,7 +18,15 @@ export default function MapView()
         }).addTo(map);
     });
 
-    function handleIconClick() {}
+    function handleDeleteClick() {}
+
+    function handlePublishClick() {}
+
+    function handleEditClick() {}
+
+    function handleDownloadClick() {}
+
+    function handleForkClick() {}
     
 
   return (
@@ -54,19 +62,21 @@ export default function MapView()
                 </Grid>
 
                 <Grid item xs={0.5}>
-                    <Delete onClick={handleIconClick} />
+                    <Delete onClick={handleDeleteClick} />
                 </Grid>
                 <Grid item xs={0.5}>
-                    <CloudUpload onClick={handleIconClick} />
+                    <CloudUpload onClick={handlePublishClick} />
                 </Grid>
                 <Grid item xs={0.5}>
-                    <Edit onClick={handleIconClick} />
+                    <IconButton>
+                        <Edit onClick={handleEditClick} />
+                    </IconButton>
                 </Grid>
                 <Grid item xs={0.5}>
-                    <Download onClick={handleIconClick} />
+                    <Download onClick={handleDownloadClick} />
                 </Grid>
                 <Grid item xs={0.5}>
-                    <Share onClick={handleIconClick} />
+                    <Share onClick={handleForkClick} />
                 </Grid>
             </Grid>
         </div>
