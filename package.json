@@ -42,9 +42,7 @@
     "npm": "^10.2.3",
     "react-router-dom": "^6.18.0"
   },
-  "jest": {
-    "preset": "ts-jest"
-  },  
+  
   "devDependencies": {
     "@babel/core": "^7.23.3",
     "@babel/plugin-syntax-jsx": "^7.23.3",
