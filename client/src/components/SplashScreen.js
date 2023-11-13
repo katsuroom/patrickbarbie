@@ -6,7 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
-import Header from "./Header";
+import TitleBar from "./TitleBar";
 import StatusBar from "./StatusBar";
 import splashScreenDemo from "../images/splashScreenDemo.png";
 import "./font.css"
@@ -43,8 +43,7 @@ export default function SplashScreen() {
 
   return (
     <>
-      <Header />
-      <div style={{ backgroundColor: "#ffabd1" }}>
+      <div style={{ backgroundColor: "#fcc0db" }}>
         <Grid container>
           {/* Left Screen */}
           <Grid item xs={6}>
@@ -96,14 +95,13 @@ export default function SplashScreen() {
                   <Link href="/login">{MenuButton("Log in")}</Link>
                 </Grid>
                 <Grid item xs={12} sx={{ marginLeft: { xs: "30%" } }}>
-                  {MenuButton("Continue as Guest")}
+                <Link href="/main">{MenuButton("Continue as Guest")}</Link>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
       </div>
-      <StatusBar />
     </>
   );
 }

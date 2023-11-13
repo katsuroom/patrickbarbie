@@ -17,18 +17,22 @@ import {
     PHeatmap,
     Sort,
     MUIExit,
+    MainScreen,
+    TitleBar,
+    StatusBar,
 } from './components'
 
 const App = () => {
     return (
         <BrowserRouter>
             <AuthContextProvider>
-
+                <TitleBar />
                 <Switch>
                     <Route path="/" exact component={SplashScreen} />
                     <Route path="/login/" exact component={LoginScreen} />
                     <Route path="/register/" exact component={RegisterScreen} />
                     <Route path="/recovery/" exact component={PasswordRecoveryPage} />
+                    <Route path="/main/" exact component={MainScreen} />
                     <Route path="/publishMap/" exact component={MUIPublishMap} />
                     <Route path="/deleteMap/" exact component={MUIDeleteMap} />
                     <Route path="/saveMap/" exact component={MUISaveChanges} />
@@ -40,7 +44,7 @@ const App = () => {
                     <Route path="/sort/" exact component={Sort} />
                     <Route path="/MUIExit/" exact component={MUIExit} />
                 </Switch>
-
+                <StatusBar />
             </AuthContextProvider>
         </BrowserRouter>
     )

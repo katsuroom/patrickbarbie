@@ -1,0 +1,8 @@
+#edit-toolbar {
+    transform: translate(41%, 0%);
+    background-color: #F1B3CD;
+    border: 2px solid black;
+    height: 1.5cm;
+    width: 10cm;
+    border-radius: 10px;
+}

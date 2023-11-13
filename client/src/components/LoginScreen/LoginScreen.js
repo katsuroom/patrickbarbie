@@ -5,7 +5,8 @@ import AuthContext from '../../auth';
 import "./LoginScreen.css"
 import Button from "@mui/material/Button";
 import { Link } from 'react-router-dom';
-
+import TitleBar from '../TitleBar';
+import StatusBar from '../StatusBar';
 
 
 export default function LoginPage() {
@@ -53,7 +54,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div style={{ flex: 1, marginTop: '100px' }}>
+        <div>
             <form onSubmit={handleSubmit} className='loginInfo'>
                 <h1>Login</h1>
 
