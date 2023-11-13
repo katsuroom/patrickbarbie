@@ -20,6 +20,7 @@ import {
     MainScreen,
     TitleBar,
     StatusBar,
+    EditScreen,
 } from './components'
 
 const App = () => {
@@ -43,6 +44,7 @@ const App = () => {
                     <Route path="/heatmap/" exact component={PHeatmap} />
                     <Route path="/sort/" exact component={Sort} />
                     <Route path="/MUIExit/" exact component={MUIExit} />
+                    <Route path="/edit/" exact component={EditScreen} />
                 </Switch>
                 <StatusBar />
             </AuthContextProvider>

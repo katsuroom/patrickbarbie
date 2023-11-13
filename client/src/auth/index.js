@@ -111,8 +111,11 @@ function AuthContextProvider(props) {
 
     auth.loginUser = async function(email, password) {
         try{
+            console.log("Logging in user");
             const response = await api.loginUser(email, password);
+            console.log("response: ", response.status);
             if (response.status === 200) {
+                console.log("Logged in Sucessfully");
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
                     payload: {

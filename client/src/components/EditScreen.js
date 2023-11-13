@@ -13,6 +13,8 @@ export default function EditScreen() {
     };
 
     const toolbarStyle = {
+        justifyContent: 'center',
+        display: 'flex',
         width: '30%',
         margin: '0',
         marginLeft: '18%',
