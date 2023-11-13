@@ -26,7 +26,7 @@ const MapCardList = () => {
   return (
     <Box sx={{ 
         width: '25%', 
-        bgcolor: '#ffabd1', 
+        bgcolor: '#F7D3E4', 
         float: 'left', 
         height: '83vh', 
         position: 'relative',
