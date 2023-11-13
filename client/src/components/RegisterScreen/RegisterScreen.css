@@ -1,0 +1,79 @@
+/* Set background color */
+body {
+  background-color: lightpink;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+  color: grey;
+}
+/* Center the form */
+.registerInfo {
+  /* display: flex; */
+  /* justify-content: center; */
+  /* align-items: center; */
+  height: 75vh;
+  width: 100%;
+  background-color: white;
+}
+
+
+h1 {
+  text-align: center;
+}
+
+.inputContainer {
+  display: flex;
+  justify-content: space-around;
+}
+
+.inputRow {
+  width: 35%;
+  margin-bottom: 35px;
+} 
+
+.inputLabel {
+  width: 100%;
+  margin-top: 55px;
+  height: 35%;
+} 
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+/* Add a hover effect for buttons */
+button:hover {
+  opacity: 0.8;
+}
+
+/* Add a "Already have an account?" link */
+.already {
+  text-align: center;
+}
+
+/* Add a password requirement note */
+.note {
+  text-align: center;
+  font-size: 12px;
+}
+
+/* Add a custom error message */
+.errorMessage {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+}
