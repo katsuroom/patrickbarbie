@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import './MUIPublishMap.css'
+import { useHistory } from 'react-router-dom';
 
 export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo }) => {
     const buttonStyle = {
@@ -62,10 +63,14 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo 
 
 
 const MUIPublishMap = () => {
+    const history = useHistory();
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        history.push("/main");
+    }
 
     const confirmationInfo = "Are you sure you want to publish this map?";
 
@@ -77,9 +82,9 @@ const MUIPublishMap = () => {
     return (
         <div>
             {/* //publish button should link to here */}
-            <Button onClick={handleOpen}>Open Confirmation</Button>
+            {/* <Button onClick={handleOpen}>Open Confirmation</Button> */}
             <ConfirmationDialog
-                open={open}
+                open={true}
                 onClose={handleClose}
                 onConfirm={handleConfirm}
                 confirmationInfo={confirmationInfo}

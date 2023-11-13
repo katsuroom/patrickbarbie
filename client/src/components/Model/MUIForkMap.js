@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import './MUIPublishMap.css'
+import { useHistory } from 'react-router-dom';
 
 export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo, projectName, handleInputChange }) => {
     const buttonStyle = {
@@ -69,19 +70,25 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo,
 
 
 const MUIForkMap = () => {
+    const history = useHistory();
     const [projectName, setProjectName] = useState("");
 
     const [open, setOpen] = useState(false);
 
 
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        history.push("/main");
+    }
 
     const confirmationInfo = "Enter the new name of the forked map:";
 
     const handleSave = () => {
         console.log("Map Forked!");
         handleClose();
+        history.push("/edit");
+        
     };
 
     const handleInputChange = (e) => {
@@ -92,9 +99,9 @@ const MUIForkMap = () => {
     return (
         <div>
             {/* //fork button should link to here */}
-            <Button onClick={handleOpen}>Open Confirmation</Button>
+            {/* <Button onClick={handleOpen}>Open Confirmation</Button> */}
             <ConfirmationDialog
-                open={open}
+                open={true}
                 onClose={handleClose}
                 onDiscard={handleClose}
                 onConfirm={handleSave}

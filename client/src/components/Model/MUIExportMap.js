@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import { useHistory } from 'react-router-dom';
 
 export const ConfirmationDialog = ({ open, onClose, onConfirm }) => {
     const buttonStyle = {
@@ -16,6 +17,7 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm }) => {
         width: "250px",
         margin: '10px',
     };
+    
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -55,7 +57,7 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm }) => {
                         >
                             JSON
                         </Button>
-                        <Button onClick={onConfirm}
+                        <Button onClick={onClose}
                             variant="contained"
                             sx={buttonStyle}
                         >
@@ -70,10 +72,14 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm }) => {
 
 
 const MUIExportMap = () => {
+    const history = useHistory();
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        history.push("/main");
+    }
 
 
     // const handleConfirm = () => {
@@ -84,9 +90,9 @@ const MUIExportMap = () => {
     return (
         <div>
             {/* //publish button should link to here */}
-            <Button onClick={handleOpen}>Open Confirmation</Button>
+            {/* <Button onClick={handleOpen}>Open Confirmation</Button> */}
             <ConfirmationDialog
-                open={open}
+                open={true}
                 onClose={handleClose}
                 // onConfirm={handleConfirm}
                 // confirmationInfo={confirmationInfo}
