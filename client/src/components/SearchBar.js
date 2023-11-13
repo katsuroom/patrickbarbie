@@ -2,6 +2,8 @@ import * as React from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Sort from './Sort';
 
 
 export default function SelectVariants() {
@@ -24,7 +26,7 @@ export default function SelectVariants() {
   }
 
   return (
-    <div>
+    <div id="edit-toolbar">
         <Select
           labelId="demo-simple-select-standard-label"
           id="searchOn"
@@ -32,7 +34,7 @@ export default function SelectVariants() {
           required
           onChange={handleChange}
           variant="standard"
-          sx={{ m: 3, minWidth: 20 }}
+          sx={{ m: 1, minWidth: 20 }}
         >
           <MenuItem value={'Map ID'}>Map ID</MenuItem>
           <MenuItem value={'Map Name'}>Map Name</MenuItem>
@@ -45,7 +47,8 @@ export default function SelectVariants() {
           variant="standard"
           onChange = {handleSearch}
           onKeyPress = {handleKeyPress}
-          sx={{ m: 1, minWidth: 120 }}/>
+          sx={{ m: -2, minWidth: 120, marginLeft: "3px", marginBottom: "3px", marginRight: "20px"}}/>
+          <Sort/>
     </div>
   );
 }
