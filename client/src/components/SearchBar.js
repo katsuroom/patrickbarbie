@@ -38,7 +38,7 @@ export default function SelectVariants() {
         >
           <MenuItem value={'Map ID'}>Map ID</MenuItem>
           <MenuItem value={'Map Name'}>Map Name</MenuItem>
-          <MenuItem value={'Proporty'}>Proporty</MenuItem>
+          <MenuItem value={'Proporty'}>Property</MenuItem>
         </Select>
           <TextField 
           id="search" 
