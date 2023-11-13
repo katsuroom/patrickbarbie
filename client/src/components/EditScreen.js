@@ -1,7 +1,6 @@
 import React from 'react';
 import PPolitical from "./PPolitical";
 import MapEditorToolbar from "./MapEditorToolBar";
-import StatusBar from "./StatusBar";
 import editScreenDemo from "../images/editScreenDemo.png"
 
 export default function EditScreen() {

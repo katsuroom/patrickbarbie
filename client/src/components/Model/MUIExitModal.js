@@ -67,7 +67,7 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo 
 };
 
 
-const MUISaveChanges = () => {
+const MUIExit = () => {
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
@@ -82,7 +82,7 @@ const MUISaveChanges = () => {
 
     return (
         <div>
-            {/* //Save button should link to here */}
+             {/* //Save button should link to here */}
             {/* <Button onClick={handleOpen}>Open Confirmation</Button> */}
             <ConfirmationDialog
                 open={true}
@@ -95,4 +95,4 @@ const MUISaveChanges = () => {
     );
 };
 
-export default MUISaveChanges;
+export default MUIExit;
