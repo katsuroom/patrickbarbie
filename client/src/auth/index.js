@@ -94,12 +94,16 @@ function AuthContextProvider(props) {
                 console.log("LOGGED IN");
             }
         } catch(error){
+            let errorMessage = 'An error occurred';
+            if (error.response && error.response.data) {
+                errorMessage = error.response.data.errorMessage;
+            }
             authReducer({
                 type: AuthActionType.REGISTER_USER,
                 payload: {
                     user: auth.user,
                     loggedIn: false,
-                    errorMessage: error.response.data.errorMessage
+                    errorMessage
                 }
             })
         }

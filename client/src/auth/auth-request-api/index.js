@@ -12,8 +12,13 @@
 
 import axios from 'axios'
 axios.defaults.withCredentials = true;
+
+
+const API_URL= "http://localhost:4000/auth"
+// const API_URL= "https://patrick-barbie-a2f18d08630b.herokuapp.com/auth"
+
 const api = axios.create({
-    baseURL: 'https://patrick-barbie-a2f18d08630b.herokuapp.com/auth',
+    baseURL: API_URL
 })
 
 // THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A
