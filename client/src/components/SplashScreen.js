@@ -9,6 +9,7 @@ import Link from "@mui/material/Link";
 import TitleBar from "./TitleBar";
 import StatusBar from "./StatusBar";
 import splashScreenDemo from "../images/splashScreenDemo.png";
+import background_image from "../images/background-image.jpeg"
 import "./font.css"
 
 
@@ -51,9 +52,9 @@ export default function SplashScreen() {
               display="flex"
               alignItems="flex-end"
               justifyContent="center"
-              sx={{ padding: "50px" }}
+              sx={{ padding: "15px" }}
             >
-              <img src={splashScreenDemo} alt="" width="100%"/>
+              <img src={background_image} alt="" width="70%"/>
             </Box>
 
             <Box
