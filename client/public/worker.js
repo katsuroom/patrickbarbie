@@ -1,15 +1,4 @@
 
-// onmessage = ({ data }) => {
-//     try {
-//       const jsonData = JSON.parse(data);
-//       postMessage({ success: true, jsonData });
-//     } catch (error) {
-//       postMessage({ success: false, error: error.message });
-//     }
-// };
-
-// jsonParser.worker.js
-
 this.onmessage = function (e) {
     try {
       if (e.data !== null) {
@@ -20,5 +9,5 @@ this.onmessage = function (e) {
     } catch (error) {
       console.error("Error parsing JSON in worker:", error);
     }
-  };
+};
   
