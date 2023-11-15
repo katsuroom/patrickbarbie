@@ -28,9 +28,23 @@ const rows = [
 
 export default function PPolitical() {
   const history = useHistory();
+  const [label, setLabel] = React.useState(null);
   const [key, setkey] = React.useState(null);
+  const [parsed_CSV_Data, setParsed_CSV_Data] = React.useState({});
+  const [menuItems, setMenuItems] = React.useState([]);
+  const [renderTable, setRenderTable] = React.useState(false);
+  const [page, setPage] = React.useState(0);
+  const ROW_PER_PAGE = 30;
+
+  function zip(...arrays) {
+    const length = Math.min(...arrays.map((arr) => arr.length));
+    return Array.from({ length }, (_, index) =>
+      arrays.map((arr) => arr[index])
+    );
+  }
 
   const handleChange = (event) => {
+    console.log(event.target.value);
     setkey(event.target.value);
   };
 
@@ -42,39 +56,47 @@ export default function PPolitical() {
     history.push("/saveMap");
   };
 
-  var CSV_Data;
-  var Parsed_CSV_Data = {};
   const fileOnLoadComplete = (data) => {
     console.log(data);
-    CSV_Data = data;
+    let csv_data = {};
+    let keys = new Set();
     try {
-      for (let rowNum in CSV_Data) {
-        for (let key in CSV_Data[rowNum]) {
-          let val = CSV_Data[rowNum][key];
+      for (let rowNum in data) {
+        for (let key in data[rowNum]) {
+          let val = data[rowNum][key];
           // console.log(key, val);
-          if (!val){
+          if (!val) {
             continue;
           }
           console.log(key, val);
-          if (!Parsed_CSV_Data[key]) {
-            Parsed_CSV_Data[key] = [];
+          keys.add(key);
+          if (!csv_data[key]) {
+            csv_data[key] = [];
           }
-          Parsed_CSV_Data[key].push(val);
+          csv_data[key].push(val);
         }
       }
     } catch (error) {
       console.log("parse CSV file failed", error);
     }
-    console.log(Parsed_CSV_Data);
-  };
 
-  console.log(Data.population);
+    console.log(csv_data);
+    keys = Array.from(keys);
+    console.log(keys);
+
+    setParsed_CSV_Data(csv_data);
+    setkey(keys[1]);
+    setLabel(keys[0]);
+    keys.shift();
+    setMenuItems(keys);
+    setRenderTable(true);
+  };
 
   return (
     <div>
       <div className="propertyTitle">Property</div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
-      {/*        
+
       <Table
         className="property-table"
         sx={{ "& thead th::nth-of-type(1)": { width: "40%" } }}
@@ -91,9 +113,9 @@ export default function PPolitical() {
                 onChange={handleChange}
                 sx={{ minWidth: 20 }}
               >
-                <MenuItem value={"GDP"}>GDP</MenuItem>
-                <MenuItem value={"Population"}>Population</MenuItem>
-                <MenuItem value={"Color"}>Color</MenuItem>
+                {menuItems.map((mi) => (
+                  <MenuItem value={mi}>{mi}</MenuItem>
+                ))}
                 <MenuItem>
                   <Button variant="text" startDecorator={<Add />}>
                     New Property
@@ -104,22 +126,32 @@ export default function PPolitical() {
           </tr>
         </thead>
         <tbody>
-          {key || CSV_Data || CSV_Data[key] || CSV_Data[key].map((row) => (
-            <tr key={row.name}>
-              <td>{row.name}</td>
-              {/* <td>{row.calories}</td> */}
-      {/* <td>
-                <TextField
-                  id="search"
-                  defaultValue={row.calories}
-                  variant="standard"
-                  sx={{ m: 1, minWidth: 120 }}
-                />
-              </td>
-            </tr>
-          ))}
+          {!renderTable ||
+            zip(
+              parsed_CSV_Data[label].slice(
+                page * ROW_PER_PAGE,
+                (page + 1) * ROW_PER_PAGE
+              ),
+              parsed_CSV_Data[key].slice(
+                page * ROW_PER_PAGE,
+                (page + 1) * ROW_PER_PAGE
+              )
+            ).map((row) => (
+              <tr key={row.name}>
+                <td>{row[0]}</td>
+                <td>{row[1]}</td>
+                <td>
+                  <TextField
+                    id="search"
+                    defaultValue={row.calories}
+                    variant="standard"
+                    sx={{ m: 1, minWidth: 120 }}
+                  />
+                </td>
+              </tr>
+            ))}
         </tbody>
-      </Table> */}
+      </Table>
 
       <Button
         variant="solid"
