@@ -128,12 +128,13 @@ function AuthContextProvider(props) {
                 
             }
         } catch(error){
+            console.log(error);
             authReducer({
                 type: AuthActionType.LOGIN_USER,
                 payload: {
                     user: auth.user,
                     loggedIn: false,
-                    errorMessage: error.response.data.errorMessage
+                    // errorMessage: error.response.data.errorMessage
                 }
             })
         }
