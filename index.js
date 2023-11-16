@@ -19,7 +19,6 @@ app.use(cors(
     optionSuccessStatus:200
 }
 ))
-app.use(CorsObject(CorsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
