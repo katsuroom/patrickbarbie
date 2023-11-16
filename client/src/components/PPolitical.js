@@ -29,7 +29,7 @@ const rows = [
 export default function PPolitical() {
   const history = useHistory();
   const [label, setLabel] = React.useState(null);
-  const [key, setkey] = React.useState(null);
+  const [key, setKey] = React.useState(null);
   const [parsed_CSV_Data, setParsed_CSV_Data] = React.useState({});
   const [menuItems, setMenuItems] = React.useState([]);
   const [renderTable, setRenderTable] = React.useState(false);
@@ -43,9 +43,14 @@ export default function PPolitical() {
     );
   }
 
-  const handleChange = (event) => {
+  const handleChangeKey = (event) => {
     console.log(event.target.value);
-    setkey(event.target.value);
+    setKey(event.target.value);
+  };
+
+  const handleChangeLabel = (event) => {
+    console.log(event.target.value);
+    setLabel(event.target.value);
   };
 
   const openExitModal = () => {
@@ -85,7 +90,7 @@ export default function PPolitical() {
     console.log(keys);
 
     setParsed_CSV_Data(csv_data);
-    setkey(keys[1]);
+    setKey(keys[1]);
     setLabel(keys[0]);
     keys.shift();
     setMenuItems(keys);
@@ -97,22 +102,27 @@ export default function PPolitical() {
       <div className="propertyTitle">Property</div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
 
+      <div style={{ overflow: 'auto', maxHeight: '400px' }}>
+
       <Table
         className="property-table"
         sx={{ "& thead th::nth-of-type(1)": { width: "40%" } }}
       >
         <thead>
           <tr>
-            <th>Country Name</th>
-            <th>
+          <th>
               <Select
-                labelId="demo-simple-select-standard-label"
-                id="searchOn"
-                value={key}
+                // labelId="demo-simple-select-standard-label"
+                // id="searchOn"
+                value={label}
                 required
-                onChange={handleChange}
-                sx={{ minWidth: 20 }}
+                onChange={handleChangeLabel}
+                sx={{ minWidth: "80%"}}
+                MenuProps={{
+                  style: { maxHeight: "50%" }
+                }}
               >
+              
                 {menuItems.map((mi) => (
                   <MenuItem value={mi}>{mi}</MenuItem>
                 ))}
@@ -123,6 +133,30 @@ export default function PPolitical() {
                 </MenuItem>
               </Select>
             </th>
+            <th>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="searchOn"
+                value={key}
+                required
+                onChange={handleChangeKey}
+                sx={{ minWidth: "80%"}}
+                MenuProps={{
+                  style: { maxHeight: "50%" }
+                }}
+              >
+              
+                {menuItems.map((mi) => (
+                  <MenuItem value={mi}>{mi}</MenuItem>
+                ))}
+                <MenuItem>
+                  <Button variant="text" startDecorator={<Add />}>
+                    New Property
+                  </Button>
+                </MenuItem>
+              </Select>
+            </th>
+            <th>Update</th>
           </tr>
         </thead>
         <tbody>
@@ -152,6 +186,8 @@ export default function PPolitical() {
             ))}
         </tbody>
       </Table>
+
+      </div>
 
       <Button
         variant="solid"
