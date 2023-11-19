@@ -13,7 +13,6 @@ describe('template spec', () => {
 
     cy.get('button[type="submit"]').click();
 
-    // cy.contains('Welcome to Patrick Barbie, lenzlaww.')
     cy.url().should('include', '/main');
   })
 })
