@@ -17,15 +17,25 @@ export default function RegisterScreen() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if(password !== confirmPassword) {
-            setError("Passwords do not match.");
-        }
-        else{
-            auth.registerUser(username, email, password);
-        }
-    };
 
-    // console.log(auth);
+        if (username.length < 5 || username.length > 50) {
+            setError('Username must be between 5 and 50 characters.');
+            return;
+        }
+
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordPattern.test(password)) {
+            setError('Password must contain at least 8 characters, including one uppercase letter, one number, and one special character.');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError('Passwords do not match.');
+            return;
+        }
+
+        auth.registerUser(username, email, password);
+    };
 
     return (
         <div>
