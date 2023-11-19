@@ -9,6 +9,7 @@ import Link from "@mui/material/Link";
 import TitleBar from "./TitleBar";
 import StatusBar from "./StatusBar";
 import splashScreenDemo from "../images/splashScreenDemo.png";
+import background_image from "../images/background-image.jpeg"
 import "./font.css"
 
 
@@ -51,9 +52,9 @@ export default function SplashScreen() {
               display="flex"
               alignItems="flex-end"
               justifyContent="center"
-              sx={{ padding: "50px" }}
+              sx={{ padding: "10px" }}
             >
-              <img src={splashScreenDemo} alt="" width="100%"/>
+              <img src={background_image} alt="" width="60%"/>
             </Box>
 
             <Box
@@ -76,7 +77,7 @@ export default function SplashScreen() {
                   Patrick Barbie
                 </Typography>
               </Grid>
-              <Grid item xs={12} sx={{ margin: { xs: "10%" }, marginRight: { xs: "20%" } , marginLeft: { xs: "15%" }}}>
+              <Grid item xs={12} sx={{ margin: { xs: "5%" }, marginRight: { xs: "20%" } , marginLeft: { xs: "15%" }}}>
                   <Typography variant="h5" component="div" sx={{ fontFamily: 'Sen' }}>
                   A friendly community for map creators and enjoyers.
                 </Typography>

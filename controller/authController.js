@@ -16,6 +16,7 @@ loginUser = async (req, res) => {
         const existingUser = await User.findOne({ email: email });
         console.log("existingUser: " + existingUser);
         if (!existingUser) {
+            console.log("Wrong email or password provided.", email);
             return res
                 .status(401)
                 .json({
@@ -51,6 +52,9 @@ loginUser = async (req, res) => {
             }
         })
         console.log("token sent");
+
+
+        console.log("sent status 200")
 
     } catch (err) {
         console.error(err);
