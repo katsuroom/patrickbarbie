@@ -9,11 +9,14 @@
     
     @author McKilla Gorilla
 */
-const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/auth';
+const baseURL = 'http://localhost:4000/auth';
 
 // Helper function for handling JSON responses
-const handleJsonResponse = (response) => {
-  return response;
+const handleJsonResponse = (response, data) => {
+    console.log("handleJsonResponse");
+    console.log(response.json());
+    // console.log(data);
+  return response.json();
 };
 
 // Function to perform a login request
@@ -28,7 +31,10 @@ const loginUser = (email, password) => {
       password: password,
     }),
   })
-    .then(handleJsonResponse);
+  .then(response => {
+    // Parse JSON and include status in the resolved value
+    return response.json().then(data => ({ status: response.status, data }));
+  })
 };
 
 // Function to perform a registration request
@@ -44,7 +50,10 @@ const registerUser = (username, email, password) => {
       password: password,
     }),
   })
-    .then(handleJsonResponse);
+  .then(response => {
+    // Parse JSON and include status in the resolved value
+    return response.json().then(data => ({ status: response.status, data }));
+  })
 };
 
 export default {

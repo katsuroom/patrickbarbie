@@ -30,7 +30,7 @@ loginUser = async (req, res) => {
             return res
                 .status(401)
                 .json({
-                    errorMessage: "Wrong email or password provided."
+                    errorMessage: "Incorrect password"
                 })
         }
 
@@ -50,6 +50,7 @@ loginUser = async (req, res) => {
                 email: existingUser.email              
             }
         })
+        console.log("token sent");
 
     } catch (err) {
         console.error(err);
@@ -123,7 +124,7 @@ registerUser = async (req, res) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).send();
+        res.status(400).json({ error: err.message });
     }
 }
 
