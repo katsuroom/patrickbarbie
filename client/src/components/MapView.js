@@ -74,28 +74,28 @@ export default function MapView()
                 </Grid>
 
                 <Grid item xs={0.5}>
-                <IconButton>
-                    <Delete onClick={handleDeleteClick} />
+                    <IconButton onClick={handleDeleteClick} >
+                        <Delete />
                     </IconButton>
                 </Grid>
                 <Grid item xs={0.5}>
-                 <IconButton>
-                    <CloudUpload onClick={handlePublishClick} />
+                 <IconButton onClick={handlePublishClick}>
+                    <CloudUpload />
                     </IconButton>
                 </Grid>
                 <Grid item xs={0.5}>
-                    <IconButton>
-                        <Edit onClick={handleEditClick} />
+                    <IconButton onClick={handleEditClick}>
+                        <Edit />
                     </IconButton>
                 </Grid>
                 <Grid item xs={0.5}>
-                <IconButton>
-                    <Download onClick={handleDownloadClick} />
+                <IconButton onClick={handleDownloadClick}>
+                    <Download />
                     </IconButton>
                 </Grid>
                 <Grid item xs={0.5}>
-                <IconButton>
-                    <Share onClick={handleForkClick} />
+                <IconButton onClick={handleForkClick}>
+                    <Share />
                     </IconButton>
                 </Grid>
             </Grid>

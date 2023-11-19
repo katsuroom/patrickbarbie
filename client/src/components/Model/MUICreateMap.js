@@ -74,7 +74,11 @@ const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo, projec
                         <Button onClick={onClose} variant="contained" sx={buttonStyle}>
                             Cancel
                         </Button>
-                        <Button onClick={onConfirm} variant="contained" sx={buttonStyle}>
+                        <Button
+                            onClick={onConfirm}
+                            variant="contained"
+                            sx={buttonStyle}
+                            disabled={mapType != "Political Map"}>
                             Create
                         </Button>
                     </div>
