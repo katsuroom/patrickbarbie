@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import axios from "axios";
+import api from "../../auth/auth-request-api";
 
 import AuthContext from '../../auth';
 import "./LoginScreen.css"
@@ -31,6 +32,7 @@ export default function LoginPage() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setError(null);
+        
 
         auth.loginUser(
             email,

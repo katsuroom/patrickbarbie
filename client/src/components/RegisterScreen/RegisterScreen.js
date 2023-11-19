@@ -17,10 +17,15 @@ export default function RegisterScreen() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        auth.registerUser(username, email, password);
+        if(password !== confirmPassword) {
+            setError("Passwords do not match.");
+        }
+        else{
+            auth.registerUser(username, email, password);
+        }
     };
 
-    console.log(auth);
+    // console.log(auth);
 
     return (
         <div>
