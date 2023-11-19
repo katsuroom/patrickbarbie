@@ -5,12 +5,10 @@ import Add from "@mui/icons-material/Add";
 
 
 export default function CsvFileReader(props) {
-  function handleForce(data) {
+  function handleForce(data) {  
     props.fileOnLoadComplete(data);
   }
   return (
-
-
     <CSVReader
       onFileLoaded={handleForce}
       parserOptions={{ header: true }}

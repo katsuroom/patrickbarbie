@@ -70,10 +70,10 @@ export default function PPolitical() {
         for (let key in data[rowNum]) {
           let val = data[rowNum][key];
           // console.log(key, val);
-          if (!val) {
+          if (val === undefined) {
             continue;
           }
-          console.log(key, val);
+          // console.log(key, val);
           keys.add(key);
           if (!csv_data[key]) {
             csv_data[key] = [];
