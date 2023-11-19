@@ -110,33 +110,85 @@ function AuthContextProvider(props) {
     }
 
     auth.loginUser = async function(email, password) {
-        try{
-            console.log("Logging in user");
-            const response = await api.loginUser(email, password);
-            console.log("response: ", response.status);
-            if (response.status === 200) {
-                console.log("Logged in Sucessfully");
+        // try{
+        //     console.log("Logging in user");
+        //     const response = await api.loginUser(email, password);
+        //     console.log("response: ", response.status);
+        //     if (response.status === 200) {
+        //         console.log("Logged in Sucessfully");
+        //         authReducer({
+        //             type: AuthActionType.LOGIN_USER,
+        //             payload: {
+        //                 user: response.data.user,
+        //                 loggedIn: true,
+        //                 errorMessage: null
+        //             }
+        //         })
+        //         history.push("/main");
+                
+        //     }
+        // } catch(error){
+        //     authReducer({
+        //         type: AuthActionType.LOGIN_USER,
+        //         payload: {
+        //             user: auth.user,
+        //             loggedIn: false,
+        //             errorMessage: error.response.data.errorMessage
+        //         }
+        //     })
+        // }
+
+        api.loginUser(email, password)
+        .then(response => {
+
+            // Handle the successful login response
+            if(response.status === 200){
+                console.log('Login successful:', response);
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
                     payload: {
-                        user: response.data.user,
+                        user: response.user,
                         loggedIn: true,
                         errorMessage: null
                     }
                 })
                 history.push("/main");
-                
             }
-        } catch(error){
+            else if(response.status === 401){
+                console.log('Login failed: Unauthorized access');
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        user: auth.user,
+                        loggedIn: false,
+                        errorMessage: "Invalid email or password. Please try again."
+                    }
+                })
+            }else{
+                console.log('Login failed:', response.message);
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        user: auth.user,
+                        loggedIn: false,
+                        errorMessage: response.message
+                    }
+                })
+            }
+        })
+        .catch(error => {
+            // Handle any errors that occurred during the login
+            var message = "something went wrong";
+            console.error('Login failed:', error);
             authReducer({
                 type: AuthActionType.LOGIN_USER,
                 payload: {
                     user: auth.user,
                     loggedIn: false,
-                    errorMessage: error.response.data.errorMessage
+                    errorMessage: message
                 }
             })
-        }
+        });
     }
 
     auth.logoutUser = async function() {

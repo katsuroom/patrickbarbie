@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import axios from "axios";
+import api from "../../auth/auth-request-api";
 
 import AuthContext from '../../auth';
 import "./LoginScreen.css"
@@ -31,6 +32,27 @@ export default function LoginPage() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setError(null);
+
+        // api.loginUser(email, password)
+        // .then(response => {
+        //     // Handle the successful login response
+        //     console.log('Login successful:', response);
+
+        //   })
+        //   .catch(error => {
+        //     // console.log(typeof(error));
+        //     // Handle any errors that occurred during the login
+        //     if (error instanceof TypeError) {
+        //         console.log(error.status);
+        //         // Handle unauthorized (401) error
+        //         console.error('Login failed: Unauthorized access');
+        //       } else {
+        //         console.log("not a TypeError")
+        //         // Handle other errors
+        //         console.log('Login failed:', error.message);
+        //     }
+        // });
+        
 
         auth.loginUser(
             email,

@@ -9,47 +9,45 @@
     
     @author McKilla Gorilla
 */
+const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/auth';
 
-import axios from 'axios'
-// // const dotenv = require('dotenv')
-// require('dotenv').config({path:__dirname+'/./../../.env'})
-console.log("process.env.url", process.env.URL);
-axios.defaults.withCredentials = true;
-const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "auth"
+// Helper function for handling JSON responses
+const handleJsonResponse = (response) => {
+  return response;
+};
 
-// const baseURL = "http://localhost:4000/auth"
-const api = axios.create({
-    baseURL: baseURL,
-})
- 
-// THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A
-// REQUEST METHOD (like get) AND PATH (like /register). SOME ALSO
-// REQUIRE AN id SO THAT THE SERVER KNOWS ON WHICH LIST TO DO ITS
-// WORK, AND SOME REQUIRE DATA, WHICH WE WE WILL FORMAT HERE, FOR WHEN
-// WE NEED TO PUT THINGS INTO THE DATABASE OR IF WE HAVE SOME
-// CUSTOM FILTERS FOR QUERIES
+// Function to perform a login request
+const loginUser = (email, password) => {
+  return fetch(`${baseURL}/login/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email: email,
+      password: password,
+    }),
+  })
+    .then(handleJsonResponse);
+};
 
-// export const getLoggedIn = () => api.get(`/loggedIn/`);
-export const loginUser = (email, password) => {
-    return api.post(`/login/`, {
-        email : email,
-        password : password
-    })
-}
-// export const logoutUser = () => api.get(`/logout/`)
-export const registerUser = (username, email, password) => {
-    console.log("inregister: ", baseURL);
-    return api.post(`/register/`, {
-        username : username,
-        email : email,
-        password : password,
-    })
-}
-const apis = {
-    // getLoggedIn,
-    registerUser,
-    loginUser,
-    // logoutUser
-}
+// Function to perform a registration request
+const registerUser = (username, email, password) => {
+  return fetch(`${baseURL}/register/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      username: username,
+      email: email,
+      password: password,
+    }),
+  })
+    .then(handleJsonResponse);
+};
 
-export default apis
+export default {
+  loginUser,
+  registerUser,
+};
