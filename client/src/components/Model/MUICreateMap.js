@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -6,9 +6,12 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import './MUIPublishMap.css';
 import { useHistory } from 'react-router-dom';
+import { TextField } from "@mui/material";
 
-export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo, projectName, handleInputChange }) => {
-    const [mapType, setMapType] = useState("Map Type");
+import StoreContext from '../../store';
+
+const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo, projectName, handleInputChange }) => {
+    const [mapType, setMapType] = useState("Political Map");
 
     const buttonStyle = {
         mt: 1,
@@ -38,7 +41,6 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo,
                     color: "black",
                     border: "2px solid #000",
                     boxShadow: 24,
-                    p: 10,
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
@@ -50,19 +52,19 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo,
                     <div className="alert">
                         {confirmationInfo}
                     </div>
-                    <div className="confrim" style={{ height: '70%' }}>
-                        <input0
-                            type="text"
+                    <div className="confirm" style={{ height: '100%' }}>
+                        <TextField
+                            label="Your map name"
+                            variant="outlined"
                             value={projectName}
                             onChange={handleInputChange}
-                            placeholder="Your Project Name"
+                            style={selectStyle}
                         />
                         <Select
                             value={mapType}
                             onChange={(e) => setMapType(e.target.value)}
                             style={selectStyle}
                         >
-                            <MenuItem value="Map Type">Map Type</MenuItem>
                             <MenuItem value="Political Map">Political Map</MenuItem>
                             <MenuItem value="HeatMap">HeatMap</MenuItem>
                             <MenuItem value="Dot Distribution Map">Dot Distribution Map</MenuItem>
@@ -82,15 +84,13 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo,
     );
 };
 
-const MUICreateMap = () => {
+export default function MUICreateMap() {
     const history = useHistory();
+    const { store } = useContext(StoreContext);
     const [projectName, setProjectName] = useState("");
-    const [open, setOpen] = useState(false);
 
-    const handleOpen = () => setOpen(true);
     const handleClose = () => {
-        setOpen(false);
-        history.push('/main');
+        store.closeModal();
     }
 
     const confirmationInfo = "Enter the new name of the forked map:";
@@ -120,5 +120,3 @@ const MUICreateMap = () => {
         </div>
     );
 };
-
-export default MUICreateMap;
