@@ -19,6 +19,8 @@ import PHeatmap from './PHeatmap'
 import PPolitical from './PPolitical'
 import TitleBar from './TitleBar'
 import StatusBar from './StatusBar'
+import Discovery from './Discovery/Discovery'
+import GeoJSONDisplay from './Discovery/GeoJSONDisplay'
 /*
     This serves as a module so that we can import
     all the other components as we wish.
@@ -45,5 +47,7 @@ export {
     PPolitical,
     MUIExit,
     EditScreen,
+    Discovery,
+    GeoJSONDisplay,
 
  }

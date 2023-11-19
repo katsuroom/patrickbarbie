@@ -13,14 +13,20 @@
 import axios from 'axios'
 // // const dotenv = require('dotenv')
 // require('dotenv').config({path:__dirname+'/./../../.env'})
-console.log("process.env.url", process.env.URL);
+// console.log("process.env.url", process.env.URL);
+
 axios.defaults.withCredentials = true;
 const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "auth"
 
 // const baseURL = "http://localhost:4000/auth"
 const api = axios.create({
     baseURL: baseURL,
+    // ...config,
 })
+
+api.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:3000';
+api.defaults.headers.common['Access-Control-Allow-Methods'] = 'GET,PUT,POST,DELETE,PATCH,OPTIONS';
+api.defaults.headers.common['Access-Control-Allow-Headers'] = 'Origin, Content-Type, X-Auth-Token, Authorization';
  
 // THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A
 // REQUEST METHOD (like get) AND PATH (like /register). SOME ALSO

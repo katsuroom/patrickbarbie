@@ -21,6 +21,7 @@ import {
     TitleBar,
     StatusBar,
     EditScreen,
+    Discovery,
 } from './components'
 
 const App = () => {
@@ -45,6 +46,7 @@ const App = () => {
                     <Route path="/sort/" exact component={Sort} />
                     <Route path="/MUIExit/" exact component={MUIExit} />
                     <Route path="/edit/" exact component={EditScreen} />
+                    <Route path="/discovery/" exact component={Discovery} />
                 </Switch>
                 <StatusBar />
             </AuthContextProvider>
