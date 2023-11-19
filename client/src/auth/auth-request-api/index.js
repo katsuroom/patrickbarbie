@@ -9,7 +9,8 @@
     
     @author McKilla Gorilla
 */
-const baseURL = 'http://localhost:4000/auth';
+// const baseURL = 'http://localhost:4000/auth';
+const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "auth"
 
 // Helper function for handling JSON responses
 const handleJsonResponse = (response, data) => {
