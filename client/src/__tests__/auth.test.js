@@ -33,12 +33,9 @@ const registerUser = (username, email, password) => {
     })
 }
 const apis = {
-    // getLoggedIn,
     registerUser,
     loginUser,
-    // logoutUser
 }
-
 
 describe("Auth Test", () => {
   let username, email, password;
