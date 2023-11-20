@@ -125,7 +125,7 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
             }}>
                 <Grid container spacing={2}>
                     <Grid item xs={2}>
-                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>{auth.user.username}</Typography>
+                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>{}</Typography>
                     </Grid>
                     <Grid item xs={1}>
                         <IconButton>
@@ -133,7 +133,7 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
                         </IconButton>
                     </Grid>
                     <Grid item xs={0.4}>
-                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>26</Typography>
+                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}></Typography>
                     </Grid>
                     <Grid item xs={2} style={{ display: 'flex', alignItems: 'center' }}>
                         <IconButton onClick={handleLikeClick}>
