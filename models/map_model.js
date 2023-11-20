@@ -16,16 +16,16 @@ const MapSchema = new Schema(
     {
         title: { type: String, required: false },
         author: { type: String, required: false },
-        views: { type: Integer, required: false },
-        likes: { type: Integer, required: false },
+        views: { type: Number, required: false },
+        likes: { type: Number, required: false },
         likedUsers: { type: Array, required: false },
         isPublished: { type: Boolean, required: false },
-        mapData: {type: binData, required: false},
-        csvField: {type: CSV_Schema, required: false}
-        // comments section ...
+        mapData: {type: Map, required: false},
+        csvField: {type: CSV_Schema, required: false},
+        comments: {type: Array, required: false}
     },
     { timestamps: true },
 )
 
 
-module.exports = mongoose.model('User', MapSchema);
+module.exports = mongoose.model('Map', MapSchema);

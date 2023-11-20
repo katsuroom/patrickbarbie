@@ -9,14 +9,14 @@ import { useHistory } from 'react-router-dom';
 import { TextField } from "@mui/material";
 
 import StoreContext from '../../store';
-import { CurrentModal } from '../../store';
+import { CurrentModal, MapType } from '../../store';
 
 export default function MUICreateMap() {
     const history = useHistory();
     const { store } = useContext(StoreContext);
 
     const [projectName, setProjectName] = useState("");
-    const [mapType, setMapType] = useState("Political Map");
+    const [mapType, setMapType] = useState(MapType.POLITICAL_MAP);
 
     const buttonStyle = {
         mt: 1,
@@ -45,9 +45,10 @@ export default function MUICreateMap() {
             `Map Created!\n` +
             `name: ${projectName}\n` +
             `type: ${mapType}\n` +
-            `file: ${store.uploadedMap.name}`);
+            `file: ${store.mapFile.name}`);
 
         handleClose();
+        store.createMap(projectName, mapType);
         history.push("/edit");
     };
 
@@ -57,17 +58,6 @@ export default function MUICreateMap() {
 
     return (
         <div>
-            {/* <Button onClick={handleOpen}>Open Confirmation</Button> */}
-            {/* {<ConfirmationDialog
-                open={true}
-                onClose={handleClose}
-                onDiscard={handleClose}
-                onConfirm={handleSave}
-                confirmationInfo={confirmationInfo}
-                projectName={projectName}
-                handleInputChange={handleInputChange}
-            />}
-            {showMapView && <MapView fileSelected={fileSelected} projectName={projectName} mapType={mapType} />} */}
             <Modal open={store.currentModal == CurrentModal.CREATE_MAP}>
                 <Box
                     sx={{
@@ -101,11 +91,11 @@ export default function MUICreateMap() {
                                 onChange={(e) => setMapType(e.target.value)}
                                 style={selectStyle}
                             >
-                                <MenuItem value="Political Map">Political Map</MenuItem>
-                                <MenuItem value="HeatMap">HeatMap</MenuItem>
-                                <MenuItem value="Dot Distribution Map">Dot Distribution Map</MenuItem>
-                                <MenuItem value="Proportional Symbol Map">Proportional Symbol Map</MenuItem>
-                                <MenuItem value="Travel Map">Travel Map</MenuItem>
+                                <MenuItem value={MapType.POLITICAL_MAP}>Political Map</MenuItem>
+                                <MenuItem value={MapType.HEATMAP}>Heatmap</MenuItem>
+                                <MenuItem value={MapType.DOT_DISTRIBUTION_MAP}>Dot Distribution Map</MenuItem>
+                                <MenuItem value={MapType.PROPORTIONAL_SYMBOL_MAP}>Proportional Symbol Map</MenuItem>
+                                <MenuItem value={MapType.TRAVEL_MAP}>Travel Map</MenuItem>
                             </Select>
                             <Button onClick={handleClose} variant="contained" sx={buttonStyle}>
                                 Cancel
@@ -114,7 +104,7 @@ export default function MUICreateMap() {
                                 onClick={handleCreateMap}
                                 variant="contained"
                                 sx={buttonStyle}
-                                disabled={mapType != "Political Map"}>
+                                disabled={mapType != MapType.POLITICAL_MAP}>
                                 Create
                             </Button>
                         </div>

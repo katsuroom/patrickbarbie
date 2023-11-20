@@ -5,12 +5,18 @@ const api = axios.create({
     baseURL: baseURL,
 })
 
-export const createMap = (mapData, userEmail, mapName) => {
-    return api.post(`/map/`, {
-        // SPECIFY THE PAYLOAD
-        name: mapName,
-        mapData: mapData,
-        ownerEmail: userEmail
+export const createMap = async (mapFile) => {
+    return fetch(`${baseURL}/map/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            mapFile
+        }),
+    })
+    .then(async response => {
+        return response.json().then(data => ({status: response.status, data}));
     })
 }
 
@@ -83,7 +89,7 @@ export const searchMapByPropertyInCommunity = (property) => {
     })
 }
 
-const apis = {
+export default {
     createMap,
     deleteMap,
     updateMap,
@@ -96,5 +102,3 @@ const apis = {
     searchMapByProperty,
     searchMapByPropertyInCommunity
 }
-
-export default apis;

@@ -1,10 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import PPolitical from "./PPolitical";
 import MapEditorToolbar from "./MapEditorToolBar";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
+import StoreContext from '../store';
+import { CurrentModal } from '../store';
+
 export default function EditScreen() {
+    const { store } = useContext(StoreContext);
 
     const mapRef = useRef(null); // To store the map instance
 
