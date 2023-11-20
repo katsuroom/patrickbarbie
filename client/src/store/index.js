@@ -12,7 +12,8 @@ export const StoreActionType = {
 
 export const CurrentModal = {
     NONE: "",
-    CREATE_MAP: "CREATE_MAP"
+    CREATE_MAP: "CREATE_MAP",
+    FORK_MAP: "FORK_MAP",
 };
 
 function StoreContextProvider(props) {

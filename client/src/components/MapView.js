@@ -2,15 +2,22 @@ import { IconButton, Typography } from "@mui/material";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./font.css";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Grid } from "@mui/material";
 import { Delete, CloudUpload, Edit, Download, Share } from '@mui/icons-material';
 import { useHistory } from 'react-router-dom';
 
+import MUIForkMap from "./Model/MUIForkMap";
+
+import StoreContext from "../store";
+import { CurrentModal } from "../store";
+
 export default function MapView()
 {
+    let openModal = null;
+    const { store } = useContext(StoreContext);
     const history = useHistory();
     useEffect(() => {
         let map = L.map('map').setView([51.505, -0.09], 2);
@@ -19,6 +26,14 @@ export default function MapView()
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
     });
+
+    switch (store.currentModal) {
+      case CurrentModal.FORK_MAP:
+        openModal = <MUIForkMap />;
+        break;
+      default:
+        break;
+    }
 
     function handleDeleteClick() {
         history.push("/deleteMap");
@@ -37,7 +52,8 @@ export default function MapView()
     }
 
     function handleForkClick() {
-        history.push("/forkMap");
+        // history.push("/forkMap");
+        store.openModal(CurrentModal.FORK_MAP);
     }
     
 
@@ -113,6 +129,7 @@ export default function MapView()
             <Typography sx={{fontFamily: 'Sen', color: "black", fontSize: "16pt"}}>0 comments</Typography>
 
         </div>
+        {openModal}
     </div>
   )
 }
