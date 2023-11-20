@@ -8,6 +8,7 @@ import Divider from "@mui/material/Divider";
 import AddIcon from '@mui/icons-material/Add';
 import MUICreateMap from './Model/MUICreateMap';
 import {useHistory} from 'react-router-dom';
+import MUIUploadMap from './Model/MUIUploadMap';
 
 import StoreContext from '../store';
 import { CurrentModal } from '../store';
@@ -15,6 +16,10 @@ import { CurrentModal } from '../store';
 export default function MapCardList() {
   const history = useHistory();
   const { store } = useContext(StoreContext);
+
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
+
 
   const [maps, setMaps] = useState([
     { id: 1, name: 'Korea Map' },
@@ -27,17 +32,21 @@ export default function MapCardList() {
   switch(store.currentModal)
   {
     case CurrentModal.CREATE_MAP:
-      openModal = <MUICreateMap />;
+      openModal = <MUIUploadMap />;
       break;
     default:
       break;
   }
 
+  // const addMapCard = () => {
+  //   // history.push('/createMap');
+  //   // const newMap = { id: maps.length + 1, name: `Map Title ${maps.length + 1}` };
+  //   // setMaps([...maps, newMap]);
+  //   store.openModal(CurrentModal.CREATE_MAP);
+  // };
+
   const addMapCard = () => {
-    // history.push('/createMap');
-    // const newMap = { id: maps.length + 1, name: `Map Title ${maps.length + 1}` };
-    // setMaps([...maps, newMap]);
-    store.openModal(CurrentModal.CREATE_MAP);
+    setIsUploadModalOpen(true); 
   };
 
   return (
@@ -81,7 +90,9 @@ export default function MapCardList() {
       >
         <AddIcon />
       </Fab>
-      {openModal}
+      {/* {openModal} */}
+      <MUIUploadMap open={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} />
+
     </Box>
   );
 };

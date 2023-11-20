@@ -9,6 +9,7 @@ import { useHistory } from 'react-router-dom';
 import { TextField } from "@mui/material";
 
 import StoreContext from '../../store';
+import MapView from '../MapView'
 
 const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo, projectName, handleInputChange }) => {
     const [mapType, setMapType] = useState("Political Map");
@@ -88,10 +89,15 @@ const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo, projec
     );
 };
 
-export default function MUICreateMap() {
-    const history = useHistory();
+export default function MUICreateMap({ open, fileSelected, onClose }) {
+    // const history = useHistory();
     const { store } = useContext(StoreContext);
+    // const [projectName, setProjectName] = useState("");
+
     const [projectName, setProjectName] = useState("");
+    const [mapType, setMapType] = useState("Political Map");
+    const [showMapView, setShowMapView] = useState(false);
+
 
     const handleClose = () => {
         store.closeModal();
@@ -100,9 +106,9 @@ export default function MUICreateMap() {
     const confirmationInfo = "Enter the new name of the forked map:";
 
     const handleSave = () => {
-        console.log("Map Created!");
-        handleClose();
-        history.push("/edit");
+        console.log("Map Created!", projectName, mapType, fileSelected.name);
+        setShowMapView(true); 
+        onClose(); 
     };
 
     const handleInputChange = (e) => {
@@ -112,7 +118,7 @@ export default function MUICreateMap() {
     return (
         <div>
             {/* <Button onClick={handleOpen}>Open Confirmation</Button> */}
-            <ConfirmationDialog
+            {<ConfirmationDialog
                 open={true}
                 onClose={handleClose}
                 onDiscard={handleClose}
@@ -120,7 +126,8 @@ export default function MUICreateMap() {
                 confirmationInfo={confirmationInfo}
                 projectName={projectName}
                 handleInputChange={handleInputChange}
-            />
+            />}
+            {showMapView && <MapView fileSelected={fileSelected} projectName={projectName} mapType={mapType} />}
         </div>
     );
 };
