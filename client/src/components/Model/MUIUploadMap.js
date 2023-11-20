@@ -69,7 +69,7 @@ export default function MUIUploadMap() {
                         <input
                             type="file"
                             id="fileInput"
-                            accept=".geojson,.json,.kml" // accepted file types here
+                            accept=".geojson,.json,.kml, .zip" // accepted file types here
                             onChange={handleFileSelect}
                             style={{ display: 'none' }}
                         />
