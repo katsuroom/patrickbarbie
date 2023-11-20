@@ -132,8 +132,50 @@ registerUser = async (req, res) => {
     }
 }
 
+getLoggedIn = async (req, res) => {
+  try {
+    let userId = auth.verifyUser(req);
+    if (!userId) {
+      return res.status(200).json({
+        loggedIn: false,
+        user: null,
+        errorMessage: "?",
+      });
+    }
+
+    const loggedInUser = await User.findOne({ _id: userId });
+    console.log("loggedInUser: " + loggedInUser);
+
+    return res.status(200).json({
+      loggedIn: true,
+      user: {
+        firstName: loggedInUser.firstName,
+        lastName: loggedInUser.lastName,
+        email: loggedInUser.email,
+      },
+    });
+  } catch (err) {
+    console.log("err: " + err);
+    res.json(false);
+  }
+};
+
+logoutUser = async (req, res) => {
+    console.log("logoutUser in backend controller");
+  res
+    .cookie("token", "", {
+      httpOnly: true,
+      expires: new Date(0),
+      secure: true,
+      sameSite: "none",
+    })
+    .send();
+};
+
 
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    getLoggedIn,
+    logoutUser
 }
