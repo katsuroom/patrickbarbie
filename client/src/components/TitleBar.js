@@ -1,95 +1,73 @@
-import { IconButton, Link } from '@mui/material';
+import React, { useState, useContext } from 'react';
+import { IconButton, Link, Menu, MenuItem, Box } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AuthContext from '../auth';
+
 import patrickBarbie from "../images/patrick-barbie.png";
 import SearchBar from './SearchBar';
-import Box from '@mui/material/Box';
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-
-import AuthContext from '../auth';
-import { GlobalStoreContext } from "../store";
-import { useContext, useState } from "react";
-
 
 export default function TitleBar() {
-
-  const { auth } = useContext(AuthContext);
-  // const { store } = useContext(GlobalStoreContext);
   const [anchorEl, setAnchorEl] = useState(null);
-  const isMenuOpen = Boolean(anchorEl);
+  const { auth } = useContext(AuthContext);
 
-  const handleProfileMenuOpen = (event) => {
+  const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = () => {
+  const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    handleMenuClose();
-    auth.logoutUser();
-  };
-
-  const menuId = "primary-search-account-menu";
-  const loggedInMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleLogout}>Logout</MenuItem>
-    </Menu>
-  ); 
-
-  let menu = null;
-  if (auth.loggedIn) {
-    // console.log(auth);
-    menu = loggedInMenu;
-  }
-
-
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <div
-        style={{ backgroundColor: "#fce8f1", minHeight: "50px", height: "9vh" }}
-      >
+      <div style={{ backgroundColor: "#fce8f1", minHeight: "50px", height: "9vh" }}>
         <Link href="/">
-          <img
-            src={patrickBarbie}
-            width="5%"
-            style={{
-              marginTop: 5,
-              marginLeft: 10,
-              clipPath: "inset(0rem 0rem 2rem 0rem)",
-            }}
-          />
+          <img src={patrickBarbie} width="5%" style={{ marginTop: 5, marginLeft: 10, clipPath: "inset(0rem 0rem 2rem 0rem)" }} />
         </Link>
         <Box sx={{ position: "absolute", top: "2%", right: "50%" }}>
           <SearchBar />
         </Box>
         <IconButton
-          sx={{
-            position: "absolute",
-            top: "0.5%",
-            right: "1%",
-          }}
-          onClick={handleProfileMenuOpen}
+          sx={{ position: "absolute", top: "0.5%", right: "1%" }}
+          onClick={handleMenu}
         >
           <AccountCircleIcon sx={{ fontSize: "32pt", color: "#F1B3CD" }} />
         </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          {auth.loggedIn ? (
+            <>
+
+              <MenuItem onClick={() => {
+                handleClose();
+                auth.logoutUser();
+              }}>
+                <Link href="/" color="inherit" style={{ textDecoration: 'none' }}>
+                  Sign Out
+                </Link>
+              </MenuItem>
+            </>
+          ) : (
+            <MenuItem onClick={handleClose}>
+              <Link href="/login" color="inherit" style={{ textDecoration: 'none' }}>
+                Sign In
+              </Link>
+            </MenuItem>
+          )}
+        </Menu>
       </div>
-      {menu}
     </Box>
   );
 }
