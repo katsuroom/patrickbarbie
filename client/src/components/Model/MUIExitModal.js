@@ -103,7 +103,7 @@ const MUIExit = (props) => {
              {/* //Save button should link to here */}
             {/* <Button onClick={handleOpen}>Open Confirmation</Button> */}
             <ConfirmationDialog
-                open={true}
+                open={open}
                 onClose={handleClose}
                 onDiscard={handleDiscard}
                 onConfirm={handleSave}

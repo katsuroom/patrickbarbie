@@ -12,7 +12,6 @@ import MUISaveChanges from "./Model/MUISaveChanges";
 import MUIExitModal from "./Model/MUIExitModal";
 
 export default function PPolitical() {
-  const history = useHistory();
   const [label, setLabel] = React.useState(null);
   const [key, setKey] = React.useState(null);
   const [parsed_CSV_Data, setParsed_CSV_Data] = React.useState({});
@@ -125,11 +124,11 @@ export default function PPolitical() {
                   {menuItems.map((mi) => (
                     <MenuItem value={mi}>{mi}</MenuItem>
                   ))}
-                  <MenuItem>
+                  {/* <MenuItem>
                     <Button variant="text" startDecorator={<Add />}>
-                      New Property
+                      New Label
                     </Button>
-                  </MenuItem>
+                  </MenuItem> */}
                 </Select>
               </th>
               <th>
@@ -147,11 +146,11 @@ export default function PPolitical() {
                   {menuItems.map((mi) => (
                     <MenuItem value={mi}>{mi}</MenuItem>
                   ))}
-                  <MenuItem>
+                  {/* <MenuItem>
                     <Button variant="text" startDecorator={<Add />}>
-                      New Property
+                      New Column
                     </Button>
-                  </MenuItem>
+                  </MenuItem> */}
                 </Select>
               </th>
               <th>Update</th>
@@ -225,7 +224,7 @@ export default function PPolitical() {
       </Button>
 
       <MUISaveChanges open={saveModalOpen} closeModal={closeSaveModal} />
-      <MUISaveChanges open={exitModalOpen} closeModal={closeExitModal} />
+      <MUIExitModal open={exitModalOpen} closeModal={closeExitModal} />
     </div>
   );
 }
