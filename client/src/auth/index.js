@@ -5,6 +5,7 @@ import api from './auth-request-api'
 const AuthContext = createContext();
 console.log("create AuthContext: " + AuthContext);
 
+//comment
 // THESE ARE ALL THE TYPES OF UPDATES TO OUR AUTH STATE THAT CAN BE PROCESSED
 export const AuthActionType = {
     GET_LOGGED_IN: "GET_LOGGED_IN",
