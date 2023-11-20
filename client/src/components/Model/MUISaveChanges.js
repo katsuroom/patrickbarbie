@@ -1,105 +1,125 @@
 import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
+import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import './MUIPublishMap.css'
-import {useHistory} from 'react-router-dom';
+// import './MUIPublishMap.css'
+import "./ModalAnimation.css";
+import { useHistory } from "react-router-dom";
 
+export const ConfirmationDialog = ({
+  open,
+  onClose,
+  onConfirm,
+  confirmationInfo,
+}) => {
+  const [openDialog, setOpenDialog] = useState(open);
+  useEffect(() => {
+    setOpenDialog(open);
+  }, [open]);
+  const buttonStyle = {
+    mt: 1,
+    mb: 3,
+    backgroundColor: "white",
+    color: "black",
+    ":hover": {
+      backgroundColor: "lightpink",
+    },
+    border: "3px solid white",
+    width: "80px",
+    margin: "20px",
+  };
 
-export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo }) => {
-    const [openDialog, setOpenDialog] = useState(open);
-    useEffect(() => {
-        setOpenDialog(open);
-    }, [open]);
-    const buttonStyle = {
-        mt: 1,
-        mb: 3,
-        backgroundColor: "white",
-        color: "black",
-        ":hover": {
-            backgroundColor: "lightpink",
-        },
-        border: "3px solid white",
-        width: "80px",
-        margin: '20px',
-    };
-
-    return (
-        <Modal open={openDialog} onClose={onClose}>
-            <Box
-                sx={{
-                    position: "absolute",
-                    width: 400,
-                    bgcolor: "lightPink",
-                    color: "black",
-                    border: "2px solid #000",
-                    boxShadow: 24,
-                    p: 10,
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    padding: 0,
-                    textAlign: "center",
-                }}
+  return (
+    <Modal open={openDialog} onClose={onClose}>
+      <Box
+        sx={{
+          position: "absolute",
+          width: 400,
+          bgcolor: "lightPink",
+          color: "black",
+          border: "2px solid #000",
+          boxShadow: 24,
+          p: 10,
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          padding: 0,
+          textAlign: "center",
+        }}
+        className="modal-root"
+      >
+        <div
+          className={openDialog ? "modal-dialog is-visible" : "modal-dialog"}
+        >
+          <header className="dialog-header">
+            <Alert
+              style={{ fontSize: 20, width: "90%", height: 100 }}
+              severity="error"
             >
-                <div className="alertContainer">
-                    <div className="alert">
-                        {confirmationInfo}
-                    </div>
-                    <div className="confrim">
-                        <Button onClick={onClose}
-                            variant="contained"
-                            sx={buttonStyle}
-                        >
-                            Cancel
-                        </Button>
-                        <Button onClick={onConfirm}
-                            variant="contained"
-                            sx={buttonStyle}
-                        >
-                            Save
-                        </Button>
-                    </div>
-                </div>
-            </Box>
-        </Modal>
-    );
+              {confirmationInfo}
+            </Alert>
+          </header>
+          <div className="ErrorModalSouth">
+            <div className="alertContainer" sx={{}}>
+              <div className="confrim">
+                <Button
+                  onClick={onClose}
+                  variant="contained"
+                  sx={buttonStyle}
+                  className="modal-button"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={onConfirm}
+                  variant="contained"
+                  sx={buttonStyle}
+                  className="modal-button"
+                >
+                  Save
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Box>
+    </Modal>
+  );
 };
 
-
 const MUISaveChanges = (props) => {
-    const history = useHistory();
-    console.log(props);
-    const [open, setOpen] = useState(props.open);
+  const history = useHistory();
+  console.log(props);
+  const [open, setOpen] = useState(props.open);
 
-    useEffect(() => {
-        setOpen(props.open);
-    }, [props.open]);
+  useEffect(() => {
+    setOpen(props.open);
+  }, [props.open]);
 
+  const handleClose = () => {
+    props.closeModal();
+  };
 
-    const handleClose = () => {
-        props.closeModal();
-    }
+  const confirmationInfo = "Do you want to save your changes?";
 
-    const confirmationInfo = "Do you want to save your changes before leaving this page?";
+  const handleSave = () => {
+    window.alert("Map Saved!");
+    handleClose();
+  };
 
-    const handleSave = () => {
-        window.alert("Map Saved!");
-        handleClose();
-    };
-
-    return (
-        <div>
-            {/* //Save button should link to here */}
-            {/* <Button onClick={handleOpen}>Open Confirmation</Button> */}
-            <ConfirmationDialog
-                open={open}
-                onClose={handleClose}
-                onConfirm={handleSave}
-                confirmationInfo={confirmationInfo}
-            />
-        </div>
-    );
+  return (
+    <div>
+      {/* //Save button should link to here */}
+      {/* <Button onClick={handleOpen}>Open Confirmation</Button> */}
+      <ConfirmationDialog
+        open={open}
+        onClose={handleClose}
+        onConfirm={handleSave}
+        confirmationInfo={confirmationInfo}
+      />
+    </div>
+  );
 };
 
 export default MUISaveChanges;
