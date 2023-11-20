@@ -12,12 +12,20 @@ import MUIForkMap from "./Model/MUIForkMap";
 import StoreContext from "../store";
 import { CurrentModal } from "../store"
 
-export default function MapView({ fileSelected, projectName, mapType }) {
+export default function MapView({ fileSelected, projectName, mapType, views }) {
 
     const { store } = useContext(StoreContext);
     const history = useHistory();
     const mapRef = useRef(null);
     const geoJsonLayerRef = useRef(null);
+
+
+    //temp used
+    const [likes, setLikes] = useState(0);
+    const handleLikeClick = () => {
+        setLikes(likes + 1);
+    };
+
 
     useEffect(() => {
         if (!mapRef.current) {
@@ -66,6 +74,39 @@ export default function MapView({ fileSelected, projectName, mapType }) {
         store.openModal(CurrentModal.FORK_MAP);
     }
 
+    // Hardcoded comments
+    const initialComments = [
+        {
+            id: 1,
+            author: "Scott",
+            timestamp: "1 hour ago",
+            text: "I love this map, thanks for sharing",
+            replies: [
+                {
+                    id: 101,
+                    author: "Yuxuan",
+                    timestamp: "45 minutes ago",
+                    text: "I agree, it was brilliant and creative"
+                }
+            ]
+        },
+        {
+            id: 2,
+            author: "Kerrance",
+            timestamp: "2 hours ago",
+            text: "Creative map! I forked to make some edits myself",
+            replies: []
+        },
+        {
+            id: 3,
+            author: "Tom",
+            timestamp: "3 hours ago",
+            text: "I think you can make improvements in the state section of the map",
+            replies: []
+        }
+    ];
+    
+
     return (
         <div style={{ overflowY: "scroll", height: "50%" }}>
             <div id="map" style={{ height: 400 }}></div>
@@ -84,17 +125,21 @@ export default function MapView({ fileSelected, projectName, mapType }) {
                     <Grid item xs={2}>
                         <Typography sx={{ fontFamily: 'Sen', color: "black" }}>{projectName}</Typography>
                     </Grid>
-                    <Grid item xs={0.4}>
-                        <VisibilityIcon />
-                    </Grid>
                     <Grid item xs={1}>
-                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>10</Typography>
+                        <IconButton>
+                            <VisibilityIcon />
+                        </IconButton>
                     </Grid>
                     <Grid item xs={0.4}>
-                        <FavoriteIcon />
+                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>{views}</Typography>
                     </Grid>
-                    <Grid item xs={5.5}>
-                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>26</Typography>
+                    <Grid item xs={2} style={{ display: 'flex', alignItems: 'center' }}>
+                        <IconButton onClick={handleLikeClick}>
+                            <FavoriteIcon />
+                        </IconButton>
+                        <Typography sx={{ fontFamily: 'Sen', color: "black", marginLeft: 1 }}>
+                            {likes}
+                        </Typography>
                     </Grid>
                     <Grid item xs={0.5}>
                         <IconButton onClick={handleDeleteClick}>
@@ -126,7 +171,7 @@ export default function MapView({ fileSelected, projectName, mapType }) {
             <div style={{ backgroundColor: "#FDF4F3", padding: 10, margin: 10 }}>
                 {/* <Typography sx={{ fontFamily: 'Sen', color: "black", fontSize: "16pt" }}>0 comments</Typography> */}
 
-                <CommentSection initialComments={[]} />
+                <CommentSection initialComments={initialComments} />
             </div>
         </div>
     );
