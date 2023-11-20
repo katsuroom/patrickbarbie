@@ -1,32 +1,21 @@
-import { IconButton, Typography } from "@mui/material";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { IconButton, Typography, Grid } from "@mui/material";
 import "./font.css";
 import React, { useEffect, useState, useRef, useContext } from "react";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { Grid } from "@mui/material";
 import { Delete, CloudUpload, Edit, Download, Share } from '@mui/icons-material';
 import { useHistory } from 'react-router-dom';
-
+import CommentSection from "./Comments/CommentSection";
 import MUIForkMap from "./Model/MUIForkMap";
-
 import StoreContext from "../store";
-import { CurrentModal } from "../store";
+import { CurrentModal } from "../store"
 
-export default function MapView(fileSelected, projectName, mapType) {
+export default function MapView({ fileSelected, projectName, mapType }) {
+
     const { store } = useContext(StoreContext);
     const history = useHistory();
-    // const [uploadedMap, setUploadedMap] = useState(null);
-
-    // useEffect(() => {
-    //     let map = L.map('map').setView([51.505, -0.09], 2);
-    //     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //         maxZoom: 19,
-    //         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    //     }).addTo(map);
-    // });
-
     const mapRef = useRef(null);
     const geoJsonLayerRef = useRef(null);
 
@@ -55,8 +44,6 @@ export default function MapView(fileSelected, projectName, mapType) {
         }
     }, [fileSelected]);
 
-
-
     function handleDeleteClick() {
         history.push("/deleteMap");
     }
@@ -79,7 +66,6 @@ export default function MapView(fileSelected, projectName, mapType) {
         store.openModal(CurrentModal.FORK_MAP);
     }
 
-
     return (
         <div style={{ overflowY: "scroll", height: "50%" }}>
             <div id="map" style={{ height: 400 }}></div>
@@ -94,10 +80,9 @@ export default function MapView(fileSelected, projectName, mapType) {
                 justifyContent: "center",
                 flexWrap: "wrap"
             }}>
-
                 <Grid container spacing={2}>
                     <Grid item xs={2}>
-                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>Kerrance</Typography>
+                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>{projectName}</Typography>
                     </Grid>
                     <Grid item xs={0.4}>
                         <VisibilityIcon />
@@ -111,9 +96,8 @@ export default function MapView(fileSelected, projectName, mapType) {
                     <Grid item xs={5.5}>
                         <Typography sx={{ fontFamily: 'Sen', color: "black" }}>26</Typography>
                     </Grid>
-
                     <Grid item xs={0.5}>
-                        <IconButton onClick={handleDeleteClick} >
+                        <IconButton onClick={handleDeleteClick}>
                             <Delete />
                         </IconButton>
                     </Grid>
@@ -139,19 +123,11 @@ export default function MapView(fileSelected, projectName, mapType) {
                     </Grid>
                 </Grid>
             </div>
-            {/* <div style={styles.commentsSection}>
-            <div style={styles.commentCount}>{comments.length} comments</div>
-            {comments.map((comment) => (
-            <div key={comment.id} style={styles.comment}>
-                <div style={styles.commentUser}>{comment.name}</div>
-                <div style={styles.commentText}>{comment.text}</div>
-            </div>
-            ))}
-        </div> */}
             <div style={{ backgroundColor: "#FDF4F3", padding: 10, margin: 10 }}>
-                <Typography sx={{ fontFamily: 'Sen', color: "black", fontSize: "16pt" }}>0 comments</Typography>
+                {/* <Typography sx={{ fontFamily: 'Sen', color: "black", fontSize: "16pt" }}>0 comments</Typography> */}
 
+                <CommentSection initialComments={[]} />
+            </div>
         </div>
-    </div>
-  )
+    );
 }
