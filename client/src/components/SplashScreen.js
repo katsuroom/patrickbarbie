@@ -6,9 +6,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
-import TitleBar from "./TitleBar";
-import StatusBar from "./StatusBar";
-import splashScreenDemo from "../images/splashScreenDemo.png";
 import background_image from "../images/background-image.jpeg"
 import "./font.css"
 
