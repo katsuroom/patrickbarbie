@@ -116,14 +116,15 @@ function StoreContextProvider(props) {
                     isPublished: false,
                     mapData: {
                         type: mapType,
-                        data: jsonData
-                        // data: Base64.encode(textData)
+                        data: Base64.encode(textData)
                     },
                     csvField: {},
                     comments: []
                 };
 
                 // call router to add map to database
+
+                mapFile.mapData.data = jsonData;
 
                 storeReducer({
                     type: StoreActionType.UPDATE_MAP,
