@@ -8,6 +8,7 @@ import Divider from "@mui/material/Divider";
 import AddIcon from '@mui/icons-material/Add';
 import MUICreateMap from './Model/MUICreateMap';
 import {useHistory} from 'react-router-dom';
+import MUIUploadMap from './Model/MUIUploadMap';
 
 import StoreContext from '../store';
 import { CurrentModal } from '../store';
@@ -23,21 +24,15 @@ export default function MapCardList() {
     { id: 4, name: 'World Map' }
   ]);
 
-  let openModal = null;
-  switch(store.currentModal)
-  {
-    case CurrentModal.CREATE_MAP:
-      openModal = <MUICreateMap />;
-      break;
-    default:
-      break;
-  }
+  // const addMapCard = () => {
+  //   // history.push('/createMap');
+  //   // const newMap = { id: maps.length + 1, name: `Map Title ${maps.length + 1}` };
+  //   // setMaps([...maps, newMap]);
+  //   store.openModal(CurrentModal.CREATE_MAP);
+  // };
 
-  const addMapCard = () => {
-    // history.push('/createMap');
-    // const newMap = { id: maps.length + 1, name: `Map Title ${maps.length + 1}` };
-    // setMaps([...maps, newMap]);
-    store.openModal(CurrentModal.CREATE_MAP);
+  const handleCreateMap = () => {
+    store.openModal(CurrentModal.UPLOAD_MAP);
   };
 
   return (
@@ -77,11 +72,12 @@ export default function MapCardList() {
             bgcolor: '#ffabd1', 
           },
         }}
-        onClick={addMapCard}
+        onClick={handleCreateMap}
       >
         <AddIcon />
       </Fab>
-      {openModal}
+      <MUIUploadMap />
+      <MUICreateMap />
     </Box>
   );
 };

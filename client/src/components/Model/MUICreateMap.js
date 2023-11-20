@@ -9,8 +9,13 @@ import { useHistory } from 'react-router-dom';
 import { TextField } from "@mui/material";
 
 import StoreContext from '../../store';
+import { CurrentModal } from '../../store';
 
-const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo, projectName, handleInputChange }) => {
+export default function MUICreateMap() {
+    const history = useHistory();
+    const { store } = useContext(StoreContext);
+
+    const [projectName, setProjectName] = useState("");
     const [mapType, setMapType] = useState("Political Map");
 
     const buttonStyle = {
@@ -31,72 +36,17 @@ const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo, projec
         marginBottom: "20px",
     };
 
-    return (
-        <Modal open={open} onClose={onClose}>
-            <Box
-                sx={{
-                    position: "absolute",
-                    width: 400,
-                    bgcolor: "lightPink",
-                    color: "black",
-                    border: "2px solid #000",
-                    boxShadow: 24,
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    padding: 0,
-                    textAlign: "center",
-                }}
-            >
-                <div className="alertContainer">
-                    <div className="alert">
-                        {confirmationInfo}
-                    </div>
-                    <div className="confirm" style={{ height: '100%' }}>
-                        <TextField
-                            label="Your map name"
-                            variant="outlined"
-                            value={projectName}
-                            onChange={handleInputChange}
-                            style={selectStyle}
-                        />
-                        <Select
-                            value={mapType}
-                            onChange={(e) => setMapType(e.target.value)}
-                            style={selectStyle}
-                        >
-                            <MenuItem value="Political Map">Political Map</MenuItem>
-                            <MenuItem value="HeatMap">HeatMap</MenuItem>
-                            <MenuItem value="Dot Distribution Map">Dot Distribution Map</MenuItem>
-                            <MenuItem value="Proportional Symbol Map">Proportional Symbol Map</MenuItem>
-                            <MenuItem value="Travel Map">Travel Map</MenuItem>
-                        </Select>
-                        <Button onClick={onClose} variant="contained" sx={buttonStyle}>
-                            Cancel
-                        </Button>
-                        <Button onClick={onConfirm} variant="contained" sx={buttonStyle}>
-                            Create
-                        </Button>
-                    </div>
-                </div>
-            </Box>
-        </Modal>
-    );
-};
-
-export default function MUICreateMap() {
-    const history = useHistory();
-    const { store } = useContext(StoreContext);
-    const [projectName, setProjectName] = useState("");
-
     const handleClose = () => {
         store.closeModal();
     }
 
-    const confirmationInfo = "Enter the new name of the forked map:";
+    const handleCreateMap = () => {
+        console.log(
+            `Map Created!\n` +
+            `name: ${projectName}\n` +
+            `type: ${mapType}\n` +
+            `file: ${store.uploadedMap.name}`);
 
-    const handleSave = () => {
-        console.log("Map Created!");
         handleClose();
         history.push("/edit");
     };
@@ -108,7 +58,7 @@ export default function MUICreateMap() {
     return (
         <div>
             {/* <Button onClick={handleOpen}>Open Confirmation</Button> */}
-            <ConfirmationDialog
+            {/* {<ConfirmationDialog
                 open={true}
                 onClose={handleClose}
                 onDiscard={handleClose}
@@ -116,7 +66,61 @@ export default function MUICreateMap() {
                 confirmationInfo={confirmationInfo}
                 projectName={projectName}
                 handleInputChange={handleInputChange}
-            />
+            />}
+            {showMapView && <MapView fileSelected={fileSelected} projectName={projectName} mapType={mapType} />} */}
+            <Modal open={store.currentModal == CurrentModal.CREATE_MAP}>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        width: 400,
+                        bgcolor: "lightPink",
+                        color: "black",
+                        border: "2px solid #000",
+                        boxShadow: 24,
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        padding: 0,
+                        textAlign: "center",
+                    }}
+                >
+                    <div className="alertContainer">
+                        <div className="alert">
+                            {"Enter the new name of the forked map:"}
+                        </div>
+                        <div className="confirm" style={{ height: '100%' }}>
+                            <TextField
+                                label="Your map name"
+                                variant="outlined"
+                                value={projectName}
+                                onChange={handleInputChange}
+                                style={selectStyle}
+                            />
+                            <Select
+                                value={mapType}
+                                onChange={(e) => setMapType(e.target.value)}
+                                style={selectStyle}
+                            >
+                                <MenuItem value="Political Map">Political Map</MenuItem>
+                                <MenuItem value="HeatMap">HeatMap</MenuItem>
+                                <MenuItem value="Dot Distribution Map">Dot Distribution Map</MenuItem>
+                                <MenuItem value="Proportional Symbol Map">Proportional Symbol Map</MenuItem>
+                                <MenuItem value="Travel Map">Travel Map</MenuItem>
+                            </Select>
+                            <Button onClick={handleClose} variant="contained" sx={buttonStyle}>
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={handleCreateMap}
+                                variant="contained"
+                                sx={buttonStyle}
+                                disabled={mapType != "Political Map"}>
+                                Create
+                            </Button>
+                        </div>
+                    </div>
+                </Box>
+            </Modal>
         </div>
     );
 };
