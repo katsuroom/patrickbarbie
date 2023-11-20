@@ -62,6 +62,8 @@ export default function PPolitical() {
   };
 
   const fileOnLoadComplete = (data) => {
+    setRenderTable(false);
+
     console.log(data);
     let csv_data = {};
     let keys = new Set();
@@ -91,16 +93,18 @@ export default function PPolitical() {
 
     setParsed_CSV_Data(csv_data);
     setKey(keys[1]);
+    console.log("setting key to", keys[1]);
     setLabel(keys[0]);
-    keys.shift();
+    console.log("setting label to", keys[0]);
     setMenuItems(keys);
+    console.log("setting menu item to", keys);
     setRenderTable(true);
   };
 
   return (
     <div>
       <div className="propertyTitle">Property</div>
-      <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
+      <CsvFileReader fileOnLoadComplete={fileOnLoadComplete}/>
 
       <div style={{ overflow: 'auto', maxHeight: '400px' }}>
 
