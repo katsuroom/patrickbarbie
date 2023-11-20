@@ -1,15 +1,17 @@
 // Comment.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import AuthContext from '../../auth';
 import './Comment.css';
 
 const Comment = ({ comment, setComments }) => {
+  const { auth } = useContext(AuthContext);
   const [showReply, setShowReply] = useState(false);
   const [replyText, setReplyText] = useState('');
 
   const handleReply = () => {
     const newReply = {
       id: new Date().getTime(), 
-      author: 'ReplyUser',
+      author: auth.user?.username,
       timestamp: 'A moment ago',
       text: replyText
     };

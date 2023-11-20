@@ -61,7 +61,7 @@ export default function MapView({ fileSelected, projectName, mapType }) {
     }
 
     return (
-        <div style={{ overflowY: "scroll", height: "50%" }}>
+        <div style={{ overflowY: "auto", height: "50%" }}>
             <div id="map" style={{ height: 400 }}></div>
             <div style={{
                 backgroundColor: "#F8D6DD",
