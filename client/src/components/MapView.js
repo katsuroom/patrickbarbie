@@ -12,12 +12,20 @@ import MUIForkMap from "./Model/MUIForkMap";
 import StoreContext from "../store";
 import { CurrentModal } from "../store"
 
-export default function MapView({ fileSelected, projectName, mapType }) {
+export default function MapView({ fileSelected, projectName, mapType, views }) {
 
     const { store } = useContext(StoreContext);
     const history = useHistory();
     const mapRef = useRef(null);
     const geoJsonLayerRef = useRef(null);
+
+
+    //temp used
+    const [likes, setLikes] = useState(0);
+    const handleLikeClick = () => {
+        setLikes(likes + 1);
+    };
+
 
     useEffect(() => {
         if (!mapRef.current) {
@@ -117,17 +125,21 @@ export default function MapView({ fileSelected, projectName, mapType }) {
                     <Grid item xs={2}>
                         <Typography sx={{ fontFamily: 'Sen', color: "black" }}>{projectName}</Typography>
                     </Grid>
-                    <Grid item xs={0.4}>
-                        <VisibilityIcon />
-                    </Grid>
                     <Grid item xs={1}>
-                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>10</Typography>
+                        <IconButton>
+                            <VisibilityIcon />
+                        </IconButton>
                     </Grid>
                     <Grid item xs={0.4}>
-                        <FavoriteIcon />
+                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>{views}</Typography>
                     </Grid>
-                    <Grid item xs={5.5}>
-                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>26</Typography>
+                    <Grid item xs={2} style={{ display: 'flex', alignItems: 'center' }}>
+                        <IconButton onClick={handleLikeClick}>
+                            <FavoriteIcon />
+                        </IconButton>
+                        <Typography sx={{ fontFamily: 'Sen', color: "black", marginLeft: 1 }}>
+                            {likes}
+                        </Typography>
                     </Grid>
                     <Grid item xs={0.5}>
                         <IconButton onClick={handleDeleteClick}>
