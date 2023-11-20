@@ -2,14 +2,20 @@ import { IconButton, Typography } from "@mui/material";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./font.css";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Grid } from "@mui/material";
 import { Delete, CloudUpload, Edit, Download, Share } from '@mui/icons-material';
 import { useHistory } from 'react-router-dom';
 
+import MUIForkMap from "./Model/MUIForkMap";
+
+import StoreContext from "../store";
+import { CurrentModal } from "../store";
+
 export default function MapView(fileSelected, projectName, mapType) {
+    const { store } = useContext(StoreContext);
     const history = useHistory();
     // const [uploadedMap, setUploadedMap] = useState(null);
 
@@ -68,7 +74,9 @@ export default function MapView(fileSelected, projectName, mapType) {
     }
 
     function handleForkClick() {
-        history.push("/forkMap");
+        // history.push("/forkMap");
+        console.log("Forking map");
+        store.openModal(CurrentModal.FORK_MAP);
     }
 
 
@@ -143,7 +151,7 @@ export default function MapView(fileSelected, projectName, mapType) {
             <div style={{ backgroundColor: "#FDF4F3", padding: 10, margin: 10 }}>
                 <Typography sx={{ fontFamily: 'Sen', color: "black", fontSize: "16pt" }}>0 comments</Typography>
 
-            </div>
         </div>
-    )
+    </div>
+  )
 }
