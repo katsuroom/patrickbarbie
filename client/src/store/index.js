@@ -119,7 +119,8 @@ function StoreContextProvider(props) {
                     isPublished: false,
                     mapData: {
                         type: mapType,
-                        data: Base64.encode(textData)
+                        // data: Base64.encode(textData)
+                        data: jsonData
                     },
                     csvField: {},
                     comments: []
