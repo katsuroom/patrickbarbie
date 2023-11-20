@@ -11,10 +11,12 @@ import CommentSection from "./Comments/CommentSection";
 import MUIForkMap from "./Model/MUIForkMap";
 import StoreContext from "../store";
 import { CurrentModal } from "../store"
+import AuthContext from "../auth";
 
 export default function MapView({ fileSelected, projectName, mapType, views }) {
 
     const { store } = useContext(StoreContext);
+    const { auth } = useContext(AuthContext);
     const history = useHistory();
     const mapRef = useRef(null);
     const geoJsonLayerRef = useRef(null);
@@ -123,7 +125,7 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
             }}>
                 <Grid container spacing={2}>
                     <Grid item xs={2}>
-                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>{projectName}</Typography>
+                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>{auth.user.username}</Typography>
                     </Grid>
                     <Grid item xs={1}>
                         <IconButton>
@@ -131,7 +133,7 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
                         </IconButton>
                     </Grid>
                     <Grid item xs={0.4}>
-                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>{views}</Typography>
+                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>26</Typography>
                     </Grid>
                     <Grid item xs={2} style={{ display: 'flex', alignItems: 'center' }}>
                         <IconButton onClick={handleLikeClick}>
