@@ -12,7 +12,8 @@ export const StoreActionType = {
 export const CurrentModal = {
     NONE: "",
     UPLOAD_MAP: "UPLOAD_MAP",
-    CREATE_MAP: "CREATE_MAP"
+    CREATE_MAP: "CREATE_MAP",
+    FORK_MAP: "FORK_MAP",
 };
 
 function StoreContextProvider(props) {
@@ -20,10 +21,6 @@ function StoreContextProvider(props) {
         currentModal: CurrentModal.NONE,            // the currently open modal
         uploadedMap: null                           // map file uploaded for creating a new map
     });
-
-    // useEffect(() => {
-    //     auth.getLoggedIn();
-    // }, []);
 
     const storeReducer = (action) => {
         const { type, payload } = action;
@@ -54,6 +51,7 @@ function StoreContextProvider(props) {
 
     store.openModal = function(modal)
     {
+        console.log("opening modal: ", modal);
         storeReducer({
             type: StoreActionType.OPEN_MODAL,
             payload: { modal }
