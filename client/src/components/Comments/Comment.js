@@ -11,7 +11,8 @@ const Comment = ({ comment, setComments }) => {
   const handleReply = () => {
     const newReply = {
       id: new Date().getTime(), 
-      author: auth.user?.username,
+      // author: auth.user?.username,
+      author: "HARDCODE",
       timestamp: 'A moment ago',
       text: replyText
     };

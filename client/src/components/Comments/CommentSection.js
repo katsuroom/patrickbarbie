@@ -12,7 +12,8 @@ const CommentSection = ({ initialComments }) => {
     const handleAddComment = () => {
         const newComment = {
             id: comments.length + 1,
-            author: auth.user?.username,
+            // author: auth.user?.username,
+            author: "HARCODE",
             timestamp: 'Just now',
             text: newCommentText,
             replies: []
