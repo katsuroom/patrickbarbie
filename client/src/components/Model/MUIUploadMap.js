@@ -30,9 +30,12 @@ export default function MUIUploadMap() {
     };
 
     const handleFileSelect = (event) => {
+        // console.log(store.rawMapFile)
+        // if (store.rawMapFile) return;
         const file = event.target.files[0];
+        console.log(file);
         if (file) {
-            store.setMapFile(file);
+            store.uploadMapFile(file);
         }
     };
 

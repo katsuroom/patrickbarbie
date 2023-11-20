@@ -1,13 +1,9 @@
 import { useState, useContext } from "react";
-import axios from "axios";
-import api from "../../auth/auth-request-api";
 
 import AuthContext from '../../auth';
 import "./LoginScreen.css"
 import Button from "@mui/material/Button";
 import { Link } from 'react-router-dom';
-import TitleBar from '../TitleBar';
-import StatusBar from '../StatusBar';
 
 
 export default function LoginPage() {
