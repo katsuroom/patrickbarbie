@@ -8,23 +8,8 @@ import TextField from "@mui/material/TextField";
 import "./property.css";
 import { useHistory } from "react-router-dom";
 import CsvFileReader from "./CsvFileReader";
+import MUISaveChanges from "./Model/MUISaveChanges"
 
-function createData(name, calories) {
-  return { name, calories };
-}
-
-const Data = {
-  population: 20,
-  GDP: 50,
-  Color: "FFFFFF",
-};
-
-const rows = [
-  createData("USA", 159),
-  createData("CHINA", 237),
-  createData("JAPAN", 262),
-  createData("CANADA", 305),
-];
 
 export default function PPolitical() {
   const history = useHistory();
@@ -34,6 +19,7 @@ export default function PPolitical() {
   const [menuItems, setMenuItems] = React.useState([]);
   const [renderTable, setRenderTable] = React.useState(false);
   const [page, setPage] = React.useState(0);
+  const [saveModalOpen, setSaveModalOpen] = React.useState(false);
   const ROW_PER_PAGE = 30;
 
   function zip(...arrays) {
@@ -58,7 +44,11 @@ export default function PPolitical() {
   };
 
   const openSaveModal = () => {
-    history.push("/saveMap");
+    setSaveModalOpen(true);
+  };
+
+  const closeSaveModal = () => {
+    setSaveModalOpen(false);
   };
 
   const fileOnLoadComplete = (data) => {
@@ -100,6 +90,7 @@ export default function PPolitical() {
   return (
     <div>
       <div className="propertyTitle">Property</div>
+      
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
 
       <div style={{ overflow: 'auto', maxHeight: '400px' }}>
@@ -205,6 +196,7 @@ export default function PPolitical() {
       >
         SAVE
       </Button>
+      <MUISaveChanges open={saveModalOpen} closeModal={closeSaveModal}/>
     </div>
   );
 }
