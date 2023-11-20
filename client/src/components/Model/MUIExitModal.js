@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Alert from "@mui/material/Alert";
 import './MUIPublishMap.css'
+import './ModalAnimation.css'
 import {useHistory} from 'react-router-dom';
 
 export const ConfirmationDialog = ({

@@ -18,7 +18,7 @@ const loginUser = (email, password) => {
     return response.json().then(data => ({ status: response.status, data }));
   })
 };
-
+ 
 // Function to perform a registration request
 const registerUser = (username, email, password) => {
   return fetch(`${baseURL}/register/`, {
