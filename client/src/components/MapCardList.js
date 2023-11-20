@@ -7,13 +7,13 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import AddIcon from '@mui/icons-material/Add';
 import MUICreateMap from './Model/MUICreateMap';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import MUIUploadMap from './Model/MUIUploadMap';
 import MUIForkMap from './Model/MUIForkMap';
 
 import StoreContext from '../store';
 import { CurrentModal } from '../store';
-
+import MapView from './MapView';
 export default function MapCardList() {
   const history = useHistory();
   const { store } = useContext(StoreContext);
@@ -25,40 +25,66 @@ export default function MapCardList() {
     { id: 4, name: 'World Map' }
   ]);
 
-  // const addMapCard = () => {
-  //   // history.push('/createMap');
-  //   // const newMap = { id: maps.length + 1, name: `Map Title ${maps.length + 1}` };
-  //   // setMaps([...maps, newMap]);
-  //   store.openModal(CurrentModal.CREATE_MAP);
-  // };
+
+  const [selectedMap, setSelectedMap] = useState(null);
+
+
 
   const handleCreateMap = () => {
     store.openModal(CurrentModal.UPLOAD_MAP);
   };
 
+  const handleMapClick = (mapId) => {
+    setMaps(maps.map(map => {
+      if (map.id === mapId) {
+        selectedMap = { ...map, views: (map.views || 0) + 1 };
+        setSelectedMap(selectedMap);
+        // update the view count in the database here
+        // sendUpdateRequest(updatedMap);
+      }
+    }));
+  };
+
+  // backend connect here
+  const sendUpdateRequest = async (updatedMap) => {
+    try {
+      const response = await fetch('/api/updateMapViews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: updatedMap.id, views: updatedMap.views }),
+      });
+
+    } catch (error) {
+      console.error('Error updating map views:', error);
+    }
+  };
+
+
   return (
-    <Box sx={{ 
-        width: '25%', 
-        bgcolor: '#F7D3E4', 
-        float: 'left', 
-        height: '83vh', 
-        position: 'relative',
+    <Box sx={{
+      width: '25%',
+      bgcolor: '#F7D3E4',
+      float: 'left',
+      height: '83vh',
+      position: 'relative',
+    }}>
+      <List component="nav" aria-label="map folders" sx={{
+        maxHeight: '85vh',
+        overflow: 'auto',
+        '&::-webkit-scrollbar': {
+          width: '10px',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: 'rgba(0,0,0,.1)',
+        },
       }}>
-      <List component="nav" aria-label="map folders" sx={{ 
-          maxHeight: '85vh',
-          overflow: 'auto', 
-          '&::-webkit-scrollbar': { 
-            width: '10px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: 'rgba(0,0,0,.1)',
-          },
-        }}>
         {maps.map((map, index) => (
           <React.Fragment key={map.id}>
             {index > 0 && <Divider />}
-            <ListItem button>
-              <ListItemText primary={map.name} style={{padding: "0px", backgroundColor: index === maps.length - 1 ? '#f6c0fa' : '#F7D3E4' }}/>
+            <ListItem button onClick={() => handleMapClick(map.id)}>
+              <ListItemText primary={map.name} style={{ padding: "0px", backgroundColor: index === maps.length - 1 ? '#f6c0fa' : '#F7D3E4' }} />
             </ListItem>
           </React.Fragment>
         ))}
@@ -68,9 +94,9 @@ export default function MapCardList() {
           position: 'absolute',
           bottom: 16,
           right: 16,
-          bgcolor: '#ffabd1', 
-          '&:hover': { 
-            bgcolor: '#ffabd1', 
+          bgcolor: '#ffabd1',
+          '&:hover': {
+            bgcolor: '#ffabd1',
           },
         }}
         onClick={handleCreateMap}
@@ -80,6 +106,14 @@ export default function MapCardList() {
       <MUIUploadMap />
       <MUICreateMap />
       <MUIForkMap />
+      {selectedMap && (
+        <MapView
+          fileSelected={selectedMap.fileSelected}
+          projectName={selectedMap.name}
+          mapType={selectedMap.mapType}
+          views={selectedMap.views}
+        />
+      )}
     </Box>
   );
 };
