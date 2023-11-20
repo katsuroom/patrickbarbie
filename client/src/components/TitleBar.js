@@ -33,24 +33,26 @@ export default function TitleBar() {
         <Menu
           anchorEl={anchorEl}
           anchorOrigin={{
-            vertical: 'top',
+            vertical: 'bottom', 
             horizontal: 'right',
           }}
           keepMounted
           transformOrigin={{
-            vertical: 'top',
+            vertical: 'top',  
             horizontal: 'right',
           }}
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
           <MenuItem onClick={handleClose}>Profile</MenuItem>
+
           <MenuItem onClick={handleClose}>
             <Link href="/" color="inherit" style={{ textDecoration: 'none' }}>
               Sign Out
             </Link>
           </MenuItem>
         </Menu>
+
       </div>
     </Box>
   );
