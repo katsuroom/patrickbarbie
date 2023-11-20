@@ -2,6 +2,7 @@ import './App.css';
 import { React } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { AuthContextProvider } from './auth';
+import { StoreContextProvider } from './store';
 import {
     SplashScreen,
     LoginScreen,
@@ -28,6 +29,7 @@ const App = () => {
     return (
         <BrowserRouter>
             <AuthContextProvider>
+            <StoreContextProvider>
                 <TitleBar />
                 <Switch>
                     <Route path="/" exact component={SplashScreen} />
@@ -37,7 +39,7 @@ const App = () => {
                     <Route path="/main/" exact component={MainScreen} />
                     <Route path="/publishMap/" exact component={MUIPublishMap} />
                     <Route path="/deleteMap/" exact component={MUIDeleteMap} />
-                    <Route path="/saveMap/" exact component={MUISaveChanges} />
+                    {/* <Route path="/saveMap/" exact component={MUISaveChanges} /> */}
                     <Route path="/forkMap/" exact component={MUIForkMap} />
                     <Route path="/uploadMap/" exact component={MUIUploadMap} />
                     <Route path="/createMap/" exact component={MUICreateMap} />
@@ -49,6 +51,7 @@ const App = () => {
                     <Route path="/discovery/" exact component={Discovery} />
                 </Switch>
                 <StatusBar />
+            </StoreContextProvider>
             </AuthContextProvider>
         </BrowserRouter>
     )

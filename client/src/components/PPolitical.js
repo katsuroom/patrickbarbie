@@ -8,23 +8,8 @@ import TextField from "@mui/material/TextField";
 import "./property.css";
 import { useHistory } from "react-router-dom";
 import CsvFileReader from "./CsvFileReader";
-
-function createData(name, calories) {
-  return { name, calories };
-}
-
-const Data = {
-  population: 20,
-  GDP: 50,
-  Color: "FFFFFF",
-};
-
-const rows = [
-  createData("USA", 159),
-  createData("CHINA", 237),
-  createData("JAPAN", 262),
-  createData("CANADA", 305),
-];
+import MUISaveChanges from "./Model/MUISaveChanges";
+import MUIExitModal from "./Model/MUIExitModal";
 
 export default function PPolitical() {
   const history = useHistory();
@@ -34,6 +19,9 @@ export default function PPolitical() {
   const [menuItems, setMenuItems] = React.useState([]);
   const [renderTable, setRenderTable] = React.useState(false);
   const [page, setPage] = React.useState(0);
+  const [saveModalOpen, setSaveModalOpen] = React.useState(false);
+  const [exitModalOpen, setExitModalOpen] = React.useState(false);
+
   const ROW_PER_PAGE = 30;
 
   function zip(...arrays) {
@@ -53,12 +41,20 @@ export default function PPolitical() {
     setLabel(event.target.value);
   };
 
-  const openExitModal = () => {
-    history.push("/MUIExit");
+  const openSaveModal = () => {
+    setSaveModalOpen(true);
   };
 
-  const openSaveModal = () => {
-    history.push("/saveMap");
+  const closeSaveModal = () => {
+    setSaveModalOpen(false);
+  };
+
+  const openExitModal = () => {
+    setExitModalOpen(true);
+  };
+
+  const closeExitModal = () => {
+    setExitModalOpen(false);
   };
 
   const fileOnLoadComplete = (data) => {
@@ -106,91 +102,87 @@ export default function PPolitical() {
       <div className="propertyTitle">Property</div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete}/>
 
-      <div style={{ overflow: 'auto', maxHeight: '400px' }}>
-
-      <Table
-        className="property-table"
-        sx={{ "& thead th::nth-of-type(1)": { width: "40%" } }}
-      >
-        <thead>
-          <tr>
-          <th>
-              <Select
-                // labelId="demo-simple-select-standard-label"
-                // id="searchOn"
-                value={label}
-                required
-                onChange={handleChangeLabel}
-                sx={{ minWidth: "80%"}}
-                MenuProps={{
-                  style: { maxHeight: "50%" }
-                }}
-              >
-              
-                {menuItems.map((mi) => (
-                  <MenuItem value={mi}>{mi}</MenuItem>
-                ))}
-                <MenuItem>
-                  <Button variant="text" startDecorator={<Add />}>
-                    New Property
-                  </Button>
-                </MenuItem>
-              </Select>
-            </th>
-            <th>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="searchOn"
-                value={key}
-                required
-                onChange={handleChangeKey}
-                sx={{ minWidth: "80%"}}
-                MenuProps={{
-                  style: { maxHeight: "50%" }
-                }}
-              >
-              
-                {menuItems.map((mi) => (
-                  <MenuItem value={mi}>{mi}</MenuItem>
-                ))}
-                <MenuItem>
-                  <Button variant="text" startDecorator={<Add />}>
-                    New Property
-                  </Button>
-                </MenuItem>
-              </Select>
-            </th>
-            <th>Update</th>
-          </tr>
-        </thead>
-        <tbody>
-          {!renderTable ||
-            zip(
-              parsed_CSV_Data[label].slice(
-                page * ROW_PER_PAGE,
-                (page + 1) * ROW_PER_PAGE
-              ),
-              parsed_CSV_Data[key].slice(
-                page * ROW_PER_PAGE,
-                (page + 1) * ROW_PER_PAGE
-              )
-            ).map((row) => (
-              <tr key={row.name}>
-                <td>{row[0]}</td>
-                <td>{row[1]}</td>
-                <td>
-                  <TextField
-                    id="search"
-                    defaultValue={row.calories}
-                    variant="standard"
-                    sx={{ m: 1, minWidth: 120 }}
-                  />
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </Table>
-
+      <div style={{ overflow: "auto", maxHeight: "400px" }}>
+        <Table
+          className="property-table"
+          sx={{ "& thead th::nth-of-type(1)": { width: "40%" } }}
+        >
+          <thead>
+            <tr>
+              <th>
+                <Select
+                  // labelId="demo-simple-select-standard-label"
+                  // id="searchOn"
+                  value={label}
+                  required
+                  onChange={handleChangeLabel}
+                  sx={{ minWidth: "80%" }}
+                  MenuProps={{
+                    style: { maxHeight: "50%" },
+                  }}
+                >
+                  {menuItems.map((mi) => (
+                    <MenuItem value={mi}>{mi}</MenuItem>
+                  ))}
+                  <MenuItem>
+                    <Button variant="text" startDecorator={<Add />}>
+                      New Property
+                    </Button>
+                  </MenuItem>
+                </Select>
+              </th>
+              <th>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="searchOn"
+                  value={key}
+                  required
+                  onChange={handleChangeKey}
+                  sx={{ minWidth: "80%" }}
+                  MenuProps={{
+                    style: { maxHeight: "50%" },
+                  }}
+                >
+                  {menuItems.map((mi) => (
+                    <MenuItem value={mi}>{mi}</MenuItem>
+                  ))}
+                  <MenuItem>
+                    <Button variant="text" startDecorator={<Add />}>
+                      New Property
+                    </Button>
+                  </MenuItem>
+                </Select>
+              </th>
+              <th>Update</th>
+            </tr>
+          </thead>
+          <tbody>
+            {!renderTable ||
+              zip(
+                parsed_CSV_Data[label].slice(
+                  page * ROW_PER_PAGE,
+                  (page + 1) * ROW_PER_PAGE
+                ),
+                parsed_CSV_Data[key].slice(
+                  page * ROW_PER_PAGE,
+                  (page + 1) * ROW_PER_PAGE
+                )
+              ).map((row) => (
+                <tr key={row.name}>
+                  <td>{row[0]}</td>
+                  <td>{row[1]}</td>
+                  <td>
+                    <TextField
+                      id="search"
+                      defaultValue={row.calories}
+                      variant="standard"
+                      sx={{ m: 1, minWidth: 120 }}
+                    />
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </Table>
       </div>
 
       <Button
@@ -209,6 +201,8 @@ export default function PPolitical() {
       >
         SAVE
       </Button>
+      <MUISaveChanges open={saveModalOpen} closeModal={closeSaveModal} />
+      <MUISaveChanges open={exitModalOpen} closeModal={closeExitModal} />
     </div>
   );
 }

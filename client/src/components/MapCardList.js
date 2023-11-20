@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
 import List from "@mui/material/List";
@@ -9,8 +9,13 @@ import AddIcon from '@mui/icons-material/Add';
 import MUICreateMap from './Model/MUICreateMap';
 import {useHistory} from 'react-router-dom';
 
-const MapCardList = () => {
+import StoreContext from '../store';
+import { CurrentModal } from '../store';
+
+export default function MapCardList() {
   const history = useHistory();
+  const { store } = useContext(StoreContext);
+
   const [maps, setMaps] = useState([
     { id: 1, name: 'Korea Map' },
     { id: 2, name: 'Japan Map' },
@@ -18,10 +23,21 @@ const MapCardList = () => {
     { id: 4, name: 'World Map' }
   ]);
 
+  let openModal = null;
+  switch(store.currentModal)
+  {
+    case CurrentModal.CREATE_MAP:
+      openModal = <MUICreateMap />;
+      break;
+    default:
+      break;
+  }
+
   const addMapCard = () => {
-    history.push('/createMap');
-    const newMap = { id: maps.length + 1, name: `Map Title ${maps.length + 1}` };
-    setMaps([...maps, newMap]);
+    // history.push('/createMap');
+    // const newMap = { id: maps.length + 1, name: `Map Title ${maps.length + 1}` };
+    // setMaps([...maps, newMap]);
+    store.openModal(CurrentModal.CREATE_MAP);
   };
 
   return (
@@ -65,8 +81,7 @@ const MapCardList = () => {
       >
         <AddIcon />
       </Fab>
+      {openModal}
     </Box>
   );
 };
-
-export default MapCardList;
