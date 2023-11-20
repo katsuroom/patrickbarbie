@@ -237,30 +237,19 @@ function AuthContextProvider(props) {
 
     auth.logoutUser = async function() {
         console.log("Logout user");
-        const response = api.logoutUser();
-        if (response.status === 200) {
-            authReducer( {
-                type: AuthActionType.LOGOUT_USER,
-                payload: null
-            })
-            history.push("/");
-        }else{
-            console.log('Logout failed:', response);
-        }
-        // console.log("Logging out user");
-        // api.logoutUser()
-        // .then(response => {
-        //     if(response.status === 200){
-        //         console.log('Logout successful:', response);
-        //         authReducer({
-        //             type: AuthActionType.LOGOUT_USER,
-        //             payload: null
-        //         })
-        //         history.push("/");
-        //     }else{
-        //         console.log('Logout failed:', response);
-        //     }
-        // })
+        api.logoutUser()
+        .then(response => {
+            if(response.status === 200){
+                console.log('Logout successful:', response);
+                authReducer({
+                    type: AuthActionType.LOGOUT_USER,
+                    payload: null
+                })
+                history.push("/");
+            }else{
+                console.log('Logout failed:', response);
+            }
+        })
     }
 
     auth.getUserInitials = function() {

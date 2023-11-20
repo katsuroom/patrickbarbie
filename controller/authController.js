@@ -170,6 +170,7 @@ logoutUser = async (req, res) => {
       sameSite: "none",
     })
     .send();
+    console.log("sent logout response");
 };
 
 

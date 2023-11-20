@@ -65,9 +65,16 @@ const logoutUser = () => {
     // credentials: "include",
   })
     .then((response) => {
-      return response
-        .json()
-        .then((data) => ({ status: response.status, data }));
+      console.log("response: " + response);
+      return {
+        status: response.status,
+      };
+    })
+    .catch((error) => {
+      console.log("Error logging out: " + error);
+      return {
+        message: "Error logging out: " + error,
+      };
     });
 }
 

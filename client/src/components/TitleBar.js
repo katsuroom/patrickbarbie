@@ -28,7 +28,7 @@ export default function TitleBar() {
 
   const handleLogout = () => {
     handleMenuClose();
-    // auth.logoutUser();
+    auth.logoutUser();
   };
 
   const menuId = "primary-search-account-menu";
