@@ -11,7 +11,7 @@ describe('template spec', () => {
     cy.get('input[type="text"]').eq(1).type('Yuwenqianchen3'); 
     cy.get('input[type="email"]').type('Yuwenqianchen3@gmail.com');
     cy.get('input[type="password"]').eq(0).type('Yuwenqianchen3@gmail.com');
-    cy.get('input[type="password"]').eq(1).type('Yuwenqianchen3@gmail.com'); 
+    cy.get('input[type="password"]').eq(0).type('Yuwenqianchen3@gmail.com'); 
 
     cy.get('button[type="submit"]').click();
 
