@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -6,6 +6,10 @@ import './MUIPublishMap.css'
 import {useHistory} from 'react-router-dom';
 
 export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo }) => {
+    const [openDialog, setOpenDialog] = useState(open);
+    useEffect(() => {
+        setOpenDialog(open);
+    }, [open]);
     const buttonStyle = {
         mt: 1,
         mb: 3,
@@ -20,7 +24,7 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo 
     };
 
     return (
-        <Modal open={open} onClose={onClose}>
+        <Modal open={openDialog} onClose={onClose}>
             <Box
                 sx={{
                     position: "absolute",
@@ -68,14 +72,17 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm, confirmationInfo 
 };
 
 
-const MUIExit = () => {
+const MUIExit = (props) => {
     const history = useHistory();
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(props.open);
 
     const handleOpen = () => setOpen(true);
+    useEffect(() => {
+        setOpen(props.open);
+    }, [props.open]);
+
     const handleClose = () => {
-        setOpen(false);
-        history.push("/edit");
+        props.closeModal();
     }
 
     const confirmationInfo = "Do you want to save your changes before leaving this page?";
@@ -83,12 +90,10 @@ const MUIExit = () => {
     const handleSave = () => {
         console.log("Map Saved!");
         handleClose();
-        history.push("/main");
     };
 
     const handleDiscard = () => {
         console.log("Map Discarded!");
-        history.push("/main");
     }
 
 
