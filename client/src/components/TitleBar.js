@@ -54,9 +54,7 @@ export default function TitleBar() {
                 handleClose();
                 auth.logoutUser();
               }}>
-                <Link href="/" color="inherit" style={{ textDecoration: 'none' }}>
                   Sign Out
-                </Link>
               </MenuItem>
             </>
           ) : (
