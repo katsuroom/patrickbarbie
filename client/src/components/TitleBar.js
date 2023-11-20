@@ -9,6 +9,7 @@ import SearchBar from './SearchBar';
 export default function TitleBar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const { auth } = useContext(AuthContext);
+
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -48,7 +49,7 @@ export default function TitleBar() {
         >
           {auth.loggedIn ? (
             <>
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
+
               <MenuItem onClick={() => {
                 handleClose();
                 auth.logoutUser();
