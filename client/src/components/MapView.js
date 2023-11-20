@@ -66,6 +66,39 @@ export default function MapView({ fileSelected, projectName, mapType }) {
         store.openModal(CurrentModal.FORK_MAP);
     }
 
+    // Hardcoded comments
+    const initialComments = [
+        {
+            id: 1,
+            author: "Scott",
+            timestamp: "1 hour ago",
+            text: "I love this map, thanks for sharing",
+            replies: [
+                {
+                    id: 101,
+                    author: "Yuxuan",
+                    timestamp: "45 minutes ago",
+                    text: "I agree, it was brilliant and creative"
+                }
+            ]
+        },
+        {
+            id: 2,
+            author: "Kerrance",
+            timestamp: "2 hours ago",
+            text: "Creative map! I forked to make some edits myself",
+            replies: []
+        },
+        {
+            id: 3,
+            author: "Tom",
+            timestamp: "3 hours ago",
+            text: "I think you can make improvements in the state section of the map",
+            replies: []
+        }
+    ];
+    
+
     return (
         <div style={{ overflowY: "scroll", height: "50%" }}>
             <div id="map" style={{ height: 400 }}></div>
@@ -126,7 +159,7 @@ export default function MapView({ fileSelected, projectName, mapType }) {
             <div style={{ backgroundColor: "#FDF4F3", padding: 10, margin: 10 }}>
                 {/* <Typography sx={{ fontFamily: 'Sen', color: "black", fontSize: "16pt" }}>0 comments</Typography> */}
 
-                <CommentSection initialComments={[]} />
+                <CommentSection initialComments={initialComments} />
             </div>
         </div>
     );
