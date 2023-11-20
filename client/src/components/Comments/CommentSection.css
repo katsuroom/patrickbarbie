@@ -1,0 +1,41 @@
+/* CommentSection.css */
+.comments-section {
+    max-width: 100%;
+    max-height: 400px; 
+    overflow-y: auto; 
+    margin: 0;
+    padding: 16px;
+    padding-left: 0;
+    font-family: 'Sen', sans-serif;
+  }
+  
+  .comment-count {
+    font-size: 16pt;
+    color: black; 
+    margin-left: 0; 
+    font-weight: 600;
+  }
+  
+  .add-comment {
+    display: flex;
+    align-items: center;
+    margin-left: 0; 
+  }
+  
+  .add-comment input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 8px;
+  }
+  
+  .add-comment button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  

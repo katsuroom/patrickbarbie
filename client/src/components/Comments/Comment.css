@@ -1,0 +1,20 @@
+/* Comment.css */
+.comment {
+  background-color: #fff;
+  padding: 8px;
+  padding-left: 0;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: 'Sen', sans-serif;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  margin-left: 0; 
+}
+
+
