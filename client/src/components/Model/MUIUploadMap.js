@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import './MUIPublishMap.css'
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import MUICreateMap from './MUICreateMap'
 
-export const ConfirmationDialog = ({ open, onClose, setFileSelected, confirmationInfo }) => {
+import StoreContext from '../../store';
+import { CurrentModal } from '../../store';
+
+export default function MUIUploadMap() {
+    const { store } = useContext(StoreContext);
+
     const buttonStyle = {
         mt: 1,
         mb: 3,
@@ -25,17 +29,19 @@ export const ConfirmationDialog = ({ open, onClose, setFileSelected, confirmatio
         marginRight: 10,
     };
 
-    // Handler for file selection
     const handleFileSelect = (event) => {
         const file = event.target.files[0];
         if (file) {
-            setFileSelected(file);
-            onClose(); // Close the current modal
+            store.setMapFile(file);
         }
     };
 
+    const onClose = () => {
+        store.closeModal();
+    }
+
     return (
-        <Modal open={open} onClose={onClose}>
+        <Modal open={store.currentModal === CurrentModal.UPLOAD_MAP}>
             <Box
                 sx={{
                     position: "absolute",
@@ -54,9 +60,9 @@ export const ConfirmationDialog = ({ open, onClose, setFileSelected, confirmatio
             >
                 <div className="alertContainer">
                     <div className="alert">
-                        {confirmationInfo}
+                        {"Browse for Shapefile, GeoJson, Keyhole (KML), PBJson files:"}
                     </div>
-                    <div className="confrim">
+                    <div className="confirm">
                         <input
                             type="file"
                             id="fileInput"
@@ -80,30 +86,3 @@ export const ConfirmationDialog = ({ open, onClose, setFileSelected, confirmatio
         </Modal>
     );
 };
-
-
-
-const MUIUploadMap = ({ open, onClose }) => {
-    const [fileSelected, setFileSelected] = useState(null);
-
-    const handleFileSelect = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            setFileSelected(file);
-        }
-    };
-
-    return (
-        <div>
-            <ConfirmationDialog
-                open={open}
-                onClose={onClose}
-                setFileSelected={setFileSelected}
-                confirmationInfo="Browse for Shapefile, GeoJson, Keyhole (KML), PBJson files:"
-            />
-            {fileSelected && <MUICreateMap open={true} fileSelected={fileSelected} onClose={() => setFileSelected(null)} />}
-        </div>
-    );
-};
-
-export default MUIUploadMap;

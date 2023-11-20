@@ -17,26 +17,12 @@ export default function MapCardList() {
   const history = useHistory();
   const { store } = useContext(StoreContext);
 
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-
-
-
   const [maps, setMaps] = useState([
     { id: 1, name: 'Korea Map' },
     { id: 2, name: 'Japan Map' },
     { id: 3, name: 'USA Map' },
     { id: 4, name: 'World Map' }
   ]);
-
-  let openModal = null;
-  switch(store.currentModal)
-  {
-    case CurrentModal.CREATE_MAP:
-      openModal = <MUIUploadMap />;
-      break;
-    default:
-      break;
-  }
 
   // const addMapCard = () => {
   //   // history.push('/createMap');
@@ -45,8 +31,8 @@ export default function MapCardList() {
   //   store.openModal(CurrentModal.CREATE_MAP);
   // };
 
-  const addMapCard = () => {
-    setIsUploadModalOpen(true); 
+  const handleCreateMap = () => {
+    store.openModal(CurrentModal.UPLOAD_MAP);
   };
 
   return (
@@ -86,13 +72,12 @@ export default function MapCardList() {
             bgcolor: '#ffabd1', 
           },
         }}
-        onClick={addMapCard}
+        onClick={handleCreateMap}
       >
         <AddIcon />
       </Fab>
-      {/* {openModal} */}
-      <MUIUploadMap open={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} />
-
+      <MUIUploadMap />
+      <MUICreateMap />
     </Box>
   );
 };
