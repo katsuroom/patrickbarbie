@@ -1,24 +1,5 @@
-/*
-    This is our http api for all things auth, which we use to 
-    send authorization requests to our back-end API. Note we`re 
-    using the Axios library for doing this, which is an easy to 
-    use AJAX-based library. We could (and maybe should) use Fetch, 
-    which is a native (to browsers) standard, but Axios is easier
-    to use when sending JSON back and forth and it`s a Promise-
-    based API which helps a lot with asynchronous communication.
-    
-    @author McKilla Gorilla
-*/
-// const baseURL = 'http://localhost:4000/auth';
-const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "auth"
-
-// Helper function for handling JSON responses
-const handleJsonResponse = (response, data) => {
-    console.log("handleJsonResponse");
-    console.log(response.json());
-    // console.log(data);
-  return response.json();
-};
+const baseURL = 'http://localhost:4000/auth';
+// const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "auth"
 
 // Function to perform a login request
 const loginUser = (email, password) => {
@@ -57,7 +38,51 @@ const registerUser = (username, email, password) => {
   })
 };
 
+// const getLoggedIn = () => {
+
+//   return fetch(`${baseURL}/loggedIn/`, {
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     // credentials: "include",
+//   })
+//     .then((response) => {
+//       const contentType = response.headers.get("content-type");
+//       if (!contentType || !contentType.includes("application/json")) {
+//         throw new Error("Unexpected response content type");
+//       }
+//       return response.json().then((data) => ({ status: response.status, data }));
+//     });
+// };
+
+const logoutUser = () => {
+  return fetch(`${baseURL}/logout/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    // credentials: "include",
+  })
+    .then((response) => {
+      console.log("response: " + response);
+      return {
+        status: response.status,
+      };
+    })
+    .catch((error) => {
+      console.log("Error logging out: " + error);
+      return {
+        message: "Error logging out: " + error,
+      };
+    });
+}
+
 export default {
   loginUser,
   registerUser,
+  // getLoggedIn,
+  logoutUser
+
 };
+
