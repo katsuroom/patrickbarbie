@@ -118,9 +118,9 @@ export default function MapView({ fileSelected, projectName, mapType }) {
                 </Grid>
             </div>
             <div style={{ backgroundColor: "#FDF4F3", padding: 10, margin: 10 }}>
-                {/* <Typography sx={{ fontFamily: 'Sen', color: "black", fontSize: "16pt" }}>0 comments</Typography> */}
+                <Typography sx={{ fontFamily: 'Sen', color: "black", fontSize: "16pt" }}>0 comments</Typography>
 
-                <CommentSection initialComments={[]} />
+                {/* <CommentSection initialComments={[]} /> */}
             </div>
         </div>
     );
