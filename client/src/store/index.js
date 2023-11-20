@@ -22,10 +22,6 @@ function StoreContextProvider(props) {
         uploadedMap: null                           // map file uploaded for creating a new map
     });
 
-    // useEffect(() => {
-    //     auth.getLoggedIn();
-    // }, []);
-
     const storeReducer = (action) => {
         const { type, payload } = action;
         switch (type) {
@@ -55,6 +51,7 @@ function StoreContextProvider(props) {
 
     store.openModal = function(modal)
     {
+        console.log("opening modal: ", modal);
         storeReducer({
             type: StoreActionType.OPEN_MODAL,
             payload: { modal }

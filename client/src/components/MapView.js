@@ -15,7 +15,6 @@ import StoreContext from "../store";
 import { CurrentModal } from "../store";
 
 export default function MapView(fileSelected, projectName, mapType) {
-    let openModal = null;
     const { store } = useContext(StoreContext);
     const history = useHistory();
     // const [uploadedMap, setUploadedMap] = useState(null);
@@ -76,6 +75,7 @@ export default function MapView(fileSelected, projectName, mapType) {
 
     function handleForkClick() {
         // history.push("/forkMap");
+        console.log("Forking map");
         store.openModal(CurrentModal.FORK_MAP);
     }
 
@@ -152,7 +152,6 @@ export default function MapView(fileSelected, projectName, mapType) {
                 <Typography sx={{ fontFamily: 'Sen', color: "black", fontSize: "16pt" }}>0 comments</Typography>
 
         </div>
-        {openModal}
     </div>
   )
 }
