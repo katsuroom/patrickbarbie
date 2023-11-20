@@ -27,6 +27,7 @@
   "homepage": "https://github.com/lenzlaww/RepositoryOf316Copy#readme",
   "dependencies": {
     "@uiw/react-color": "^2.0.1",
+    "Base64": "^1.3.0",
     "bcryptjs": "^2.4.3",
     "concurrently": "^8.2.2",
     "cookie-parser": "^1.4.6",
@@ -35,6 +36,7 @@
     "dotenv-webpack": "^8.0.1",
     "express": "^4.18.2",
     "i": "^0.3.7",
+    "js-base64": "^3.7.5",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "4.1",
     "mongoose": "^8.0.0",

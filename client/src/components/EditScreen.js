@@ -3,6 +3,7 @@ import PPolitical from "./PPolitical";
 import MapEditorToolbar from "./MapEditorToolBar";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import GeoJSONDisplay from './GeoJSONDisplay';
 
 import StoreContext from '../store';
 import { CurrentModal } from '../store';
@@ -59,7 +60,8 @@ export default function EditScreen() {
                 <MapEditorToolbar />
             </div>
             {/* <img src={editScreenDemo} alt="Edit Screen Demo" style={imageStyle} /> */}
-            <div id="map" style={{width: "60%", height: 400}}></div>
+            <div id="map" style={{width: "0%", height: 0}}></div>
+            {store.rawMapFile && <GeoJSONDisplay file={store.rawMapFile} mapId={0} />}
 
             <div style={politicalStyle}>
                 <PPolitical />

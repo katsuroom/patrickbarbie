@@ -33,7 +33,8 @@ function StoreContextProvider(props) {
 
     const [store, setStore] = useState({
         currentModal: CurrentModal.NONE,            // the currently open modal
-        mapFile: null                           // map file uploaded for creating a new map
+        mapFile: null,                           // map file uploaded for creating a new map
+        rawMapFile: null
     });
 
     // useEffect(() => {
@@ -56,10 +57,11 @@ function StoreContextProvider(props) {
                 });
             }
             case StoreActionType.UPLOAD_MAP_FILE: {
+                console.log(payload.file);
                 return setStore({
                     ...store,
                     currentModal: CurrentModal.CREATE_MAP,
-                    mapFile: payload.file
+                    rawMapFile: payload.file
                 });
             }
             case StoreActionType.UPDATE_MAP: {
@@ -91,6 +93,7 @@ function StoreContextProvider(props) {
 
     store.uploadMapFile = function(file)
     {
+        console.log(file);
         storeReducer({
             type: StoreActionType.UPLOAD_MAP_FILE,
             payload: { file }
@@ -136,7 +139,7 @@ function StoreContextProvider(props) {
             }
         };
         
-        reader.readAsText(file);
+        // reader.readAsText(file);
     }
 
     return (

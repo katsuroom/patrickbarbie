@@ -41,11 +41,11 @@ export default function MUICreateMap() {
     }
 
     const handleCreateMap = () => {
-        console.log(
-            `Map Created!\n` +
-            `name: ${projectName}\n` +
-            `type: ${mapType}\n` +
-            `file: ${store.mapFile.name}`);
+        // console.log(
+        //     `Map Created!\n` +
+        //     `name: ${projectName}\n` +
+        //     `type: ${mapType}\n` +
+        //     `file: ${store.mapFile.name}`);
 
         handleClose();
         store.createMap(projectName, mapType);
