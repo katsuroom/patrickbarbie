@@ -1,19 +1,19 @@
-import React, { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { IconButton, Typography, Grid } from "@mui/material";
 import "./font.css";
 import React, { useEffect, useState, useRef, useContext } from "react";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Delete, CloudUpload, Edit, Download, Share } from '@mui/icons-material';
 import { useHistory } from 'react-router-dom';
-
+import CommentSection from "./Comments/CommentSection";
 import MUIForkMap from "./Model/MUIForkMap";
-
 import StoreContext from "../store";
-import { CurrentModal } from "../store";
+import { CurrentModal } from "../store"
 
-export default function MapView(fileSelected, projectName, mapType) {
+export default function MapView({ fileSelected, projectName, mapType }) {
+
     const { store } = useContext(StoreContext);
     const history = useHistory();
     const mapRef = useRef(null);
