@@ -96,6 +96,7 @@ export default function PPolitical() {
     console.log("setting menu item to", keys);
     setRenderTable(true);
   };
+  let maxPage = label && parsed_CSV_Data[label] ? parseInt(parsed_CSV_Data[label].length / ROW_PER_PAGE) : 0;
 
   return (
     <div>
@@ -184,7 +185,6 @@ export default function PPolitical() {
           </tbody>
         </Table>
       </div>
-
       <Button
         variant="solid"
         className="exit"
@@ -201,6 +201,29 @@ export default function PPolitical() {
       >
         SAVE
       </Button>
+
+      <Button
+        variant="solid"
+        className="prev"
+        sx={{ margin: 1 }}
+        disabled={page <= 0}
+        onClick={()=>{setPage(page <= 0 ? 0 : page - 1)}}
+      >
+        Prev
+      </Button>
+
+      Page: {page+1}
+
+      <Button
+        variant="solid"
+        className="next"
+        sx={{ margin: 1 }}
+        disabled={page >= maxPage}
+        onClick={() => {setPage(page >= maxPage ? maxPage : page + 1)}}
+      >
+        Next
+      </Button>
+
       <MUISaveChanges open={saveModalOpen} closeModal={closeSaveModal} />
       <MUISaveChanges open={exitModalOpen} closeModal={closeExitModal} />
     </div>
