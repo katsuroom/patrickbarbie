@@ -1,6 +1,6 @@
 // CommentSection.js
 import React, { useState } from 'react';
-import Comment from './Comment.js';
+import Comment from './Comment';
 import './CommentSection.css';
 
 const CommentSection = ({ initialComments }) => {
@@ -10,12 +10,13 @@ const CommentSection = ({ initialComments }) => {
   const handleAddComment = () => {
     const newComment = {
       id: comments.length + 1,
-      author: 'NewUser', // Replace with actual user data
+      author: 'NewUser',
       timestamp: 'Just now',
       text: newCommentText,
+      replies: []
     };
     setComments([...comments, newComment]);
-    setNewCommentText('');
+    setNewCommentText(''); 
   };
 
   return (
@@ -24,14 +25,14 @@ const CommentSection = ({ initialComments }) => {
       <div className="add-comment">
         <input
           type="text"
-          placeholder="Add a comment..."
           value={newCommentText}
           onChange={(e) => setNewCommentText(e.target.value)}
+          placeholder="Add a comment..."
         />
         <button onClick={handleAddComment}>Post</button>
       </div>
       {comments.map(comment => (
-        <Comment key={comment.id} {...comment} />
+        <Comment key={comment.id} comment={comment} setComments={setComments} />
       ))}
     </div>
   );
