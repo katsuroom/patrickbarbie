@@ -1,29 +1,26 @@
 import React, { createContext, useState } from "react";
-import { useHistory } from 'react-router-dom'
-import api from './store-request-api'
 
 const StoreContext = createContext();
 
 // THESE ARE ALL THE TYPES OF UPDATES TO OUR AUTH STATE THAT CAN BE PROCESSED
 export const StoreActionType = {
     OPEN_MODAL: "OPEN_MODAL",
-    CLOSE_MODAL: "CLOSE_MODAL"
+    CLOSE_MODAL: "CLOSE_MODAL",
+    SET_MAP_FILE: "SET_MAP_FILE"
 };
 
 export const CurrentModal = {
     NONE: "",
-    CREATE_MAP: "CREATE_MAP"
+    UPLOAD_MAP: "UPLOAD_MAP",
+    CREATE_MAP: "CREATE_MAP",
+    FORK_MAP: "FORK_MAP",
 };
 
 function StoreContextProvider(props) {
     const [store, setStore] = useState({
-        currentModal: CurrentModal.NONE
+        currentModal: CurrentModal.NONE,            // the currently open modal
+        uploadedMap: null                           // map file uploaded for creating a new map
     });
-    const history = useHistory();
-
-    // useEffect(() => {
-    //     auth.getLoggedIn();
-    // }, []);
 
     const storeReducer = (action) => {
         const { type, payload } = action;
@@ -40,6 +37,13 @@ function StoreContextProvider(props) {
                     currentModal: CurrentModal.NONE
                 });
             }
+            case StoreActionType.SET_MAP_FILE: {
+                return setStore({
+                    ...store,
+                    currentModal: CurrentModal.CREATE_MAP,
+                    uploadedMap: payload.file
+                });
+            }
             default:
                 return store;
         }
@@ -47,6 +51,7 @@ function StoreContextProvider(props) {
 
     store.openModal = function(modal)
     {
+        console.log("opening modal: ", modal);
         storeReducer({
             type: StoreActionType.OPEN_MODAL,
             payload: { modal }
@@ -58,6 +63,14 @@ function StoreContextProvider(props) {
         storeReducer({
             type: StoreActionType.CLOSE_MODAL,
             payload: null
+        });
+    }
+
+    store.setMapFile = function(file)
+    {
+        storeReducer({
+            type: StoreActionType.SET_MAP_FILE,
+            payload: { file }
         });
     }
 

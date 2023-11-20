@@ -4,8 +4,6 @@ import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import "./RegisterScreen.css";
 import Button from "@mui/material/Button";
-import TitleBar from '../TitleBar';
-import StatusBar from '../StatusBar';
 
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
@@ -23,7 +21,8 @@ export default function RegisterScreen() {
             return;
         }
 
-        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        const passwordPattern = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
         if (!passwordPattern.test(password)) {
             setError('Password must contain at least 8 characters, including one uppercase letter, one number, and one special character.');
             return;
@@ -34,6 +33,7 @@ export default function RegisterScreen() {
             return;
         }
 
+        console.log("valid registration info");
         auth.registerUser(username, email, password);
     };
 
@@ -103,6 +103,7 @@ export default function RegisterScreen() {
                     <Button
                         type="submit"
                         variant="contained"
+                        onClick={handleSubmit}
                         sx={{
                             mt: 1,
                             mb: 3,

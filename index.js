@@ -24,6 +24,8 @@ app.use(cookieParser());
 
 const authRouter = require('./routers/authRoutes')
 app.use('/auth', authRouter)
+const mapRouter = require('./routers/mapRoute')
+app.use('/api', mapRouter)
 
 const connectDB = require('./connectDB')
 

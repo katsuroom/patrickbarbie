@@ -4,28 +4,29 @@ const ObjectId = Schema.Types.ObjectId
 
 const CSV_Schema = new Schema(
     {
-        csvUploaded: { type: binData, required: false },
-        csvEntered: { type: binData, required: false }
+        csvUploaded: { type: Buffer, required: false },
+        csvEntered: { type: Buffer, required: false }
     },
     { timestamps: true },
 )
 
 
-// TODO: Changed required to true
+// TODO: (done) Changed required to true
+// TODO: after handle the mapDate buffer in the front end, change required to true
 const MapSchema = new Schema(
-    {
-        title: { type: String, required: false },
-        author: { type: String, required: false },
-        views: { type: Integer, required: false },
-        likes: { type: Integer, required: false },
-        likedUsers: { type: Array, required: false },
-        isPublished: { type: Boolean, required: false },
-        mapData: {type: binData, required: false},
-        csvField: {type: CSV_Schema, required: false}
-        // comments section ...
-    },
-    { timestamps: true },
-)
+  {
+    title: { type: String, required: true },
+    username: { type: String, required: true },
+    views: { type: Number, required: false },
+    likes: { type: Number, required: false },
+    likedUsers: { type: Array, required: false },
+    isPublished: { type: Boolean, required: false },
+    mapData: { type: String, required: false },
+    csvField: { type: CSV_Schema, required: false },
+    // comments section ...
+  },
+  { timestamps: true }
+);
 
 
-module.exports = mongoose.model('User', MapSchema);
+module.exports = mongoose.model('Map', MapSchema);

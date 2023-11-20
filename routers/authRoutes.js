@@ -1,12 +1,10 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const cors = require('cors'); 
-const AuthController = require('../controller/authController');
+const AuthController = require("../controller/authController");
 
-
-router.use(cors());
-
-router.post('/register', AuthController.registerUser);
-router.post('/login', AuthController.loginUser);
+router.post("/register", AuthController.registerUser);
+router.post("/login", AuthController.loginUser);
+router.get("/logout", AuthController.logoutUser);
+router.get("/loggedIn", AuthController.getLoggedIn);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { useHistory } from 'react-router-dom'
 import api from './auth-request-api'
 
@@ -61,18 +61,32 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.getLoggedIn = async function () {
-        const response = await api.getLoggedIn();
-        if (response.status === 200) {
-            authReducer({
-                type: AuthActionType.GET_LOGGED_IN,
-                payload: {
-                    loggedIn: response.data.loggedIn,
-                    user: response.data.user
-                }
-            });
-        }
-    }
+    // auth.getLoggedIn = async function () {
+    //     // const response = await api.getLoggedIn();
+    //     // if (response.status === 200) {
+    //     //     authReducer({
+    //     //         type: AuthActionType.GET_LOGGED_IN,
+    //     //         payload: {
+    //     //             loggedIn: response.data.loggedIn,
+    //     //             user: response.data.user
+    //     //         }
+    //     //     });
+    //     // }
+
+    //     console.log("getLoggedIn");
+    //     api.getLoggedIn().then((response) => {
+    //       if (response.status === 200) {
+    //         console.log("getLoggedIn successful:", response);
+    //         authReducer({
+    //           type: AuthActionType.GET_LOGGED_IN,
+    //           payload: {
+    //             loggedIn: response.data.loggedIn,
+    //             user: response.data.user,
+    //           },
+    //         });
+    //       }
+    //     });
+    // }
 
     auth.registerUser = async function(username, email, password) {
         console.log("REGISTERING USER");
@@ -222,14 +236,20 @@ function AuthContextProvider(props) {
     }
 
     auth.logoutUser = async function() {
-        const response = await api.logoutUser();
-        if (response.status === 200) {
-            authReducer( {
-                type: AuthActionType.LOGOUT_USER,
-                payload: null
-            })
-            history.push("/");
-        }
+        console.log("Logout user");
+        api.logoutUser()
+        .then(response => {
+            if(response.status === 200){
+                console.log('Logout successful:', response);
+                authReducer({
+                    type: AuthActionType.LOGOUT_USER,
+                    payload: null
+                })
+                history.push("/");
+            }else{
+                console.log('Logout failed:', response);
+            }
+        })
     }
 
     auth.getUserInitials = function() {
