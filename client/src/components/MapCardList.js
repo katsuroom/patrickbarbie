@@ -9,6 +9,7 @@ import AddIcon from '@mui/icons-material/Add';
 import MUICreateMap from './Model/MUICreateMap';
 import {useHistory} from 'react-router-dom';
 import MUIUploadMap from './Model/MUIUploadMap';
+import MUIForkMap from './Model/MUIForkMap';
 
 import StoreContext from '../store';
 import { CurrentModal } from '../store';
@@ -78,6 +79,7 @@ export default function MapCardList() {
       </Fab>
       <MUIUploadMap />
       <MUICreateMap />
+      <MUIForkMap />
     </Box>
   );
 };

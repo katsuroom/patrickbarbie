@@ -39,7 +39,7 @@ const App = () => {
                     <Route path="/main/" exact component={MainScreen} />
                     <Route path="/publishMap/" exact component={MUIPublishMap} />
                     <Route path="/deleteMap/" exact component={MUIDeleteMap} />
-                    <Route path="/saveMap/" exact component={MUISaveChanges} />
+                    {/* <Route path="/saveMap/" exact component={MUISaveChanges} /> */}
                     <Route path="/forkMap/" exact component={MUIForkMap} />
                     <Route path="/uploadMap/" exact component={MUIUploadMap} />
                     <Route path="/createMap/" exact component={MUICreateMap} />

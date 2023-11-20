@@ -4,14 +4,15 @@ const ObjectId = Schema.Types.ObjectId
 
 const CSV_Schema = new Schema(
     {
-        csvUploaded: { type: binData, required: false },
-        csvEntered: { type: binData, required: false }
+        csvUploaded: { type: Buffer, required: false },
+        csvEntered: { type: Buffer, required: false }
     },
     { timestamps: true },
 )
 
 
-// TODO: Changed required to true
+// TODO: (done) Changed required to true
+// TODO: after handle the mapDate buffer in the front end, change required to true
 const MapSchema = new Schema(
     {
         title: { type: String, required: false },
