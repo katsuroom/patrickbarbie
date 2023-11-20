@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { IconButton, Link, Menu, MenuItem, Box } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AuthContext from '../auth';
+
 import patrickBarbie from "../images/patrick-barbie.png";
 import SearchBar from './SearchBar';
 
 export default function TitleBar() {
   const [anchorEl, setAnchorEl] = useState(null);
-
+  const { auth } = useContext(AuthContext);
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -33,26 +35,37 @@ export default function TitleBar() {
         <Menu
           anchorEl={anchorEl}
           anchorOrigin={{
-            vertical: 'bottom', 
+            vertical: 'bottom',
             horizontal: 'right',
           }}
           keepMounted
           transformOrigin={{
-            vertical: 'top',  
+            vertical: 'top',
             horizontal: 'right',
           }}
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
-
-          <MenuItem onClick={handleClose}>
-            <Link href="/" color="inherit" style={{ textDecoration: 'none' }}>
-              Sign Out
-            </Link>
-          </MenuItem>
+          {auth.loggedIn ? (
+            <>
+              <MenuItem onClick={handleClose}>Profile</MenuItem>
+              <MenuItem onClick={() => {
+                handleClose();
+                auth.logoutUser();
+              }}>
+                <Link href="/" color="inherit" style={{ textDecoration: 'none' }}>
+                  Sign Out
+                </Link>
+              </MenuItem>
+            </>
+          ) : (
+            <MenuItem onClick={handleClose}>
+              <Link href="/login" color="inherit" style={{ textDecoration: 'none' }}>
+                Sign In
+              </Link>
+            </MenuItem>
+          )}
         </Menu>
-
       </div>
     </Box>
   );
