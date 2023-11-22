@@ -41,14 +41,18 @@
     "mongoose": "^8.0.0",
     "nodemon": "^3.0.1",
     "npm": "^10.2.3",
-    "react-router-dom": "^6.18.0"
+    "react-router-dom": "^5.3.4"
   },
   "devDependencies": {
     "@babel/core": "^7.23.3",
     "@babel/plugin-syntax-jsx": "^7.23.3",
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-react": "^7.23.3",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.18",
     "@mui/joy": "^5.0.0-beta.14",
+    "@mui/material": "^5.14.18",
     "@testing-library/react": "^14.1.0",
     "@uiw/react-color-compact": "^2.0.1",
     "axios": "^1.6.1",
@@ -60,6 +64,8 @@
     "react": "^18.2.0",
     "react-csv-reader": "^4.0.0",
     "react-papaparse": "^4.4.0",
+    "react-script": "^2.0.5",
+    "react-scripts": "^5.0.1",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.1"
   }

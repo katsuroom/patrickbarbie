@@ -1,6 +1,5 @@
 import { ConfirmationDialog } from "./MUIPublishMap";
 import React, { useState } from "react";
-import Button from "@mui/material/Button";
 import { useHistory } from 'react-router-dom';
 
 const MUIDeleteMap = () => {
