@@ -5,8 +5,8 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import StoreContext from '../store';
-import { Button } from "@mui/material";
-import html2canvas from 'html2canvas';
+import domtoimage from 'dom-to-image';
+import { saveAs } from 'file-saver';
 
 
 export default function GeoJSONDisplay(props) {
@@ -89,24 +89,38 @@ export default function GeoJSONDisplay(props) {
       }
     }
   }, [geoJsonData, props.mapId]);
-  const captureScreenshot = () => {
-    let elementToCapture = document.getElementById('image-capture-div');
-    if (geoJsonLayerRef.current && geoJsonData) {
-      mapRef.current.whenReady(() => {
-          html2canvas(elementToCapture, { useCORS: true }).then(canvas => {
-            document.body.appendChild(canvas);
-          });
-      });
-    }
-  };
+ 
   
   
+  
+  useEffect(() => {
+    const saveImageButton = L.control({position: 'bottomright'});
+    saveImageButton.onAdd = function () {
+      this._div = L.DomUtil.create('div', 'saveImageButton');
+      this._div.innerHTML = '<Button id="saveImageButton">Save Image</Button>'; 
+      return this._div;
+    };
+    saveImageButton.addTo(mapRef.current);
+
+    document.getElementById('saveImageButton').addEventListener('click', function() {
+      domtoimage.toBlob(document.getElementById('map-display'), {
+        width: 1600,
+        height: 600,
+        style: {
+          transform: "scale(2)",
+          transformOrigin: "top left",
+          width: "50%",
+          height: "50%"
+        }
+      })
+        .then(function (blob) {
+          saveAs(blob, 'map.png');
+        });
+    });
+  }, [props.mapId]);
+
 
   return (
-    <>
     <div id={"map-display"} style={{ width: "60%", height: "300px" }}></div>
-    <Button onClick={captureScreenshot}> Capture Screenshot</Button>
-    </>
-
   );
 }
