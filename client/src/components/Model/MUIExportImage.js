@@ -4,8 +4,8 @@ import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { Typography } from "@mui/material";
-import './MUIPublishMap.css'
-import './ModalAnimation.css'
+import "./MUIPublishMap.css";
+import "./ModalAnimation.css";
 
 import { useHistory } from "react-router-dom";
 
@@ -56,10 +56,9 @@ export const ConfirmationDialog = ({
           className={openDialog ? "modal-dialog is-visible" : "modal-dialog"}
         >
           <header className="dialog-header">
-          <Typography variant="h6" color="error" style={{ width: "90%" }}>
-  {confirmationInfo}
-</Typography>
-
+            <Typography variant="h6" color="error" style={{ width: "90%" }}>
+              {confirmationInfo}
+            </Typography>
           </header>
           <div className="ErrorModalSouth">
             <div className="alertContainer" sx={{}}>
@@ -91,11 +90,11 @@ export const ConfirmationDialog = ({
 
 const MUIExportImage = (props) => {
   console.log(props);
-//   const [open, setOpen] = useState(props.open);
+  //   const [open, setOpen] = useState(props.open);
 
-//   useEffect(() => {
-//     setOpen(props.open);
-//   }, [props.open]);
+  //   useEffect(() => {
+  //     setOpen(props.open);
+  //   }, [props.open]);
 
   const handleClose = () => {
     props.closeModal();
@@ -113,7 +112,6 @@ const MUIExportImage = (props) => {
     props.setImageType("JPEG");
     handleClose();
   };
-
 
   return (
     <div>

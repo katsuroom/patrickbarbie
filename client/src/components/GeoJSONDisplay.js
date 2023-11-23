@@ -17,7 +17,6 @@ export default function GeoJSONDisplay(props) {
   let downloadComplete = props.downloadComplete;
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
 
-
   console.log(props);
   useEffect(() => {
     const reader = new FileReader();
@@ -109,44 +108,7 @@ export default function GeoJSONDisplay(props) {
     document
       .getElementById("saveImageButton")
       .addEventListener("click", props.openModal);
-
-    
-
-    //   document.getElementById('saveImageButton').addEventListener('click', function() {
-    //     domtoimage.toJpeg(document.getElementById('map' + props.mapId), {
-    //       quality: 0.95,
-    //       width: 1920,
-    //       height: 1080,
-    //       style: {
-    //         transform: "scale(2)",
-    //         transformOrigin: "top left",
-    //         width: "50%",
-    //         height: "50%"
-    //       }
-    //     })
-    //     .then(function (dataUrl) {
-    //       saveAs(dataUrl, 'map.jpeg');
-    //     });
-    //   });
-    // }, [props.mapId]);
-
-    //   document.getElementById('saveImageButton').addEventListener('click', function() {
-    //     domtoimage.toBlob(document.getElementById('map-display'), {
-    //       width: 1600,
-    //       height: 600,
-    //       style: {
-    //         transform: "scale(2)",
-    //         transformOrigin: "top left",
-    //         width: "50%",
-    //         height: "50%"
-    //       }
-    //     })
-    //       .then(function (blob) {
-    //         saveAs(blob, 'map.png');
-    //       });
-    //   });
-  }, [props.mapId]);
-
+  }, []);
 
   if (!downloadComplete) {
     if (props.imageType === "JPEG") {
@@ -165,7 +127,7 @@ export default function GeoJSONDisplay(props) {
         .then(function (dataUrl) {
           saveAs(dataUrl, "map.jpeg");
         });
-        downloadComplete = true;
+      downloadComplete = true;
       props.completeDownloadCB();
     } else if (props.imageType === "PNG") {
       console.log("PNG");
@@ -185,11 +147,9 @@ export default function GeoJSONDisplay(props) {
         });
       downloadComplete = true;
       props.completeDownloadCB();
-
     }
-  }
-  else{
-    console.log("download already completed!!!")
+  } else {
+    console.log("download already completed!!!");
   }
 
   return (
