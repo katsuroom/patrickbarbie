@@ -39,18 +39,22 @@ loginUser = async (req, res) => {
         const token = auth.signToken(existingUser._id);
         console.log(token);
         console.log(existingUser.username);
+        console.log("env:", process.env.NODE_ENV);
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: true
-        }).status(200).json({
+        res
+          .cookie("token", token, {
+            httpOnly: false,
+            secure: false,
+            sameSite: "none",
+          })
+          .status(200)
+          .json({
             success: true,
             user: {
-                username: existingUser.username,  
-                email: existingUser.email              
-            }
-        })
+              username: existingUser.username,
+              email: existingUser.email,
+            },
+          });
         console.log("token sent");
 
 
@@ -111,18 +115,22 @@ registerUser = async (req, res) => {
 
         const token = auth.signToken(savedUser._id);
         console.log("token:" + token);
+        console.log("env:", process.env.NODE_ENV)
 
-        await res.cookie("token", token, {
+        await res
+          .cookie("token", token, {
             httpOnly: true,
-            secure: true,
-            sameSite: "none"
-        }).status(200).json({
+            secure: process.env.NODE_ENV,
+            sameSite: "none",
+          })
+          .status(200)
+          .json({
             success: true,
             user: {
-                username: savedUser.username,
-                email: savedUser.email              
-            }
-        })
+              username: savedUser.username,
+              email: savedUser.email,
+            },
+          });
 
         console.log("token sent");
 

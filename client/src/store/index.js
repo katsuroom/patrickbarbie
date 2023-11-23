@@ -141,6 +141,10 @@ function StoreContextProvider(props) {
         // reader.readAsText(file);
     }
 
+    store.forkMap = function(maptitle){
+        api.createMap(maptitle, )
+    }
+
     return (
         <StoreContext.Provider value={{
             store
