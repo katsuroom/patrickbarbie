@@ -1,13 +1,11 @@
-
 // GeoJSONDisplay.js
 
 import React, { useEffect, useState, useRef, useContext } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import StoreContext from '../store';
-import domtoimage from 'dom-to-image';
-import { saveAs } from 'file-saver';
-
+import StoreContext from "../store";
+import domtoimage from "dom-to-image";
+import { saveAs } from "file-saver";
 
 export default function GeoJSONDisplay(props) {
   const [geoJsonData, setGeoJsonData] = useState(null);
@@ -16,7 +14,11 @@ export default function GeoJSONDisplay(props) {
   const markers = useRef([]);
   const workerRef = useRef(null);
   const { store } = useContext(StoreContext);
+  let downloadComplete = props.downloadComplete;
+  // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
 
+
+  console.log(props);
   useEffect(() => {
     const reader = new FileReader();
 
@@ -48,7 +50,9 @@ export default function GeoJSONDisplay(props) {
   useEffect(() => {
     if (!mapRef.current) {
       mapRef.current = L.map("map-display").setView([0, 0], 2);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(mapRef.current);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        mapRef.current
+      );
     }
 
     if (geoJsonLayerRef.current) {
@@ -62,14 +66,17 @@ export default function GeoJSONDisplay(props) {
     if (geoJsonData) {
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
         onEachFeature: (feature, layer) => {
-          const label = L.marker([feature.properties.label_y, feature.properties.label_x], {
-            icon: L.divIcon({
-              className: 'countryLabel',
-              html: feature.properties.name,
-              iconSize: [1000, 0],
-              iconAnchor: [0, 0],
-            }),
-          }).addTo(mapRef.current);
+          const label = L.marker(
+            [feature.properties.label_y, feature.properties.label_x],
+            {
+              icon: L.divIcon({
+                className: "countryLabel",
+                html: feature.properties.name,
+                iconSize: [1000, 0],
+                iconAnchor: [0, 0],
+              }),
+            }
+          ).addTo(mapRef.current);
           markers.current.push(label);
         },
       });
@@ -82,43 +89,108 @@ export default function GeoJSONDisplay(props) {
         if (bounds.isValid()) {
           mapRef.current.fitBounds(bounds);
         } else {
-          console.log('bounds are not valid');
+          console.log("bounds are not valid");
         }
       } else {
-        console.log('geoJsonLayerRef.current is undefined or empty');
+        console.log("geoJsonLayerRef.current is undefined or empty");
       }
     }
   }, [geoJsonData, props.mapId]);
- 
-  
-  
-  
+
   useEffect(() => {
-    const saveImageButton = L.control({position: 'bottomright'});
+    const saveImageButton = L.control({ position: "bottomright" });
     saveImageButton.onAdd = function () {
-      this._div = L.DomUtil.create('div', 'saveImageButton');
-      this._div.innerHTML = '<Button id="saveImageButton">Save Image</Button>'; 
+      this._div = L.DomUtil.create("div", "saveImageButton");
+      this._div.innerHTML = '<Button id="saveImageButton" >Save Image</Button>';
       return this._div;
     };
     saveImageButton.addTo(mapRef.current);
 
-    document.getElementById('saveImageButton').addEventListener('click', function() {
-      domtoimage.toBlob(document.getElementById('map-display'), {
-        width: 1600,
-        height: 600,
-        style: {
-          transform: "scale(2)",
-          transformOrigin: "top left",
-          width: "50%",
-          height: "50%"
-        }
-      })
-        .then(function (blob) {
-          saveAs(blob, 'map.png');
-        });
-    });
+    document
+      .getElementById("saveImageButton")
+      .addEventListener("click", props.openModal);
+
+    
+
+    //   document.getElementById('saveImageButton').addEventListener('click', function() {
+    //     domtoimage.toJpeg(document.getElementById('map' + props.mapId), {
+    //       quality: 0.95,
+    //       width: 1920,
+    //       height: 1080,
+    //       style: {
+    //         transform: "scale(2)",
+    //         transformOrigin: "top left",
+    //         width: "50%",
+    //         height: "50%"
+    //       }
+    //     })
+    //     .then(function (dataUrl) {
+    //       saveAs(dataUrl, 'map.jpeg');
+    //     });
+    //   });
+    // }, [props.mapId]);
+
+    //   document.getElementById('saveImageButton').addEventListener('click', function() {
+    //     domtoimage.toBlob(document.getElementById('map-display'), {
+    //       width: 1600,
+    //       height: 600,
+    //       style: {
+    //         transform: "scale(2)",
+    //         transformOrigin: "top left",
+    //         width: "50%",
+    //         height: "50%"
+    //       }
+    //     })
+    //       .then(function (blob) {
+    //         saveAs(blob, 'map.png');
+    //       });
+    //   });
   }, [props.mapId]);
 
+
+  if (!downloadComplete) {
+    if (props.imageType === "JPEG") {
+      console.log("JEPG");
+      domtoimage
+        .toJpeg(document.getElementById("map-display"), {
+          width: 1400,
+          height: 600,
+          style: {
+            transform: "scale(2)",
+            transformOrigin: "top left",
+            width: "50%",
+            height: "50%",
+          },
+        })
+        .then(function (dataUrl) {
+          saveAs(dataUrl, "map.jpeg");
+        });
+        downloadComplete = true;
+      props.completeDownloadCB();
+    } else if (props.imageType === "PNG") {
+      console.log("PNG");
+      domtoimage
+        .toBlob(document.getElementById("map-display"), {
+          width: 1400,
+          height: 600,
+          style: {
+            transform: "scale(2)",
+            transformOrigin: "top left",
+            width: "50%",
+            height: "50%",
+          },
+        })
+        .then(function (blob) {
+          saveAs(blob, "map.png");
+        });
+      downloadComplete = true;
+      props.completeDownloadCB();
+
+    }
+  }
+  else{
+    console.log("download already completed!!!")
+  }
 
   return (
     <div id={"map-display"} style={{ width: "60%", height: "300px" }}></div>

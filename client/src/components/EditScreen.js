@@ -4,14 +4,16 @@ import MapEditorToolbar from "./MapEditorToolBar";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import GeoJSONDisplay from './GeoJSONDisplay';
-import { Button } from '@mui/material';
-import html2canvas from 'html2canvas';
+import MUIExportImage from './Model/MUIExportImage';
 
 import StoreContext from '../store';
 import { CurrentModal } from '../store';
+import { useState } from 'react';
 
 export default function EditScreen() {
     const { store } = useContext(StoreContext);
+    const [downloadModalOpen, setDownloadModalOpen] = useState(false);
+    const [imageType, setImageType] = useState(null);
 
     const mapRef = useRef(null); // To store the map instance
 
@@ -63,10 +65,19 @@ export default function EditScreen() {
             <div style={toolbarStyle}>
                 <MapEditorToolbar />
             </div>
-            {/* <img src={editScreenDemo} alt="Edit Screen Demo" style={imageStyle} /> */}
             <div id="map" style={{width: "0%", height: 0}}></div>
             <div id="image-capture-div">
-                {store.rawMapFile && <GeoJSONDisplay file={store.rawMapFile} mapId={0} />}
+                <MUIExportImage open={downloadModalOpen} setImageType={
+                        setImageType
+                }
+                
+                closeModal={() => {setDownloadModalOpen(false)}}/>
+                {store.rawMapFile && <GeoJSONDisplay file={store.rawMapFile}
+                openModal={() => {setDownloadModalOpen(true)}}
+                imageType={imageType}
+                completeDownloadCB={() => {setImageType(null)}}
+                downloadComplete={false}
+                />}
             </div>
             <div style={politicalStyle}>
                 <PPolitical />
