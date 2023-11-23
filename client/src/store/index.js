@@ -100,6 +100,14 @@ function StoreContextProvider(props) {
 
     store.createMap = function(title, mapType)
     {
+        console.log("in create map");
+
+        var mapData = "";
+        console.log("mapData: ", auth.user.username, title);
+        api.createMap(mapData, auth.user.username, title).then((response) => {
+          console.log(response);
+        });
+
         let file = store.mapFile;
 
         const reader = new FileReader();
@@ -125,6 +133,12 @@ function StoreContextProvider(props) {
                 };
 
                 // call router to add map to database
+                // var mapData = "";
+                // console.log("mapData: ", title);
+                // api.createMap(mapData, auth.user.username, title)
+                // .then(response => {
+                //     console.log(response);
+                // })
 
                 mapFile.mapData.data = jsonData;
 
@@ -142,7 +156,7 @@ function StoreContextProvider(props) {
     }
 
     store.forkMap = function(maptitle){
-        api.createMap(maptitle, )
+        // api.createMap(maptitle, )
     }
 
     return (

@@ -1,26 +1,18 @@
 // import axios from 'axios'
 // axios.defaults.withCredentials = true;
 // const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "api"
-const baseURL = 'http://localhost:4000/api'
 // const api = axios.create({
 //     baseURL: baseURL,
 // })
 
-const createMap = (mapTitle) => {
-    return fetch(`${baseURL}/map/`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: {
-            mapTitle: mapTitle,
-        },
-    })
-    .then(response => {
-        console.log(response);
-        return response.json().then(data => ({status: response.status, data}));
-    })
-}
+// export const createMap = (mapData, userEmail, mapName) => {
+//     return api.post(`/map/`, {
+//         // SPECIFY THE PAYLOAD
+//         name: mapName,
+//         mapData: mapData,
+//         ownerEmail: userEmail
+//     })
+// }
 
 // export const deleteMap = (mapId) => {
 //     return api.delete(`/map/${mapId}`)
@@ -91,16 +83,53 @@ const createMap = (mapTitle) => {
 //     })
 // }
 
+// const apis = {
+//     createMap,
+//     deleteMap,
+//     updateMap,
+//     getMapById,
+//     getMapList,
+//     getPublishedMapList,
+//     searchMapByName,
+//     searchMapByNameInCommunity,
+//     searchMapById,
+//     searchMapByProperty,
+//     searchMapByPropertyInCommunity
+// }
+
+// export default apis;
+
+// DO NOT USE AXIOS
+
+// when you push to main, use the heroku url
+const baseURL = "https://patrick-barbie-f64046e3bb4b.herokuapp.com/" + "auth";
+
+// when you test locally, use the localhost url
+// const baseURL = "http://localhost:4000/api";
+
+
+const createMap = (mapData, username, mapName) => {
+    console.log("in api.createMap");
+  return fetch(`${baseURL}/map/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: mapName,
+      mapData: mapData,
+      owner: username,
+    }),
+  }).then((response) => {
+    // Parse JSON and include status in the resolved value
+    console.log(response);
+    return response.json().then((data) => { 
+        console.log(data);
+        return {status: response.status, data };
+    });
+  });
+};
+
 export default {
-    createMap,
-    // deleteMap,
-    // updateMap,
-    // getMapById,
-    // getMapList,
-    // getPublishedMapList,
-    // searchMapByName,
-    // searchMapByNameInCommunity,
-    // searchMapById,
-    // searchMapByProperty,
-    // searchMapByPropertyInCommunity
-}
+  createMap,
+};
