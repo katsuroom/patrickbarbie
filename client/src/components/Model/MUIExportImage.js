@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import { Typography } from "@mui/material";
 import './MUIPublishMap.css'
 import './ModalAnimation.css'
 
@@ -55,12 +56,10 @@ export const ConfirmationDialog = ({
           className={openDialog ? "modal-dialog is-visible" : "modal-dialog"}
         >
           <header className="dialog-header">
-            <Alert
-              style={{ fontSize: 20, width: "90%", height: 100 }}
-              severity="error"
-            >
-              {confirmationInfo}
-            </Alert>
+          <Typography variant="h6" color="error" style={{ width: "90%" }}>
+  {confirmationInfo}
+</Typography>
+
           </header>
           <div className="ErrorModalSouth">
             <div className="alertContainer" sx={{}}>
