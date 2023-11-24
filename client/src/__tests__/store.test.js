@@ -1,5 +1,7 @@
 
-import axios from 'axios'
+
+const axios = require('axios');
+
 axios.defaults.withCredentials = true;
 const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "api"
 // const baseURL = 'http://localhost:4000/api';
@@ -9,13 +11,7 @@ const api = axios.create({
 
 
 
-// export const getLoggedIn = () => api.get(`/loggedIn/`);
-const loginUser = (email, password) => {
-    return api.post(`/login/`, {
-        email : email,
-        password : password
-    })
-}
+
 export const getMainScreenMap = (fileName) => {
   return api.get(`/mapFile/`, {
       params: {
