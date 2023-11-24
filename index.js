@@ -27,6 +27,7 @@ app.use('/auth', authRouter)
 const mapRouter = require('./routers/mapRoute')
 app.use('/api', mapRouter)
 
+
 const connectDB = require('./connectDB')
 
 connectDB();

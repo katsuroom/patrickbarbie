@@ -10,7 +10,8 @@ export const StoreActionType = {
     OPEN_MODAL: "OPEN_MODAL",
     CLOSE_MODAL: "CLOSE_MODAL",
     UPLOAD_MAP_FILE: "UPLOAD_MAP_FILE",
-    UPDATE_MAP: "UPDATE_MAP"
+    UPDATE_MAP: "UPDATE_MAP",
+    GET_MAP_FILE: "GET_MAP_FILE"
 };
 
 export const CurrentModal = {
@@ -65,6 +66,12 @@ function StoreContextProvider(props) {
                 return setStore({
                     ...store,
                     mapFile: payload.file
+                });
+            }
+            case StoreActionType.GET_MAP_FILE: {
+                return setStore({
+                    ...store,
+                    rawMapFile: payload.file
                 });
             }
             default:
@@ -139,6 +146,21 @@ function StoreContextProvider(props) {
         };
         
         // reader.readAsText(file);
+    }
+
+    store.getMapFile = async function(fileName)
+    {
+        console.log("getMapFile: ", fileName);
+        const file  = await api.getMainScreenMap(fileName);
+        console.log(file.data);
+        // const blob = await response.blob();
+        // const file = new File([blob], fileName);
+
+
+        storeReducer({
+            type: StoreActionType.GET_MAP_FILE,
+            payload: { file: file.data }
+        });
     }
 
     return (

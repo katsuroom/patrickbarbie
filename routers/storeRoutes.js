@@ -8,4 +8,5 @@ router.use(cors());
 
 router.post('/map', StoreController.createMap);
 
+
 module.exports = router;

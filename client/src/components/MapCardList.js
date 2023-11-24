@@ -14,18 +14,13 @@ import MUIForkMap from './Model/MUIForkMap';
 import StoreContext from '../store';
 import { CurrentModal } from '../store';
 import MapView from './MapView';
-export default function MapCardList() {
+
+
+export default function MapCardList(props) {
   const history = useHistory();
   const { store } = useContext(StoreContext);
 
-  const [maps, setMaps] = useState([
-    { id: 1, name: 'Korea Map' },
-    { id: 2, name: 'Japan Map' },
-    { id: 3, name: 'USA Map' },
-    { id: 4, name: 'World Map' }
-  ]);
-
-
+  const [maps, setMaps] = useState([...props.maps]);
   const [selectedMap, setSelectedMap] = useState(null);
 
 
@@ -35,14 +30,24 @@ export default function MapCardList() {
   };
 
   const handleMapClick = (mapId) => {
-    setMaps(maps.map(map => {
-      if (map.id === mapId) {
-        selectedMap = { ...map, views: (map.views || 0) + 1 };
-        setSelectedMap(selectedMap);
-        // update the view count in the database here
-        // sendUpdateRequest(updatedMap);
-      }
-    }));
+    // setMaps(maps.map(map => {
+    //   if (map.id === mapId) {
+    //     selectedMap = { ...map, views: (map.views || 0) + 1 };
+    //     setSelectedMap(selectedMap);
+    //     // update the view count in the database here
+    //     // sendUpdateRequest(updatedMap);
+    //   }
+    // }));
+
+    maps.map(map => {
+        if (map.id === mapId) {
+          store.getMapFile(map.fileName);
+        }
+      })
+
+
+
+    setSelectedMap(mapId);
   };
 
   // backend connect here
@@ -84,7 +89,7 @@ export default function MapCardList() {
           <React.Fragment key={map.id}>
             {index > 0 && <Divider />}
             <ListItem button onClick={() => handleMapClick(map.id)}>
-              <ListItemText primary={map.name} style={{ padding: "0px", backgroundColor: index === maps.length - 1 ? '#f6c0fa' : '#F7D3E4' }} />
+              <ListItemText primary={map.name} style={{ padding: "0px", backgroundColor: index + 1 === selectedMap ? '#f6c0fa' : '#F7D3E4' }} />
             </ListItem>
           </React.Fragment>
         ))}
@@ -106,14 +111,14 @@ export default function MapCardList() {
       <MUIUploadMap />
       <MUICreateMap />
       <MUIForkMap />
-      {selectedMap && (
+      {/* {selectedMap && (
         <MapView
           fileSelected={selectedMap.fileSelected}
           projectName={selectedMap.name}
           mapType={selectedMap.mapType}
           views={selectedMap.views}
         />
-      )}
+      )} */}
     </Box>
   );
 };
