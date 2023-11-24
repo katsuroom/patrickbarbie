@@ -12,7 +12,7 @@ const api = axios.create({
 
 
 
-export const getMainScreenMap = (fileName) => {
+const getMainScreenMap = (fileName) => {
   return api.get(`/mapFile/`, {
       params: {
           fileName: fileName
