@@ -1,9 +1,11 @@
-
-import AuthContext from '../../auth';
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import "./RegisterScreen.css";
 import Button from "@mui/material/Button";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import IconButton from '@mui/material/IconButton';
+import AuthContext from '../../auth';
 
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
@@ -11,6 +13,8 @@ export default function RegisterScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState('');
 
     const handleSubmit = (event) => {
@@ -35,6 +39,14 @@ export default function RegisterScreen() {
 
         console.log("valid registration info");
         auth.registerUser(username, email, password);
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
     };
 
     return (
@@ -75,26 +87,38 @@ export default function RegisterScreen() {
                                 Password:
                                 <br />
                                 <input
-                                    type='password'
+                                    type={showPassword ? 'text' : 'password'}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                 />
-                                <p>Password must contain at least 8 characters, include both uppercase
-                                    and lowercase letters, and at least 1 special character.
-                                </p>
+                                <IconButton
+                                    onClick={togglePasswordVisibility}
+                                    edge="end"
+                                >
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
                             </label>
+                            <p>Password must contain at least 8 characters, include both uppercase
+                                and lowercase letters, and at least 1 special character.
+                            </p>
                         </div>
                         <div className='inputLabel'>
                             <label>
                                 Confirm Password:
                                 <br />
                                 <input
-                                    type='password'
+                                    type={showConfirmPassword ? 'text' : 'password'}
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
                                 />
+                                <IconButton
+                                    onClick={toggleConfirmPasswordVisibility}
+                                    edge="end"
+                                >
+                                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
                             </label>
                         </div>
                     </div>
