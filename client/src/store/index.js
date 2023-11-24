@@ -131,6 +131,23 @@ function StoreContextProvider(props) {
                     comments: []
                 };
 
+
+                switch (mapType) {
+                    // POLITICAL MAP
+                    case MapType.POLITICAL_MAP:
+                        mapFile.mapData.polygons = []; 
+                        mapFile.mapData.key = []; 
+                        break;
+                    // HEATMAP
+                    case MapType.HEATMAP:
+                        mapFile.mapData.color1 = "#FFC0CB"; // Light Pink
+                        mapFile.mapData.color2 = "#FF69B4"; // Brighter Pink
+                        mapFile.mapData.min = 0;
+                        mapFile.mapData.max = 100; 
+                        mapFile.mapData.display = "property"; 
+                        break;
+                }
+
                 // call router to add map to database
 
                 mapFile.mapData.data = jsonData;
