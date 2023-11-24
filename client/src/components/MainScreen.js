@@ -18,7 +18,7 @@ export default function MainScreen()
         { id: 4, name: 'Africa', fileName: "AFRICA2.json"},
         { id: 5, name: 'Europe', fileName: "EU2.json"},
         { id: 6, name: 'Oceania', fileName: "Oceania2.json"},
-        { id: 7, name: 'World', fileName: "World2.json"}
+        { id: 7, name: 'World', fileName: "World.json"}
     ]
 
 
