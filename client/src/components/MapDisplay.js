@@ -16,11 +16,20 @@ export default function MapDisplay() {
 
   const layoutStyle = {
     display: "flex",
-    flexDirection: "column",
+    // flexDirection: "column",
     height: "100%",
-    padding: "10vh 0",
+    padding: "1vh 0",
     boxSizing: "border-box",
+    justifyContent: "center",
+    alignItems: "center",    
   };
+
+  const mapContainerStyle = {
+    width: "95%",    
+    height: "50vh", 
+    flexShrink: 0,  
+  };
+
 
   const politicalStyle = {
     width: "30%",
@@ -43,7 +52,7 @@ export default function MapDisplay() {
 
   return (
     <div style={layoutStyle}>
-      <div id="map" style={{ width: "0%", height: 0 }}></div>
+      <div id="map" style={mapContainerStyle}></div>
       <div id="image-capture-div">
         <MUIExportImage
           open={downloadModalOpen}
