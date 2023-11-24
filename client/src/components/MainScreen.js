@@ -27,7 +27,7 @@ export default function MainScreen()
         <div>
             <div >
                 <MapCardList maps={maps}/>
-                {store.rawMapfile || <MapView />}
+                <MapView />
                 {/* <MapDisplay/> */}
             </div>
         </div>

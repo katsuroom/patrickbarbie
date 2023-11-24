@@ -111,7 +111,8 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
     
 
 
-    return (
+
+        const res = (
         <div style={{ overflowY: "scroll", height: "50%" }}>
             {/* <div id="map" style={{ height: 400 }}></div> */}
             <MapDisplay/>
@@ -176,8 +177,9 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
             <div style={{ backgroundColor: "#FDF4F3", padding: 10, margin: 10 }}>
                 {/* <Typography sx={{ fontFamily: 'Sen', color: "black", fontSize: "16pt" }}>0 comments</Typography> */}
 
-                <CommentSection initialComments={initialComments} />
+                {<CommentSection initialComments={initialComments} />}
             </div>
         </div>
     );
+    return store.rawMapFile ? res : <></>;
 }
