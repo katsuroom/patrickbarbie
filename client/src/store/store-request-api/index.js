@@ -102,30 +102,33 @@
 // DO NOT USE AXIOS
 
 // when you push to main, use the heroku url
-const baseURL = "https://patrick-barbie-f64046e3bb4b.herokuapp.com/" + "auth";
+// const baseURL = "https://patrick-barbie-f64046e3bb4b.herokuapp.com/" + "auth";
 
 // when you test locally, use the localhost url
-// const baseURL = "http://localhost:4000/api";
+const baseURL = "http://localhost:4000";
 
 
 const createMap = (mapData, username, mapName) => {
     console.log("in api.createMap");
+    console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
+    let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
   return fetch(`${baseURL}/map/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: token,
     },
     body: JSON.stringify({
-      name: mapName,
+      title: mapName,
       mapData: mapData,
-      owner: username,
+      author: username,
     }),
   }).then((response) => {
     // Parse JSON and include status in the resolved value
     console.log(response);
-    return response.json().then((data) => { 
-        console.log(data);
-        return {status: response.status, data };
+    return response.json().then((data) => {
+      console.log(data);
+      return { status: response.status, data };
     });
   });
 };

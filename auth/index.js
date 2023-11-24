@@ -55,3 +55,20 @@ function authManager() {
 
 const auth = authManager();
 module.exports = auth;
+
+
+// const jwtSecret = "asdasdasd";
+// const express = require("express");
+// const app = express();
+// const expressJwt = require("express-jwt");
+
+// app.use(
+//   expressJwt({ secret: jwtSecret }).unless({
+//     path: [/^\/map/, /^\/published-maps/],
+//   })
+// );
+// app.use((err, req, res, next) => {
+//   if (err.name === "UnauthorizedError") {
+//     res.status(401).send({ message: "token Unauthorized" });
+//   }
+// });

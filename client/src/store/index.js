@@ -156,7 +156,12 @@ function StoreContextProvider(props) {
     }
 
     store.forkMap = function(maptitle){
-        // api.createMap(maptitle, )
+        var mapData = "";
+        console.log("mapData: ", auth.user.username, maptitle);
+        api.createMap(mapData, auth.user.username, maptitle)
+        .then((response) => {
+            console.log(response);
+        });
     }
 
     return (

@@ -1,6 +1,7 @@
-const auth = require("../auth");
+// const auth = require("../auth");
 const User = require("../models/user_model");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 loginUser = async (req, res) => {
   console.log("loginUser");
@@ -35,24 +36,23 @@ loginUser = async (req, res) => {
     }
 
     // LOGIN THE USER
-    const token = auth.signToken(existingUser._id);
+    // const token = auth.signToken(existingUser._id);
+    const token = jwt.sign({ userId: existingUser._id }, process.env.JWT_SECRET);
     console.log(token);
     console.log(existingUser.username);
 
     res
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: true,
-      })
       .status(200)
       .json({
+        token: `Bearer ${token}`,
         success: true,
         user: {
           username: existingUser.username,
           email: existingUser.email,
         },
-      });
+    });
+    
+    // console.log("header: ", res.getHeaders());
     console.log("token sent");
 
     console.log("sent status 200");

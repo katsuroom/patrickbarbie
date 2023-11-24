@@ -188,6 +188,12 @@ function AuthContextProvider(props) {
             // Handle the successful login response
             if(response.status === 200){
                 console.log('Login successful:', response);
+                console.log("token: ", response.data.token);
+                if(response.data.token){
+                    const jsonData = JSON.stringify(response);
+                    localStorage.setItem("user", jsonData);
+                    console.log("token: ", localStorage.getItem("user"));
+                }
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
                     payload: {
