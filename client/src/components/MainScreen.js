@@ -12,13 +12,13 @@ export default function MainScreen()
 
 
     const maps = [
-        { id: 1, name: 'North America', fileName: "NA.json"},
-        { id: 2, name: 'South America', fileName: "SA.json"},
-        { id: 3, name: 'Asia', fileName: "ASIA.json"},
-        { id: 4, name: 'Africa', fileName: "AFRICA.json"},
-        { id: 5, name: 'Europe', fileName: "EU.json"},
-        { id: 6, name: 'Oceania', fileName: "Oceania.json"},
-        { id: 7, name: 'World', fileName: "World.json"}
+        { id: 1, name: 'North America', fileName: "NA2.json"},
+        { id: 2, name: 'South America', fileName: "SA2.json"},
+        { id: 3, name: 'Asia', fileName: "ASIA2.json"},
+        { id: 4, name: 'Africa', fileName: "AFRICA2.json"},
+        { id: 5, name: 'Europe', fileName: "EU2.json"},
+        { id: 6, name: 'Oceania', fileName: "Oceania2.json"},
+        { id: 7, name: 'World', fileName: "World2.json"}
     ]
 
 
