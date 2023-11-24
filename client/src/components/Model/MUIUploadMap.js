@@ -30,8 +30,6 @@ export default function MUIUploadMap() {
     };
 
     const handleFileSelect = (event) => {
-        // console.log(store.rawMapFile)
-        // if (store.rawMapFile) return;
         const file = event.target.files[0];
         console.log(file);
         if (file) {
@@ -74,9 +72,15 @@ export default function MUIUploadMap() {
                             style={{ display: 'none' }}
                         />
                         <label htmlFor="fileInput">
-                            <CloudUploadIcon style={uploadIconStyle} />
-                            {/* Clicking the icon now opens the file dialog */}
+                            <Button
+                                variant="contained"
+                                component="span"
+                                sx={buttonStyle}
+                            >
+                                <CloudUploadIcon style={uploadIconStyle} />
+                            </Button>
                         </label>
+                        <br />
                         <Button onClick={onClose}
                             variant="contained"
                             sx={buttonStyle}
