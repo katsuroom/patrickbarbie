@@ -109,16 +109,11 @@ registerUser = async (req, res) => {
     const savedUser = await newUser.save();
     console.log("new user saved: " + savedUser._id);
 
-    const token = auth.signToken(savedUser._id);
-    console.log("token:" + token);
-    console.log("env:", process.env.NODE_ENV);
+    // const token = auth.signToken(savedUser._id);
+    // console.log("token:" + token);
+    // console.log("env:", process.env.NODE_ENV);
 
-    await res
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV,
-        sameSite: "none",
-      })
+    res
       .status(200)
       .json({
         success: true,

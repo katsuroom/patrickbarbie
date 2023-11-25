@@ -72,3 +72,39 @@ module.exports = auth;
 //     res.status(401).send({ message: "token Unauthorized" });
 //   }
 // });
+
+
+// import jwt from "jsonwebtoken";
+// import dotenv from "dotenv";
+
+// dotenv.config();
+// const SECRET = process.env.JWT_SECRET;
+
+// const auth = async (req, res, next) => {
+//   try {
+//     const token = req.headers.authorization.split(" ")[1];
+//     const isCustomAuth = token.length < 500;
+
+//     let decodeData;
+
+//     //If token is custom token do this
+//     if (token && isCustomAuth) {
+//       decodeData = jwt.verify(token, SECRET);
+
+//       req.userId = decodeData?.userId;
+//       console.log("verify, req.userId: " + userId);
+//     } else {
+//       //Else of token is google token then do this
+//       decodeData = jwt.decode(token);
+
+//       req.userId = decodeData?.userId;
+//       console.log("decode, req.userId: " + userId);
+//     }
+
+//     next();
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+
+// export default auth;

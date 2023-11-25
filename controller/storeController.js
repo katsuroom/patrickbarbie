@@ -3,16 +3,36 @@ const User = require("../models/user_model");
 const jwt = require("jsonwebtoken");
 const auth = require("../auth");
 
+const extractUserIdFromToken = (token) => {
+  try {
+    const isCustomAuth = token.length < 500;
+    let decodeData;
+
+    // If token is a custom token, verify it
+    if (token && isCustomAuth) {
+      decodeData = jwt.verify(token, process.env.JWT_SECRET);
+    } else {
+      // If token is a Google token, decode it
+      decodeData = jwt.decode(token);
+    }
+
+    return decodeData?.userId || null;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
 createMap = (req, res) => {
   console.log("start create Map");
 
-  //   if (auth.verifyUser(req) === null) {
-  //     return res.status(401).json({
-  //       loggedIn: false,
-  //       user: null,
-  //       errorMessage: "Unauthorized",
-  //     });
-  //   }
+    // if (auth.auth(req) === null) {
+    //   return res.status(401).json({
+    //     loggedIn: false,
+    //     user: null,
+    //     errorMessage: "Unauthorized",
+    //   });
+    // }
 
   var userId;
 
@@ -20,30 +40,33 @@ createMap = (req, res) => {
   console.log("req: ", req.body);
   console.log("req: ", req.headers);
 
-  try {
+//   try {
+//     const token = req.headers.authorization.split(" ")[1];
+//     const isCustomAuth = token.length < 500;
+
+//     let decodeData;
+
+//     //If token is custom token do this
+//     if (token && isCustomAuth) {
+//         console.log("token: " + token);
+//       decodeData = jwt.verify(token, process.env.JWT_SECRET);
+
+//       userId = decodeData?.userId;
+//       console.log("verify, req.userId: " + userId);
+//     } else {
+//       //Else of token is google token then do this
+//       decodeData = jwt.decode(token);
+
+//       userId = decodeData?.userId;
+//       console.log("decode, req.userId: " + userId);
+//     }
+
+//   } catch (error) {
+//     console.log(error);
+//   }
+
     const token = req.headers.authorization.split(" ")[1];
-    const isCustomAuth = token.length < 500;
-
-    let decodeData;
-
-    //If token is custom token do this
-    if (token && isCustomAuth) {
-        console.log("token: " + token);
-      decodeData = jwt.verify(token, process.env.JWT_SECRET);
-
-      userId = decodeData?.userId;
-      console.log("verify, req.userId: " + userId);
-    } else {
-      //Else of token is google token then do this
-      decodeData = jwt.decode(token);
-
-      userId = decodeData?.userId;
-      console.log("decode, req.userId: " + userId);
-    }
-
-  } catch (error) {
-    console.log(error);
-  }
+    userId = extractUserIdFromToken(token);
 
 
 
@@ -62,7 +85,7 @@ createMap = (req, res) => {
   if (!map) {
     return res.status(400).json({ success: false, error: err });
   }
-  console.log("req: ", userId);
+//   console.log("req.userId: ", req.userId);
 
   User.findOne({ _id: userId })
     .then((user) => {
