@@ -120,9 +120,7 @@ export default function MapCardList(props) {
       </Fab>
       <MUIUploadMap />
       <MUICreateMap />
-      <MUIForkMap />
-      <MUIPublishMap />
-      <MUIDeleteMap />
+      
       {/* {selectedMap && (
         <MapView
           fileSelected={selectedMap.fileSelected}

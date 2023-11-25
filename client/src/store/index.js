@@ -217,6 +217,14 @@ function StoreContextProvider(props) {
         console.log("deleting map: ", mapId);
     }
 
+    store.getMapsByUser = function(){
+        console.log("getting maps by user");
+        api.getMapsByUser()
+        .then((response) => {
+            console.log(response);
+        }); 
+    }
+
     return (
         <StoreContext.Provider value={{
             store

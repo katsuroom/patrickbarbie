@@ -8,11 +8,14 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Delete, CloudUpload, Edit, Download, Share } from '@mui/icons-material';
 import { useHistory } from 'react-router-dom';
 import CommentSection from "./Comments/CommentSection";
-import MUIForkMap from "./Model/MUIForkMap";
 import StoreContext from "../store";
 import { CurrentModal } from "../store"
 import AuthContext from "../auth";
 import MapDisplay from "./MapDisplay";
+
+import MUIDeleteMap from "./Model/MUIDeleteMap";
+import MUIForkMap from "./Model/MUIForkMap";
+import MUIPublishMap from "./Model/MUIPublishMap";
 
 export default function MapView({ fileSelected, projectName, mapType, views }) {
 
@@ -185,6 +188,9 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
 
                 {<CommentSection initialComments={initialComments} />}
             </div>
+            <MUIDeleteMap/>
+            <MUIForkMap/>
+            <MUIPublishMap/>
         </div>
     );
     return store.rawMapFile ? res : <></>;
