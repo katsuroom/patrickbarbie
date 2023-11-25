@@ -56,11 +56,15 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
     // }, [fileSelected]);
 
     function handleDeleteClick() {
-        history.push("/deleteMap");
+        // history.push("/deleteMap");
+        console.log("Forking map");
+        store.openModal(CurrentModal.DELETE_MAP);
     }
 
     function handlePublishClick() {
-        history.push("/publishMap");
+        // history.push("/publishMap");
+        console.log("Forking map");
+        store.openModal(CurrentModal.PUBLISH_MAP);
     }
 
     function handleEditClick() {

@@ -133,6 +133,27 @@ const createMap = (mapData, username, mapName) => {
   });
 };
 
+const getMapsByUser = () => {
+  console.log("in api.getMapsByUser");
+  console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
+  let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
+  return fetch(`${baseURL}/maps/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+    }).then((response) => {
+      // Parse JSON and include status in the resolved value
+      console.log(response);
+      return response.json().then((data) => {
+        console.log(data);
+        return { status: response.status, data };
+      });
+    });
+};
+
 export default {
   createMap,
+  getMapsByUser,
 };

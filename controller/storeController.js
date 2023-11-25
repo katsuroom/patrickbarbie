@@ -263,16 +263,25 @@ getMapById = (req, res) => {
 
 getMapsByUser = (req, res) => {
   console.log("start get Maps");
-  if (auth.verifyUser(req) === null) {
-    return res.status(401).json({
-      loggedIn: false,
-      user: null,
-      errorMessage: "Unauthorized",
-    });
-  }
-  console.log("req: ", req.userId);
+  var userId;
+  console.log("req: ", req.body);
+  console.log("req: ", req.headers);
+  
+  const token = req.headers.authorization.split(" ")[1];
+  userId = extractUserIdFromToken(token);
+  console.log("req: ", userId);
+  console.log("req: ", typeof(userId));
 
-  User.findById(req.userId)
+//   if (auth.verifyUser(req) === null) {
+//     return res.status(401).json({
+//       loggedIn: false,
+//       user: null,
+//       errorMessage: "Unauthorized",
+//     });
+//   }
+  
+
+  User.findById(userId)
     .populate("maps")
     .exec()
     .then((user) => {

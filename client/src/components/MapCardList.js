@@ -8,8 +8,11 @@ import Divider from "@mui/material/Divider";
 import AddIcon from "@mui/icons-material/Add";
 import MUICreateMap from "./Model/MUICreateMap";
 import { useHistory } from "react-router-dom";
+
 import MUIUploadMap from "./Model/MUIUploadMap";
 import MUIForkMap from "./Model/MUIForkMap";
+import MUIPublishMap from "./Model/MUIPublishMap";
+import MUIDeleteMap from "./Model/MUIDeleteMap";
 
 import StoreContext from "../store";
 import { CurrentModal } from "../store";
@@ -118,6 +121,8 @@ export default function MapCardList(props) {
       <MUIUploadMap />
       <MUICreateMap />
       <MUIForkMap />
+      <MUIPublishMap />
+      <MUIDeleteMap />
       {/* {selectedMap && (
         <MapView
           fileSelected={selectedMap.fileSelected}

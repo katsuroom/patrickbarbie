@@ -19,6 +19,8 @@ export const CurrentModal = {
     UPLOAD_MAP: "UPLOAD_MAP",
     CREATE_MAP: "CREATE_MAP",
     FORK_MAP: "FORK_MAP",
+    PUBLISH_MAP: "PUBLISH_MAP",
+    DELETE_MAP: "DELETE_MAP",
 };
 
 export const MapType = {
@@ -201,6 +203,18 @@ function StoreContextProvider(props) {
         .then((response) => {
             console.log(response);
         });
+    }
+
+    store.publishMap = function(mapId){
+        console.log("publishing map: ", mapId);
+        // api.publishMap(mapId)
+        // .then((response) => {
+        //     console.log(response);
+        // });
+    }
+
+    store.deleteMap = function(mapId){
+        console.log("deleting map: ", mapId);
     }
 
     return (
