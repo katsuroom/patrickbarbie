@@ -7,6 +7,7 @@ import StoreContext from "../store";
 import domtoimage from "dom-to-image";
 import { saveAs } from "file-saver";
 
+
 export default function GeoJSONDisplay(props) {
   const [geoJsonData, setGeoJsonData] = useState(null);
   const mapRef = useRef(null);
@@ -17,33 +18,38 @@ export default function GeoJSONDisplay(props) {
   let downloadComplete = props.downloadComplete;
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
 
-  console.log(props);
   useEffect(() => {
-    const reader = new FileReader();
-
-    if (window.Worker) {
-      console.log("Web worker supported");
-      workerRef.current = new Worker("worker.js");
+    console.log(store.rawMapFile instanceof File);
+    if (!(store.rawMapFile instanceof File)) {
+      console.log("not a file")
+      setGeoJsonData(store.rawMapFile);
     } else {
-      console.log("Web worker not supported");
+      const reader = new FileReader();
+
+      if (window.Worker) {
+        console.log("Web worker supported");
+        workerRef.current = new Worker("worker.js");
+      } else {
+        console.log("Web worker not supported");
+      }
+
+      reader.onload = function (event) {
+        const jsonDataString = event.target.result;
+        // Use the web worker for parsing
+        workerRef.current.postMessage(jsonDataString);
+      };
+
+      workerRef.current.onmessage = function (event) {
+        setGeoJsonData(event.data);
+      };
+      console.log(store.rawMapFile);
+      reader.readAsText(store.rawMapFile);
+
+      // Clean up the worker when component unmounts
+      return () => {
+        workerRef.current.terminate();
+      };
     }
-
-    reader.onload = function (event) {
-      const jsonDataString = event.target.result;
-      // Use the web worker for parsing
-      workerRef.current.postMessage(jsonDataString);
-    };
-
-    workerRef.current.onmessage = function (event) {
-      setGeoJsonData(event.data);
-    };
-    console.log(store.rawMapFile);
-    reader.readAsText(store.rawMapFile);
-
-    // Clean up the worker when component unmounts
-    return () => {
-      workerRef.current.terminate();
-    };
   }, [store.rawMapFile]);
 
   useEffect(() => {
@@ -63,6 +69,7 @@ export default function GeoJSONDisplay(props) {
     markers.current = [];
 
     if (geoJsonData) {
+      console.log(geoJsonData);
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
         onEachFeature: (feature, layer) => {
           const label = L.marker(

@@ -10,7 +10,8 @@ export const StoreActionType = {
     OPEN_MODAL: "OPEN_MODAL",
     CLOSE_MODAL: "CLOSE_MODAL",
     UPLOAD_MAP_FILE: "UPLOAD_MAP_FILE",
-    UPDATE_MAP: "UPDATE_MAP"
+    UPDATE_MAP: "UPDATE_MAP",
+    GET_MAP_FILE: "GET_MAP_FILE"
 };
 
 export const CurrentModal = {
@@ -65,6 +66,12 @@ function StoreContextProvider(props) {
                 return setStore({
                     ...store,
                     mapFile: payload.file
+                });
+            }
+            case StoreActionType.GET_MAP_FILE: {
+                return setStore({
+                    ...store,
+                    rawMapFile: payload.file
                 });
             }
             default:
@@ -132,6 +139,23 @@ function StoreContextProvider(props) {
                     comments: []
                 };
 
+
+                switch (mapType) {
+                    // POLITICAL MAP
+                    case MapType.POLITICAL_MAP:
+                        mapFile.mapData.polygons = []; 
+                        mapFile.mapData.key = []; 
+                        break;
+                    // HEATMAP
+                    case MapType.HEATMAP:
+                        mapFile.mapData.color1 = "#FFC0CB"; // Light Pink
+                        mapFile.mapData.color2 = "#FF69B4"; // Brighter Pink
+                        mapFile.mapData.min = 0;
+                        mapFile.mapData.max = 100; 
+                        mapFile.mapData.display = "property"; 
+                        break;
+                }
+
                 // call router to add map to database
                 // var mapData = "";
                 // console.log("mapData: ", title);
@@ -153,6 +177,21 @@ function StoreContextProvider(props) {
         };
         
         // reader.readAsText(file);
+    }
+
+    store.getMapFile = async function(fileName)
+    {
+        console.log("getMapFile: ", fileName);
+        const file  = await api.getMainScreenMap(fileName);
+        console.log(file.data);
+        // const blob = await response.blob();
+        // const file = new File([blob], fileName);
+
+
+        storeReducer({
+            type: StoreActionType.GET_MAP_FILE,
+            payload: { file: file.data }
+        });
     }
 
     store.forkMap = function(maptitle){

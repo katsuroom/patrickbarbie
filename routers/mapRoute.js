@@ -11,4 +11,10 @@ router.get('/maps', MapController.getMapsByUser)
 router.get('/map/:id', MapController.getMapById)
 router.get('/published-maps', MapController.getPublishedMaps)
 
+
+router.get('/mapFile', MapController.sendMapFile);
+
+
+
+
 module.exports = router

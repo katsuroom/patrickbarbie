@@ -12,14 +12,15 @@ import MUIForkMap from "./Model/MUIForkMap";
 import StoreContext from "../store";
 import { CurrentModal } from "../store"
 import AuthContext from "../auth";
+import MapDisplay from "./MapDisplay";
 
 export default function MapView({ fileSelected, projectName, mapType, views }) {
 
     const { store } = useContext(StoreContext);
     const { auth } = useContext(AuthContext);
     const history = useHistory();
-    const mapRef = useRef(null);
-    const geoJsonLayerRef = useRef(null);
+    // const mapRef = useRef(null);
+    // const geoJsonLayerRef = useRef(null);
 
 
     //temp used
@@ -29,30 +30,30 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
     };
 
 
-    useEffect(() => {
-        if (!mapRef.current) {
-            mapRef.current = L.map('map').setView([51.505, -0.09], 2);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapRef.current);
-        }
+    // useEffect(() => {
+    //     if (!mapRef.current) {
+    //         mapRef.current = L.map('map').setView([51.505, -0.09], 2);
+    //         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapRef.current);
+    //     }
 
-        if (fileSelected && fileSelected instanceof File) {
-            const reader = new FileReader();
-            reader.onload = function (event) {
-                try {
-                    const jsonData = JSON.parse(event.target.result);
-                    if (geoJsonLayerRef.current) {
-                        mapRef.current.removeLayer(geoJsonLayerRef.current);
-                    }
-                    geoJsonLayerRef.current = L.geoJSON(jsonData);
-                    geoJsonLayerRef.current.addTo(mapRef.current);
-                    mapRef.current.fitBounds(geoJsonLayerRef.current.getBounds());
-                } catch (error) {
-                    console.error("Error parsing GeoJSON:", error);
-                }
-            };
-            reader.readAsText(fileSelected);
-        }
-    }, [fileSelected]);
+    //     if (fileSelected && fileSelected instanceof File) {
+    //         const reader = new FileReader();
+    //         reader.onload = function (event) {
+    //             try {
+    //                 const jsonData = JSON.parse(event.target.result);
+    //                 if (geoJsonLayerRef.current) {
+    //                     mapRef.current.removeLayer(geoJsonLayerRef.current);
+    //                 }
+    //                 geoJsonLayerRef.current = L.geoJSON(jsonData);
+    //                 geoJsonLayerRef.current.addTo(mapRef.current);
+    //                 mapRef.current.fitBounds(geoJsonLayerRef.current.getBounds());
+    //             } catch (error) {
+    //                 console.error("Error parsing GeoJSON:", error);
+    //             }
+    //         };
+    //         reader.readAsText(fileSelected);
+    //     }
+    // }, [fileSelected]);
 
     function handleDeleteClick() {
         history.push("/deleteMap");
@@ -109,9 +110,14 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
     ];
     
 
-    return (
+
+
+        const res = (
         <div style={{ overflowY: "scroll", height: "50%" }}>
-            <div id="map" style={{ height: 400 }}></div>
+            {/* <div id="map" style={{ height: 400 }}></div> */}
+            <div style={{ width: "1500px" }}>
+            <MapDisplay/>
+            </div>
             <div style={{
                 backgroundColor: "#F8D6DD",
                 padding: 10,
@@ -173,8 +179,9 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
             <div style={{ backgroundColor: "#FDF4F3", padding: 10, margin: 10 }}>
                 {/* <Typography sx={{ fontFamily: 'Sen', color: "black", fontSize: "16pt" }}>0 comments</Typography> */}
 
-                <CommentSection initialComments={initialComments} />
+                {<CommentSection initialComments={initialComments} />}
             </div>
         </div>
     );
+    return store.rawMapFile ? res : <></>;
 }
