@@ -42,37 +42,12 @@ createMap = (req, res) => {
   console.log("req: ", req.body);
   console.log("req: ", req.headers);
 
-//   try {
-//     const token = req.headers.authorization.split(" ")[1];
-//     const isCustomAuth = token.length < 500;
-
-//     let decodeData;
-
-//     //If token is custom token do this
-//     if (token && isCustomAuth) {
-//         console.log("token: " + token);
-//       decodeData = jwt.verify(token, process.env.JWT_SECRET);
-
-//       userId = decodeData?.userId;
-//       console.log("verify, req.userId: " + userId);
-//     } else {
-//       //Else of token is google token then do this
-//       decodeData = jwt.decode(token);
-
-//       userId = decodeData?.userId;
-//       console.log("decode, req.userId: " + userId);
-//     }
-
-//   } catch (error) {
-//     console.log(error);
-//   }
-
     const token = req.headers.authorization.split(" ")[1];
     userId = extractUserIdFromToken(token);
 
 
 
-  console.log("userId: " + userId);
+  console.log("userId: " + req.userId);
 
   const body = req.body;
   if (!body) {
@@ -89,7 +64,7 @@ createMap = (req, res) => {
   }
 //   console.log("req.userId: ", req.userId);
 
-  User.findOne({ _id: userId })
+  User.findOne({ _id: req.userId })
     .then((user) => {
       console.log("user found: " + JSON.stringify(user));
       user.maps.push(map);

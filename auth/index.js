@@ -1,60 +1,60 @@
 const jwt = require("jsonwebtoken")
 
-function authManager() {
-    verify = (req, res, next) => {
-        console.log("req: " + req);
-        console.log("next: " + next);
-        console.log("Who called verify?");
-        try {
-            const token = req.cookies.token;
-            if (!token) {
-                return res.status(401).json({
-                    loggedIn: false,
-                    user: null,
-                    errorMessage: "Unauthorized"
-                })
-            }
+// function authManager() {
+//     verify = (req, res, next) => {
+//         console.log("req: " + req);
+//         console.log("next: " + next);
+//         console.log("Who called verify?");
+//         try {
+//             const token = req.cookies.token;
+//             if (!token) {
+//                 return res.status(401).json({
+//                     loggedIn: false,
+//                     user: null,
+//                     errorMessage: "Unauthorized"
+//                 })
+//             }
 
-            const verified = jwt.verify(token, process.env.JWT_SECRET)
-            console.log("verified.userId: " + verified.userId);
-            req.userId = verified.userId;
+//             const verified = jwt.verify(token, process.env.JWT_SECRET)
+//             console.log("verified.userId: " + verified.userId);
+//             req.userId = verified.userId;
 
-            next();
-        } catch (err) {
-            console.error(err);
-            return res.status(401).json({
-                loggedIn: false,
-                user: null,
-                errorMessage: "Unauthorized"
-            });
-        }
-    }
+//             next();
+//         } catch (err) {
+//             console.error(err);
+//             return res.status(401).json({
+//                 loggedIn: false,
+//                 user: null,
+//                 errorMessage: "Unauthorized"
+//             });
+//         }
+//     }
 
-    verifyUser = (req) => {
-        try {
-            const token = req.cookies.token;
-            if (!token) {
-                return null;
-            }
+//     verifyUser = (req) => {
+//         try {
+//             const token = req.cookies.token;
+//             if (!token) {
+//                 return null;
+//             }
 
-            const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-            return decodedToken.userId;
-        } catch (err) {
-            return null;
-        }
-    }
+//             const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+//             return decodedToken.userId;
+//         } catch (err) {
+//             return null;
+//         }
+//     }
 
-    signToken = (userId) => {
-        return jwt.sign({
-            userId: userId
-        }, process.env.JWT_SECRET);
-    }
+//     signToken = (userId) => {
+//         return jwt.sign({
+//             userId: userId
+//         }, process.env.JWT_SECRET);
+//     }
 
-    return this;
-}
+//     return this;
+// }
 
-const auth = authManager();
-module.exports = auth;
+// const auth = authManager();
+// module.exports = auth;
 
 
 // const jwtSecret = "asdasdasd";
@@ -77,34 +77,36 @@ module.exports = auth;
 // import jwt from "jsonwebtoken";
 // import dotenv from "dotenv";
 
-// dotenv.config();
-// const SECRET = process.env.JWT_SECRET;
+const dotenv = require("dotenv");
 
-// const auth = async (req, res, next) => {
-//   try {
-//     const token = req.headers.authorization.split(" ")[1];
-//     const isCustomAuth = token.length < 500;
+dotenv.config();
+const SECRET = process.env.JWT_SECRET;
 
-//     let decodeData;
+const auth = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const isCustomAuth = token.length < 500;
 
-//     //If token is custom token do this
-//     if (token && isCustomAuth) {
-//       decodeData = jwt.verify(token, SECRET);
+    let decodeData;
 
-//       req.userId = decodeData?.userId;
-//       console.log("verify, req.userId: " + userId);
-//     } else {
-//       //Else of token is google token then do this
-//       decodeData = jwt.decode(token);
+    //If token is custom token do this
+    if (token && isCustomAuth) {
+      decodeData = jwt.verify(token, SECRET);
 
-//       req.userId = decodeData?.userId;
-//       console.log("decode, req.userId: " + userId);
-//     }
+      req.userId = decodeData?.userId;
+      console.log("verify, req.userId: " + req.userId);
+    } else {
+      //Else of token is google token then do this
+      decodeData = jwt.decode(token);
 
-//     next();
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+      req.userId = decodeData?.userId;
+      console.log("decode, req.userId: " + req.userId);
+    }
 
-// export default auth;
+    next();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = auth; 
