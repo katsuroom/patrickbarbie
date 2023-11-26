@@ -194,6 +194,6 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
         </div>
     );
 
-    console.log("store.rawMapFile", store.rawMapFile)
+    console.log("store.rawMapFile", store.rawMapFile);
     return store.rawMapFile ? res : <></>;
 }

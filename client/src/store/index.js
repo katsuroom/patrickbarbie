@@ -12,7 +12,8 @@ export const StoreActionType = {
     UPLOAD_MAP_FILE: "UPLOAD_MAP_FILE",
     UPDATE_MAP: "UPDATE_MAP",
     GET_MAP_FILE: "GET_MAP_FILE",
-    EMPTY_RAW_MAP_FILE: "EMPTY_RAW_MAP_FILE"
+    EMPTY_RAW_MAP_FILE: "EMPTY_RAW_MAP_FILE",
+    SET_CSV_KEY: "SET_CSV_KEY"
 };
 
 export const CurrentModal = {
@@ -39,7 +40,8 @@ function StoreContextProvider(props) {
     const [store, setStore] = useState({
         currentModal: CurrentModal.NONE,            // the currently open modal
         mapFile: null,                           // map file uploaded for creating a new map
-        rawMapFile: null
+        rawMapFile: null, 
+        key: null
     });
 
     const storeReducer = (action) => {
@@ -85,7 +87,14 @@ function StoreContextProvider(props) {
                     ...store, 
                     rawMapFile: null
                 })
+            }
 
+            case StoreActionType.SET_CSV_KEY: {
+                console.log("setting key to", payload.key)
+                return setStore({
+                    ...store,
+                    key: payload.key
+                })
             }
             default:
                 return store;
@@ -240,9 +249,22 @@ function StoreContextProvider(props) {
         console.log("getting maps by user");
         api.getMapsByUser()
         .then((response) => {
-            console.log(response);
+            console.log(response);      
         }); 
     }
+
+    store.setCsvKey = function(key){
+        console.log('store.setCsvKey', key);
+        storeReducer({
+            type: StoreActionType.SET_CSV_KEY,
+            payload: key
+        });
+    }
+
+    store.setCsvKeyWithoutRerendering = function(key){
+        store.key = key;
+    }
+
 
     return (
         <StoreContext.Provider value={{
