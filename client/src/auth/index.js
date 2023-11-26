@@ -129,7 +129,9 @@ function AuthContextProvider(props) {
             })
     }
 
-    auth.loginUser = async function (email, password) {
+
+
+    auth.loginUser = async function(email, password) {
         // try{
         //     console.log("Logging in user");
         //     const response = await api.loginUser(email, password);
@@ -145,7 +147,7 @@ function AuthContextProvider(props) {
         //             }
         //         })
         //         history.push("/main");
-
+                
         //     }
         // } catch(error){
         //     authReducer({
@@ -159,64 +161,69 @@ function AuthContextProvider(props) {
         // }
 
         api.loginUser(email, password)
-            .then(response => {
+        .then(response => {
 
-                // Handle the successful login response
-                if (response.status === 200) {
-                    console.log('Login successful:', response);
-                    console.log("token: ", response.data.token);
-                    if (response.data.token) {
-                        const jsonData = JSON.stringify(response);
-                        localStorage.setItem("user", jsonData);
-                        console.log("token: ", localStorage.getItem("user"));
+            // Handle the successful login response
+            if(response.status === 200){
+                console.log('Login successful:', response);
+                console.log("token: ", response.data.token);
+                if(response.data.token){
+                    const jsonData = JSON.stringify(response);
+                    localStorage.setItem("user", jsonData);
+                    console.log("token: ", localStorage.getItem("user"));
+                }
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        user: response.data.user,
+                        loggedIn: true,
+                        errorMessage: null
                     }
-                    authReducer({
-                        type: AuthActionType.LOGIN_USER,
-                        payload: {
-                            user: response.data.user,
-                            loggedIn: true,
-                            errorMessage: null
-                        }
-                    })
-                    history.push("/main");
-                }
-                else if (response.status === 401) {
-                    console.log('Login failed: Unauthorized access');
-                    console.log(response);
-                    authReducer({
-                        type: AuthActionType.LOGIN_USER,
-                        payload: {
-                            user: auth.user,
-                            loggedIn: false,
-                            errorMessage: "Invalid email or password. Please try again."
-                        }
-                    })
-                } else {
-                    console.log('Login failed:', response);
-                    authReducer({
-                        type: AuthActionType.LOGIN_USER,
-                        payload: {
-                            user: auth.user,
-                            loggedIn: false,
-                            errorMessage: response.data.error
-                        }
-                    })
-                }
-            })
-            .catch(error => {
-                // Handle any errors that occurred during the login
-                var message = "something went wrong";
-                console.error('Login failed:', error);
+                })
+                history.push("/main");
+            }
+            else if(response.status === 401){
+                console.log('Login failed: Unauthorized access');
+                console.log(response);
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
                     payload: {
                         user: auth.user,
                         loggedIn: false,
-                        errorMessage: message
+                        errorMessage: "Invalid email or password. Please try again."
                     }
                 })
-            });
+            }else{
+                console.log('Login failed:', response);
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        user: auth.user,
+                        loggedIn: false,
+                        errorMessage: response.data.error
+                    }
+                })
+            }
+        })
+        .catch(error => {
+            // Handle any errors that occurred during the login
+            var message = "something went wrong";
+            console.error('Login failed:', error);
+            authReducer({
+                type: AuthActionType.LOGIN_USER,
+                payload: {
+                    user: auth.user,
+                    loggedIn: false,
+                    errorMessage: message
+                }
+            })
+        });
     }
+
+
+
+
+
 
     auth.logoutUser = async function () {
         console.log("Logout user");
