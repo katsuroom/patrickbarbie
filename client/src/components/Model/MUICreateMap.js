@@ -49,7 +49,7 @@ export default function MUICreateMap() {
         //     `type: ${mapType}\n` +
         //     `file: ${store.mapFile.name}`);
 
-        handleClose();
+        store.closeModal();
         store.createMap(projectName, mapType);
         history.push("/edit");
     };
