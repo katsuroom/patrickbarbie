@@ -30,10 +30,12 @@ export default function MUIForkMap() {
 
     const handleSave = () => {
         console.log("fork map: ", projectName);
+        store.forkMap(projectName);
         onClose();
     }
 
     const onClose = () => {
+        store.emptyRawMapFile();
         store.closeModal();
     }
 

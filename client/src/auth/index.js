@@ -115,7 +115,7 @@ function AuthContextProvider(props) {
                     } else if (response.data.error.includes("E11000 duplicate key error collection: test.users index: email_1 dup key")) {
                         errorMessage = "The email is already in use. Please try a different email.";
                     }
-                
+
                     // Dispatch the error message
                     authReducer({
                         type: AuthActionType.REGISTER_USER,
@@ -164,6 +164,12 @@ function AuthContextProvider(props) {
                 // Handle the successful login response
                 if (response.status === 200) {
                     console.log('Login successful:', response);
+                    console.log("token: ", response.data.token);
+                    if (response.data.token) {
+                        const jsonData = JSON.stringify(response);
+                        localStorage.setItem("user", jsonData);
+                        console.log("token: ", localStorage.getItem("user"));
+                    }
                     authReducer({
                         type: AuthActionType.LOGIN_USER,
                         payload: {

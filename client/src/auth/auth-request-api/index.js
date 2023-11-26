@@ -7,6 +7,7 @@ const loginUser = (email, password) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('token')
     },
     body: JSON.stringify({
       email: email,
@@ -22,20 +23,20 @@ const loginUser = (email, password) => {
 // Function to perform a registration request
 const registerUser = (username, email, password) => {
   return fetch(`${baseURL}/register/`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
+      // "Authorization": localStorage.getItem("token"),
     },
     body: JSON.stringify({
       username: username,
       email: email,
       password: password,
     }),
-  })
-  .then(response => {
+  }).then((response) => {
     // Parse JSON and include status in the resolved value
-    return response.json().then(data => ({ status: response.status, data }));
-  })
+    return response.json().then((data) => ({ status: response.status, data }));
+  });
 };
 
 // const getLoggedIn = () => {
