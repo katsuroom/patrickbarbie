@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState,useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import "./RegisterScreen.css";
 import Button from "@mui/material/Button";
@@ -16,6 +16,11 @@ export default function RegisterScreen() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState('');
+    useEffect(() => {
+        if (auth.errorMessage) {
+            setError(auth.errorMessage);
+        }
+    }, [auth.errorMessage]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -44,8 +49,22 @@ export default function RegisterScreen() {
             return;
         }
 
-        console.log("valid registration info");
-        auth.registerUser(username, email, password);
+        auth.registerUser(username, email, password)
+            .then(() => {
+                // Check for an error message in the auth state
+                if (auth.errorMessage) {
+                    setError(auth.errorMessage);
+                } else {
+                    // Handle successful registration
+                    // Redirect to login or show success message
+                }
+            })
+            .catch(() => {
+                // Handle any additional errors
+                if (auth.errorMessage) {
+                    setError(auth.errorMessage);
+                }
+            });
     };
 
     const togglePasswordVisibility = () => {

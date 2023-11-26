@@ -89,71 +89,47 @@ function AuthContextProvider(props) {
     //     });
     // }
 
-    auth.registerUser = async function(username, email, password) {
+    auth.registerUser = async function (username, email, password) {
         console.log("REGISTERING USER");
-        // try{   
-        //     const response = await api.registerUser(username, email, password);   
-        //     if (response.status === 200) {
-        //         console.log("Registered Sucessfully");
-        //         authReducer({
-        //             type: AuthActionType.REGISTER_USER,
-        //             payload: {
-        //                 user: response.data.user,
-        //                 loggedIn: true,
-        //                 errorMessage: null
-        //             }
-        //         })
-        //         history.push("/login");
-        //         console.log("NOW WE LOGIN");
-        //         auth.loginUser(email, password);
-        //         console.log("LOGGED IN");
-        //     }
-        // } catch(error){
-        //     let errorMessage = 'An error occurred';
-        //     if (error.response && error.response.data) {
-        //         errorMessage = error.response.data.errorMessage;
-        //     }
-        //     authReducer({
-        //         type: AuthActionType.REGISTER_USER,
-        //         payload: {
-        //             user: auth.user,
-        //             loggedIn: false,
-        //             errorMessage
-        //         }
-        //     })
-        // }
 
         api.registerUser(username, email, password)
-        .then(response => {
-            if(response.status === 200){
-                console.log('Registration successful:', response);
-                authReducer({
-                    type: AuthActionType.REGISTER_USER,
-                    payload: {
-                        user: response.data.user,
-                        loggedIn: true,
-                        errorMessage: null
+            .then(response => {
+                if (response.status === 200) {
+                    console.log('Registration successful:', response);
+                    authReducer({
+                        type: AuthActionType.REGISTER_USER,
+                        payload: {
+                            user: response.data.user,
+                            loggedIn: true,
+                            errorMessage: null
+                        }
+                    })
+                    history.push("/login");
+                    console.log("NOW WE LOGIN");
+                    auth.loginUser(email, password);
+                    console.log("LOGGED IN");
+                } else {
+                    let errorMessage = "Registration failed. Please try again.";
+                    if (response.data.error.includes("E11000 duplicate key error collection: test.users index: username_1 dup key")) {
+                        errorMessage = "The username is already in use. Please try a different username.";
+                    } else if (response.data.error.includes("E11000 duplicate key error collection: test.users index: email_1 dup key")) {
+                        errorMessage = "The email is already in use. Please try a different email.";
                     }
-                })
-                history.push("/login");
-                console.log("NOW WE LOGIN");
-                auth.loginUser(email, password);
-                console.log("LOGGED IN");
-            }else{
-                console.log('Registration failed:', response);
-                authReducer({
-                    type: AuthActionType.REGISTER_USER,
-                    payload: {
-                        user: auth.user,
-                        loggedIn: false,
-                        errorMessage: response.data.error
-                    }
-                })
-            }
-        })
+                
+                    // Dispatch the error message
+                    authReducer({
+                        type: AuthActionType.REGISTER_USER,
+                        payload: {
+                            user: auth.user,
+                            loggedIn: false,
+                            errorMessage: errorMessage
+                        }
+                    })
+                }
+            })
     }
 
-    auth.loginUser = async function(email, password) {
+    auth.loginUser = async function (email, password) {
         // try{
         //     console.log("Logging in user");
         //     const response = await api.loginUser(email, password);
@@ -169,7 +145,7 @@ function AuthContextProvider(props) {
         //             }
         //         })
         //         history.push("/main");
-                
+
         //     }
         // } catch(error){
         //     authReducer({
@@ -183,77 +159,77 @@ function AuthContextProvider(props) {
         // }
 
         api.loginUser(email, password)
-        .then(response => {
+            .then(response => {
 
-            // Handle the successful login response
-            if(response.status === 200){
-                console.log('Login successful:', response);
-                authReducer({
-                    type: AuthActionType.LOGIN_USER,
-                    payload: {
-                        user: response.data.user,
-                        loggedIn: true,
-                        errorMessage: null
-                    }
-                })
-                history.push("/main");
-            }
-            else if(response.status === 401){
-                console.log('Login failed: Unauthorized access');
-                console.log(response);
-                authReducer({
-                    type: AuthActionType.LOGIN_USER,
-                    payload: {
-                        user: auth.user,
-                        loggedIn: false,
-                        errorMessage: "Invalid email or password. Please try again."
-                    }
-                })
-            }else{
-                console.log('Login failed:', response);
-                authReducer({
-                    type: AuthActionType.LOGIN_USER,
-                    payload: {
-                        user: auth.user,
-                        loggedIn: false,
-                        errorMessage: response.data.error
-                    }
-                })
-            }
-        })
-        .catch(error => {
-            // Handle any errors that occurred during the login
-            var message = "something went wrong";
-            console.error('Login failed:', error);
-            authReducer({
-                type: AuthActionType.LOGIN_USER,
-                payload: {
-                    user: auth.user,
-                    loggedIn: false,
-                    errorMessage: message
+                // Handle the successful login response
+                if (response.status === 200) {
+                    console.log('Login successful:', response);
+                    authReducer({
+                        type: AuthActionType.LOGIN_USER,
+                        payload: {
+                            user: response.data.user,
+                            loggedIn: true,
+                            errorMessage: null
+                        }
+                    })
+                    history.push("/main");
+                }
+                else if (response.status === 401) {
+                    console.log('Login failed: Unauthorized access');
+                    console.log(response);
+                    authReducer({
+                        type: AuthActionType.LOGIN_USER,
+                        payload: {
+                            user: auth.user,
+                            loggedIn: false,
+                            errorMessage: "Invalid email or password. Please try again."
+                        }
+                    })
+                } else {
+                    console.log('Login failed:', response);
+                    authReducer({
+                        type: AuthActionType.LOGIN_USER,
+                        payload: {
+                            user: auth.user,
+                            loggedIn: false,
+                            errorMessage: response.data.error
+                        }
+                    })
                 }
             })
-        });
+            .catch(error => {
+                // Handle any errors that occurred during the login
+                var message = "something went wrong";
+                console.error('Login failed:', error);
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        user: auth.user,
+                        loggedIn: false,
+                        errorMessage: message
+                    }
+                })
+            });
     }
 
-    auth.logoutUser = async function() {
+    auth.logoutUser = async function () {
         console.log("Logout user");
         api.logoutUser()
-        .then(response => {
-            if(response.status === 200){
-                console.log('Logout successful:', response);
-                authReducer({
-                    type: AuthActionType.LOGOUT_USER,
-                    payload: null
-                })
-                history.push("/");
-            }else{
-                console.log('Logout failed:', response);
-            }
-        })
+            .then(response => {
+                if (response.status === 200) {
+                    console.log('Logout successful:', response);
+                    authReducer({
+                        type: AuthActionType.LOGOUT_USER,
+                        payload: null
+                    })
+                    history.push("/");
+                } else {
+                    console.log('Logout failed:', response);
+                }
+            })
     }
 
-    auth.getUserInitials = function() {
+    auth.getUserInitials = function () {
         let initials = "";
         if (auth.user) {
             initials += auth.user.firstName.charAt(0);
