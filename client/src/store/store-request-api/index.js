@@ -1,4 +1,4 @@
-// import axios from 'axios'
+import axios from 'axios'
 // axios.defaults.withCredentials = true;
 // const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "api"
 // const api = axios.create({
@@ -102,10 +102,14 @@
 // DO NOT USE AXIOS
 
 // when you push to main, use the heroku url
-// const baseURL = "https://patrick-barbie-f64046e3bb4b.herokuapp.com/" + "auth";
+// const baseURL = "https://patrick-barbie-f64046e3bb4b.herokuapp.com/" + "api";
 
 // when you test locally, use the localhost url
 const baseURL = "http://localhost:4000";
+
+// const api = axios.create({
+//     baseURL: baseURL,
+// })
 
 
 const createMap = (mapData, username, mapName) => {
@@ -190,8 +194,37 @@ const updateMap = (mapId) =>{
 
 }
 
+// const getMainScreenMap = (fileName) => {
+//   return api.get(/mapFile/, {
+//     params: {
+//       fileName: fileName,
+//     },
+//   });
+// };
+
+const getMainScreenMap = (fileName) => {
+    // console.log("in api.getMainScreenMap");
+    // console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
+    // let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
+    return fetch(`${baseURL}/mapFile?fileName=${fileName}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((response) => {
+      // Parse JSON and include status in the resolved value
+      console.log(response);
+      return response.json().then((data) => {
+        console.log(data);
+        return { status: response.status, data };
+      });
+    });
+}   
+
+
 export default {
   createMap,
   getMapsByUser,
   deleteMap,
+  getMainScreenMap,
 };

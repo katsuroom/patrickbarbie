@@ -27,7 +27,7 @@ app.use(cookieParser());
 
 app.use(
   expressJwt({ secret: process.env.JWT_SECRET }).unless({
-    path: [/^\/login/, /^\/auth/, /^\/published-maps/],
+    path: [/^\/login/, /^\/auth/, /^\/published-maps/, /^\/mapFile/],
   })
 );
 app.use((err, req, res, next) => {

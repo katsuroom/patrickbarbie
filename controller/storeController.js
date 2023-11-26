@@ -330,6 +330,7 @@ getPublishedMaps = (req, res) => {
 };
 
 sendMapFile = async (req, res) => {
+    console.log(req.query.fileName);
   const fileName = req.query.fileName;
   console.log(fileName);
 
