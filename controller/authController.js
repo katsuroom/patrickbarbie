@@ -1,4 +1,4 @@
-// const auth = require("../auth");
+const auth = require("../auth");
 const User = require("../models/user_model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -132,7 +132,7 @@ registerUser = async (req, res) => {
 
 getLoggedIn = async (req, res) => {
   try {
-    let userId = auth.verifyUser(req);
+    let userId = req?.userId;
     if (!userId) {
       return res.status(200).json({
         loggedIn: false,
@@ -147,8 +147,7 @@ getLoggedIn = async (req, res) => {
     return res.status(200).json({
       loggedIn: true,
       user: {
-        firstName: loggedInUser.firstName,
-        lastName: loggedInUser.lastName,
+        username: loggedInUser.username,
         email: loggedInUser.email,
       },
     });
