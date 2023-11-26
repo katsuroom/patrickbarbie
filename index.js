@@ -42,8 +42,8 @@ app.use(cookieParser());
 const authRouter = require('./routers/authRoutes')
 app.use('/auth', authRouter)
 const mapRouter = require('./routers/mapRoute')
-// app.use("/api", mapRouter);
-app.use( mapRouter)
+app.use("/api", mapRouter);
+// app.use( mapRouter)
 
 
 
