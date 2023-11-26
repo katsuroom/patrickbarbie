@@ -3,7 +3,7 @@ const cors = require('cors')
 const dotenv = require('dotenv')
 const cookieParser = require('cookie-parser')
 const path = require('path');
-const expressJwt = require("express-jwt");
+// const expressJwt = require("express-jwt");
 const app = express()
 dotenv.config()
 const PORT = process.env.PORT;
@@ -25,25 +25,25 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-app.use(
-  expressJwt({ secret: process.env.JWT_SECRET }).unless({
-    path: [/^\/login/, /^\/auth/, /^\/published-maps/, /^\/mapFile/],
-  })
-);
-app.use((err, req, res, next) => {
-  if (err.name === "UnauthorizedError") {
-    res.status(401).send({ message: "token Unauthorized" });
-  }else{
-    console.log("pass authorization");
-  }
-});
+// app.use(
+//   expressJwt({ secret: process.env.JWT_SECRET }).unless({
+//     path: [/^\/login/, /^\/auth/, /^\/published-maps/, /^\/mapFile/],
+//   })
+// );
+// app.use((err, req, res, next) => {
+//   if (err.name === "UnauthorizedError") {
+//     res.status(401).send({ message: "token Unauthorized" });
+//   }else{
+//     console.log("pass authorization");
+//   }
+// });
 
 
 const authRouter = require('./routers/authRoutes')
 app.use('/auth', authRouter)
 const mapRouter = require('./routers/mapRoute')
-// app.use("/api", mapRouter);
-app.use( mapRouter)
+app.use("/api", mapRouter);
+// app.use( mapRouter)
 
 
 
