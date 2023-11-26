@@ -21,7 +21,7 @@ const MapSchema = new Schema(
         likes: { type: Number, required: false },
         likedUsers: { type: Array, required: false },
         isPublished: { type: Boolean, required: false },
-        mapData: {type: Map, required: false},
+        mapData: {type: String, required: false},
         csvField: {type: CSV_Schema, required: false},
         comments: {type: Array, required: false}
     },

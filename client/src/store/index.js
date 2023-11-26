@@ -111,74 +111,75 @@ function StoreContextProvider(props) {
     {
         console.log("in create map");
 
-        var mapData = "";
-        console.log("mapData: ", auth.user.username, title);
-        api.createMap(mapData, auth.user.username, title).then((response) => {
-          console.log(response);
-        });
+        // console.log("mapData: ", this.rawMapFile);
 
-        let file = store.mapFile;
+        // var mapData = "";
+        // console.log("mapData: ", auth.user.username, title);
+        // api.createMap(mapData, auth.user.username, title).then((response) => {
+        //   console.log(response);
+        // });
+
+        let file = store.rawMapFile;
 
         const reader = new FileReader();
         reader.onload = function (event) {
             try {
-                const textData = event.target.result;
-                const jsonData = JSON.parse(textData);
-        
-                let mapFile = {
-                    title,
-                    author: auth.user?.username || "guest",
-                    views: 0,
-                    likes: 0,
-                    likedUsers: [],
-                    isPublished: false,
-                    mapData: {
-                        type: mapType,
-                        // data: Base64.encode(textData)
-                        data: jsonData
-                    },
-                    csvField: {},
-                    comments: []
-                };
+              const textData = event.target.result;
+              const jsonData = JSON.parse(textData);
 
+              let mapFile = {
+                title,
+                author: auth.user?.username || "guest",
+                views: 0,
+                likes: 0,
+                likedUsers: [],
+                isPublished: false,
+                mapData: {
+                  type: mapType,
+                  // data: Base64.encode(textData)
+                  data: jsonData,
+                },
+                csvField: {},
+                comments: [],
+              };
 
-                switch (mapType) {
-                    // POLITICAL MAP
-                    case MapType.POLITICAL_MAP:
-                        mapFile.mapData.polygons = []; 
-                        mapFile.mapData.key = []; 
-                        break;
-                    // HEATMAP
-                    case MapType.HEATMAP:
-                        mapFile.mapData.color1 = "#FFC0CB"; // Light Pink
-                        mapFile.mapData.color2 = "#FF69B4"; // Brighter Pink
-                        mapFile.mapData.min = 0;
-                        mapFile.mapData.max = 100; 
-                        mapFile.mapData.display = "property"; 
-                        break;
-                }
+              switch (mapType) {
+                // POLITICAL MAP
+                case MapType.POLITICAL_MAP:
+                  mapFile.mapData.polygons = [];
+                  mapFile.mapData.key = [];
+                  break;
+                // HEATMAP
+                case MapType.HEATMAP:
+                  mapFile.mapData.color1 = "#FFC0CB"; // Light Pink
+                  mapFile.mapData.color2 = "#FF69B4"; // Brighter Pink
+                  mapFile.mapData.min = 0;
+                  mapFile.mapData.max = 100;
+                  mapFile.mapData.display = "property";
+                  break;
+              }
 
-                // call router to add map to database
-                // var mapData = "";
-                // console.log("mapData: ", title);
-                // api.createMap(mapData, auth.user.username, title)
-                // .then(response => {
-                //     console.log(response);
-                // })
+              console.log("mapFile: ", mapFile.mapData);
 
-                mapFile.mapData.data = jsonData;
+            //   var Data = new Blob([JSON.stringify(mapFile.mapData)]);
+              var Data = "";
+              console.log("mapData: ", Data);
+              api.createMap(Data, auth.user.username, title).then((response) => {
+                console.log(response);
+              });
 
-                storeReducer({
-                    type: StoreActionType.UPDATE_MAP,
-                    payload: { file: mapFile }
-                });
+              mapFile.mapData.data = jsonData;
 
+              storeReducer({
+                type: StoreActionType.UPDATE_MAP,
+                payload: { file: mapFile },
+              });
             } catch (error) {
                 console.error("Error parsing GeoJSON:", error);
             }
         };
         
-        // reader.readAsText(file);
+        reader.readAsText(file);
     }
 
     store.getMapFile = async function(fileName)

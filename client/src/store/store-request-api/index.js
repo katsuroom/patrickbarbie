@@ -123,14 +123,25 @@ const createMap = (mapData, username, mapName) => {
       mapData: mapData,
       author: username,
     }),
-  }).then((response) => {
-    // Parse JSON and include status in the resolved value
-    console.log(response);
-    return response.json().then((data) => {
+  })
+    .then((response) => {
+      if (!response.ok) {
+        // If the response status is not OK, reject the promise with an error
+        throw new Error(`Failed to create map. Status: ${response.status}`);
+      }
+      // Parse JSON and include status in the resolved value
+      return response.json();
+    })
+    .then((data) => {
       console.log(data);
-      return { status: response.status, data };
+      return { status: 200, data }; // Assuming 200 for success, modify as needed
+    })
+    .catch((error) => {
+      // Handle fetch errors (e.g., network issues)
+      console.error("Error creating map:", error);
+      // Return a rejected promise with the error
+      return Promise.reject(error);
     });
-  });
 };
 
 const getMapsByUser = () => {
@@ -153,7 +164,34 @@ const getMapsByUser = () => {
     });
 };
 
+const deleteMap = (mapId) => {
+    console.log("in api.deleteMap");
+    console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
+    let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
+    return fetch(`${baseURL}/map/${mapId}`, {
+        method: "DELETE",
+        headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+        },
+        }).then((response) => {
+        // Parse JSON and include status in the resolved value
+        console.log(response);
+        return response.json().then((data) => {
+            console.log(data);
+            return { status: response.status, data };
+        });
+    });
+
+};
+
+const updateMap = (mapId) =>{
+    console.log("in api.updateMap");
+
+}
+
 export default {
   createMap,
   getMapsByUser,
+  deleteMap,
 };
