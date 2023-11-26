@@ -11,7 +11,8 @@ export const StoreActionType = {
     CLOSE_MODAL: "CLOSE_MODAL",
     UPLOAD_MAP_FILE: "UPLOAD_MAP_FILE",
     UPDATE_MAP: "UPDATE_MAP",
-    GET_MAP_FILE: "GET_MAP_FILE"
+    GET_MAP_FILE: "GET_MAP_FILE",
+    EMPTY_RAW_MAP_FILE: "EMPTY_RAW_MAP_FILE"
 };
 
 export const CurrentModal = {
@@ -75,6 +76,16 @@ function StoreContextProvider(props) {
                     ...store,
                     rawMapFile: payload.file
                 });
+            }
+            case StoreActionType.EMPTY_RAW_MAP_FILE: {
+
+                console.log("empting raw map file");
+                store.rawMapFile = null; // setStore is async
+                return setStore({
+                    ...store, 
+                    rawMapFile: null
+                })
+
             }
             default:
                 return store;
@@ -194,6 +205,13 @@ function StoreContextProvider(props) {
         storeReducer({
             type: StoreActionType.GET_MAP_FILE,
             payload: { file: file.data }
+        });
+    }
+
+    store.emptyRawMapFile = function(){
+        console.log('store.emptyRawMapFile');
+        storeReducer({
+            type: StoreActionType.EMPTY_RAW_MAP_FILE
         });
     }
 

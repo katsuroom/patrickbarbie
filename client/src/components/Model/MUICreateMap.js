@@ -37,6 +37,8 @@ export default function MUICreateMap() {
     };
 
     const handleClose = () => {
+      console.log("onClose")
+        store.emptyRawMapFile();
         store.closeModal();
     }
 

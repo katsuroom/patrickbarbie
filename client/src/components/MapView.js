@@ -193,5 +193,7 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
             <MUIPublishMap/>
         </div>
     );
+
+    console.log("store.rawMapFile", store.rawMapFile)
     return store.rawMapFile ? res : <></>;
 }
