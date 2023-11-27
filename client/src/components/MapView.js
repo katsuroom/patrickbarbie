@@ -115,15 +115,15 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
             replies: []
         }
     ];
-    
 
 
 
-        const res = (
+
+    const res = (
         <div style={{ overflowY: "scroll", height: "50%" }}>
             {/* <div id="map" style={{ height: 400 }}></div> */}
             <div style={{ width: "1500px" }}>
-            <MapDisplay/>
+                <MapDisplay />
             </div>
             <div style={{
                 backgroundColor: "#F8D6DD",
@@ -138,7 +138,7 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
             }}>
                 <Grid container spacing={2}>
                     <Grid item xs={2}>
-                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>{}</Typography>
+                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>{ }</Typography>
                     </Grid>
                     <Grid item xs={1}>
                         <IconButton>
@@ -156,31 +156,44 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
                             {likes}
                         </Typography>
                     </Grid>
-                    <Grid item xs={0.5}>
-                        <IconButton onClick={handleDeleteClick}>
-                            <Delete />
-                        </IconButton>
-                    </Grid>
-                    <Grid item xs={0.5}>
-                        <IconButton onClick={handlePublishClick}>
-                            <CloudUpload />
-                        </IconButton>
-                    </Grid>
-                    <Grid item xs={0.5}>
-                        <IconButton onClick={handleEditClick}>
-                            <Edit />
-                        </IconButton>
-                    </Grid>
-                    <Grid item xs={0.5}>
-                        <IconButton onClick={handleDownloadClick}>
-                            <Download />
-                        </IconButton>
-                    </Grid>
-                    <Grid item xs={0.5}>
-                        <IconButton onClick={handleForkClick}>
-                            <Share />
-                        </IconButton>
-                    </Grid>
+
+
+                    {
+                        auth.loggedIn && (
+                            <>
+                                <Grid item xs={0.5}>
+                                    <IconButton onClick={handleDeleteClick}>
+                                        <Delete />
+                                    </IconButton>
+                                </Grid>
+                                <Grid item xs={0.5}>
+                                    <IconButton onClick={handlePublishClick}>
+                                        <CloudUpload />
+                                    </IconButton>
+                                </Grid>
+                                <Grid item xs={0.5}>
+                                    <IconButton onClick={handleEditClick}>
+                                        <Edit />
+                                    </IconButton>
+                                </Grid>
+                                <Grid item xs={0.5}>
+                                    <IconButton onClick={handleDownloadClick}>
+                                        <Download />
+                                    </IconButton>
+                                </Grid>
+                                <Grid item xs={0.5}>
+                                    <IconButton onClick={handleForkClick}>
+                                        <Share />
+                                    </IconButton>
+                                </Grid>
+                            </>
+                        )
+                    }
+
+
+
+
+
                 </Grid>
             </div>
             <div style={{ backgroundColor: "#FDF4F3", padding: 10, margin: 10 }}>
@@ -188,9 +201,9 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
 
                 {<CommentSection initialComments={initialComments} />}
             </div>
-            <MUIDeleteMap/>
-            <MUIForkMap/>
-            <MUIPublishMap/>
+            <MUIDeleteMap />
+            <MUIForkMap />
+            <MUIPublishMap />
         </div>
     );
 
