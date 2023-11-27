@@ -54,7 +54,7 @@ export const ConfirmationDialog = ({
           className={openDialog ? "modal-dialog is-visible" : "modal-dialog"}
         >
           <header className="dialog-header">
-            <Typography variant="h6" color="error" style={{ width: "90%" }}>
+            <Typography variant="h6" color="black">
               {confirmationInfo}
             </Typography>
           </header>

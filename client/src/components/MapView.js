@@ -89,8 +89,8 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
 
     // Main component render
     const res = (
-        <div style={{ overflowY: "scroll", height: "50%" }}>
-            <div style={{ width: "1500px" }}>
+        <div style={{ overflowY: "scroll", height: "80vh" }}>
+            <div style={{ width: "76vw" }}>
                 <MapDisplay />
             </div>
             <div style={{ backgroundColor: "#F8D6DD", padding: 10, margin: 10, height: "40px", marginTop: "0px", display: "flex", flexDirection: "column", justifyContent: "center", flexWrap: "wrap" }}>

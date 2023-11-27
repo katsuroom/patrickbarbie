@@ -24,7 +24,9 @@ export default function EditScreen() {
       <div style={toolbarStyle}>
         <MapEditorToolbar />
       </div>
-      <MapDisplay />
+      <div style={{width: "65vw"}}>
+        <MapDisplay />
+      </div>
       <div style={politicalStyle}>
         <PPolitical />
         {/* <PHeatmap /> */}

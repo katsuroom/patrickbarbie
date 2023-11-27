@@ -14,6 +14,13 @@ const CommentSection = ({ initialComments }) => {
             return;
         }
 
+        // check for empty comment
+        if(newCommentText.trim().length == 0)
+        {
+            alert("Cannot post empty comment.");
+            return;
+        }
+
         const newComment = {
             id: comments.length + 1,
             author: auth.user?.username,

@@ -14,6 +14,13 @@ const Comment = ({ comment, setComments }) => {
       return;
     }
 
+    // check for empty comment
+    if(replyText.trim().length == 0)
+    {
+        alert("Cannot post empty comment.");
+        return;
+    }
+
     const newReply = {
       id: new Date().getTime(), 
       author: auth.user?.username,
