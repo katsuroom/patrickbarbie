@@ -4,6 +4,7 @@ const router = express.Router()
 const auth = require('../auth')
 
 router.post('/map', auth, MapController.createMap)
+router.post('/forkmap', auth, MapController.forkMap);
 router.delete('/map/:id', auth, MapController.deleteMap)
 
 router.put('/map/:id',auth, MapController.updateMap)

@@ -292,11 +292,18 @@ function StoreContextProvider(props) {
   };
 
   store.forkMap = function (maptitle) {
-    var mapData = "";
-    console.log("mapData: ", auth.user.username, maptitle);
-    api.createMap(mapData, auth.user.username, maptitle).then((response) => {
-      console.log(response);
-    });
+    var mapData = store.currentMapObject.mapData;
+    console.log("mapData: ", mapData, auth.user.username, maptitle, store.currentMapObject.mapType);
+    api
+      .forkMap(
+        mapData,
+        auth.user.username,
+        maptitle,
+        store.currentMapObject.mapType
+      )
+      .then((response) => {
+        console.log(response);
+      });
   };
 
   store.updateMap = function (mapObject) {

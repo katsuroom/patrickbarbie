@@ -314,6 +314,56 @@ getPublishedMaps = (req, res) => {
     });
 };
 
+forkMap = (req, res) => {
+  console.log("start create Map");
+  // var userId;
+  // const token = req.headers.authorization.split(" ")[1];
+  // userId = extractUserIdFromToken(token);
+
+  console.log("userId: " + req.userId);
+
+  const body = req.body;
+  if (!body) {
+    return res.status(400).json({
+      success: false,
+      error: "You must provide a map",
+    });
+  }
+
+  // const mapData = Buffer.from(Object.values(body.mapData));
+
+  // Create the Map instance
+  const map = new Map(body);
+
+  //   const map = new Map(body);
+  //   console.log("map: " + JSON.stringify(map));
+  if (!map) {
+    return res.status(403).json({ success: false, error: err });
+  }
+  //   console.log("req.userId: ", req.userId);
+
+  User.findOne({ _id: req.userId })
+    .then((user) => {
+      console.log("user found: " + JSON.stringify(user));
+      user.maps.push(map);
+      return user.save();
+    })
+    .then(() => map.save())
+    .then(() => {
+      return res.status(201).json({
+        success: true,
+        mapData: map,
+        message: "Map created!",
+      });
+    })
+    .catch((error) => {
+      return res.status(400).json({
+        error,
+        message: "Map not created!",
+      });
+    });
+};
+
 sendMapFile = async (req, res) => {
     console.log(req.query.fileName);
   const fileName = req.query.fileName;
@@ -339,5 +389,6 @@ module.exports = {
   getMapById,
   getMapsByUser,
   getPublishedMaps,
+  forkMap,
     sendMapFile,
 };
