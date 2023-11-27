@@ -103,17 +103,17 @@ import axios from 'axios'
 // DO NOT USE AXIOS
 
 // when you push to main, use the heroku url
-const baseURL = "https://patrick-barbie-f64046e3bb4b.herokuapp.com/" + "api";
+// const baseURL = "https://patrick-barbie-f64046e3bb4b.herokuapp.com/" + "api";
 
 // when you test locally, use the localhost url
-// const baseURL = "http://localhost:4000/api";
+const baseURL = "http://localhost:4000/api";
 
 // const api = axios.create({
 //     baseURL: baseURL,
 // })
 
 
-const createMap = (mapData, username, mapName) => {
+const createMap = (mapData, username, mapName, mapType) => {
     console.log("in api.createMap");
     console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
     let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
@@ -127,6 +127,7 @@ const createMap = (mapData, username, mapName) => {
       title: mapName,
       mapData: mapData,
       author: username,
+      mapType: mapType,
     }),
   })
     .then((response) => {

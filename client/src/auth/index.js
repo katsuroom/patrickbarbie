@@ -22,9 +22,9 @@ function AuthContextProvider(props) {
     });
     const history = useHistory();
 
-    // useEffect(() => {
-    //     auth.getLoggedIn();
-    // }, []);
+    useEffect(() => {
+        auth.getLoggedIn();
+    }, []);
 
     const authReducer = (action) => {
         const { type, payload } = action;
@@ -62,32 +62,22 @@ function AuthContextProvider(props) {
         }
     }
 
-    // auth.getLoggedIn = async function () {
-    //     // const response = await api.getLoggedIn();
-    //     // if (response.status === 200) {
-    //     //     authReducer({
-    //     //         type: AuthActionType.GET_LOGGED_IN,
-    //     //         payload: {
-    //     //             loggedIn: response.data.loggedIn,
-    //     //             user: response.data.user
-    //     //         }
-    //     //     });
-    //     // }
+    auth.getLoggedIn = async function () {
 
-    //     console.log("getLoggedIn");
-    //     api.getLoggedIn().then((response) => {
-    //       if (response.status === 200) {
-    //         console.log("getLoggedIn successful:", response);
-    //         authReducer({
-    //           type: AuthActionType.GET_LOGGED_IN,
-    //           payload: {
-    //             loggedIn: response.data.loggedIn,
-    //             user: response.data.user,
-    //           },
-    //         });
-    //       }
-    //     });
-    // }
+        console.log("getLoggedIn");
+        api.getLoggedIn().then((response) => {
+          if (response.status === 200) {
+            console.log("getLoggedIn successful:", response);
+            authReducer({
+              type: AuthActionType.GET_LOGGED_IN,
+              payload: {
+                loggedIn: response.data.loggedIn,
+                user: response.data.user,
+              },
+            });
+          }
+        });
+    }
 
     auth.registerUser = async function (username, email, password) {
         console.log("REGISTERING USER");
@@ -228,18 +218,19 @@ function AuthContextProvider(props) {
     auth.logoutUser = async function () {
         console.log("Logout user");
         api.logoutUser()
-            .then(response => {
-                if (response.status === 200) {
-                    console.log('Logout successful:', response);
-                    authReducer({
-                        type: AuthActionType.LOGOUT_USER,
-                        payload: null
-                    })
-                    history.push("/");
-                } else {
-                    console.log('Logout failed:', response);
-                }
-            })
+        .then(response => {
+            if(response.status === 200){
+                console.log('Logout successful:', response);
+                authReducer({
+                    type: AuthActionType.LOGOUT_USER,
+                    payload: null
+                })
+                localStorage.removeItem("user");
+                history.push("/");
+            }else{
+                console.log('Logout failed:', response);
+            }
+        })
     }
 
     auth.getUserInitials = function () {
