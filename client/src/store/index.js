@@ -168,25 +168,27 @@ function StoreContextProvider(props) {
         // Use the web worker for parsing
         worker.postMessage(jsonDataString);
       };
-
+      
       worker.onmessage = function (event) {
+        console.log("enter here")
         file = event.data;
         console.log(file);
+      
+        // Clean up the worker when done
+        worker.terminate();
+      
+        var data = geobuf.encode(file, new Pbf());
+      
+        api
+          .createMap(data, auth.user.username, title, mapType)
+          .then((response) => {
+            console.log(response);
+          });
       };
+      
+      console.log(file);
       reader.readAsText(file);
-
-      // Clean up the worker when component unmounts
-      // return () => {
-      worker.terminate();
-
-      var data = geobuf.encode(file, new Pbf());
-
-      api
-        .createMap(data, auth.user.username, title, mapType)
-        .then((response) => {
-          console.log(response);
-        });
-      // };
+      
     }
 
     // console.log(file);
