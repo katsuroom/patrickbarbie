@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -12,6 +12,7 @@ import { CurrentModal } from '../../store';
 
 export default function MUIUploadMap() {
     const { store } = useContext(StoreContext);
+    const workerRef = useRef(null);
 
     const buttonStyle = {
         mt: 1,
@@ -33,16 +34,44 @@ export default function MUIUploadMap() {
 
     const handleFileSelect = (event) => {
         let file = event.target.files[0];
-        // console.log(file);
+        console.log(file);
         
         if (file) {
             
+            let geojson = null;
+
             // convert file to GeoJSON if KML or Shapefile
             let ext = file.name.split('.').pop();
             console.log("filetype: " + ext);
 
             switch(ext)
             {
+            case "json":
+                {
+                    const reader = new FileReader();
+
+                    if (window.Worker) {
+                        console.log("Web worker supported");
+                        workerRef.current = new Worker("worker.js");
+                    } else {
+                        console.log("Web worker not supported");
+                    }
+
+                    reader.onload = function (event) {
+                        const jsonDataString = event.target.result;
+                        // Use the web worker for parsing
+                        workerRef.current.postMessage(jsonDataString);
+                    };
+
+                    workerRef.current.onmessage = function (event) {
+                        geojson = event.data;
+                        store.uploadMapFile(geojson);
+                        workerRef.current.terminate();
+                    };
+
+                    reader.readAsText(file);
+                }
+                break;
             case "zip":
                 {
                     const reader = new FileReader();
@@ -62,17 +91,20 @@ export default function MUIUploadMap() {
                     const reader = new FileReader();
 
                     reader.onload = function (event) {
-                    try {
-                        let jsonData;
-                        const parser = new DOMParser();
-                        const kml = parser.parseFromString(event.target.result, 'text/xml');
-                        jsonData = tj.kml(kml);
+                        try {
+                            let jsonData;
+                            const parser = new DOMParser();
+                            const kml = parser.parseFromString(event.target.result, 'text/xml');
+                            jsonData = tj.kml(kml);
 
-                        // change file from KML to the new GeoJSON
-                        file = jsonData;
-                    } catch (error) {
-                        console.error("Error parsing file:", error);
-                    }
+                            console.log(jsonData);
+
+                            // change file from KML to the new GeoJSON
+                            geojson = jsonData;
+                            store.uploadMapFile(geojson);
+                        } catch (error) {
+                            console.error("Error parsing file:", error);
+                        }
                     };
                     reader.readAsText(file);
                 }
@@ -81,7 +113,7 @@ export default function MUIUploadMap() {
                 break;
             }
 
-            store.uploadMapFile(file);
+            // store.uploadMapFile(geojson);
         }
     };
 

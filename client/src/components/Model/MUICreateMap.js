@@ -94,7 +94,7 @@ export default function MUICreateMap() {
                                 style={selectStyle}
                             />
                             <Select
-                                value={store.mapType}
+                                value={MapType.POLITICAL_MAP}
                                 onChange={(e) => setMapType(e.target.value)}
                                 style={selectStyle}
                             >

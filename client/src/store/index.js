@@ -43,10 +43,10 @@ function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
 
   const [store, setStore] = useState({
-    currentModal: CurrentModal.NONE, // the currently open modal
-    mapFile: null, // map file uploaded for creating a new map
-    rawMapFile: null,
-    key: null, // csv key [column name] for map displaying
+    currentModal: CurrentModal.NONE,      // the currently open modal
+    mapFile: null,                        // map file uploaded for creating a new map
+    rawMapFile: null,                     // geojson object
+    key: null,                            // csv key [column name] for map displaying
     parsed_CSV_Data: null,
     mapType: null,
     currentMapId: null,
