@@ -10,6 +10,7 @@ import { TextField } from "@mui/material";
 
 import StoreContext from '../../store';
 import { CurrentModal, MapType } from '../../store';
+import MapDisplay from "../MapDisplay";
 
 export default function MUICreateMap() {
     const history = useHistory();
@@ -50,6 +51,8 @@ export default function MUICreateMap() {
         handleClose();
         store.createMap(projectName, mapType);
         history.push("/edit");
+        console.log("mapType : " + mapType);
+        // <MapDisplay mapType={mapType}/>
     };
 
     const handleInputChange = (e) => {
@@ -104,7 +107,10 @@ export default function MUICreateMap() {
                                 onClick={handleCreateMap}
                                 variant="contained"
                                 sx={buttonStyle}
-                                disabled={mapType != MapType.POLITICAL_MAP}>
+                                // disabled={mapType != MapType.POLITICAL_MAP}
+                                disabled={mapType !== MapType.POLITICAL_MAP && mapType !== MapType.HEATMAP}
+
+                                >
                                 Create
                             </Button>
                         </div>

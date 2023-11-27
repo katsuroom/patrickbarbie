@@ -38,7 +38,8 @@ function StoreContextProvider(props) {
     const [store, setStore] = useState({
         currentModal: CurrentModal.NONE,            // the currently open modal
         mapFile: null,                           // map file uploaded for creating a new map
-        rawMapFile: null
+        rawMapFile: null,
+        mapType: null
     });
 
     const storeReducer = (action) => {
