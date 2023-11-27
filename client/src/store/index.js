@@ -49,7 +49,7 @@ function StoreContextProvider(props) {
     key: null,                            // csv key [column name] for map displaying
     parsed_CSV_Data: null,
     mapType: null,
-    currentMapId: null,
+    currentMapObject: null,
   });
 
   const storeReducer = (action) => {
@@ -261,19 +261,26 @@ function StoreContextProvider(props) {
   };
 
   store.forkMap = function (maptitle) {
-    var mapData = "";
-    console.log("mapData: ", auth.user.username, maptitle);
-    api.createMap(mapData, auth.user.username, maptitle).then((response) => {
-      console.log(response);
-    });
+    var mapData = store.currentMapObject.mapData;
+    console.log("mapData: ", mapData, auth.user.username, maptitle, store.currentMapObject.mapType);
+    api
+      .forkMap(
+        mapData,
+        auth.user.username,
+        maptitle,
+        store.currentMapObject.mapType
+      )
+      .then((response) => {
+        console.log(response);
+      });
   };
 
-  store.publishMap = function (mapId) {
-    console.log("publishing map: ", mapId);
-    // api.publishMap(mapId)
-    // .then((response) => {
-    //     console.log(response);
-    // });
+  store.updateMap = function (mapObject) {
+    console.log("publishing map: ", mapObject);
+    api.updateMap(mapObject)
+    .then((response) => {
+        console.log(response);
+    });
   };
 
   store.deleteMap = function (mapId) {
