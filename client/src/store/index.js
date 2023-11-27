@@ -17,10 +17,12 @@ export const StoreActionType = {
   GET_MAP_FILE: "GET_MAP_FILE",
   EMPTY_RAW_MAP_FILE: "EMPTY_RAW_MAP_FILE",
   SET_CSV_KEY: "SET_CSV_KEY",
+  SET_CSV_LABEL: "SET_CSV_LABEL",
   SET_MAP_TYPE: "SET_MAP_TYPE",
   SET_RAW_MAP_FILE: "SET_RAW_MAP_FILE",
   LOAD_MAP_LIST: "LOAD_MAP_LIST",
   DELETE_MAP: "DELETE_MAP",
+  SET_PARSED_CSV_DATA: "SET_PARSED_CSV_DATA",
 };
 
 export const CurrentModal = {
@@ -38,21 +40,26 @@ export const MapType = {
   DOT_DISTRIBUTION_MAP: "Dot Distribution Map",
   PROPORTIONAL_SYMBOL_MAP: "Proportional Symbol Map",
   TRAVEL_MAP: "Travel Map",
-  SET_PARSED_CSV_DATA: "SET_PARSED_CSV_DATA",
 };
 
 function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
 
   const [store, setStore] = useState({
+    currentModal: CurrentModal.NONE, // the currently open modal
+    mapFile: null, // map file uploaded for creating a new map
+    rawMapFile: null,
+    key: null, // csv key [column name] for map displaying
+    label: null,
     currentModal: CurrentModal.NONE,      // the currently open modal
     mapFile: null,                        // map file uploaded for creating a new map
     rawMapFile: null,                     // geojson object
     key: null,                            // csv key [column name] for map displaying
     parsed_CSV_Data: null,
-    mapType: null,
+    mapType:  "Heatmap",
     currentMapObject: null,
     mapList: [],
+
   });
 
   const storeReducer = (action) => {
@@ -106,6 +113,13 @@ function StoreContextProvider(props) {
         return setStore({
           ...store,
           parsed_CSV_Data: payload.parsed_CSV_Data,
+        });
+      }
+
+      case StoreActionType.SET_CSV_LABEL: {
+        return setStore({
+          ...store,
+          label: payload.label,
         });
       }
 
@@ -173,6 +187,7 @@ function StoreContextProvider(props) {
     console.log("in create map");
 
     let file = store.rawMapFile;
+    console.log("store.rawMapFile", store.rawMapFile)
 
     var data = geobuf.encode(file, new Pbf());
       
@@ -364,10 +379,29 @@ function StoreContextProvider(props) {
 
   store.setCsvKeyWithoutRerendering = function (key) {
     if (key !== undefined) {
-      console.log(store.key);
       store.key = key;
     }
   };
+
+  store.setCsvLabel = function (label) {
+    console.log(label);
+    if (label !== undefined) {
+      store.label = label; // for synchronization purpose
+      storeReducer({
+        type: StoreActionType.SET_CSV_LABEL,
+        payload: { label },
+      });
+    }
+  };
+
+  store.setCsvLabelWithoutRerendering = function (label) {
+    console.log(label);
+    if (label !== undefined) {
+      store.label = label;
+    }
+  };
+
+
   store.setParsedCsvData = function (data) {
     // console.log('store.setParsedCsvData', data);
     storeReducer({
