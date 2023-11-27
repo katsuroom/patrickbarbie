@@ -11,6 +11,7 @@ import southAmericaData from './south_america (1).json'
 
 export default function GeoJSONDisplay(props) {
   const [geoJsonData, setGeoJsonData] = useState(null);
+  const [buttonAdded, setButtonAdded] = useState(false);
   const mapRef = useRef(null);
   const geoJsonLayerRef = useRef(null);
   const markers = useRef([]);
@@ -54,6 +55,11 @@ export default function GeoJSONDisplay(props) {
   }, [store.rawMapFile]);
 
   useEffect(() => {
+
+
+    if (!geoJsonData){
+      return;
+    }
 
     console.log("store.rawMapFile", store.rawMapFile);
     if (!mapRef.current) {
@@ -135,9 +141,8 @@ export default function GeoJSONDisplay(props) {
         console.log("geoJsonLayerRef.current is undefined or empty");
       }
     }
-  }, [geoJsonData, store.label, store.key, store.parsed_CSV_Data]);
 
-  useEffect(() => {
+      if (!buttonAdded){
     const saveImageButton = L.control({ position: "bottomleft" });
     saveImageButton.onAdd = function () {
       this._div = L.DomUtil.create("div", "saveImageButton");
@@ -149,7 +154,29 @@ export default function GeoJSONDisplay(props) {
     document
       .getElementById("saveImageButton")
       .addEventListener("click", props.openModal);
-  }, []);
+      setButtonAdded(true);
+  }
+
+  }, [geoJsonData, store.label, store.key, store.parsed_CSV_Data]);
+
+  // useEffect(() => {
+
+  //   if (!mapRef.current){
+  //     return;
+  //   }
+
+  //   const saveImageButton = L.control({ position: "bottomleft" });
+  //   saveImageButton.onAdd = function () {
+  //     this._div = L.DomUtil.create("div", "saveImageButton");
+  //     this._div.innerHTML = '<Button id="saveImageButton" >Save Image</Button>';
+  //     return this._div;
+  //   };
+  //   saveImageButton.addTo(mapRef.current);
+
+  //   document
+  //     .getElementById("saveImageButton")
+  //     .addEventListener("click", props.openModal);
+  // }, []);
 
   if (!downloadComplete) {
     if (props.imageType === "JPEG") {
