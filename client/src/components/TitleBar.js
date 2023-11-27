@@ -28,6 +28,7 @@ export default function TitleBar() {
           {auth.loggedIn? <SearchBar /> : <></>}
         </Box>
         <IconButton
+          className="icon-menu"
           sx={{ position: "absolute", top: "0.5%", right: "1%" }}
           onClick={handleMenu}
         >
@@ -36,30 +37,36 @@ export default function TitleBar() {
         <Menu
           anchorEl={anchorEl}
           anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
+            vertical: "bottom",
+            horizontal: "right",
           }}
           keepMounted
           transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
+            vertical: "top",
+            horizontal: "right",
           }}
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
           {auth.loggedIn ? (
             <>
-
-              <MenuItem onClick={() => {
-                handleClose();
-                auth.logoutUser();
-              }}>
-                  Sign Out
+              <MenuItem
+                className="icon-menuItem"
+                onClick={() => {
+                  handleClose();
+                  auth.logoutUser();
+                }}
+              >
+                Sign Out
               </MenuItem>
             </>
           ) : (
             <MenuItem onClick={handleClose}>
-              <Link href="/login" color="inherit" style={{ textDecoration: 'none' }}>
+              <Link
+                href="/login"
+                color="inherit"
+                style={{ textDecoration: "none" }}
+              >
                 Sign In
               </Link>
             </MenuItem>
@@ -67,6 +74,5 @@ export default function TitleBar() {
         </Menu>
       </div>
     </Box>
-    
   );
 }
