@@ -8,6 +8,8 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import StoreContext, { CurrentModal } from '../store';
 import AuthContext from '../auth';
+const Pbf = require("pbf");
+const geobuf = require("geobuf");
 
 const hardcodedMaps = [
   { _id: '1', title: 'North America', fileName: "NA2.json", type: 'hardcoded' },
@@ -46,6 +48,11 @@ export default function MapCardList() {
         console.log('Hardcoded map clicked:', selected.title);
       } else if (selected.type === 'fetched') {
         // fetched map click
+        var mapData = selected.mapData;
+        console.log("mapData: ", mapData.data);
+        const encodedData = geobuf.decode(new Pbf(mapData.data));
+        console.log("encodedData: ", encodedData);
+        
         store.getMapFile(selected.fileName);
       }
     }
