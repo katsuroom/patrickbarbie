@@ -140,6 +140,7 @@ function StoreContextProvider(props) {
   };
 
   store.uploadMapFile = function (file) {
+    console.log("file entered store");
     console.log(file);
     storeReducer({
       type: StoreActionType.UPLOAD_MAP_FILE,

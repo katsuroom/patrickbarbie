@@ -5,6 +5,7 @@ import Modal from "@mui/material/Modal";
 import './MUIPublishMap.css'
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import shp from "shpjs";
+import tj from "@mapbox/togeojson";
 
 import StoreContext from '../../store';
 import { CurrentModal } from '../../store';
@@ -43,15 +44,38 @@ export default function MUIUploadMap() {
             switch(ext)
             {
             case "zip":
-                const reader = new FileReader();
+                {
+                    const reader = new FileReader();
 
-                file.arrayBuffer().then(async (result) => {
-                    const data = await shp(result);
-                    console.log(data);
-                });
+                    reader.onload = async function (event) {
+                        console.log(event.target.result);
+                        shp.parseZip(event.target.result);
+                    }
 
-                return;
+                    reader.readAsArrayBuffer(file);
 
+                    return;
+                }
+                break;
+            case "kml":
+                {
+                    const reader = new FileReader();
+
+                    reader.onload = function (event) {
+                    try {
+                        let jsonData;
+                        const parser = new DOMParser();
+                        const kml = parser.parseFromString(event.target.result, 'text/xml');
+                        jsonData = tj.kml(kml);
+
+                        // change file from KML to the new GeoJSON
+                        file = jsonData;
+                    } catch (error) {
+                        console.error("Error parsing file:", error);
+                    }
+                    };
+                    reader.readAsText(file);
+                }
                 break;
             default:
                 break;
