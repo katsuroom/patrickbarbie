@@ -95,6 +95,7 @@ export default function MapCardList(props) {
             {index > 0 && <Divider />}
             <ListItem button onClick={() => handleMapClick(map.id)}>
               <ListItemText
+                className="map-list-name"
                 primary={map.name}
                 style={{
                   padding: "0px",

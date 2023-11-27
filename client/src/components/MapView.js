@@ -93,57 +93,87 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
             <div style={{ width: "1500px" }}>
                 <MapDisplay />
             </div>
-            <div style={{ backgroundColor: "#F8D6DD", padding: 10, margin: 10, height: "40px", marginTop: "0px", display: "flex", flexDirection: "column", justifyContent: "center", flexWrap: "wrap" }}>
-                <Grid container spacing={2}>
-                    <Grid item xs={2}>
-                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}>{ }</Typography>
-                    </Grid>
-                    <Grid item xs={1}>
-                        <IconButton>
-                            <VisibilityIcon />
-                        </IconButton>
-                    </Grid>
-                    <Grid item xs={0.4}>
-                        <Typography sx={{ fontFamily: 'Sen', color: "black" }}></Typography>
-                    </Grid>
-                    <Grid item xs={2} style={{ display: 'flex', alignItems: 'center' }}>
-                        <IconButton onClick={handleLikeClick} disabled={hasLiked}>
-                            <FavoriteIcon />
-                        </IconButton>
-                        <Typography sx={{ fontFamily: 'Sen', color: "black", marginLeft: 1 }}>
-                            {likes}
-                        </Typography>
-                    </Grid>
-                    {auth.loggedIn && (
-                        <>
-                            <Grid item xs={0.5}>
-                                <IconButton onClick={handleDeleteClick}>
-                                    <Delete />
-                                </IconButton>
-                            </Grid>
-                            <Grid item xs={0.5}>
-                                <IconButton onClick={handlePublishClick}>
-                                    <CloudUpload />
-                                </IconButton>
-                            </Grid>
-                            <Grid item xs={0.5}>
-                                <IconButton onClick={handleEditClick}>
-                                    <Edit />
-                                </IconButton>
-                            </Grid>
-                            <Grid item xs={0.5}>
-                                <IconButton onClick={handleDownloadClick}>
-                                    <Download />
-                                </IconButton>
-                            </Grid>
-                            <Grid item xs={0.5}>
-                                <IconButton onClick={handleForkClick}>
-                                    <Share />
-                                </IconButton>
-                            </Grid>
-                        </>
-                    )}
+            <div
+              style={{
+                backgroundColor: "#F8D6DD",
+                padding: 10,
+                margin: 10,
+                height: "40px",
+                marginTop: "0px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <Grid container spacing={2}>
+                <Grid item xs={2}>
+                  <Typography sx={{ fontFamily: "Sen", color: "black" }}>
+                    {}
+                  </Typography>
                 </Grid>
+                <Grid item xs={1}>
+                  <IconButton>
+                    <VisibilityIcon />
+                  </IconButton>
+                </Grid>
+                <Grid item xs={0.4}>
+                  <Typography
+                    sx={{ fontFamily: "Sen", color: "black" }}
+                  ></Typography>
+                </Grid>
+                <Grid
+                  item
+                  xs={2}
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <IconButton className="likeButton" onClick={handleLikeClick}>
+                    <FavoriteIcon />
+                  </IconButton>
+                  <Typography
+                    sx={{ fontFamily: "Sen", color: "black", marginLeft: 1 }}
+                  >
+                    {likes}
+                  </Typography>
+                </Grid>
+                <Grid item xs={0.5}>
+                  <IconButton
+                    className="deleteButton"
+                    onClick={handleDeleteClick}
+                  >
+                    <Delete />
+                  </IconButton>
+                </Grid>
+                <Grid item xs={0.5}>
+                  <IconButton
+                    className="publishButton"
+                    onClick={handlePublishClick}
+                  >
+                    <CloudUpload />
+                  </IconButton>
+                </Grid>
+                <Grid item xs={0.5}>
+                  <IconButton className="editButton" onClick={handleEditClick}>
+                    <Edit />
+                  </IconButton>
+                </Grid>
+                <Grid item xs={0.5}>
+                  <IconButton
+                    className="downloadButton"
+                    onClick={handleDownloadClick}
+                  >
+                    <Download />
+                  </IconButton>
+                </Grid>
+                <Grid item xs={0.5}>
+                  <IconButton
+                    className="forkButton"
+                    onClick={handleForkClick}
+                  >
+                    <Share />
+                  </IconButton>
+                </Grid>
+              </Grid>
             </div>
             <div style={{ backgroundColor: "#FDF4F3", padding: 10, margin: 10 }}>
                 <CommentSection initialComments={initialComments} />
