@@ -79,69 +79,47 @@ function AuthContextProvider(props) {
         });
     }
 
-    auth.registerUser = async function(username, email, password) {
+    auth.registerUser = async function (username, email, password) {
         console.log("REGISTERING USER");
-        // try{   
-        //     const response = await api.registerUser(username, email, password);   
-        //     if (response.status === 200) {
-        //         console.log("Registered Sucessfully");
-        //         authReducer({
-        //             type: AuthActionType.REGISTER_USER,
-        //             payload: {
-        //                 user: response.data.user,
-        //                 loggedIn: true,
-        //                 errorMessage: null
-        //             }
-        //         })
-        //         history.push("/login");
-        //         console.log("NOW WE LOGIN");
-        //         auth.loginUser(email, password);
-        //         console.log("LOGGED IN");
-        //     }
-        // } catch(error){
-        //     let errorMessage = 'An error occurred';
-        //     if (error.response && error.response.data) {
-        //         errorMessage = error.response.data.errorMessage;
-        //     }
-        //     authReducer({
-        //         type: AuthActionType.REGISTER_USER,
-        //         payload: {
-        //             user: auth.user,
-        //             loggedIn: false,
-        //             errorMessage
-        //         }
-        //     })
-        // }
 
         api.registerUser(username, email, password)
-        .then(response => {
-            if(response.status === 200){
-                console.log('Registration successful:', response);
-                authReducer({
-                    type: AuthActionType.REGISTER_USER,
-                    payload: {
-                        user: response.data.user,
-                        loggedIn: true,
-                        errorMessage: null
+            .then(response => {
+                if (response.status === 200) {
+                    console.log('Registration successful:', response);
+                    authReducer({
+                        type: AuthActionType.REGISTER_USER,
+                        payload: {
+                            user: response.data.user,
+                            loggedIn: true,
+                            errorMessage: null
+                        }
+                    })
+                    history.push("/login");
+                    console.log("NOW WE LOGIN");
+                    auth.loginUser(email, password);
+                    console.log("LOGGED IN");
+                } else {
+                    let errorMessage = "Registration failed. Please try again.";
+                    if (response.data.error.includes("E11000 duplicate key error collection: test.users index: username_1 dup key")) {
+                        errorMessage = "The username is already in use. Please try a different username.";
+                    } else if (response.data.error.includes("E11000 duplicate key error collection: test.users index: email_1 dup key")) {
+                        errorMessage = "The email is already in use. Please try a different email.";
                     }
-                })
-                history.push("/login");
-                console.log("NOW WE LOGIN");
-                auth.loginUser(email, password);
-                console.log("LOGGED IN");
-            }else{
-                console.log('Registration failed:', response);
-                authReducer({
-                    type: AuthActionType.REGISTER_USER,
-                    payload: {
-                        user: auth.user,
-                        loggedIn: false,
-                        errorMessage: response.data.error
-                    }
-                })
-            }
-        })
+
+                    // Dispatch the error message
+                    authReducer({
+                        type: AuthActionType.REGISTER_USER,
+                        payload: {
+                            user: auth.user,
+                            loggedIn: false,
+                            errorMessage: errorMessage
+                        }
+                    })
+                }
+            })
     }
+
+
 
     auth.loginUser = async function(email, password) {
         // try{
@@ -232,7 +210,12 @@ function AuthContextProvider(props) {
         });
     }
 
-    auth.logoutUser = async function() {
+
+
+
+
+
+    auth.logoutUser = async function () {
         console.log("Logout user");
         api.logoutUser()
         .then(response => {
@@ -250,7 +233,7 @@ function AuthContextProvider(props) {
         })
     }
 
-    auth.getUserInitials = function() {
+    auth.getUserInitials = function () {
         let initials = "";
         if (auth.user) {
             initials += auth.user.firstName.charAt(0);

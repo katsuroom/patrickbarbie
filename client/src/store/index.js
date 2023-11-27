@@ -14,7 +14,9 @@ export const StoreActionType = {
     CLOSE_MODAL: "CLOSE_MODAL",
     UPLOAD_MAP_FILE: "UPLOAD_MAP_FILE",
     UPDATE_MAP: "UPDATE_MAP",
-    GET_MAP_FILE: "GET_MAP_FILE"
+    GET_MAP_FILE: "GET_MAP_FILE",
+    EMPTY_RAW_MAP_FILE: "EMPTY_RAW_MAP_FILE",
+    SET_CSV_KEY: "SET_CSV_KEY"
 };
 
 export const CurrentModal = {
@@ -31,7 +33,8 @@ export const MapType = {
     HEATMAP: "Heatmap",
     DOT_DISTRIBUTION_MAP: "Dot Distribution Map",
     PROPORTIONAL_SYMBOL_MAP: "Proportional Symbol Map",
-    TRAVEL_MAP: "Travel Map"
+    TRAVEL_MAP: "Travel Map",
+    SET_PARSED_CSV_DATA: "SET_PARSED_CSV_DATA"
 };
 
 function StoreContextProvider(props) {
@@ -41,7 +44,9 @@ function StoreContextProvider(props) {
     const [store, setStore] = useState({
         currentModal: CurrentModal.NONE,            // the currently open modal
         mapFile: null,                           // map file uploaded for creating a new map
-        rawMapFile: null
+        rawMapFile: null, 
+        key: null, // csv key [column name] for map displaying
+        parsed_CSV_Data: null
     });
 
     const storeReducer = (action) => {
@@ -78,6 +83,30 @@ function StoreContextProvider(props) {
                     ...store,
                     rawMapFile: payload.file
                 });
+            }
+            case StoreActionType.EMPTY_RAW_MAP_FILE: {
+
+                console.log("empting raw map file");
+                store.rawMapFile = null; // setStore is async
+                return setStore({
+                    ...store, 
+                    rawMapFile: null
+                })
+            }
+
+            case StoreActionType.SET_CSV_KEY: {
+                console.log("setting key to", payload.key)
+                return setStore({
+                    ...store,
+                    key: payload.key
+                })
+            }
+
+            case StoreActionType.SET_PARSED_CSV_DATA: {
+                return setStore({
+                    ...store,
+                    parsed_CSV_Data: payload.parsed_CSV_Data
+                })
             }
             default:
                 return store;
@@ -202,6 +231,13 @@ function StoreContextProvider(props) {
         });
     }
 
+    store.emptyRawMapFile = function(){
+        console.log('store.emptyRawMapFile');
+        storeReducer({
+            type: StoreActionType.EMPTY_RAW_MAP_FILE
+        });
+    }
+
     store.forkMap = function(maptitle){
         var mapData = "";
         console.log("mapData: ", auth.user.username, maptitle);
@@ -227,9 +263,35 @@ function StoreContextProvider(props) {
         console.log("getting maps by user");
         api.getMapsByUser()
         .then((response) => {
-            console.log(response);
+            console.log(response);      
         }); 
     }
+
+    store.setCsvKey = function(key){
+        console.log('store.setCsvKey', key);
+        storeReducer({
+            type: StoreActionType.SET_CSV_KEY,
+            payload: key
+        });
+    }
+
+    store.setCsvKeyWithoutRerendering = function(key){
+        store.key = key;
+    }
+    store.setParsedCsvData = function(data){
+        // console.log('store.setParsedCsvData', data);
+        storeReducer({
+            type: StoreActionType.SET_CSV_KEY,
+            payload: data
+        });
+    }
+
+
+    // setParsedCsvDataWithoutRendering
+    store.setParsedCsvDataWOR = function(data){
+        store.parsed_CSV_Data = data;
+    }
+
 
     return (
         <StoreContext.Provider value={{

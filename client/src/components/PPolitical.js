@@ -10,16 +10,19 @@ import { useHistory } from "react-router-dom";
 import CsvFileReader from "./CsvFileReader";
 import MUISaveChanges from "./Model/MUISaveChanges";
 import MUIExitModal from "./Model/MUIExitModal";
+import { useContext } from "react";
+import StoreContext from "../store";
 
 export default function PPolitical() {
   const [label, setLabel] = React.useState(null);
-  const [key, setKey] = React.useState(null);
-  const [parsed_CSV_Data, setParsed_CSV_Data] = React.useState({});
+  // const [parsed_CSV_Data, setParsed_CSV_Data] = React.useState({});
   const [menuItems, setMenuItems] = React.useState([]);
   const [renderTable, setRenderTable] = React.useState(false);
   const [page, setPage] = React.useState(0);
   const [saveModalOpen, setSaveModalOpen] = React.useState(false);
   const [exitModalOpen, setExitModalOpen] = React.useState(false);
+  const { store } = useContext(StoreContext);
+
 
   const ROW_PER_PAGE = 30;
 
@@ -32,7 +35,7 @@ export default function PPolitical() {
 
   const handleChangeKey = (event) => {
     console.log(event.target.value);
-    setKey(event.target.value);
+    store.setCsvKeyWithoutRerendering(event.target.value);
   };
 
   const handleChangeLabel = (event) => {
@@ -86,16 +89,18 @@ export default function PPolitical() {
     keys = Array.from(keys);
     console.log(keys);
 
-    setParsed_CSV_Data(csv_data);
-    setKey(keys[1]);
+    store.setParsedCsvDataWOR(csv_data);
+    store.setCsvKeyWithoutRerendering(keys[1]);
     console.log("setting key to", keys[1]);
     setLabel(keys[0]);
     console.log("setting label to", keys[0]);
     setMenuItems(keys);
     console.log("setting menu item to", keys);
     setRenderTable(true);
+
+
   };
-  let maxPage = label && parsed_CSV_Data[label] ? parseInt(parsed_CSV_Data[label].length / ROW_PER_PAGE) : 0;
+  let maxPage = label && store.parsed_CSV_Data[label] ? parseInt(store.parsed_CSV_Data[label].length / ROW_PER_PAGE) : 0;
 
   return (
     <div>
@@ -135,7 +140,7 @@ export default function PPolitical() {
                 <Select
                   labelId="demo-simple-select-standard-label"
                   id="searchOn"
-                  value={key}
+                  value={store.key}
                   required
                   onChange={handleChangeKey}
                   sx={{ minWidth: "80%" }}
@@ -159,11 +164,11 @@ export default function PPolitical() {
           <tbody>
             {!renderTable ||
               zip(
-                parsed_CSV_Data[label].slice(
+                store.parsed_CSV_Data[label].slice(
                   page * ROW_PER_PAGE,
                   (page + 1) * ROW_PER_PAGE
                 ),
-                parsed_CSV_Data[key].slice(
+                store.parsed_CSV_Data[store.key].slice(
                   page * ROW_PER_PAGE,
                   (page + 1) * ROW_PER_PAGE
                 )

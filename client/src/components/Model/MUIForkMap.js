@@ -35,6 +35,7 @@ export default function MUIForkMap() {
     }
 
     const onClose = () => {
+        store.emptyRawMapFile();
         store.closeModal();
     }
 
