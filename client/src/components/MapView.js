@@ -112,22 +112,16 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
           }}
         >
           <Grid container spacing={2}>
-            <Grid item xs={2}>
-              <Typography sx={{ fontFamily: "Sen", color: "black" }}>
+            <Grid item xs={3} style={{ display: "flex", alignItems: "center" }}>
+              <Typography sx={{ fontFamily: "Sen", color: "black", fontWeight: "bold"}}>
                 {store.currentMapObject?.author}
               </Typography>
             </Grid>
-            <Grid item xs={1}>
-              <IconButton>
-                <VisibilityIcon />
-              </IconButton>
+            <Grid item xs={1} style={{ display: "flex", alignItems: "center" }}>
+              <VisibilityIcon />
+              <Typography sx={{ fontFamily: "Sen", color: "black", marginLeft: 1 }}>{0}</Typography>
             </Grid>
-            <Grid item xs={0.4}>
-              <Typography
-                sx={{ fontFamily: "Sen", color: "black" }}
-              ></Typography>
-            </Grid>
-            <Grid item xs={2} style={{ display: "flex", alignItems: "center" }}>
+            <Grid item xs={5.4} style={{ display: "flex", alignItems: "center" }}>
               <IconButton className="likeButton" onClick={handleLikeClick}>
                 <FavoriteIcon />
               </IconButton>
