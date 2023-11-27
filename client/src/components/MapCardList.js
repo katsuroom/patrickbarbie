@@ -30,14 +30,16 @@ export default function MapCardList() {
   const [selectedMap, setSelectedMap] = useState(null);
 
   useEffect(() => {
+    store.getMapList();
+  }, []);
+
+  useEffect(() => {
     if (auth.loggedIn && auth.user) {
-      const updateMapsInState = (fetchedMaps) => {
-        const typedFetchedMaps = fetchedMaps.map(map => ({ ...map, type: 'fetched' }));
-        setMaps([...hardcodedMaps, ...typedFetchedMaps]);
-      };
-      store.getMapsByUser(updateMapsInState);
+      let fetchedMaps = store.mapList;
+      const typedFetchedMaps = fetchedMaps.map(map => ({ ...map, type: 'fetched' }));
+      setMaps([...hardcodedMaps, ...typedFetchedMaps]);
     }
-  }, [auth.user, auth.loggedIn, store]);
+  }, [auth.user, auth.loggedIn, store.mapList]);
 
   const handleMapClick = (mapId) => {
     const selected = maps.find((map) => map._id === mapId);

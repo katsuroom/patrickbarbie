@@ -19,6 +19,8 @@ export const StoreActionType = {
   SET_CSV_KEY: "SET_CSV_KEY",
   SET_MAP_TYPE: "SET_MAP_TYPE",
   SET_RAW_MAP_FILE: "SET_RAW_MAP_FILE",
+  LOAD_MAP_LIST: "LOAD_MAP_LIST",
+  DELETE_MAP: "DELETE_MAP",
 };
 
 export const CurrentModal = {
@@ -50,6 +52,7 @@ function StoreContextProvider(props) {
     parsed_CSV_Data: null,
     mapType: null,
     currentMapObject: null,
+    mapList: [],
   });
 
   const storeReducer = (action) => {
@@ -119,6 +122,24 @@ function StoreContextProvider(props) {
           rawMapFile: payload.file,
         });
       }
+
+      case StoreActionType.LOAD_MAP_LIST: {
+        return setStore({
+          ...store,
+          mapList: payload.mapList,
+          currentModal: CurrentModal.NONE,
+        });
+      }
+
+      case StoreActionType.DELETE_MAP: {
+        return setStore({
+          ...store,
+          mapList: payload.mapList,
+          currentModal: CurrentModal.NONE,
+          rawMapFile: null,
+        });
+      }
+
       default:
         return store;
     }
@@ -272,6 +293,9 @@ function StoreContextProvider(props) {
       )
       .then((response) => {
         console.log(response);
+        if (response.status === 200) {
+          store.getMapList();
+        }
       });
   };
 
@@ -280,13 +304,26 @@ function StoreContextProvider(props) {
     api.updateMap(mapObject)
     .then((response) => {
         console.log(response);
+        if (response.status === 200) {
+          store.getMapList();
+        }
     });
   };
+
 
   store.deleteMap = function (mapId) {
     console.log("deleting map: ", mapId);
     api.deleteMap(mapId).then((response) => {
       console.log(response);
+      if (response.status === 200) {
+        api.getMapsByUser().then((response) => {
+          console.log(response.data.data);
+          storeReducer({
+            type: StoreActionType.DELETE_MAP,
+            payload: { mapList: response.data.data },
+          });
+        });
+      }
     });
   };
 
@@ -350,6 +387,17 @@ function StoreContextProvider(props) {
       payload: { mapType },
     });
   };
+
+  store.getMapList = function(){
+    api.getMapsByUser()
+    .then((response) => {
+      console.log(response.data.data);
+      storeReducer({
+        type: StoreActionType.LOAD_MAP_LIST,
+        payload: { mapList: response.data.data },
+      })
+    });
+  }
 
   return (
     <StoreContext.Provider
