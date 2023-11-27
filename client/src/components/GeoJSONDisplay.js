@@ -6,6 +6,7 @@ import "leaflet/dist/leaflet.css";
 import StoreContext from "../store";
 import domtoimage from "dom-to-image";
 import { saveAs } from "file-saver";
+import southAmericaData from './south_america (1).json'
 
 
 export default function GeoJSONDisplay(props) {
@@ -58,6 +59,17 @@ export default function GeoJSONDisplay(props) {
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
         mapRef.current
       );
+    }
+
+    if (store.mapType === 'Heatmap') {
+      console.log("heatmap !! ")
+      const heatMapData = southAmericaData.features.map(feature => {
+        const centroid = L.geoJSON(feature).getBounds().getCenter();
+        const intensity = feature.properties.population;
+        return [centroid.lat, centroid.lng, intensity];
+      });
+
+      L.heatLayer(heatMapData, { radius: 25 }).addTo(mapRef.current);
     }
 
     if (geoJsonLayerRef.current) {
