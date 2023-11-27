@@ -274,7 +274,7 @@ export default function GeoJSONDisplay(props) {
   const { store } = useContext(StoreContext);
   let downloadComplete = props.downloadComplete;
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
-  const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
+
 
   useEffect(() => {
     const resizeListener = () => {
