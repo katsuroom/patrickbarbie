@@ -14,6 +14,7 @@ export default function GeoJSONDisplay(props) {
   const [buttonAdded, setButtonAdded] = useState(false);
   const mapRef = useRef(null);
   const geoJsonLayerRef = useRef(null);
+  const heatLayerRef = useRef(null);
   const markers = useRef([]);
   const workerRef = useRef(null);
   const { store } = useContext(StoreContext);
@@ -70,6 +71,10 @@ export default function GeoJSONDisplay(props) {
     }
 
     if (store.mapType === 'Heatmap') {
+
+      if (heatLayerRef.current) {
+        mapRef.current.removeLayer(heatLayerRef.current);
+      }
       const heatMapData = geoJsonData.features.map(feature => {
         let idx = -1;
 
@@ -77,7 +82,7 @@ export default function GeoJSONDisplay(props) {
         const centroid = L.geoJSON(feature).getBounds().getCenter();
         const name = feature.properties.name;
         if (!name){
-          return [centroid.lat, centroid.lng, null];
+          return [centroid.lat, centroid.lng, 0];
         }
 
         try{
@@ -89,15 +94,23 @@ export default function GeoJSONDisplay(props) {
         }        
 
         if (idx < 0){
-          return [centroid.lat, centroid.lng, null];
+          return [centroid.lat, centroid.lng, 0];
         }
 
-        const intensity = store.parsed_CSV_Data[store.key][idx];
-        console.log("intensity", intensity);
-        return [centroid.lat, centroid.lng, intensity];
+        const intensity = parseFloat(store.parsed_CSV_Data[store.key][idx]);
+        console.log(name, "intensity", intensity);
+
+        return [centroid.lat, centroid.lng, intensity?intensity:0];
       });
 
-      L.heatLayer(heatMapData, { radius: 25 }).addTo(mapRef.current);
+      heatLayerRef.current = L.heatLayer(heatMapData, { 
+        radius: 25,
+        gradient: { 0.4: 'blue', 0.6: 'lime', 0.8: 'yellow', 1: 'red' },
+        max: 1.0, // Maximum intensity
+        minOpacity: 0.5, // Minimum opacity
+        blur: 15, // Amount of blur
+        maxZoom: 18, // Maximum zoom level
+      }).addTo(mapRef.current);
     }
 
     if (geoJsonLayerRef.current) {
