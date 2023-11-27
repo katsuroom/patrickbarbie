@@ -96,6 +96,7 @@ export default function MapCardList() {
             key={map._id}
           >
             <ListItemText
+              className="map-list-name"
               primary={map.title}
               style={{
                 padding: "0px",
