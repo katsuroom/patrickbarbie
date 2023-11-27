@@ -14,12 +14,12 @@ loginUser = async (req, res) => {
         .json({ errorMessage: "Please enter all required fields." });
     }
 
-    const existingUser = await User.findOne({ email: email });
+    const existingUser = await User.findOne({ email: req.body.email });
     console.log("existingUser: " + existingUser);
     if (!existingUser) {
-      console.log("Wrong email or password provided.", email);
+      console.log("Wrong email.", email);
       return res.status(401).json({
-        errorMessage: "Wrong email or password provided.",
+        errorMessage: "User does not exists.",
       });
     }
 

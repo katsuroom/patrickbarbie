@@ -122,34 +122,6 @@ function AuthContextProvider(props) {
 
 
     auth.loginUser = async function(email, password) {
-        // try{
-        //     console.log("Logging in user");
-        //     const response = await api.loginUser(email, password);
-        //     console.log("response: ", response.status);
-        //     if (response.status === 200) {
-        //         console.log("Logged in Sucessfully");
-        //         authReducer({
-        //             type: AuthActionType.LOGIN_USER,
-        //             payload: {
-        //                 user: response.data.user,
-        //                 loggedIn: true,
-        //                 errorMessage: null
-        //             }
-        //         })
-        //         history.push("/main");
-                
-        //     }
-        // } catch(error){
-        //     authReducer({
-        //         type: AuthActionType.LOGIN_USER,
-        //         payload: {
-        //             user: auth.user,
-        //             loggedIn: false,
-        //             errorMessage: error.response.data.errorMessage
-        //         }
-        //     })
-        // }
-
         api.loginUser(email, password)
         .then(response => {
 
@@ -172,27 +144,17 @@ function AuthContextProvider(props) {
                 })
                 history.push("/main");
             }
-            else if(response.status === 401){
-                console.log('Login failed: Unauthorized access');
-                console.log(response);
-                authReducer({
-                    type: AuthActionType.LOGIN_USER,
-                    payload: {
-                        user: auth.user,
-                        loggedIn: false,
-                        errorMessage: "Invalid email or password. Please try again."
-                    }
-                })
-            }else{
+            else{
                 console.log('Login failed:', response);
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
                     payload: {
                         user: auth.user,
                         loggedIn: false,
-                        errorMessage: response.data.error
+                        errorMessage: response.data.errorMessage
                     }
                 })
+                window.alert(response.data.errorMessage)
             }
         })
         .catch(error => {

@@ -12,24 +12,12 @@ export default function LoginPage() {
     const [error, setError] = useState(null);
     const { auth } = useContext(AuthContext);
 
-    // const handleSubmit = async (event) => {
-    //     event.preventDefault();
-
-    //     loginUser(email, password)
-    //     .then(userCredientials => {
-    //         window.alert(`Welcome to Patrick Barbie, ${userCredientials.user.displayName}.`);
-    //         window.location.href = "/main";
-    //     })
-    //     .catch(error => {
-    //         setError("Invalid login credentials.");
-    //     })
-    // };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         setError(null);
-        
 
+        
         auth.loginUser(
             email,
             password
