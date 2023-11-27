@@ -49,6 +49,7 @@ function StoreContextProvider(props) {
     key: null, // csv key [column name] for map displaying
     parsed_CSV_Data: null,
     mapType: null,
+    currentMapId: null,
   });
 
   const storeReducer = (action) => {

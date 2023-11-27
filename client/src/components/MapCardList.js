@@ -41,6 +41,8 @@ export default function MapCardList() {
 
   const handleMapClick = (mapId) => {
     const selected = maps.find((map) => map._id === mapId);
+    store.currentMapId = mapId;
+    console.log(store.currentMapId);
     if (selected) {
       setSelectedMap(selected);
       if (selected.type === 'hardcoded') {
