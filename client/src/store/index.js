@@ -17,6 +17,7 @@ export const StoreActionType = {
   GET_MAP_FILE: "GET_MAP_FILE",
   EMPTY_RAW_MAP_FILE: "EMPTY_RAW_MAP_FILE",
   SET_CSV_KEY: "SET_CSV_KEY",
+  SET_MAP_TYPE: "SET_MAP_TYPE",
 };
 
 export const CurrentModal = {
@@ -46,6 +47,7 @@ function StoreContextProvider(props) {
     rawMapFile: null,
     key: null, // csv key [column name] for map displaying
     parsed_CSV_Data: null,
+    mapType: null,
   });
 
   const storeReducer = (action) => {
@@ -104,6 +106,13 @@ function StoreContextProvider(props) {
         return setStore({
           ...store,
           parsed_CSV_Data: payload.parsed_CSV_Data,
+        });
+      }
+
+      case StoreActionType.SET_MAP_TYPE: {
+        return setStore({
+          ...store,
+          mapType: payload.mapType,
         });
       }
       default:
@@ -256,31 +265,40 @@ function StoreContextProvider(props) {
   };
 
   store.setCsvKey = function (key) {
-    
     if (key !== undefined) {
-        store.key = key // for synchronization purpose
-        console.log(store.key);
+      store.key = key; // for synchronization purpose
+      console.log(store.key);
       storeReducer({
         type: StoreActionType.SET_CSV_KEY,
-        payload: {key},
+        payload: { key },
       });
     }
   };
 
   store.setCsvKeyWithoutRerendering = function (key) {
-    if (key !== undefined) {console.log(store.key); store.key = key};
+    if (key !== undefined) {
+      console.log(store.key);
+      store.key = key;
+    }
   };
   store.setParsedCsvData = function (data) {
     // console.log('store.setParsedCsvData', data);
     storeReducer({
       type: StoreActionType.SET_CSV_KEY,
-      payload: {data},
+      payload: { data },
     });
   };
 
   // setParsedCsvDataWithoutRendering
   store.setParsedCsvDataWOR = function (data) {
     store.parsed_CSV_Data = data;
+  };
+
+  store.setMapType = function (mapType) {
+    storeReducer({
+      type: StoreActionType.SET_MAP_TYPE,
+      payload: { mapType },
+    });
   };
 
   return (
