@@ -29,7 +29,7 @@ const CommentSection = ({ initialComments }) => {
             replies: []
         };
 
-        setComments([...comments, newComment]);
+        setComments([newComment, ...comments]);
         setNewCommentText('');
     };
 
