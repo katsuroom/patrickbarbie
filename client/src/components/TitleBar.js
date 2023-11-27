@@ -24,8 +24,8 @@ export default function TitleBar() {
         <Link href="/main">
           <img src={patrickBarbie} width="5%" style={{ marginTop: 5, marginLeft: 10, clipPath: "inset(0rem 0rem 2rem 0rem)" }} />
         </Link>
-        <Box sx={{ position: "absolute", top: "2%", right: "50%" }}>
-          {auth.loggedIn ? <SearchBar /> : <></>}
+        <Box sx={{ position: "absolute", top: "1%", right: "50%" }}>
+          {auth.loggedIn? <SearchBar /> : <></>}
         </Box>
         <IconButton
           className="icon-menu"

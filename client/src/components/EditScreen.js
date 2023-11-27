@@ -3,7 +3,6 @@ import PPolitical from "./PPolitical";
 import MapEditorToolbar from "./MapEditorToolBar";
 
 import MapDisplay from "./MapDisplay";
-import PHeatmap from './PHeatmap'
 export default function EditScreen() {
   const politicalStyle = {
     width: "30%",
@@ -20,16 +19,14 @@ export default function EditScreen() {
     marginLeft: "18%",
   };
 
-  // const imageStyle = {
-  //     width: '65%', // Set the image width to 50%
-  //     marginLeft: '1%',
-  // };
   return (
     <div>
       <div style={toolbarStyle}>
         <MapEditorToolbar />
       </div>
-      <MapDisplay />
+      <div style={{width: "65vw"}}>
+        <MapDisplay />
+      </div>
       <div style={politicalStyle}>
         <PPolitical />
         {/* <PHeatmap /> */}

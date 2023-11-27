@@ -18,6 +18,17 @@ export default function GeoJSONDisplay(props) {
   const { store } = useContext(StoreContext);
   let downloadComplete = props.downloadComplete;
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
+  const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
+
+  useEffect(() => {
+    const resizeListener = () => {
+      setMapHeight(window.innerHeight / 2);
+    };
+    window.addEventListener('resize', resizeListener);
+    return () => {
+      window.removeEventListener('resize', resizeListener);
+    };
+  }, []);
 
   useEffect(() => {
     console.log(store.rawMapFile instanceof File);
@@ -172,6 +183,6 @@ export default function GeoJSONDisplay(props) {
   }
 
   return (
-    <div id={"map-display"} style={{ width: "60%", height: "300px" }}></div>
+    <div id={"map-display"} style={{height: `${mapHeight}px`, margin: '10px' }}></div>
   );
 }

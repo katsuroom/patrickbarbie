@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import './MUIPublishMap.css'
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import shp from "shpjs";
 
 import StoreContext from '../../store';
 import { CurrentModal } from '../../store';
@@ -30,9 +31,32 @@ export default function MUIUploadMap() {
     };
 
     const handleFileSelect = (event) => {
-        const file = event.target.files[0];
-        console.log(file);
+        let file = event.target.files[0];
+        // console.log(file);
+        
         if (file) {
+            
+            // convert file to GeoJSON if KML or Shapefile
+            let ext = file.name.split('.').pop();
+            console.log("filetype: " + ext);
+
+            switch(ext)
+            {
+            case "zip":
+                const reader = new FileReader();
+
+                file.arrayBuffer().then(async (result) => {
+                    const data = await shp(result);
+                    console.log(data);
+                });
+
+                return;
+
+                break;
+            default:
+                break;
+            }
+
             store.uploadMapFile(file);
         }
     };

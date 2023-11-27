@@ -69,7 +69,7 @@ export default function MapCardList() {
   return (
     <Box
       sx={{
-        width: "25%",
+        width: "23vw",
         bgcolor: "#F7D3E4",
         float: "left",
         height: "83vh",
@@ -80,7 +80,7 @@ export default function MapCardList() {
         component="nav"
         aria-label="map folders"
         sx={{
-          maxHeight: "85vh",
+          maxHeight: "80vh",
           overflow: "auto",
           "&::-webkit-scrollbar": {
             width: "10px",
