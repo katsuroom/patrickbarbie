@@ -172,27 +172,29 @@ function AuthContextProvider(props) {
                 })
                 history.push("/main");
             }
-            else if(response.status === 401){
-                console.log('Login failed: Unauthorized access');
-                console.log(response);
-                authReducer({
-                    type: AuthActionType.LOGIN_USER,
-                    payload: {
-                        user: auth.user,
-                        loggedIn: false,
-                        errorMessage: "Invalid email or password. Please try again."
-                    }
-                })
-            }else{
+            // else if(response.status === 401){
+            //     console.log('Login failed: Unauthorized access!!!');
+            //     console.log(response);
+            //     authReducer({
+            //         type: AuthActionType.LOGIN_USER,
+            //         payload: {
+            //             user: auth.user,
+            //             loggedIn: false,
+            //             errorMessage: "Invalid email or password. Please try again."
+            //         }
+            //     })
+            // }
+            else{
                 console.log('Login failed:', response);
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
                     payload: {
                         user: auth.user,
                         loggedIn: false,
-                        errorMessage: response.data.error
+                        errorMessage: response.data.errorMessage
                     }
                 })
+                window.alert(response.data.errorMessage)
             }
         })
         .catch(error => {

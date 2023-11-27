@@ -14,12 +14,12 @@ loginUser = async (req, res) => {
         .json({ errorMessage: "Please enter all required fields." });
     }
 
-    const existingUser = await User.findOne({ email: email });
+    const existingUser = await User.findOne({ email: req.body.email });
     console.log("existingUser: " + existingUser);
     if (!existingUser) {
-      console.log("Wrong email or password provided.", email);
+      console.log("Wrong email.", email);
       return res.status(401).json({
-        errorMessage: "Wrong email or password provided.",
+        errorMessage: "User does not exists.",
       });
     }
 
@@ -129,6 +129,27 @@ registerUser = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+// getLoggedIn = async (req, res) => 
+//   {
+//     try {
+//       const user = await User.findOne({ email: req.body.email });
+//       if (!user) {
+//         return res.status(400).json({ status: 400, error: 'User not found, unregistered email' });
+//       }
+
+//       if (await bcrypt.compare(req.body.password, user.password)) {
+//         req.session.user = user;
+//         res.json({ status: 200, data: user });
+//       } else {
+//         return res.status(400).json({ status: 400, error: 'Invalid password' });
+//       }
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ status: 500, error: 'Internal server error' });
+//     }
+//   };
+
 
 getLoggedIn = async (req, res) => {
   try {
