@@ -49,7 +49,7 @@ function StoreContextProvider(props) {
     key: null, // csv key [column name] for map displaying
     label: null,
     parsed_CSV_Data: null,
-    mapType: null,
+    mapType:  "Heatmap",
   });
 
   const storeReducer = (action) => {
@@ -157,6 +157,7 @@ function StoreContextProvider(props) {
 
     let file = store.rawMapFile;
     console.log("type of file:", typeof file);
+    console.log("store.rawMapFile", store.rawMapFile)
 
     var data = geobuf.encode(store.rawMapFile, new Pbf());
 
