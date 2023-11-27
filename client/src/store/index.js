@@ -30,7 +30,8 @@ export const MapType = {
     HEATMAP: "Heatmap",
     DOT_DISTRIBUTION_MAP: "Dot Distribution Map",
     PROPORTIONAL_SYMBOL_MAP: "Proportional Symbol Map",
-    TRAVEL_MAP: "Travel Map"
+    TRAVEL_MAP: "Travel Map",
+    SET_PARSED_CSV_DATA: "SET_PARSED_CSV_DATA"
 };
 
 function StoreContextProvider(props) {
@@ -41,7 +42,8 @@ function StoreContextProvider(props) {
         currentModal: CurrentModal.NONE,            // the currently open modal
         mapFile: null,                           // map file uploaded for creating a new map
         rawMapFile: null, 
-        key: null
+        key: null, // csv key [column name] for map displaying
+        parsed_CSV_Data: null
     });
 
     const storeReducer = (action) => {
@@ -94,6 +96,13 @@ function StoreContextProvider(props) {
                 return setStore({
                     ...store,
                     key: payload.key
+                })
+            }
+
+            case StoreActionType.SET_PARSED_CSV_DATA: {
+                return setStore({
+                    ...store,
+                    parsed_CSV_Data: payload.parsed_CSV_Data
                 })
             }
             default:
@@ -263,6 +272,19 @@ function StoreContextProvider(props) {
 
     store.setCsvKeyWithoutRerendering = function(key){
         store.key = key;
+    }
+    store.setParsedCsvData = function(data){
+        // console.log('store.setParsedCsvData', data);
+        storeReducer({
+            type: StoreActionType.SET_CSV_KEY,
+            payload: data
+        });
+    }
+
+
+    // setParsedCsvDataWithoutRendering
+    store.setParsedCsvDataWOR = function(data){
+        store.parsed_CSV_Data = data;
     }
 
 
