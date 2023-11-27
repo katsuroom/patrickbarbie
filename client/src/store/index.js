@@ -43,10 +43,10 @@ function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
 
   const [store, setStore] = useState({
-    currentModal: CurrentModal.NONE, // the currently open modal
-    mapFile: null, // map file uploaded for creating a new map
-    rawMapFile: null,
-    key: null, // csv key [column name] for map displaying
+    currentModal: CurrentModal.NONE,      // the currently open modal
+    mapFile: null,                        // map file uploaded for creating a new map
+    rawMapFile: null,                     // geojson object
+    key: null,                            // csv key [column name] for map displaying
     parsed_CSV_Data: null,
     mapType: null,
     currentMapObject: null,
@@ -140,6 +140,7 @@ function StoreContextProvider(props) {
   };
 
   store.uploadMapFile = function (file) {
+    console.log("file entered store");
     console.log(file);
     storeReducer({
       type: StoreActionType.UPLOAD_MAP_FILE,
@@ -152,45 +153,13 @@ function StoreContextProvider(props) {
 
     let file = store.rawMapFile;
 
-    let worker;
-
-    if (file instanceof File) {
-      const reader = new FileReader();
-
-      if (window.Worker) {
-        console.log("Web worker supported");
-        worker = new Worker("worker.js");
-      } else {
-        console.log("Web worker not supported");
-      }
-
-      reader.onload = function (event) {
-        const jsonDataString = event.target.result;
-        // Use the web worker for parsing
-        worker.postMessage(jsonDataString);
-      };
+    var data = geobuf.encode(file, new Pbf());
       
-      worker.onmessage = function (event) {
-        console.log("enter here")
-        file = event.data;
-        console.log(file);
-      
-        // Clean up the worker when done
-        worker.terminate();
-      
-        var data = geobuf.encode(file, new Pbf());
-      
-        api
-          .createMap(data, auth.user.username, title, mapType)
-          .then((response) => {
-            console.log(response);
-          });
-      };
-      
-      console.log(file);
-      reader.readAsText(file);
-      
-    }
+    api
+      .createMap(data, auth.user.username, title, mapType)
+      .then((response) => {
+        console.log(response);
+      });
 
     // console.log(file);
 
