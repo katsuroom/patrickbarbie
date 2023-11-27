@@ -1,5 +1,5 @@
 import axios from 'axios'
-//  test
+// test cypress
 // axios.defaults.withCredentials = true;
 // const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "api"
 // const api = axios.create({
