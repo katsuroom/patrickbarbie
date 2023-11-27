@@ -21,7 +21,7 @@ export default function TitleBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <div style={{ backgroundColor: "#fce8f1", minHeight: "50px", height: "9vh" }}>
-        <Link href="/">
+        <Link href="/main">
           <img src={patrickBarbie} width="5%" style={{ marginTop: 5, marginLeft: 10, clipPath: "inset(0rem 0rem 2rem 0rem)" }} />
         </Link>
         <Box sx={{ position: "absolute", top: "2%", right: "50%" }}>

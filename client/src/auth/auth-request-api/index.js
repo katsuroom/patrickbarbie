@@ -1,5 +1,5 @@
-const baseURL = 'http://localhost:4000/auth';
-// const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "auth"
+// const baseURL = 'http://localhost:4000/auth';
+const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "auth"
 
 // Function to perform a login request
 const loginUser = (email, password) => {
@@ -39,23 +39,29 @@ const registerUser = (username, email, password) => {
   });
 };
 
-// const getLoggedIn = () => {
-
-//   return fetch(`${baseURL}/loggedIn/`, {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     // credentials: "include",
-//   })
-//     .then((response) => {
-//       const contentType = response.headers.get("content-type");
-//       if (!contentType || !contentType.includes("application/json")) {
-//         throw new Error("Unexpected response content type");
-//       }
-//       return response.json().then((data) => ({ status: response.status, data }));
-//     });
-// };
+const getLoggedIn = () => {
+  console.log("in api.");
+  console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
+  let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
+  return fetch(`${baseURL}/loggedIn/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+    // credentials: "include",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to create map. Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      return { status: 200, data }; // Assuming 200 for success, modify as needed
+    });
+};
 
 const logoutUser = () => {
   return fetch(`${baseURL}/logout/`, {
@@ -82,7 +88,7 @@ const logoutUser = () => {
 export default {
   loginUser,
   registerUser,
-  // getLoggedIn,
+  getLoggedIn,
   logoutUser
 
 };

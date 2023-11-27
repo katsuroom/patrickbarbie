@@ -38,6 +38,8 @@ export default function MUICreateMap() {
     };
 
     const handleClose = () => {
+      console.log("onClose")
+        store.emptyRawMapFile();
         store.closeModal();
     }
 
@@ -48,7 +50,7 @@ export default function MUICreateMap() {
         //     `type: ${mapType}\n` +
         //     `file: ${store.mapFile.name}`);
 
-        handleClose();
+        store.closeModal();
         store.createMap(projectName, mapType);
         history.push("/edit");
         console.log("mapType : " + mapType);
