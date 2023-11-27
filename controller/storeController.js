@@ -163,15 +163,15 @@ deleteMap = (req, res) => {
 
 updateMap = (req, res) => {
   console.log("start update Map");
-  if (auth.verifyUser(req) === null) {
-    return res.status(401).json({
-      loggedIn: false,
-      user: null,
-      errorMessage: "Unauthorized",
-    });
-  }
-  const body = req.body;
-  console.log("body: " + JSON.stringify(body));
+  // if (auth.verifyUser(req) === null) {
+  //   return res.status(401).json({
+  //     loggedIn: false,
+  //     user: null,
+  //     errorMessage: "Unauthorized",
+  //   });
+  // }
+  const body = req.body.mapData;
+  // console.log("body: " + JSON.stringify(body));
   console.log("req: ", req.userId);
 
   if (!body) {
@@ -192,7 +192,7 @@ updateMap = (req, res) => {
           error: "Map not found",
         });
       }
-      console.log("map found: " + JSON.stringify(map));
+      // console.log("map found: " + JSON.stringify(map));
 
       // Update map properties with the data from the request body
       Object.assign(map, body);

@@ -191,9 +191,27 @@ const deleteMap = (mapId) => {
 
 };
 
-const updateMap = (mapId) =>{
+const updateMap = (mapObject) =>{
     console.log("in api.updateMap");
-
+    console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
+    let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
+    return fetch(`${baseURL}/map/${mapObject._id}`, {
+        method: "PUT",
+        headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+        },
+        body: JSON.stringify({
+            mapData: mapObject,
+        }),
+        }).then((response) => {
+        // Parse JSON and include status in the resolved value
+        console.log(response);
+        return response.json().then((data) => {
+            console.log(data);
+            return { status: response.status, data };
+        });
+      });
 }
 
 // const getMainScreenMap = (fileName) => {
@@ -229,4 +247,5 @@ export default {
   getMapsByUser,
   deleteMap,
   getMainScreenMap,
+  updateMap,
 };
