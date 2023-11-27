@@ -257,12 +257,29 @@ function StoreContextProvider(props) {
     console.log("deleting map: ", mapId);
   };
 
-  store.getMapsByUser = function () {
+  // store.getMapsByUser = function () {
+  //   console.log("getting maps by user");
+  //   api.getMapsByUser().then((response) => {
+  //     console.log(response);
+  //   });
+  // };
+
+  store.getMapsByUser = function (callback) {
     console.log("getting maps by user");
     api.getMapsByUser().then((response) => {
       console.log(response);
+      if (response.status === 200 && callback && response.data && response.data.success) {
+        // console.log("============================================================")
+        // console.log(response.data.data)
+        callback(response.data.data); 
+      } else {
+        console.error('Failed to fetch maps', response);
+      }
+    }).catch((error) => {
+      console.error('Error fetching maps', error);
     });
   };
+  
 
   store.setCsvKey = function (key) {
     if (key !== undefined) {
