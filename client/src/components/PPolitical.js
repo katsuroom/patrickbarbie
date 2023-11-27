@@ -15,7 +15,7 @@ import StoreContext from "../store";
 
 export default function PPolitical() {
   const [label, setLabel] = React.useState(null);
-  const [parsed_CSV_Data, setParsed_CSV_Data] = React.useState({});
+  // const [parsed_CSV_Data, setParsed_CSV_Data] = React.useState({});
   const [menuItems, setMenuItems] = React.useState([]);
   const [renderTable, setRenderTable] = React.useState(false);
   const [page, setPage] = React.useState(0);
@@ -89,7 +89,7 @@ export default function PPolitical() {
     keys = Array.from(keys);
     console.log(keys);
 
-    setParsed_CSV_Data(csv_data);
+    store.setParsedCsvDataWOR(csv_data);
     store.setCsvKeyWithoutRerendering(keys[1]);
     console.log("setting key to", keys[1]);
     setLabel(keys[0]);
@@ -100,7 +100,7 @@ export default function PPolitical() {
 
 
   };
-  let maxPage = label && parsed_CSV_Data[label] ? parseInt(parsed_CSV_Data[label].length / ROW_PER_PAGE) : 0;
+  let maxPage = label && store.parsed_CSV_Data[label] ? parseInt(store.parsed_CSV_Data[label].length / ROW_PER_PAGE) : 0;
 
   return (
     <div>
@@ -164,11 +164,11 @@ export default function PPolitical() {
           <tbody>
             {!renderTable ||
               zip(
-                parsed_CSV_Data[label].slice(
+                store.parsed_CSV_Data[label].slice(
                   page * ROW_PER_PAGE,
                   (page + 1) * ROW_PER_PAGE
                 ),
-                parsed_CSV_Data[store.key].slice(
+                store.parsed_CSV_Data[store.key].slice(
                   page * ROW_PER_PAGE,
                   (page + 1) * ROW_PER_PAGE
                 )
