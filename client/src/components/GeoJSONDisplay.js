@@ -54,6 +54,8 @@ export default function GeoJSONDisplay(props) {
   }, [store.rawMapFile]);
 
   useEffect(() => {
+
+    console.log("store.rawMapFile", store.rawMapFile);
     if (!mapRef.current) {
       mapRef.current = L.map("map-display").setView([0, 0], 2);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
@@ -62,10 +64,30 @@ export default function GeoJSONDisplay(props) {
     }
 
     if (store.mapType === 'Heatmap') {
-      console.log("heatmap !! ")
-      const heatMapData = southAmericaData.features.map(feature => {
+      const heatMapData = geoJsonData.features.map(feature => {
+        let idx = -1;
+
+
         const centroid = L.geoJSON(feature).getBounds().getCenter();
-        const intensity = feature.properties.population;
+        const name = feature.properties.name;
+        if (!name){
+          return [centroid.lat, centroid.lng, null];
+        }
+
+        try{
+          // console.log(store.label);
+        // console.log("store.parsed_CSV_Data", store.parsed_CSV_Data[store.label])
+          idx = store.parsed_CSV_Data[store.label].indexOf(feature.properties.name);
+        }
+        catch(error){
+        }        
+
+        if (idx < 0){
+          return [centroid.lat, centroid.lng, null];
+        }
+
+        const intensity = store.parsed_CSV_Data[store.key][idx];
+        console.log("intensity", intensity);
         return [centroid.lat, centroid.lng, intensity];
       });
 
@@ -113,10 +135,10 @@ export default function GeoJSONDisplay(props) {
         console.log("geoJsonLayerRef.current is undefined or empty");
       }
     }
-  }, [geoJsonData, props.mapId]);
+  }, [geoJsonData, store.label, store.key, store.parsed_CSV_Data]);
 
   useEffect(() => {
-    const saveImageButton = L.control({ position: "bottomright" });
+    const saveImageButton = L.control({ position: "bottomleft" });
     saveImageButton.onAdd = function () {
       this._div = L.DomUtil.create("div", "saveImageButton");
       this._div.innerHTML = '<Button id="saveImageButton" >Save Image</Button>';
