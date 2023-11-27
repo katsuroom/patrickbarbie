@@ -30,19 +30,21 @@ export default function MapCardList() {
   const [selectedMap, setSelectedMap] = useState(null);
 
   useEffect(() => {
+    store.getMapList();
+  }, []);
+
+  useEffect(() => {
     if (auth.loggedIn && auth.user) {
-      const updateMapsInState = (fetchedMaps) => {
-        const typedFetchedMaps = fetchedMaps.map(map => ({ ...map, type: 'fetched' }));
-        setMaps([...hardcodedMaps, ...typedFetchedMaps]);
-      };
-      store.getMapsByUser(updateMapsInState);
+      let fetchedMaps = store.mapList;
+      const typedFetchedMaps = fetchedMaps.map(map => ({ ...map, type: 'fetched' }));
+      setMaps([...hardcodedMaps, ...typedFetchedMaps]);
     }
-  }, [auth.user, auth.loggedIn, store]);
+  }, [auth.user, auth.loggedIn, store.mapList]);
 
   const handleMapClick = (mapId) => {
     const selected = maps.find((map) => map._id === mapId);
-    store.currentMapId = mapId;
-    console.log(store.currentMapId);
+    store.currentMapObject = selected;
+    console.log(store.currentMapObject);
     if (selected) {
       setSelectedMap(selected);
       if (selected.type === 'hardcoded') {
@@ -53,7 +55,7 @@ export default function MapCardList() {
       } else if (selected.type === 'fetched') {
         // fetched map click
         var mapData = selected.mapData;
-        console.log("mapData: ", mapData.data);
+        console.log("mapData: ", selected);
         const encodedData = geobuf.decode(new Pbf(mapData.data));
         console.log("encodedData: ", encodedData);
         store.setRawMapFile(encodedData);

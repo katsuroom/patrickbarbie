@@ -14,7 +14,7 @@ export default function GeoJSONDisplay(props) {
   const mapRef = useRef(null);
   const geoJsonLayerRef = useRef(null);
   const markers = useRef([]);
-  const workerRef = useRef(null);
+  // const workerRef = useRef(null);
   const { store } = useContext(StoreContext);
   let downloadComplete = props.downloadComplete;
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
@@ -31,37 +31,8 @@ export default function GeoJSONDisplay(props) {
   }, []);
 
   useEffect(() => {
-    console.log(store.rawMapFile instanceof File);
-    if (!(store.rawMapFile instanceof File)) {
-      console.log("not a file")
+    if(store.rawMapFile)
       setGeoJsonData(store.rawMapFile);
-    } else {
-      const reader = new FileReader();
-
-      if (window.Worker) {
-        console.log("Web worker supported");
-        workerRef.current = new Worker("worker.js");
-      } else {
-        console.log("Web worker not supported");
-      }
-
-      reader.onload = function (event) {
-        const jsonDataString = event.target.result;
-        // Use the web worker for parsing
-        workerRef.current.postMessage(jsonDataString);
-      };
-
-      workerRef.current.onmessage = function (event) {
-        setGeoJsonData(event.data);
-      };
-      console.log(store.rawMapFile);
-      reader.readAsText(store.rawMapFile);
-
-      // Clean up the worker when component unmounts
-      return () => {
-        workerRef.current.terminate();
-      };
-    }
   }, [store.rawMapFile]);
 
   useEffect(() => {
@@ -95,18 +66,23 @@ export default function GeoJSONDisplay(props) {
       console.log(geoJsonData);
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
         onEachFeature: (feature, layer) => {
-          const label = L.marker(
-            [feature.properties.label_y, feature.properties.label_x],
-            {
-              icon: L.divIcon({
-                className: "countryLabel",
-                html: feature.properties.name,
-                iconSize: [1000, 0],
-                iconAnchor: [0, 0],
-              }),
-            }
-          ).addTo(mapRef.current);
-          markers.current.push(label);
+
+          // check if label_y and label_x exist, since they don't exist for KML
+          if(feature.properties.label_y && feature.properties.label_x)
+          {
+            const label = L.marker(
+              [feature.properties.label_y, feature.properties.label_x],
+              {
+                icon: L.divIcon({
+                  className: "countryLabel",
+                  html: feature.properties.name,
+                  iconSize: [1000, 0],
+                  iconAnchor: [0, 0],
+                }),
+              }
+            ).addTo(mapRef.current);
+            markers.current.push(label);
+          }
         },
       });
 

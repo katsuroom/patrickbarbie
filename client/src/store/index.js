@@ -19,6 +19,8 @@ export const StoreActionType = {
   SET_CSV_KEY: "SET_CSV_KEY",
   SET_MAP_TYPE: "SET_MAP_TYPE",
   SET_RAW_MAP_FILE: "SET_RAW_MAP_FILE",
+  LOAD_MAP_LIST: "LOAD_MAP_LIST",
+  DELETE_MAP: "DELETE_MAP",
 };
 
 export const CurrentModal = {
@@ -43,13 +45,14 @@ function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
 
   const [store, setStore] = useState({
-    currentModal: CurrentModal.NONE, // the currently open modal
-    mapFile: null, // map file uploaded for creating a new map
-    rawMapFile: null,
-    key: null, // csv key [column name] for map displaying
+    currentModal: CurrentModal.NONE,      // the currently open modal
+    mapFile: null,                        // map file uploaded for creating a new map
+    rawMapFile: null,                     // geojson object
+    key: null,                            // csv key [column name] for map displaying
     parsed_CSV_Data: null,
     mapType: null,
-    currentMapId: null,
+    currentMapObject: null,
+    mapList: [],
   });
 
   const storeReducer = (action) => {
@@ -119,6 +122,24 @@ function StoreContextProvider(props) {
           rawMapFile: payload.file,
         });
       }
+
+      case StoreActionType.LOAD_MAP_LIST: {
+        return setStore({
+          ...store,
+          mapList: payload.mapList,
+          currentModal: CurrentModal.NONE,
+        });
+      }
+
+      case StoreActionType.DELETE_MAP: {
+        return setStore({
+          ...store,
+          mapList: payload.mapList,
+          currentModal: CurrentModal.NONE,
+          rawMapFile: null,
+        });
+      }
+
       default:
         return store;
     }
@@ -140,6 +161,7 @@ function StoreContextProvider(props) {
   };
 
   store.uploadMapFile = function (file) {
+    console.log("file entered store");
     console.log(file);
     storeReducer({
       type: StoreActionType.UPLOAD_MAP_FILE,
@@ -152,45 +174,13 @@ function StoreContextProvider(props) {
 
     let file = store.rawMapFile;
 
-    let worker;
-
-    if (file instanceof File) {
-      const reader = new FileReader();
-
-      if (window.Worker) {
-        console.log("Web worker supported");
-        worker = new Worker("worker.js");
-      } else {
-        console.log("Web worker not supported");
-      }
-
-      reader.onload = function (event) {
-        const jsonDataString = event.target.result;
-        // Use the web worker for parsing
-        worker.postMessage(jsonDataString);
-      };
+    var data = geobuf.encode(file, new Pbf());
       
-      worker.onmessage = function (event) {
-        console.log("enter here")
-        file = event.data;
-        console.log(file);
-      
-        // Clean up the worker when done
-        worker.terminate();
-      
-        var data = geobuf.encode(file, new Pbf());
-      
-        api
-          .createMap(data, auth.user.username, title, mapType)
-          .then((response) => {
-            console.log(response);
-          });
-      };
-      
-      console.log(file);
-      reader.readAsText(file);
-      
-    }
+    api
+      .createMap(data, auth.user.username, title, mapType)
+      .then((response) => {
+        console.log(response);
+      });
 
     // console.log(file);
 
@@ -292,25 +282,48 @@ function StoreContextProvider(props) {
   };
 
   store.forkMap = function (maptitle) {
-    var mapData = "";
-    console.log("mapData: ", auth.user.username, maptitle);
-    api.createMap(mapData, auth.user.username, maptitle).then((response) => {
-      console.log(response);
+    var mapData = store.currentMapObject.mapData;
+    console.log("mapData: ", mapData, auth.user.username, maptitle, store.currentMapObject.mapType);
+    api
+      .forkMap(
+        mapData,
+        auth.user.username,
+        maptitle,
+        store.currentMapObject.mapType
+      )
+      .then((response) => {
+        console.log(response);
+        if (response.status === 200) {
+          store.getMapList();
+        }
+      });
+  };
+
+  store.updateMap = function (mapObject) {
+    console.log("publishing map: ", mapObject);
+    api.updateMap(mapObject)
+    .then((response) => {
+        console.log(response);
+        if (response.status === 200) {
+          store.getMapList();
+        }
     });
   };
 
-  store.publishMap = function (mapId) {
-    console.log("publishing map: ", mapId);
-    // api.publishMap(mapId)
-    // .then((response) => {
-    //     console.log(response);
-    // });
-  };
 
   store.deleteMap = function (mapId) {
     console.log("deleting map: ", mapId);
     api.deleteMap(mapId).then((response) => {
       console.log(response);
+      if (response.status === 200) {
+        api.getMapsByUser().then((response) => {
+          console.log(response.data.data);
+          storeReducer({
+            type: StoreActionType.DELETE_MAP,
+            payload: { mapList: response.data.data },
+          });
+        });
+      }
     });
   };
 
@@ -374,6 +387,17 @@ function StoreContextProvider(props) {
       payload: { mapType },
     });
   };
+
+  store.getMapList = function(){
+    api.getMapsByUser()
+    .then((response) => {
+      console.log(response.data.data);
+      storeReducer({
+        type: StoreActionType.LOAD_MAP_LIST,
+        payload: { mapList: response.data.data },
+      })
+    });
+  }
 
   return (
     <StoreContext.Provider
