@@ -26,6 +26,13 @@ const CommentSection = ({ initialComments }) => {
         setNewCommentText('');
     };
 
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            handleAddComment();
+            event.preventDefault(); // Prevents the default action of the Enter key in a form
+        }
+    };
+
     return (
         <div className="comments-section">
             <div className="comment-count">{comments.length} comments</div>
@@ -36,6 +43,7 @@ const CommentSection = ({ initialComments }) => {
                         value={newCommentText}
                         onChange={(e) => setNewCommentText(e.target.value)}
                         placeholder="Add a comment..."
+                        onKeyPress={handleKeyPress}
                     />
                     <button onClick={handleAddComment}>Post</button>
                 </div>
