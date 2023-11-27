@@ -8,6 +8,8 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import StoreContext, { CurrentModal } from '../store';
 import AuthContext from '../auth';
+import MUIUploadMap from './Model/MUIUploadMap';
+import MUICreateMap from './Model/MUICreateMap';
 const Pbf = require("pbf");
 const geobuf = require("geobuf");
 
@@ -65,35 +67,42 @@ export default function MapCardList() {
   return (
     <Box
       sx={{
-        width: '25%',
-        bgcolor: '#F7D3E4',
-        float: 'left',
-        height: '83vh',
-        position: 'relative',
+        width: "25%",
+        bgcolor: "#F7D3E4",
+        float: "left",
+        height: "83vh",
+        position: "relative",
       }}
     >
       <List
         component="nav"
         aria-label="map folders"
         sx={{
-          maxHeight: '85vh',
-          overflow: 'auto',
-          '&::-webkit-scrollbar': {
-            width: '10px',
+          maxHeight: "85vh",
+          overflow: "auto",
+          "&::-webkit-scrollbar": {
+            width: "10px",
           },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: 'rgba(0,0,0,.1)',
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "rgba(0,0,0,.1)",
           },
         }}
       >
         {maps.map((map, index) => [
           index > 0 && <Divider key={`divider-${map._id}`} />,
-          <ListItem button onClick={() => handleMapClick(map._id)} key={map._id}>
+          <ListItem
+            button
+            onClick={() => handleMapClick(map._id)}
+            key={map._id}
+          >
             <ListItemText
               primary={map.title}
               style={{
-                padding: '0px',
-                backgroundColor: selectedMap && map._id === selectedMap._id ? '#f6c0fa' : '#F7D3E4',
+                padding: "0px",
+                backgroundColor:
+                  selectedMap && map._id === selectedMap._id
+                    ? "#f6c0fa"
+                    : "#F7D3E4",
               }}
             />
           </ListItem>,
@@ -102,12 +111,12 @@ export default function MapCardList() {
       {auth.loggedIn && (
         <Fab
           sx={{
-            position: 'absolute',
+            position: "absolute",
             bottom: 16,
             right: 16,
-            bgcolor: '#ffabd1',
-            '&:hover': {
-              bgcolor: '#ffabd1',
+            bgcolor: "#ffabd1",
+            "&:hover": {
+              bgcolor: "#ffabd1",
             },
           }}
           onClick={handleCreateMap}
@@ -115,6 +124,8 @@ export default function MapCardList() {
           <AddIcon />
         </Fab>
       )}
+      <MUIUploadMap />
+      <MUICreateMap />
     </Box>
   );
 }
