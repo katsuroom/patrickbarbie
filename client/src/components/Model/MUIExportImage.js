@@ -7,8 +7,6 @@ import { Typography } from "@mui/material";
 import "./MUIPublishMap.css";
 import "./ModalAnimation.css";
 
-import { useHistory } from "react-router-dom";
-
 export const ConfirmationDialog = ({
   open,
   handleDownloadJPEG,
