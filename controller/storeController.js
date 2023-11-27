@@ -57,10 +57,19 @@ createMap = (req, res) => {
     });
   }
 
-  const map = new Map(body);
-  console.log("map: " + map.toString());
+  const mapData = Buffer.from(Object.values(body.mapData));
+
+  // Create the Map instance
+  const map = new Map({
+    title: body.title,
+    author: body.author,
+    mapData: mapData,
+  });
+
+//   const map = new Map(body);
+  console.log("map: " + JSON.stringify(map));
   if (!map) {
-    return res.status(400).json({ success: false, error: err });
+    return res.status(403).json({ success: false, error: err });
   }
 //   console.log("req.userId: ", req.userId);
 
@@ -74,7 +83,7 @@ createMap = (req, res) => {
     .then(() => {
       return res.status(201).json({
         success: true,
-        id: map._id,
+        mapData: map,
         message: "Map created!",
       });
     })

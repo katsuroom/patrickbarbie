@@ -1,8 +1,11 @@
 import React, { createContext, useState, useContext } from "react";
 import AuthContext from '../auth';
-import { Base64 } from "js-base64";
 
 import api from "./store-request-api";
+
+const geobuf = require("geobuf");
+const Pbf = require("pbf"); 
+
 const StoreContext = createContext();
 
 // THESE ARE ALL THE TYPES OF UPDATES TO OUR AUTH STATE THAT CAN BE PROCESSED
@@ -109,77 +112,79 @@ function StoreContextProvider(props) {
 
     store.createMap = function(title, mapType)
     {
-        console.log("in create map");
+      console.log("in create map");
 
-        // console.log("mapData: ", this.rawMapFile);
+      let file = store.rawMapFile;
+      console.log("type of file:", typeof(file));
 
-        // var mapData = "";
-        // console.log("mapData: ", auth.user.username, title);
-        // api.createMap(mapData, auth.user.username, title).then((response) => {
-        //   console.log(response);
-        // });
+      var data = geobuf.encode(store.rawMapFile, new Pbf());
 
-        let file = store.rawMapFile;
+      api
+        .createMap(data, auth.user.username, title)
+        .then((response) => {
+        console.log(response);
+        });
 
-        const reader = new FileReader();
-        reader.onload = function (event) {
-            try {
-              const textData = event.target.result;
-              const jsonData = JSON.parse(textData);
+    //   const reader = new FileReader();
+    //   reader.onload = function (event) {
+    //     try {
+    //       const textData = event.target.result;
+    //       const jsonData = JSON.parse(textData);
 
-              let mapFile = {
-                title,
-                author: auth.user?.username || "guest",
-                views: 0,
-                likes: 0,
-                likedUsers: [],
-                isPublished: false,
-                mapData: {
-                  type: mapType,
-                  // data: Base64.encode(textData)
-                  data: jsonData,
-                },
-                csvField: {},
-                comments: [],
-              };
+    //       let mapFile = {
+    //         title,
+    //         author: auth.user?.username || "guest",
+    //         views: 0,
+    //         likes: 0,
+    //         likedUsers: [],
+    //         isPublished: false,
+    //         mapData: {
+    //           type: mapType,
+    //           // data: Base64.encode(textData)
+    //           //   data: jsonData,
+    //           data: geobuf.encode(jsonData, new Pbf()),
+    //         },
+    //         csvField: {},
+    //         comments: [],
+    //       };
 
-              switch (mapType) {
-                // POLITICAL MAP
-                case MapType.POLITICAL_MAP:
-                  mapFile.mapData.polygons = [];
-                  mapFile.mapData.key = [];
-                  break;
-                // HEATMAP
-                case MapType.HEATMAP:
-                  mapFile.mapData.color1 = "#FFC0CB"; // Light Pink
-                  mapFile.mapData.color2 = "#FF69B4"; // Brighter Pink
-                  mapFile.mapData.min = 0;
-                  mapFile.mapData.max = 100;
-                  mapFile.mapData.display = "property";
-                  break;
-              }
+    //       switch (mapType) {
+    //         // POLITICAL MAP
+    //         case MapType.POLITICAL_MAP:
+    //           mapFile.mapData.polygons = [];
+    //           mapFile.mapData.key = [];
+    //           break;
+    //         // HEATMAP
+    //         case MapType.HEATMAP:
+    //           mapFile.mapData.color1 = "#FFC0CB"; // Light Pink
+    //           mapFile.mapData.color2 = "#FF69B4"; // Brighter Pink
+    //           mapFile.mapData.min = 0;
+    //           mapFile.mapData.max = 100;
+    //           mapFile.mapData.display = "property";
+    //           break;
+    //       }
 
-              console.log("mapFile: ", mapFile.mapData);
+    //       //   console.log("mapFile: ", mapFile.mapData);
+    //       //   console.log("type of: ", typeof(mapFile.mapData));
 
-            //   var Data = new Blob([JSON.stringify(mapFile.mapData)]);
-              var Data = "";
-              console.log("mapData: ", Data);
-              api.createMap(Data, auth.user.username, title).then((response) => {
-                console.log(response);
-              });
+    //       //   api
+    //       //     .createMap(mapFile.mapData.data, auth.user.username, title)
+    //       //     .then((response) => {
+    //       //       console.log(response);
+    //       //     });
 
-              mapFile.mapData.data = jsonData;
+    //       mapFile.mapData.data = jsonData;
 
-              storeReducer({
-                type: StoreActionType.UPDATE_MAP,
-                payload: { file: mapFile },
-              });
-            } catch (error) {
-                console.error("Error parsing GeoJSON:", error);
-            }
-        };
-        
-        reader.readAsText(file);
+    //       storeReducer({
+    //         type: StoreActionType.UPDATE_MAP,
+    //         payload: { file: mapFile },
+    //       });
+    //     } catch (error) {
+    //       console.error("Error parsing GeoJSON:", error);
+    //     }
+    //   };
+
+      // reader.readAsText(file);
     }
 
     store.getMapFile = async function(fileName)
