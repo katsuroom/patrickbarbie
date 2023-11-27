@@ -8,6 +8,9 @@ const app = express()
 dotenv.config()
 const PORT = process.env.PORT;
 
+app.use(express.json({limit: '1000mb'}));
+app.use(express.urlencoded({limit: '1000mb', extended: true, parameterLimit: 50000}));
+
 
 
 const mongoose = require('mongoose')

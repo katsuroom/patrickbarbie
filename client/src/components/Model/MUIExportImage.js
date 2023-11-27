@@ -7,8 +7,6 @@ import { Typography } from "@mui/material";
 import "./MUIPublishMap.css";
 import "./ModalAnimation.css";
 
-import { useHistory } from "react-router-dom";
-
 export const ConfirmationDialog = ({
   open,
   handleDownloadJPEG,
@@ -56,7 +54,7 @@ export const ConfirmationDialog = ({
           className={openDialog ? "modal-dialog is-visible" : "modal-dialog"}
         >
           <header className="dialog-header">
-            <Typography variant="h6" color="error" style={{ width: "90%" }}>
+            <Typography variant="h6" color="black">
               {confirmationInfo}
             </Typography>
           </header>

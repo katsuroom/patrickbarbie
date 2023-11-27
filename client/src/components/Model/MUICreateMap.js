@@ -17,8 +17,8 @@ export default function MUICreateMap() {
     const { store } = useContext(StoreContext);
 
     const [projectName, setProjectName] = useState("");
-    const setMapType = store.setMapType
-        // const [mapType, setMapType] = useState(MapType.POLITICAL_MAP);
+    // const setMapType = store.setMapType
+    const [mapType, setMapType] = useState(MapType.POLITICAL_MAP);
 
 
     const buttonStyle = {
@@ -53,9 +53,9 @@ export default function MUICreateMap() {
         //     `file: ${store.mapFile.name}`);
 
         store.closeModal();
-        store.createMap(projectName, store.mapType);
+        store.createMap(projectName, mapType);
         history.push("/edit");
-        console.log("mapType : " + store.mapType);
+        console.log("mapType : " + mapType);
         // <MapDisplay mapType={mapType}/>
     };
 
@@ -94,7 +94,7 @@ export default function MUICreateMap() {
                                 style={selectStyle}
                             />
                             <Select
-                                value={store.mapType}
+                                value={MapType.POLITICAL_MAP}
                                 onChange={(e) => setMapType(e.target.value)}
                                 style={selectStyle}
                             >

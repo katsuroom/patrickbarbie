@@ -124,8 +124,10 @@ export default function MUIPublishMap() {
         console.log("publish map");
         // TODO: I need pass the mapId to the backend here
 
-        var mapId = "655a9d69bb02d728d9fbcf76";
-        store.publishMap(mapId);
+        var mapObject = store.currentMapObject;
+        mapObject.isPublished = true;
+        console.log(mapObject);
+        store.updateMap(mapObject);
         onClose();
     }
 
