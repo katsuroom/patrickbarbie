@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { IconButton, Typography, Grid } from '@mui/material';
@@ -25,13 +25,26 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
     const [likes, setLikes] = useState(0);
     const [hasLiked, setHasLiked] = useState(false);
 
+    useEffect(() => {
+
+    },[store.currentMapObject]);
+
     // Handling the like click
     const handleLikeClick = () => {
-        if (auth.loggedIn && !hasLiked) {
-            setLikes(likes + 1);
-            setHasLiked(true);
-        }
-    };
+      if (auth.loggedIn && !hasLiked) {
+          setLikes(likes + 1);
+          console.log("like num: ", store.currentMapObject?.likes)
+
+          var mapObject = store.currentMapObject;
+          mapObject.likes += 1;
+          store.updateMap(mapObject);
+          console.log("like num: ", store.currentMapObject?.likes)
+
+          // setLikes(likes + 1);
+          setHasLiked(true);
+          // console.log("like num:", likes);
+      }
+  };
 
     // Other event handlers
     function handleDeleteClick() {
@@ -128,7 +141,7 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
               <Typography
                 sx={{ fontFamily: "Sen", color: "black", marginLeft: 1 }}
               >
-                {likes}
+                {store.currentMapObject.likes}
               </Typography>
             </Grid>
             <Grid item xs={0.5}>
