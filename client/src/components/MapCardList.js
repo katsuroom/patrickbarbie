@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import Box from "@mui/material/Box";
+import AuthContext from '../auth';
 import Fab from "@mui/material/Fab";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -22,6 +23,7 @@ import { useEffect } from "react";
 export default function MapCardList(props) {
   const history = useHistory();
   const { store } = useContext(StoreContext);
+  const { auth } = useContext(AuthContext);
 
   const [maps, setMaps] = useState([...props.maps]);
   const [selectedMap, setSelectedMap] = useState(null);
@@ -105,20 +107,24 @@ export default function MapCardList(props) {
           </React.Fragment>
         ))}
       </List>
-      <Fab
-        sx={{
-          position: "absolute",
-          bottom: 16,
-          right: 16,
-          bgcolor: "#ffabd1",
-          "&:hover": {
-            bgcolor: "#ffabd1",
-          },
-        }}
-        onClick={handleCreateMap}
-      >
-        <AddIcon />
-      </Fab>
+      {
+        auth.loggedIn && (
+          <Fab
+            sx={{
+              position: "absolute",
+              bottom: 16,
+              right: 16,
+              bgcolor: "#ffabd1",
+              "&:hover": {
+                bgcolor: "#ffabd1",
+              },
+            }}
+            onClick={handleCreateMap}
+          >
+            <AddIcon />
+          </Fab>
+        )
+      }
       <MUIUploadMap />
       <MUICreateMap />
 

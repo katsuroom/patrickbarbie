@@ -1,72 +1,44 @@
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import { IconButton, Typography, Grid } from "@mui/material";
-import "./font.css";
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, { useState, useContext } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { IconButton, Typography, Grid } from '@mui/material';
+import './font.css';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Delete, CloudUpload, Edit, Download, Share } from '@mui/icons-material';
 import { useHistory } from 'react-router-dom';
-import CommentSection from "./Comments/CommentSection";
-import StoreContext from "../store";
-import { CurrentModal } from "../store"
-import AuthContext from "../auth";
-import MapDisplay from "./MapDisplay";
-
-import MUIDeleteMap from "./Model/MUIDeleteMap";
-import MUIForkMap from "./Model/MUIForkMap";
-import MUIPublishMap from "./Model/MUIPublishMap";
+import CommentSection from './Comments/CommentSection';
+import StoreContext from '../store';
+import { CurrentModal } from '../store';
+import AuthContext from '../auth';
+import MapDisplay from './MapDisplay';
+import MUIDeleteMap from './Model/MUIDeleteMap';
+import MUIForkMap from './Model/MUIForkMap';
+import MUIPublishMap from './Model/MUIPublishMap';
 
 export default function MapView({ fileSelected, projectName, mapType, views }) {
-
     const { store } = useContext(StoreContext);
     const { auth } = useContext(AuthContext);
     const history = useHistory();
-    // const mapRef = useRef(null);
-    // const geoJsonLayerRef = useRef(null);
 
-
-    //temp used
+    // State for likes and like status
     const [likes, setLikes] = useState(0);
+    const [hasLiked, setHasLiked] = useState(false);
+
+    // Handling the like click
     const handleLikeClick = () => {
-        setLikes(likes + 1);
+        if (auth.loggedIn && !hasLiked) {
+            setLikes(likes + 1);
+            setHasLiked(true);
+        }
     };
 
-
-    // useEffect(() => {
-    //     if (!mapRef.current) {
-    //         mapRef.current = L.map('map').setView([51.505, -0.09], 2);
-    //         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapRef.current);
-    //     }
-
-    //     if (fileSelected && fileSelected instanceof File) {
-    //         const reader = new FileReader();
-    //         reader.onload = function (event) {
-    //             try {
-    //                 const jsonData = JSON.parse(event.target.result);
-    //                 if (geoJsonLayerRef.current) {
-    //                     mapRef.current.removeLayer(geoJsonLayerRef.current);
-    //                 }
-    //                 geoJsonLayerRef.current = L.geoJSON(jsonData);
-    //                 geoJsonLayerRef.current.addTo(mapRef.current);
-    //                 mapRef.current.fitBounds(geoJsonLayerRef.current.getBounds());
-    //             } catch (error) {
-    //                 console.error("Error parsing GeoJSON:", error);
-    //             }
-    //         };
-    //         reader.readAsText(fileSelected);
-    //     }
-    // }, [fileSelected]);
-
+    // Other event handlers
     function handleDeleteClick() {
-        // history.push("/deleteMap");
-        console.log("Forking map");
         store.openModal(CurrentModal.DELETE_MAP);
     }
 
     function handlePublishClick() {
-        // history.push("/publishMap");
-        console.log("Forking map");
         store.openModal(CurrentModal.PUBLISH_MAP);
     }
 
@@ -79,8 +51,6 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
     }
 
     function handleForkClick() {
-        // history.push("/forkMap");
-        console.log("Forking map");
         store.openModal(CurrentModal.FORK_MAP);
     }
 
@@ -115,15 +85,13 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
             replies: []
         }
     ];
-    
 
 
-
-        const res = (
-          <div style={{ overflowY: "scroll", height: "50%" }}>
-            {/* <div id="map" style={{ height: 400 }}></div> */}
+    // Main component render
+    const res = (
+        <div style={{ overflowY: "scroll", height: "50%" }}>
             <div style={{ width: "1500px" }}>
-              <MapDisplay />
+                <MapDisplay />
             </div>
             <div
               style={{
@@ -207,19 +175,14 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
                 </Grid>
               </Grid>
             </div>
-            <div
-              style={{ backgroundColor: "#FDF4F3", padding: 10, margin: 10 }}
-            >
-              {/* <Typography sx={{ fontFamily: 'Sen', color: "black", fontSize: "16pt" }}>0 comments</Typography> */}
-
-              {<CommentSection initialComments={initialComments} />}
+            <div style={{ backgroundColor: "#FDF4F3", padding: 10, margin: 10 }}>
+                <CommentSection initialComments={initialComments} />
             </div>
             <MUIDeleteMap />
             <MUIForkMap />
             <MUIPublishMap />
-          </div>
-        );
+        </div>
+    );
 
-    console.log("store.rawMapFile", store.rawMapFile);
     return store.rawMapFile ? res : <></>;
 }

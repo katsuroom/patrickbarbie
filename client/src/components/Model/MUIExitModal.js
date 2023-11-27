@@ -12,6 +12,7 @@ export const ConfirmationDialog = ({
     onClose,
     onConfirm,
     confirmationInfo,
+    onDiscard
   }) => {
     const [openDialog, setOpenDialog] = useState(open);
     useEffect(() => {
@@ -72,7 +73,7 @@ export const ConfirmationDialog = ({
                     Cancel
                   </Button>
                                   <Button
-                    onClick={onClose}
+                    onClick={onDiscard}
                     variant="contained"
                     sx={buttonStyle}
                     className="modal-button"
@@ -115,11 +116,16 @@ const MUIExit = (props) => {
 
     const handleSave = () => {
         console.log("Map Saved!");
-        handleClose();
+
+
+        // TODO: save here ...
+
+        history.push("/main");
     };
 
     const handleDiscard = () => {
         console.log("Map Discarded!");
+        history.push("/main");
     }
 
 

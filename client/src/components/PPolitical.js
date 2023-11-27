@@ -24,6 +24,9 @@ export default function PPolitical() {
   const { store } = useContext(StoreContext);
 
 
+  console.log(store.key);
+
+
   const ROW_PER_PAGE = 30;
 
   function zip(...arrays) {
@@ -35,7 +38,7 @@ export default function PPolitical() {
 
   const handleChangeKey = (event) => {
     console.log(event.target.value);
-    store.setCsvKeyWithoutRerendering(event.target.value);
+    store.setCsvKey(event.target.value);
   };
 
   const handleChangeLabel = (event) => {
@@ -91,6 +94,7 @@ export default function PPolitical() {
 
     store.setParsedCsvDataWOR(csv_data);
     store.setCsvKeyWithoutRerendering(keys[1]);
+    // store.setCsvKey(keys[1]);
     console.log("setting key to", keys[1]);
     setLabel(keys[0]);
     console.log("setting label to", keys[0]);
