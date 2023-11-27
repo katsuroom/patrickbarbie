@@ -39,8 +39,8 @@ createMap = (req, res) => {
   var userId;
 
 
-  console.log("req: ", req.body);
-  console.log("req: ", req.headers);
+//   console.log("req: ", req.body);
+//   console.log("req: ", req.headers);
 
     const token = req.headers.authorization.split(" ")[1];
     userId = extractUserIdFromToken(token);
@@ -68,7 +68,7 @@ createMap = (req, res) => {
   });
 
 //   const map = new Map(body);
-  console.log("map: " + JSON.stringify(map));
+//   console.log("map: " + JSON.stringify(map));
   if (!map) {
     return res.status(403).json({ success: false, error: err });
   }
