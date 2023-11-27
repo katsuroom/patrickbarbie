@@ -47,7 +47,12 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
     }
 
     function handleDownloadClick() {
-        history.push("/exportMap");
+        // history.push("/exportMap");
+        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(store.rawMapFile));
+        let downloadAnchor = document.getElementById("download-anchor");
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "map.json");
+        downloadAnchor.click();
     }
 
     function handleForkClick() {

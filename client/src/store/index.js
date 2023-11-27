@@ -153,45 +153,13 @@ function StoreContextProvider(props) {
 
     let file = store.rawMapFile;
 
-    let worker;
-
-    if (file instanceof File) {
-      const reader = new FileReader();
-
-      if (window.Worker) {
-        console.log("Web worker supported");
-        worker = new Worker("worker.js");
-      } else {
-        console.log("Web worker not supported");
-      }
-
-      reader.onload = function (event) {
-        const jsonDataString = event.target.result;
-        // Use the web worker for parsing
-        worker.postMessage(jsonDataString);
-      };
+    var data = geobuf.encode(file, new Pbf());
       
-      worker.onmessage = function (event) {
-        console.log("enter here")
-        file = event.data;
-        console.log(file);
-      
-        // Clean up the worker when done
-        worker.terminate();
-      
-        var data = geobuf.encode(file, new Pbf());
-      
-        api
-          .createMap(data, auth.user.username, title, mapType)
-          .then((response) => {
-            console.log(response);
-          });
-      };
-      
-      console.log(file);
-      reader.readAsText(file);
-      
-    }
+    api
+      .createMap(data, auth.user.username, title, mapType)
+      .then((response) => {
+        console.log(response);
+      });
 
     // console.log(file);
 

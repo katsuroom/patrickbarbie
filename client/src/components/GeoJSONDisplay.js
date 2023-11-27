@@ -33,7 +33,7 @@ export default function GeoJSONDisplay(props) {
   useEffect(() => {
     if(store.rawMapFile)
       setGeoJsonData(store.rawMapFile);
-  }, []);
+  }, [store.rawMapFile]);
 
   useEffect(() => {
     if (!mapRef.current) {
