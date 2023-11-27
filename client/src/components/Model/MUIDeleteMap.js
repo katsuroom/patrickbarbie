@@ -28,7 +28,8 @@ export default function MUIDeleteMap() {
     console.log("publish map");
     // TODO: I need pass the mapId to the backend here
 
-    var mapId = "655a9d69bb02d728d9fbcf76";
+    // var mapId = "655a9d69bb02d728d9fbcf76";
+    var mapId = store.currentMapId;
     store.deleteMap(mapId);
     onClose();
   };

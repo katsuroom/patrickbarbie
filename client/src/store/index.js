@@ -309,14 +309,10 @@ function StoreContextProvider(props) {
 
   store.deleteMap = function (mapId) {
     console.log("deleting map: ", mapId);
+    api.deleteMap(mapId).then((response) => {
+      console.log(response);
+    });
   };
-
-  // store.getMapsByUser = function () {
-  //   console.log("getting maps by user");
-  //   api.getMapsByUser().then((response) => {
-  //     console.log(response);
-  //   });
-  // };
 
   store.getMapsByUser = function (callback) {
     console.log("getting maps by user");
