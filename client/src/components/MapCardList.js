@@ -41,6 +41,8 @@ export default function MapCardList() {
 
   const handleMapClick = (mapId) => {
     const selected = maps.find((map) => map._id === mapId);
+    store.currentMapId = mapId;
+    console.log(store.currentMapId);
     if (selected) {
       setSelectedMap(selected);
       if (selected.type === 'hardcoded') {
@@ -54,7 +56,7 @@ export default function MapCardList() {
         console.log("mapData: ", mapData.data);
         const encodedData = geobuf.decode(new Pbf(mapData.data));
         console.log("encodedData: ", encodedData);
-        
+        store.setRawMapFile(encodedData);
         store.getMapFile(selected.fileName);
       }
     }
@@ -96,6 +98,7 @@ export default function MapCardList() {
             key={map._id}
           >
             <ListItemText
+              className="map-list-name"
               primary={map.title}
               style={{
                 padding: "0px",
