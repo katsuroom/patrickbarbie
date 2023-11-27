@@ -14,8 +14,6 @@ import { useContext } from "react";
 import StoreContext from "../store";
 
 export default function PPolitical() {
-  const [label, setLabel] = React.useState(null);
-  // const [parsed_CSV_Data, setParsed_CSV_Data] = React.useState({});
   const [menuItems, setMenuItems] = React.useState([]);
   const [renderTable, setRenderTable] = React.useState(false);
   const [page, setPage] = React.useState(0);
@@ -25,6 +23,7 @@ export default function PPolitical() {
 
 
   console.log(store.key);
+  console.log(store.label);
 
 
   const ROW_PER_PAGE = 30;
@@ -43,7 +42,7 @@ export default function PPolitical() {
 
   const handleChangeLabel = (event) => {
     console.log(event.target.value);
-    setLabel(event.target.value);
+    store.setCsvLabel(event.target.value);
   };
 
   const openSaveModal = () => {
@@ -96,7 +95,7 @@ export default function PPolitical() {
     store.setCsvKeyWithoutRerendering(keys[1]);
     // store.setCsvKey(keys[1]);
     console.log("setting key to", keys[1]);
-    setLabel(keys[0]);
+    store.setCsvLabelWithoutRerendering(keys[0]);
     console.log("setting label to", keys[0]);
     setMenuItems(keys);
     console.log("setting menu item to", keys);
@@ -104,7 +103,7 @@ export default function PPolitical() {
 
 
   };
-  let maxPage = label && store.parsed_CSV_Data[label] ? parseInt(store.parsed_CSV_Data[label].length / ROW_PER_PAGE) : 0;
+  let maxPage = store.label && store.parsed_CSV_Data[store.label] ? parseInt(store.parsed_CSV_Data[store.label].length / ROW_PER_PAGE) : 0;
 
   return (
     <div>
@@ -122,7 +121,7 @@ export default function PPolitical() {
                 <Select
                   // labelId="demo-simple-select-standard-label"
                   // id="searchOn"
-                  value={label}
+                  value={store.label}
                   required
                   onChange={handleChangeLabel}
                   sx={{ minWidth: "80%" }}
@@ -168,7 +167,7 @@ export default function PPolitical() {
           <tbody>
             {!renderTable ||
               zip(
-                store.parsed_CSV_Data[label].slice(
+                store.parsed_CSV_Data[store.label].slice(
                   page * ROW_PER_PAGE,
                   (page + 1) * ROW_PER_PAGE
                 ),
