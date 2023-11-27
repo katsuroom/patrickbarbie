@@ -10,13 +10,16 @@ import { TextField } from "@mui/material";
 
 import StoreContext from '../../store';
 import { CurrentModal, MapType } from '../../store';
+import MapDisplay from "../MapDisplay";
 
 export default function MUICreateMap() {
     const history = useHistory();
     const { store } = useContext(StoreContext);
 
     const [projectName, setProjectName] = useState("");
-    const [mapType, setMapType] = useState(MapType.POLITICAL_MAP);
+    const setMapType = store.setMapType
+        // const [mapType, setMapType] = useState(MapType.POLITICAL_MAP);
+
 
     const buttonStyle = {
         mt: 1,
@@ -50,8 +53,10 @@ export default function MUICreateMap() {
         //     `file: ${store.mapFile.name}`);
 
         store.closeModal();
-        store.createMap(projectName, mapType);
+        store.createMap(projectName, store.mapType);
         history.push("/edit");
+        console.log("mapType : " + store.mapType);
+        // <MapDisplay mapType={mapType}/>
     };
 
     const handleInputChange = (e) => {
@@ -89,7 +94,7 @@ export default function MUICreateMap() {
                                 style={selectStyle}
                             />
                             <Select
-                                value={mapType}
+                                value={store.mapType}
                                 onChange={(e) => setMapType(e.target.value)}
                                 style={selectStyle}
                             >
@@ -106,7 +111,10 @@ export default function MUICreateMap() {
                                 onClick={handleCreateMap}
                                 variant="contained"
                                 sx={buttonStyle}
-                                disabled={mapType != MapType.POLITICAL_MAP}>
+                                // disabled={mapType != MapType.POLITICAL_MAP}
+                                // disabled={mapType !== MapType.POLITICAL_MAP && mapType !== MapType.HEATMAP}
+
+                                >
                                 Create
                             </Button>
                         </div>
