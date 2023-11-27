@@ -18,6 +18,7 @@ export const StoreActionType = {
   EMPTY_RAW_MAP_FILE: "EMPTY_RAW_MAP_FILE",
   SET_CSV_KEY: "SET_CSV_KEY",
   SET_MAP_TYPE: "SET_MAP_TYPE",
+  SET_RAW_MAP_FILE: "SET_RAW_MAP_FILE",
 };
 
 export const CurrentModal = {
@@ -79,12 +80,7 @@ function StoreContextProvider(props) {
           mapFile: payload.file,
         });
       }
-      case StoreActionType.GET_MAP_FILE: {
-        return setStore({
-          ...store,
-          rawMapFile: payload.file,
-        });
-      }
+
       case StoreActionType.EMPTY_RAW_MAP_FILE: {
         console.log("empting raw map file");
         store.rawMapFile = null; // setStore is async
@@ -113,6 +109,13 @@ function StoreContextProvider(props) {
         return setStore({
           ...store,
           mapType: payload.mapType,
+        });
+      }
+
+      case StoreActionType.SET_RAW_MAP_FILE: {
+        return setStore({
+          ...store,
+          rawMapFile: payload.file,
         });
       }
       default:
@@ -147,13 +150,54 @@ function StoreContextProvider(props) {
     console.log("in create map");
 
     let file = store.rawMapFile;
-    console.log("type of file:", typeof file);
 
-    var data = geobuf.encode(store.rawMapFile, new Pbf());
+    let worker;
 
-    api.createMap(data, auth.user.username, title, mapType).then((response) => {
-      console.log(response);
-    });
+    if (file instanceof File) {
+      const reader = new FileReader();
+
+      if (window.Worker) {
+        console.log("Web worker supported");
+        worker = new Worker("worker.js");
+      } else {
+        console.log("Web worker not supported");
+      }
+
+      reader.onload = function (event) {
+        const jsonDataString = event.target.result;
+        // Use the web worker for parsing
+        worker.postMessage(jsonDataString);
+      };
+
+      worker.onmessage = function (event) {
+        file = event.data;
+        console.log(file);
+      };
+      reader.readAsText(file);
+
+      // Clean up the worker when component unmounts
+      // return () => {
+      worker.terminate();
+
+      var data = geobuf.encode(file, new Pbf());
+
+      api
+        .createMap(data, auth.user.username, title, mapType)
+        .then((response) => {
+          console.log(response);
+        });
+      // };
+    }
+
+    // console.log(file);
+
+    // console.log("type of file:", typeof file);
+
+    // var data = geobuf.encode(file, new Pbf());
+
+    // api.createMap(data, auth.user.username, title, mapType).then((response) => {
+    //   console.log(response);
+    // });
 
     //   const reader = new FileReader();
     //   reader.onload = function (event) {
@@ -225,8 +269,15 @@ function StoreContextProvider(props) {
     // const file = new File([blob], fileName);
 
     storeReducer({
-      type: StoreActionType.GET_MAP_FILE,
+      type: StoreActionType.SET_RAW_MAP_FILE,
       payload: { file: file.data },
+    });
+  };
+
+  store.setRawMapFile = async function (file) {
+    storeReducer({
+      type: StoreActionType.SET_RAW_MAP_FILE,
+      payload: { file },
     });
   };
 
@@ -266,20 +317,27 @@ function StoreContextProvider(props) {
 
   store.getMapsByUser = function (callback) {
     console.log("getting maps by user");
-    api.getMapsByUser().then((response) => {
-      console.log(response);
-      if (response.status === 200 && callback && response.data && response.data.success) {
-        // console.log("============================================================")
-        // console.log(response.data.data)
-        callback(response.data.data); 
-      } else {
-        console.error('Failed to fetch maps', response);
-      }
-    }).catch((error) => {
-      console.error('Error fetching maps', error);
-    });
+    api
+      .getMapsByUser()
+      .then((response) => {
+        console.log(response);
+        if (
+          response.status === 200 &&
+          callback &&
+          response.data &&
+          response.data.success
+        ) {
+          // console.log("============================================================")
+          // console.log(response.data.data)
+          callback(response.data.data);
+        } else {
+          console.error("Failed to fetch maps", response);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching maps", error);
+      });
   };
-  
 
   store.setCsvKey = function (key) {
     if (key !== undefined) {

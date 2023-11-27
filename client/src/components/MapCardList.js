@@ -54,7 +54,7 @@ export default function MapCardList() {
         console.log("mapData: ", mapData.data);
         const encodedData = geobuf.decode(new Pbf(mapData.data));
         console.log("encodedData: ", encodedData);
-        
+        store.setRawMapFile(encodedData);
         store.getMapFile(selected.fileName);
       }
     }
