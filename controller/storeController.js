@@ -99,13 +99,13 @@ createMap = (req, res) => {
 deleteMap = (req, res) => {
   console.log("start delete Map");
 
-  if (auth.verifyUser(req) === null) {
-    return res.status(401).json({
-      loggedIn: false,
-      user: null,
-      errorMessage: "Unauthorized",
-    });
-  }
+  // if (auth.verifyUser(req) === null) {
+  //   return res.status(401).json({
+  //     loggedIn: false,
+  //     user: null,
+  //     errorMessage: "Unauthorized",
+  //   });
+  // }
 
   console.log("delete " + req.params.id);
   console.log("req: ", req.userId);
