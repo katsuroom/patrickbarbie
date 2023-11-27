@@ -12,22 +12,12 @@ export default function MapDisplay() {
   const [downloadModalOpen, setDownloadModalOpen] = useState(false);
   const [imageType, setImageType] = useState(null);
 
-  const mapRef = useRef(null); // To store the map instance
-
   const layoutStyle = {
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    padding: "10vh 0",
     boxSizing: "border-box",
-  };
-
-  const politicalStyle = {
-    width: "30%",
-    position: "absolute",
-    top: "20%",
-    right: "5%",
-    paddingBottom: "10%",
+    justifyContent: "center",
   };
 
   return (
