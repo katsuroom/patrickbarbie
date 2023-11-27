@@ -33,15 +33,6 @@ export default function MapCardList(props) {
   };
 
   const handleMapClick = (mapId) => {
-    // setMaps(maps.map(map => {
-    //   if (map.id === mapId) {
-    //     selectedMap = { ...map, views: (map.views || 0) + 1 };
-    //     setSelectedMap(selectedMap);
-    //     // update the view count in the database here
-    //     // sendUpdateRequest(updatedMap);
-    //   }
-    // }));
-
     maps.map((map) => {
       if (map.id === mapId) {
         store.getMapFile(map.fileName);
@@ -69,7 +60,7 @@ export default function MapCardList(props) {
   return (
     <Box
       sx={{
-        width: "25%",
+        width: "23vw",
         bgcolor: "#F7D3E4",
         float: "left",
         height: "83vh",

@@ -183,6 +183,6 @@ export default function GeoJSONDisplay(props) {
   }
 
   return (
-    <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div>
+    <div id={"map-display"} style={{ width: "75vw", height: `${mapHeight}px`, margin: '10px' }}></div>
   );
 }
