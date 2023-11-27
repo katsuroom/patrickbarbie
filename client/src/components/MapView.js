@@ -27,7 +27,7 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
 
     // Handling the like click
     const handleLikeClick = () => {
-        if (!hasLiked) {
+        if (auth.loggedIn && !hasLiked) {
             setLikes(likes + 1);
             setHasLiked(true);
         }
