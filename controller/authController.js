@@ -130,27 +130,6 @@ registerUser = async (req, res) => {
   }
 };
 
-// getLoggedIn = async (req, res) => 
-//   {
-//     try {
-//       const user = await User.findOne({ email: req.body.email });
-//       if (!user) {
-//         return res.status(400).json({ status: 400, error: 'User not found, unregistered email' });
-//       }
-
-//       if (await bcrypt.compare(req.body.password, user.password)) {
-//         req.session.user = user;
-//         res.json({ status: 200, data: user });
-//       } else {
-//         return res.status(400).json({ status: 400, error: 'Invalid password' });
-//       }
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).json({ status: 500, error: 'Internal server error' });
-//     }
-//   };
-
-
 getLoggedIn = async (req, res) => {
   try {
     let userId = req?.userId;
