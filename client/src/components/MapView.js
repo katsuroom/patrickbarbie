@@ -141,7 +141,7 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
               <Typography
                 sx={{ fontFamily: "Sen", color: "black", marginLeft: 1 }}
               >
-                {store.currentMapObject.likes}
+                {store.currentMapObject?.likes}
               </Typography>
             </Grid>
             <Grid item xs={0.5}>
