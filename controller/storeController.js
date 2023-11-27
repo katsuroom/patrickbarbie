@@ -64,6 +64,7 @@ createMap = (req, res) => {
     title: body.title,
     author: body.author,
     mapData: mapData,
+    mapType: body.mapType,
   });
 
 //   const map = new Map(body);

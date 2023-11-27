@@ -113,7 +113,7 @@ const baseURL = "http://localhost:4000/api";
 // })
 
 
-const createMap = (mapData, username, mapName) => {
+const createMap = (mapData, username, mapName, mapType) => {
     console.log("in api.createMap");
     console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
     let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
@@ -127,6 +127,7 @@ const createMap = (mapData, username, mapName) => {
       title: mapName,
       mapData: mapData,
       author: username,
+      mapType: mapType,
     }),
   })
     .then((response) => {

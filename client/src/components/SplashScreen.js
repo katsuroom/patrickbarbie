@@ -11,7 +11,8 @@ import "./font.css"
 
 
 import AuthContext from "../auth";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
 const MenuButton = (displayText) => {
   return (
@@ -37,7 +38,13 @@ const MenuButton = (displayText) => {
 
 export default function SplashScreen() {
   const { auth } = useContext(AuthContext);
-  // auth.registerUser("btesttest", "test1234@gmail.com", "Az123456!");
+  const history = useHistory();
+  useEffect(() => {
+    if(auth.loggedIn) {
+      console.log("logged in");
+      history.push("/main");
+    }
+  });
 
   return (
     <>

@@ -149,7 +149,7 @@ function StoreContextProvider(props) {
       var data = geobuf.encode(store.rawMapFile, new Pbf());
 
       api
-        .createMap(data, auth.user.username, title)
+        .createMap(data, auth.user.username, title, mapType)
         .then((response) => {
         console.log(response);
         });
