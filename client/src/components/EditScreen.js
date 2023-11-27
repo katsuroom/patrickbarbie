@@ -3,7 +3,7 @@ import PPolitical from "./PPolitical";
 import MapEditorToolbar from "./MapEditorToolBar";
 
 import MapDisplay from "./MapDisplay";
-
+import PHeatmap from './PHeatmap'
 export default function EditScreen() {
   const politicalStyle = {
     width: "30%",
@@ -32,6 +32,7 @@ export default function EditScreen() {
       <MapDisplay />
       <div style={politicalStyle}>
         <PPolitical />
+        {/* <PHeatmap /> */}
       </div>
     </div>
   );
