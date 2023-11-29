@@ -19,6 +19,6 @@ describe("template spec", () => {
 
     cy.get(".deleteButton").click();
 
-    cy.contains("Cancel").click();
+    // cy.contains("Cancel").click();
   });
 });

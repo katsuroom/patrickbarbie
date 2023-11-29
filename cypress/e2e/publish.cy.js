@@ -15,7 +15,7 @@ describe("template spec", () => {
 
     cy.url().should("include", "/main");
 
-    cy.contains(".map-list-name", "Asia").click();
+    cy.contains(".map-list-name", "EU").click();
 
     cy.get(".publishButton").click();
 
