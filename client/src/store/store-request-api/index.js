@@ -62,7 +62,7 @@ return fetch(`${baseURL}/forkmap/`, {
     title: mapName,
     mapData: mapData,
     author: username,
-    mapType: mapType,
+    mapType: mapType
   }),
 })
   .then((response) => {

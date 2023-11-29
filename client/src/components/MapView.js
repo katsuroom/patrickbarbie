@@ -132,10 +132,11 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
               </Typography>
             </Grid>
             <Grid item xs={0.5}>
-              <IconButton className="deleteButton" onClick={handleDeleteClick} disabled={!auth.loggedIn}>
+              <IconButton className="deleteButton" onClick={handleDeleteClick} disabled={!auth.loggedIn || !store.currentMapObject || auth.user.username !== store.currentMapObject.author}>
                 <Delete />
               </IconButton>
             </Grid>
+            {store.currentView === store.viewTypes.HOME ?
             <Grid item xs={0.5}>
               <IconButton
                 className="publishButton"
@@ -145,8 +146,10 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
                 <CloudUpload />
               </IconButton>
             </Grid>
+            : <></>
+            }
             <Grid item xs={0.5}>
-              <IconButton className="editButton" onClick={handleEditClick} disabled={!auth.loggedIn}>
+              <IconButton className="editButton" onClick={handleEditClick} disabled={!auth.loggedIn || !store.currentMapObject || auth.user.username !== store.currentMapObject.author}>
                 <Edit />
               </IconButton>
             </Grid>

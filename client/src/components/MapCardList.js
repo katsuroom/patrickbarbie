@@ -114,7 +114,8 @@ export default function MapCardList() {
               style={{
                 padding: "0px",
                 backgroundColor:
-                  selectedMap && map._id === selectedMap._id
+                  // selectedMap && map._id === selectedMap._id
+                  store.currentMapObject && store.currentMapObject._id === map._id
                     ? "#f6c0fa"
                     : "#F7D3E4",
               }}

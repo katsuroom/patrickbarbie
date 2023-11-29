@@ -167,7 +167,7 @@ export default function GeoJSONDisplay(props) {
 
 
     
-    if (store.mapType === "Heatmap" || (store.currentMapObject && store.currentMapObject.mapType === "Heatmap")) {
+    if (store.mapType === store.mapTypes.HEATMAP || (store.currentMapObject && store.currentMapObject.mapType === store.mapTypes.HEATMAP)) {
       
 
      

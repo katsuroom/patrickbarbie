@@ -23,7 +23,8 @@ export const StoreActionType = {
   LOAD_MAP_LIST: "LOAD_MAP_LIST",
   DELETE_MAP: "DELETE_MAP",
   SET_PARSED_CSV_DATA: "SET_PARSED_CSV_DATA",
-  CHANGE_VIEW: "CHANGE_VIEW"
+  CHANGE_VIEW: "CHANGE_VIEW",
+  CHANGE_CURRENT_MAP_OBJ: "CHANGE_CURRENT_MAP_OBJ"
 };
 
 export const CurrentModal = {
@@ -174,6 +175,13 @@ function StoreContextProvider(props) {
         });
       }
 
+      case StoreActionType.CHANGE_CURRENT_MAP_OBJ: {
+        return setStore({
+          ...store,
+          currentMapObject: payload
+        });
+      }
+
       default:
         return store;
     }
@@ -314,7 +322,7 @@ function StoreContextProvider(props) {
     });
   };
 
-  store.forkMap = function (maptitle) {
+  store.forkMap = async function (maptitle) {
     var mapData = store.currentMapObject.mapData;
     console.log(
       "mapData: ",
@@ -323,19 +331,45 @@ function StoreContextProvider(props) {
       maptitle,
       store.currentMapObject.mapType
     );
-    api
+    const forkMapResponse = await api
       .forkMap(
         mapData,
         auth.user.username,
         maptitle,
         store.currentMapObject.mapType
       )
-      .then((response) => {
-        console.log(response);
-        if (response.status === 200) {
-          store.getMapList();
-        }
+      // .then((response) => {
+      //   console.log(response);
+      //   if (response.status === 200) {
+      //     store.getMapList();
+      //   }
+      // });
+
+      const mapObj = forkMapResponse.data.mapData;
+
+      console.log(mapObj);
+
+
+      if (store.currentMapObject.csvData){
+
+        const csvObj = (await api.getCsvById(store.currentMapObject.csvData)).data.data;
+        const forkedCsvData = (await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData)).data.csvData._id;
+        mapObj.csvData = forkedCsvData;
+        await store.updateMap(mapObj);
+      }
+
+      // await store.getMapList();
+      
+      // store.currentMapObject = mapObj;
+
+      storeReducer({
+        type: StoreActionType.CHANGE_CURRENT_MAP_OBJ,
+        payload: mapObj,
       });
+      
+
+
+
   };
 
   store.updateMap = function (mapObject) {
