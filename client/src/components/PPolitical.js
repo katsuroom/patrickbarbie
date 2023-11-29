@@ -27,17 +27,14 @@ export default function PPolitical() {
   let tfs = [];
   if (store.parsed_CSV_Data) {
     for (let idx in store.parsed_CSV_Data[store.key]) {
+      console.log(111);
       tfs.push(
-        // <input
-        //   id={"search-" + idx}
-        //   defaultValue={store.parsed_CSV_Data[store.key][idx]}
-        //   style={{margin: "8px", width: "100px", height:"30px"}}
-        // />
         <TextField
-          id={"search-" + idx}
+          id={"tf-" + idx}
           defaultValue={store.parsed_CSV_Data[store.key][idx]}
           variant="standard"
           sx={{ m: 1, minWidth: 120 }}
+          onChange={(e) => store.parsed_CSV_Data[store.key][idx] = e.target.value}
         />
       );
     }
@@ -53,7 +50,14 @@ export default function PPolitical() {
   // const ROW_PER_PAGE = 30;
 
   function zip(...arrays) {
-    const length = Math.min(...arrays.map((arr) => arr.length));
+    let length;
+    try{
+      length = Math.min(...arrays.map((arr) => arr.length));
+    }
+    catch(error){
+      length = 0;
+    }
+    
     return Array.from({ length }, (_, index) =>
       arrays.map((arr) => arr[index])
     );
@@ -71,10 +75,11 @@ export default function PPolitical() {
         //   style={{margin: "8px", width: "100px", height:"30px"}}
         // />
         <TextField
-          id={"search-" + idx}
+          id={"tf-" + idx}
           defaultValue={store.parsed_CSV_Data[store.key][idx]}
           variant="standard"
           sx={{ m: 1, minWidth: 120 }}
+          onChange={(e) => store.parsed_CSV_Data[store.key][idx] = e.target.value}
         />
       );
     }
@@ -104,9 +109,9 @@ export default function PPolitical() {
   };
 
   const saveCsvChanges = () => {
-    for (let idx in store.parsed_CSV_Data[store.key]) {
-      store.parsed_CSV_Data[store.key][idx] = textFields[idx].value;
-    }
+    // for (let idx in store.parsed_CSV_Data[store.key]) {
+    //   store.parsed_CSV_Data[store.key][idx] = textFields[idx].value;
+    // }
   };
 
   const fileOnLoadComplete = (data) => {

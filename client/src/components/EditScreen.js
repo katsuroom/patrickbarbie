@@ -9,6 +9,29 @@ export default function EditScreen() {
   const { store } = useContext(StoreContext);
 
 
+  useEffect(() => {
+    const func = async () => {
+
+        // clear CSV fields
+       
+        store.setParsedCsvData(null);
+        store.setCsvKey(null);
+        store.setCsvLabel(null);
+
+      if (store.currentMapObject && store.currentMapObject.csvData) {
+        const csvObj = await store.getCsvById(store.currentMapObject.csvData);
+        
+        console.log(csvObj);
+        
+        store.setParsedCsvData(csvObj.csvData);
+        store.setCsvKey(csvObj.key);
+        store.setCsvLabel(csvObj.label);
+      }
+    };
+    func();
+  }, [store.currentMapObject]);
+
+
   const politicalStyle = {
     width: "30%",
     position: "absolute",
