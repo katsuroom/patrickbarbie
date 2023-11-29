@@ -14,7 +14,7 @@ describe("template spec", () => {
     cy.get('button[type="submit"]').click();
 
     cy.url().should("include", "/main");
-
+ 
     cy.contains(".map-list-name", "Asia").click();
                 
     cy.get(".likeButton").click();
