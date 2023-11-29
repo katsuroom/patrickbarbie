@@ -23,6 +23,7 @@ export const StoreActionType = {
   LOAD_MAP_LIST: "LOAD_MAP_LIST",
   DELETE_MAP: "DELETE_MAP",
   SET_PARSED_CSV_DATA: "SET_PARSED_CSV_DATA",
+  CHANGE_VIEW: "CHANGE_VIEW"
 };
 
 export const CurrentModal = {
@@ -42,6 +43,11 @@ export const MapType = {
   TRAVEL_MAP: "Travel Map",
 };
 
+export const View = {
+  COMMUNITY: "Community",
+  HOME: "Home"
+};
+
 function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
 
@@ -51,16 +57,22 @@ function StoreContextProvider(props) {
     rawMapFile: null,
     key: null, // csv key [column name] for map displaying
     label: null,
-    currentModal: CurrentModal.NONE,      // the currently open modal
-    mapFile: null,                        // map file uploaded for creating a new map
-    rawMapFile: null,                     // geojson object
-    key: null,                            // csv key [column name] for map displaying
+    currentModal: CurrentModal.NONE, // the currently open modal
+    mapFile: null, // map file uploaded for creating a new map
+    rawMapFile: null, // geojson object
+    key: null, // csv key [column name] for map displaying
     parsed_CSV_Data: null,
-    mapType:  "Heatmap",
+    mapType: null,
     currentMapObject: null,
     mapList: [],
-
+    currentView: View.HOME
   });
+
+  store.viewTypes = View;
+  store.currentModalTypes = CurrentModal;
+  store.mapTypes = MapType;
+
+
 
   const storeReducer = (action) => {
     const { type, payload } = action;
@@ -154,6 +166,14 @@ function StoreContextProvider(props) {
         });
       }
 
+
+      case StoreActionType.CHANGE_VIEW: {
+        return setStore({
+          ...store,
+          currentView: payload.view
+        });
+      }
+
       default:
         return store;
     }
@@ -187,15 +207,13 @@ function StoreContextProvider(props) {
     console.log("in create map");
 
     let file = store.rawMapFile;
-    console.log("store.rawMapFile", store.rawMapFile)
+    console.log("store.rawMapFile", store.rawMapFile);
 
     var data = geobuf.encode(file, new Pbf());
-      
-    api
-      .createMap(data, auth.user.username, title, mapType)
-      .then((response) => {
-        console.log(response);
-      });
+
+    api.createMap(data, auth.user.username, title, mapType).then((response) => {
+      console.log(response);
+    });
 
     // console.log(file);
 
@@ -298,7 +316,13 @@ function StoreContextProvider(props) {
 
   store.forkMap = function (maptitle) {
     var mapData = store.currentMapObject.mapData;
-    console.log("mapData: ", mapData, auth.user.username, maptitle, store.currentMapObject.mapType);
+    console.log(
+      "mapData: ",
+      mapData,
+      auth.user.username,
+      maptitle,
+      store.currentMapObject.mapType
+    );
     api
       .forkMap(
         mapData,
@@ -316,15 +340,19 @@ function StoreContextProvider(props) {
 
   store.updateMap = function (mapObject) {
     console.log("publishing map: ", mapObject);
-    api.updateMap(mapObject)
-    .then((response) => {
-        console.log(response);
-        if (response.status === 200) {
-          store.getMapList();
-        }
+    api.updateMap(mapObject).then((response) => {
+      console.log(response);
+      if (response.status === 200) {
+        store.getMapList();
+      }
     });
   };
 
+  store.updateCSV = function (csvObject) {
+    api.updateCSV(csvObject).then((response) => {
+      console.log(response);
+    });
+  };
 
   store.deleteMap = function (mapId) {
     console.log("deleting map: ", mapId);
@@ -378,12 +406,14 @@ function StoreContextProvider(props) {
   };
 
   store.setCsvKeyWithoutRerendering = function (key) {
+    store.setCsvKeyWithoutRerendering(key);
     if (key !== undefined) {
       store.key = key;
     }
   };
 
   store.setCsvLabel = function (label) {
+    store.setCsvLabelWithoutRerendering(label);
     console.log(label);
     if (label !== undefined) {
       store.label = label; // for synchronization purpose
@@ -401,11 +431,11 @@ function StoreContextProvider(props) {
     }
   };
 
-
   store.setParsedCsvData = function (data) {
+    store.setParsedCsvDataWOR(data);
     // console.log('store.setParsedCsvData', data);
     storeReducer({
-      type: StoreActionType.SET_CSV_KEY,
+      type: StoreActionType.SET_PARSED_CSV_DATA,
       payload: { data },
     });
   };
@@ -422,16 +452,83 @@ function StoreContextProvider(props) {
     });
   };
 
-  store.getMapList = function(){
-    api.getMapsByUser()
-    .then((response) => {
-      console.log(response.data.data);
+  store.getMapList = async function () {
+    if (store.isHomePage()) {
+      api.getMapsByUser().then((response) => {
+        console.log(response.data.data);
+        storeReducer({
+          type: StoreActionType.LOAD_MAP_LIST,
+          payload: { mapList: response.data.data },
+        });
+      });
+    } else {
+      const publishedMaps = await store.getPublishedMaps();
+      console.log(publishedMaps);
       storeReducer({
         type: StoreActionType.LOAD_MAP_LIST,
-        payload: { mapList: response.data.data },
-      })
+        payload: { mapList: publishedMaps },
+      });
+    }
+  };
+
+  store.getMapById = async function (id) {
+    const response = await api.getMapById(id);
+    const mapObj = response.data.data;
+    console.log(mapObj);
+    return mapObj;
+  };
+
+  store.getCsvById = async function (id) {
+    const response = await api.getCsvById(id);
+    const csvObj = response.data.data;
+    console.log(csvObj);
+    return csvObj;
+  };
+
+  store.saveCSV = async function () {
+    let csvObj;
+    if (!store.currentMapObject.csvData) {
+      const response = await api.createCSV(
+        store.key,
+        store.label,
+        store.parsed_CSV_Data
+      );
+      console.log("response", response);
+      const csvObj = response.data.csvData;
+
+      store.currentMapObject.csvData = csvObj._id;
+      store.updateMap(store.currentMapObject);
+    } else {
+      // find the csvObj
+
+      const csvObj = await store.getCsvById(store.currentMapObject.csvData);
+      console.log(csvObj);
+      csvObj.key = store.key;
+      csvObj.label = store.label;
+      csvObj.csvData = store.parsed_CSV_Data;
+      console.log(csvObj);
+      store.updateCSV(csvObj);
+    }
+  };
+
+  store.getPublishedMaps = async function () {
+    const response = await api.getPublishedMaps();
+    const publishedMaps = response.data.data;
+    return publishedMaps;
+  };
+
+
+  store.changeView = function (view) {
+    console.log("changing view to", view)
+    storeReducer({
+      type: StoreActionType.CHANGE_VIEW,
+      payload: {view}
     });
-  }
+  };
+
+  store.isCommunityPage = ()=>{return store.currentView === View.COMMUNITY};
+  store.isHomePage = ()=>{return store.currentView === View.HOME};
+
 
   return (
     <StoreContext.Provider

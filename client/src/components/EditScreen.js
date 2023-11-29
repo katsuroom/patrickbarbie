@@ -1,9 +1,14 @@
-import React, { useEffect, useRef, useContext } from "react";
+import React, { useEffect, useRef, useContext, useState } from "react";
 import PPolitical from "./PPolitical";
 import MapEditorToolbar from "./MapEditorToolBar";
 
 import MapDisplay from "./MapDisplay";
+import StoreContext from "../store";
+
 export default function EditScreen() {
+  const { store } = useContext(StoreContext);
+
+
   const politicalStyle = {
     width: "30%",
     position: "absolute",
@@ -24,7 +29,7 @@ export default function EditScreen() {
       <div style={toolbarStyle}>
         <MapEditorToolbar />
       </div>
-      <div style={{width: "65vw"}}>
+      <div style={{ width: "65vw" }}>
         <MapDisplay />
       </div>
       <div style={politicalStyle}>

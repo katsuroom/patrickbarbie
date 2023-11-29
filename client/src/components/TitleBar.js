@@ -1,14 +1,21 @@
-import React, { useState, useContext } from 'react';
-import { IconButton, Link, Menu, MenuItem, Box } from '@mui/material';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import AuthContext from '../auth';
+import React, { useState, useContext } from "react";
+import { IconButton, Link, Menu, MenuItem, Box } from "@mui/material";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import PersonIcon from "@mui/icons-material/Person";
+import PeopleIcon from "@mui/icons-material/People";
+import HomeIcon from "@mui/icons-material/Home";
+import AuthContext from "../auth";
+import StoreContext from '../store';
+
 
 import patrickBarbie from "../images/patrick-barbie.png";
-import SearchBar from './SearchBar';
+import SearchBar from "./SearchBar";
 
 export default function TitleBar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const { auth } = useContext(AuthContext);
+  const { store } = useContext(StoreContext);
+
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -20,12 +27,62 @@ export default function TitleBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <div style={{ backgroundColor: "#fce8f1", minHeight: "50px", height: "9vh" }}>
+      <div
+        style={{ backgroundColor: "#fce8f1", minHeight: "50px", height: "9vh" }}
+      >
         <Link href="/main">
-          <img src={patrickBarbie} width="5%" style={{ marginTop: 5, marginLeft: 10, clipPath: "inset(0% 0% 35% 0%)" }} />
+          <img
+            src={patrickBarbie}
+            width="5%"
+            style={{
+              marginTop: 5,
+              marginLeft: 10,
+              clipPath: "inset(0% 0% 35% 0%)",
+            }}
+          />
         </Link>
+        <HomeIcon
+          sx={{
+            position: "absolute",
+            top: "1%",
+            left: "8%",
+            fontSize: "30pt",
+            color: store.isHomePage() ? "#f786b9" : "lightpink",
+            "&:hover": {
+              border: "2px solid #f786b9",
+              borderRadius: "50%",
+              padding: "4px",
+              cursor: "pointer",
+            },
+          }}
+          disabled={store.isHomePage() || !auth.loggedIn}
+          onClick={() => {
+            store.changeView(store.viewTypes.HOME);
+          }}
+        />
+        <PeopleIcon
+          sx={{
+            position: "absolute",
+            top: "1%",
+            left: "13%",
+            fontSize: "30pt",
+            color: store.isCommunityPage() ? "#f786b9" :"lightpink",
+            "&:hover": {
+              border: "2px solid #f786b9",
+              borderRadius: "50%",
+              padding: "4px",
+              cursor: "pointer",
+            },
+          }}
+          disabled={store.isCommunityPage()}
+
+          onClick={() => {
+            store.changeView(store.viewTypes.COMMUNITY);
+
+          }}
+        />
         <Box sx={{ position: "absolute", top: "1%", right: "50%" }}>
-          {auth.loggedIn? <SearchBar /> : <></>}
+          {auth.loggedIn ? <SearchBar /> : <></>}
         </Box>
         <IconButton
           className="icon-menu"

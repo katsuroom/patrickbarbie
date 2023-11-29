@@ -122,7 +122,7 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
               <Typography sx={{ fontFamily: "Sen", color: "black", marginLeft: 1 }}>{0}</Typography>
             </Grid>
             <Grid item xs={5.4} style={{ display: "flex", alignItems: "center" }}>
-              <IconButton className="likeButton" onClick={handleLikeClick}>
+              <IconButton className="likeButton" onClick={handleLikeClick} disabled={!auth.loggedIn}>
                 <FavoriteIcon />
               </IconButton>
               <Typography
@@ -132,7 +132,7 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
               </Typography>
             </Grid>
             <Grid item xs={0.5}>
-              <IconButton className="deleteButton" onClick={handleDeleteClick}>
+              <IconButton className="deleteButton" onClick={handleDeleteClick} disabled={!auth.loggedIn}>
                 <Delete />
               </IconButton>
             </Grid>
@@ -146,7 +146,7 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
               </IconButton>
             </Grid>
             <Grid item xs={0.5}>
-              <IconButton className="editButton" onClick={handleEditClick}>
+              <IconButton className="editButton" onClick={handleEditClick} disabled={!auth.loggedIn}>
                 <Edit />
               </IconButton>
             </Grid>
@@ -159,7 +159,7 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
               </IconButton>
             </Grid>
             <Grid item xs={0.5}>
-              <IconButton className="forkButton" onClick={handleForkClick}>
+              <IconButton className="forkButton" onClick={handleForkClick} disabled={!auth.loggedIn}>
                 <Share />
               </IconButton>
             </Grid>

@@ -2,13 +2,36 @@ import MapCardList from "./MapCardList";
 import MapDisplay from "./MapDisplay";
 import MapView from "./MapView";
 import StoreContext from "../store";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
 
 export default function MainScreen()
 {
 
     const { store } = useContext(StoreContext);
+
+
+    useEffect(() => {
+        const func = async () => {
+
+            // clear CSV fields
+           
+            store.setParsedCsvData(null);
+            store.setCsvKey(null);
+            store.setCsvLabel(null);
+
+          if (store.currentMapObject && store.currentMapObject.csvData) {
+            const csvObj = await store.getCsvById(store.currentMapObject.csvData);
+            
+            console.log(csvObj);
+            
+            store.setParsedCsvData(csvObj.csvData);
+            store.setCsvKey(csvObj.key);
+            store.setCsvLabel(csvObj.label);
+          }
+        };
+        func();
+      }, [store.currentMapObject]);
 
     // const maps = [
     //     { id: 1, name: 'North America', fileName: "NA2.json"},

@@ -1,9 +1,10 @@
 const Map = require("../models/map_model");
 const User = require("../models/user_model");
+const CSV = require("../models/csv_model");
 const jwt = require("jsonwebtoken");
 const auth = require("../auth");
-const path = require('path');
-const fs = require('fs');
+const path = require("path");
+const fs = require("fs");
 
 const extractUserIdFromToken = (token) => {
   try {
@@ -28,24 +29,21 @@ const extractUserIdFromToken = (token) => {
 createMap = (req, res) => {
   console.log("start create Map");
 
-    // if (auth.auth(req) === null) {
-    //   return res.status(401).json({
-    //     loggedIn: false,
-    //     user: null,
-    //     errorMessage: "Unauthorized",
-    //   });
-    // }
+  // if (auth.auth(req) === null) {
+  //   return res.status(401).json({
+  //     loggedIn: false,
+  //     user: null,
+  //     errorMessage: "Unauthorized",
+  //   });
+  // }
 
   var userId;
 
+  //   console.log("req: ", req.body);
+  //   console.log("req: ", req.headers);
 
-//   console.log("req: ", req.body);
-//   console.log("req: ", req.headers);
-
-    const token = req.headers.authorization.split(" ")[1];
-    userId = extractUserIdFromToken(token);
-
-
+  const token = req.headers.authorization.split(" ")[1];
+  userId = extractUserIdFromToken(token);
 
   console.log("userId: " + req.userId);
 
@@ -67,12 +65,12 @@ createMap = (req, res) => {
     mapType: body.mapType,
   });
 
-//   const map = new Map(body);
-//   console.log("map: " + JSON.stringify(map));
+  //   const map = new Map(body);
+  //   console.log("map: " + JSON.stringify(map));
   if (!map) {
     return res.status(403).json({ success: false, error: err });
   }
-//   console.log("req.userId: ", req.userId);
+  //   console.log("req.userId: ", req.userId);
 
   User.findOne({ _id: req.userId })
     .then((user) => {
@@ -251,20 +249,19 @@ getMapsByUser = (req, res) => {
   var userId;
   console.log("req: ", req.body);
   console.log("req: ", req.headers);
-  
+
   const token = req.headers.authorization.split(" ")[1];
   userId = extractUserIdFromToken(token);
   console.log("req: ", userId);
-  console.log("req: ", typeof(userId));
+  console.log("req: ", typeof userId);
 
-//   if (auth.verifyUser(req) === null) {
-//     return res.status(401).json({
-//       loggedIn: false,
-//       user: null,
-//       errorMessage: "Unauthorized",
-//     });
-//   }
-  
+  //   if (auth.verifyUser(req) === null) {
+  //     return res.status(401).json({
+  //       loggedIn: false,
+  //       user: null,
+  //       errorMessage: "Unauthorized",
+  //     });
+  //   }
 
   User.findById(userId)
     .populate("maps")
@@ -364,8 +361,116 @@ forkMap = (req, res) => {
     });
 };
 
+createCSV = async (req, res) => {
+  console.log("creating a csv...");
+
+  const body = req.body;
+  if (!body) {
+    return res.status(400).json({
+      success: false,
+      error: "You must provide a csv file",
+    });
+  }
+
+  console.log(body);
+
+  const csv = new CSV({
+    key: body.key,
+    label: body.label,
+    csvData: body.csvData,
+  });
+
+  if (!csv) {
+    return res.status(403).json({ success: false, error: err });
+  }
+
+  const savedCSV = await csv.save();
+  console.log(savedCSV);
+
+  return res.status(201).json({
+    success: true,
+    csvData: savedCSV,
+    message: "CSV created!",
+  });
+};
+
+getCSVById = (req, res) => {
+  console.log("getting a csv...");
+
+  const csvId = req.params.id;
+
+  CSV.findById(csvId)
+    .then((csv) => {
+      if (!csv) {
+        return res.status(404).json({
+          success: false,
+          error: "CSV not found",
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        data: csv,
+        message: "CSV found",
+      });
+    })
+    .catch((error) => {
+      console.log("Error getting csv: " + error);
+      return res.status(500).json({
+        success: false,
+        error: "Error getting csv",
+      });
+    });
+};
+
+updateCSV = (req, res) => {
+  console.log("updating CSV");
+
+  const body = req.body;
+  // console.log("body: " + JSON.stringify(body));
+  // console.log("req: ", req.userId);
+
+  if (!body) {
+    return res.status(400).json({
+      success: false,
+      error: "You must provide a body to update",
+    });
+  }
+
+  const CSVId = req.params.id;
+
+  CSV.findById(CSVId)
+    .then((csv) => {
+      if (!csv) {
+        return res.status(404).json({
+          success: false,
+          error: "csv not found",
+        });
+      }
+
+      // Update csv properties with the data from the request body
+      Object.assign(csv, body);
+
+      // Save the updated csv
+      return csv.save();
+    })
+    .then((updatedCsv) => {
+      return res.status(200).json({
+        success: true,
+        data: updatedCsv,
+        message: "Csv updated successfully",
+      });
+    })
+    .catch((error) => {
+      console.log("Error updating map: " + error);
+      return res.status(500).json({
+        success: false,
+        error: "Error updating map",
+      });
+    });
+};
+
 sendMapFile = async (req, res) => {
-    console.log(req.query.fileName);
+  console.log(req.query.fileName);
   const fileName = req.query.fileName;
   console.log(fileName);
 
@@ -390,5 +495,8 @@ module.exports = {
   getMapsByUser,
   getPublishedMaps,
   forkMap,
-    sendMapFile,
+  sendMapFile,
+  createCSV,
+  getCSVById,
+  updateCSV,
 };

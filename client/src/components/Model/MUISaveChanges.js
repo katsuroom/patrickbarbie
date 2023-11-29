@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
@@ -7,6 +7,7 @@ import './MUIPublishMap.css'
 import './ModalAnimation.css'
 
 import { useHistory } from "react-router-dom";
+import StoreContext from '../../store';
 
 export const ConfirmationDialog = ({
   open,
@@ -91,6 +92,8 @@ export const ConfirmationDialog = ({
 
 const MUISaveChanges = (props) => {
   const history = useHistory();
+  const { store } = useContext(StoreContext);
+
   console.log(props);
   const [open, setOpen] = useState(props.open);
 
@@ -105,7 +108,7 @@ const MUISaveChanges = (props) => {
   const confirmationInfo = "Do you want to save your changes?";
 
   const handleSave = () => {
-    window.alert("Map Saved!");
+    store.saveCSV();
     handleClose();
   };
 

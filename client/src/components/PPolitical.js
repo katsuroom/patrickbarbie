@@ -15,16 +15,14 @@ import StoreContext from "../store";
 
 export default function PPolitical() {
   const [menuItems, setMenuItems] = React.useState([]);
-  const [renderTable, setRenderTable] = React.useState(false);
+  // const [renderTable, setRenderTable] = React.useState(false);
   const [page, setPage] = React.useState(0);
   const [saveModalOpen, setSaveModalOpen] = React.useState(false);
   const [exitModalOpen, setExitModalOpen] = React.useState(false);
   const { store } = useContext(StoreContext);
 
-
   console.log(store.key);
   console.log(store.label);
-
 
   const ROW_PER_PAGE = 30;
 
@@ -62,7 +60,7 @@ export default function PPolitical() {
   };
 
   const fileOnLoadComplete = (data) => {
-    setRenderTable(false);
+    // setRenderTable(false);
 
     console.log(data);
     let csv_data = {};
@@ -99,17 +97,34 @@ export default function PPolitical() {
     console.log("setting label to", keys[0]);
     setMenuItems(keys);
     console.log("setting menu item to", keys);
-    setRenderTable(true);
-
-
+    // setRenderTable(true);
   };
-  let maxPage = store.label && store.parsed_CSV_Data[store.label] ? parseInt(store.parsed_CSV_Data[store.label].length / ROW_PER_PAGE) : 0;
+
+
+  // if (store.parsed_CSV_Data && !renderTable){
+  //   console.log("enter here")
+  //   setMenuItems(Object.keys(store.parsed_CSV_Data))
+  //   setRenderTable(true);
+  // }
+  if (menuItems.length === 0 && store.parsed_CSV_Data){
+    setMenuItems(Object.keys(store.parsed_CSV_Data))
+  }
+
+
+  let maxPage =
+    store.label && store.parsed_CSV_Data && store.parsed_CSV_Data[store.label]
+      ? parseInt(store.parsed_CSV_Data[store.label].length / ROW_PER_PAGE)
+      : 0;
+  console.log(store.currentMapObject);
+  console.log(store.parsed_CSV_Data);
+  console.log(store.label);
+  console.log(menuItems);
+
 
   return (
     <div>
       <div className="propertyTitle">Property</div>
-      <CsvFileReader fileOnLoadComplete={fileOnLoadComplete}/>
-
+      <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
       <div style={{ overflow: "auto", maxHeight: "400px" }}>
         <Table
           className="property-table"
@@ -121,7 +136,7 @@ export default function PPolitical() {
                 <Select
                   // labelId="demo-simple-select-standard-label"
                   // id="searchOn"
-                  value={store.label}
+                  value={store.label? store.label: "label"}
                   required
                   onChange={handleChangeLabel}
                   sx={{ minWidth: "80%" }}
@@ -143,7 +158,7 @@ export default function PPolitical() {
                 <Select
                   labelId="demo-simple-select-standard-label"
                   id="searchOn"
-                  value={store.key}
+                  value={store.key ? store.key : "key"}
                   required
                   onChange={handleChangeKey}
                   sx={{ minWidth: "80%" }}
@@ -165,7 +180,7 @@ export default function PPolitical() {
             </tr>
           </thead>
           <tbody>
-            {!renderTable ||
+            { store.parsed_CSV_Data &&
               zip(
                 store.parsed_CSV_Data[store.label].slice(
                   page * ROW_PER_PAGE,
@@ -199,7 +214,7 @@ export default function PPolitical() {
         onClick={openExitModal}
       >
         EXIT
-      </Button>
+      </Button> 
       <Button
         variant="solid"
         className="save"
@@ -208,29 +223,29 @@ export default function PPolitical() {
       >
         SAVE
       </Button>
-
       <Button
         variant="solid"
         className="prev"
         sx={{ margin: 1 }}
         disabled={page <= 0}
-        onClick={()=>{setPage(page <= 0 ? 0 : page - 1)}}
+        onClick={() => {
+          setPage(page <= 0 ? 0 : page - 1);
+        }}
       >
         Prev
       </Button>
-
-      Page: {page+1}
-
+      Page: {page + 1}
       <Button
         variant="solid"
         className="next"
         sx={{ margin: 1 }}
         disabled={page >= maxPage}
-        onClick={() => {setPage(page >= maxPage ? maxPage : page + 1)}}
+        onClick={() => {
+          setPage(page >= maxPage ? maxPage : page + 1);
+        }}
       >
         Next
       </Button>
-
       <MUISaveChanges open={saveModalOpen} closeModal={closeSaveModal} />
       <MUIExitModal open={exitModalOpen} closeModal={closeExitModal} />
     </div>

@@ -1,26 +1,26 @@
-import React, { useState, useContext, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider';
-import Fab from '@mui/material/Fab';
-import AddIcon from '@mui/icons-material/Add';
-import StoreContext, { CurrentModal } from '../store';
-import AuthContext from '../auth';
-import MUIUploadMap from './Model/MUIUploadMap';
-import MUICreateMap from './Model/MUICreateMap';
+import React, { useState, useContext, useEffect } from "react";
+import Box from "@mui/material/Box";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
+import StoreContext, { CurrentModal } from "../store";
+import AuthContext from "../auth";
+import MUIUploadMap from "./Model/MUIUploadMap";
+import MUICreateMap from "./Model/MUICreateMap";
 const Pbf = require("pbf");
 const geobuf = require("geobuf");
 
 const hardcodedMaps = [
-  { _id: '1', title: 'North America', fileName: "NA2.json", type: 'hardcoded' },
-  { _id: '2', title: 'South America', fileName: "SA2.json", type: 'hardcoded' },
-  { _id: '3', title: 'Asia', fileName: "ASIA2.json", type: 'hardcoded' },
-  { _id: '4', title: 'Africa', fileName: "AFRICA2.json", type: 'hardcoded' },
-  { _id: '5', title: 'Europe', fileName: "EU2.json", type: 'hardcoded' },
-  { _id: '6', title: 'Oceania', fileName: "Oceania2.json", type: 'hardcoded' },
-  { _id: '7', title: 'World', fileName: "World.json", type: 'hardcoded' }
+  // { _id: '1', title: 'North America', fileName: "NA2.json", type: 'hardcoded' },
+  // { _id: '2', title: 'South America', fileName: "SA2.json", type: 'hardcoded' },
+  // { _id: '3', title: 'Asia', fileName: "ASIA2.json", type: 'hardcoded' },
+  // { _id: '4', title: 'Africa', fileName: "AFRICA2.json", type: 'hardcoded' },
+  // { _id: '5', title: 'Europe', fileName: "EU2.json", type: 'hardcoded' },
+  // { _id: '6', title: 'Oceania', fileName: "Oceania2.json", type: 'hardcoded' },
+  // { _id: '7', title: 'World', fileName: "World.json", type: 'hardcoded' }
 ];
 
 export default function MapCardList() {
@@ -30,16 +30,25 @@ export default function MapCardList() {
   const [selectedMap, setSelectedMap] = useState(null);
 
   useEffect(() => {
-    store.getMapList();
-  }, []);
+    if (!auth.loggedIn) {
+      store.changeView(store.viewTypes.COMMUNITY);
+    } else {
+      store.changeView(store.viewTypes.HOME);
+    }
+  }, [auth.loggedIn]);
 
   useEffect(() => {
-    if (auth.loggedIn && auth.user) {
-      let fetchedMaps = store.mapList;
-      const typedFetchedMaps = fetchedMaps.map(map => ({ ...map, type: 'fetched' }));
-      setMaps([...hardcodedMaps, ...typedFetchedMaps]);
-    }
-  }, [auth.user, auth.loggedIn, store.mapList]);
+    store.getMapList();
+  }, [store.currentView]);
+
+  useEffect(() => {
+    let fetchedMaps = store.mapList;
+    const typedFetchedMaps = fetchedMaps.map((map) => ({
+      ...map,
+      type: "fetched",
+    }));
+    setMaps([...hardcodedMaps, ...typedFetchedMaps]);
+  }, [store.mapList]);
 
   const handleMapClick = (mapId) => {
     const selected = maps.find((map) => map._id === mapId);
@@ -47,12 +56,12 @@ export default function MapCardList() {
     console.log(store.currentMapObject);
     if (selected) {
       setSelectedMap(selected);
-      if (selected.type === 'hardcoded') {
+      if (selected.type === "hardcoded") {
         // hardcoded maps
         setSelectedMap(selected);
         store.getMapFile(selected.fileName);
-        console.log('Hardcoded map clicked:', selected.title);
-      } else if (selected.type === 'fetched') {
+        console.log("Hardcoded map clicked:", selected.title);
+      } else if (selected.type === "fetched") {
         // fetched map click
         var mapData = selected.mapData;
         console.log("mapData: ", selected);

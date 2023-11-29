@@ -14,6 +14,10 @@ router.get('/published-maps', MapController.getPublishedMaps)
 
 
 router.get('/mapFile', MapController.sendMapFile);
+router.post('/csv', MapController.createCSV);
+router.get('/csv/:id', MapController.getCSVById);
+router.put('/csv/:id', MapController.updateCSV);
+
 
 
 

@@ -83,9 +83,11 @@ export default function GeoJSONDisplay(props) {
   }, [store.rawMapFile]);
 
   useEffect(() => {
-    if (!geoJsonData) {
+
+    if (!geoJsonData ) {
       return;
     }
+
 
     if (!mapRef.current) {
       mapRef.current = L.map("map-display").setView([0, 0], 2);
@@ -93,76 +95,7 @@ export default function GeoJSONDisplay(props) {
         mapRef.current
       );
     }
-
     
-    if (store.mapType === "Heatmap" && store.parsed_CSV_Data) {
-      if (heatmapOverlayRef.current) {
-        mapRef.current.removeLayer(heatmapOverlayRef.current);
-      }
-
-      let heatMapData = geoJsonData.features.map((feature) => {
-        let idx = -1;
-
-        const bounds = L.geoJSON(feature).getBounds();
-        const centroid =
-          bounds && bounds.isValid() ? bounds.getCenter() : L.latLng(0, 0);
-
-        if (
-          !bounds ||
-          !bounds.isValid() ||
-          !centroid ||
-          isNaN(centroid.lat) ||
-          isNaN(centroid.lng)
-        ) {
-          console.error("Invalid bounds or centroid:", bounds, centroid);
-          return [0, 0, 0]; // Provide a default value or handle the error accordingly
-        }
-
-        const name = feature.properties.name;
-        if (!name) {
-          return [centroid.lat, centroid.lng, 0];
-        }
-
-        try {
-          idx = store.parsed_CSV_Data[store.label].indexOf(
-            feature.properties.name
-          );
-        } catch (error) {}
-
-        if (idx < 0) {
-          return [centroid.lat, centroid.lng, 0];
-        }
-
-
-        const intensity = parseFloat(store.parsed_CSV_Data[store.key][idx]);
-        // const intensity = normalize(
-        //   parseFloat(store.parsed_CSV_Data[store.key][idx]),
-        //   Math.min(...store.parsed_CSV_Data[store.key]),
-        //   Math.max(...store.parsed_CSV_Data[store.key])
-        // );
-
-        return { ...centroid, value: intensity ? intensity : 0 };
-      });
-
-      console.log("heatMapData", heatMapData);
-      
-      heatMapData = heatMapData.filter(item => {
-        return item && typeof item === 'object' && item.constructor === Object && item.value;
-      })
-
-      console.log("heatMapData", heatMapData);
-
-      heatmapOverlayRef.current = new HeatmapOverlay({
-        "useLocalExtrema": false,
-        "scaleRadius": true,
-        "maxOpacity": .8,
-        valueField: 'value',
-        radius: 20
-      }).addTo(mapRef.current);
-
-      heatmapOverlayRef.current.setData({ data: heatMapData });
-    }
-
     if (geoJsonLayerRef.current) {
       mapRef.current.removeLayer(geoJsonLayerRef.current);
     }
@@ -223,6 +156,86 @@ export default function GeoJSONDisplay(props) {
         .addEventListener("click", props.openModal);
       setButtonAdded(true);
     }
+
+    if (heatmapOverlayRef.current) {
+      mapRef.current.removeLayer(heatmapOverlayRef.current);
+    }
+
+    if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
+      return;
+    }
+
+
+    
+    if (store.mapType === "Heatmap" || (store.currentMapObject && store.currentMapObject.mapType === "Heatmap")) {
+      
+
+     
+      let heatMapData = geoJsonData.features.map((feature) => {
+        let idx = -1;
+
+        const bounds = L.geoJSON(feature).getBounds();
+        const centroid =
+          bounds && bounds.isValid() ? bounds.getCenter() : L.latLng(0, 0);
+
+        if (
+          !bounds ||
+          !bounds.isValid() ||
+          !centroid ||
+          isNaN(centroid.lat) ||
+          isNaN(centroid.lng)
+        ) {
+          console.error("Invalid bounds or centroid:", bounds, centroid);
+          return [0, 0, 0]; // Provide a default value or handle the error accordingly
+        }
+
+        const name = feature.properties.name;
+        if (!name) {
+          return [centroid.lat, centroid.lng, 0];
+        }
+
+        try {
+          idx = store.parsed_CSV_Data[store.label].indexOf(
+            feature.properties.name
+          );
+        } catch (error) {}
+
+        if (idx < 0) {
+          return [centroid.lat, centroid.lng, 0];
+        }
+
+        console.log(store.parsed_CSV_Data)
+        console.log(store.key)
+
+        const intensity = parseFloat(store.parsed_CSV_Data[store.key][idx]);
+        // const intensity = normalize(
+        //   parseFloat(store.parsed_CSV_Data[store.key][idx]),
+        //   Math.min(...store.parsed_CSV_Data[store.key]),
+        //   Math.max(...store.parsed_CSV_Data[store.key])
+        // );
+
+        return { ...centroid, value: intensity ? intensity : 0 };
+      });
+
+      console.log("heatMapData", heatMapData);
+      
+      heatMapData = heatMapData.filter(item => {
+        return item && typeof item === 'object' && item.constructor === Object && item.value;
+      })
+
+      console.log("heatMapData", heatMapData);
+
+      heatmapOverlayRef.current = new HeatmapOverlay({
+        "useLocalExtrema": false,
+        "scaleRadius": true,
+        "maxOpacity": .8,
+        valueField: 'value',
+        radius: 20
+      }).addTo(mapRef.current);
+
+      heatmapOverlayRef.current.setData({ data: heatMapData });
+    }
+
   }, [geoJsonData, store.label, store.key, store.parsed_CSV_Data]);
 
   if (!downloadComplete) {
