@@ -10,21 +10,47 @@ import { useHistory } from "react-router-dom";
 import CsvFileReader from "./CsvFileReader";
 import MUISaveChanges from "./Model/MUISaveChanges";
 import MUIExitModal from "./Model/MUIExitModal";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import StoreContext from "../store";
 
 export default function PPolitical() {
+  const { store } = useContext(StoreContext);
+
   const [menuItems, setMenuItems] = React.useState([]);
   // const [renderTable, setRenderTable] = React.useState(false);
-  const [page, setPage] = React.useState(0);
+  // const [page, setPage] = React.useState(0);
   const [saveModalOpen, setSaveModalOpen] = React.useState(false);
   const [exitModalOpen, setExitModalOpen] = React.useState(false);
-  const { store } = useContext(StoreContext);
+  const [textFields, setTextFields] = React.useState([]);
+
+  useEffect(() => {
+  let tfs = [];
+  if (store.parsed_CSV_Data) {
+    for (let idx in store.parsed_CSV_Data[store.key]) {
+      tfs.push(
+        // <input
+        //   id={"search-" + idx}
+        //   defaultValue={store.parsed_CSV_Data[store.key][idx]}
+        //   style={{margin: "8px", width: "100px", height:"30px"}}
+        // />
+        <TextField
+          id={"search-" + idx}
+          defaultValue={store.parsed_CSV_Data[store.key][idx]}
+          variant="standard"
+          sx={{ m: 1, minWidth: 120 }}
+        />
+      );
+    }
+  }
+  setTextFields(tfs);
+}, [store.parsed_CSV_Data])
+
+
 
   console.log(store.key);
   console.log(store.label);
 
-  const ROW_PER_PAGE = 30;
+  // const ROW_PER_PAGE = 30;
 
   function zip(...arrays) {
     const length = Math.min(...arrays.map((arr) => arr.length));
@@ -35,6 +61,24 @@ export default function PPolitical() {
 
   const handleChangeKey = (event) => {
     console.log(event.target.value);
+
+    let tfs = [];
+    for (let idx in store.parsed_CSV_Data[store.key]) {
+      tfs.push(
+        // <input
+        //   id={"search-" + idx}
+        //   defaultValue={store.parsed_CSV_Data[store.key][idx]}
+        //   style={{margin: "8px", width: "100px", height:"30px"}}
+        // />
+        <TextField
+          id={"search-" + idx}
+          defaultValue={store.parsed_CSV_Data[store.key][idx]}
+          variant="standard"
+          sx={{ m: 1, minWidth: 120 }}
+        />
+      );
+    }
+    setTextFields(tfs);
     store.setCsvKey(event.target.value);
   };
 
@@ -57,6 +101,12 @@ export default function PPolitical() {
 
   const closeExitModal = () => {
     setExitModalOpen(false);
+  };
+
+  const saveCsvChanges = () => {
+    for (let idx in store.parsed_CSV_Data[store.key]) {
+      store.parsed_CSV_Data[store.key][idx] = textFields[idx].value;
+    }
   };
 
   const fileOnLoadComplete = (data) => {
@@ -100,26 +150,24 @@ export default function PPolitical() {
     // setRenderTable(true);
   };
 
-
   // if (store.parsed_CSV_Data && !renderTable){
   //   console.log("enter here")
   //   setMenuItems(Object.keys(store.parsed_CSV_Data))
   //   setRenderTable(true);
   // }
-  if (menuItems.length === 0 && store.parsed_CSV_Data){
-    setMenuItems(Object.keys(store.parsed_CSV_Data))
+  if (menuItems.length === 0 && store.parsed_CSV_Data) {
+    setMenuItems(Object.keys(store.parsed_CSV_Data));
   }
 
+  // let maxPage =
+  //   store.label && store.parsed_CSV_Data && store.parsed_CSV_Data[store.label]
+  //     ? parseInt(store.parsed_CSV_Data[store.label].length / ROW_PER_PAGE)
+  //     : 0;
 
-  let maxPage =
-    store.label && store.parsed_CSV_Data && store.parsed_CSV_Data[store.label]
-      ? parseInt(store.parsed_CSV_Data[store.label].length / ROW_PER_PAGE)
-      : 0;
   console.log(store.currentMapObject);
   console.log(store.parsed_CSV_Data);
   console.log(store.label);
   console.log(menuItems);
-
 
   return (
     <div>
@@ -136,7 +184,7 @@ export default function PPolitical() {
                 <Select
                   // labelId="demo-simple-select-standard-label"
                   // id="searchOn"
-                  value={store.label? store.label: "label"}
+                  value={store.label ? store.label : "label"}
                   required
                   onChange={handleChangeLabel}
                   sx={{ minWidth: "80%" }}
@@ -176,32 +224,31 @@ export default function PPolitical() {
                   </MenuItem> */}
                 </Select>
               </th>
-              <th>Update</th>
+              {/* <th>Update</th> */}
             </tr>
           </thead>
           <tbody>
-            { store.parsed_CSV_Data &&
+            {store.parsed_CSV_Data &&
               zip(
-                store.parsed_CSV_Data[store.label].slice(
-                  page * ROW_PER_PAGE,
-                  (page + 1) * ROW_PER_PAGE
-                ),
-                store.parsed_CSV_Data[store.key].slice(
-                  page * ROW_PER_PAGE,
-                  (page + 1) * ROW_PER_PAGE
-                )
+                // store.parsed_CSV_Data[store.label].slice(
+                //   page * ROW_PER_PAGE,
+                //   (page + 1) * ROW_PER_PAGE
+                // ),
+                // textFields.slice(page * ROW_PER_PAGE, (page + 1) * ROW_PER_PAGE)
+                store.parsed_CSV_Data[store.label],
+                textFields
               ).map((row) => (
                 <tr key={row.name}>
                   <td>{row[0]}</td>
                   <td>{row[1]}</td>
-                  <td>
+                  {/* <td>
                     <TextField
                       id="search"
                       defaultValue={row.calories}
                       variant="standard"
                       sx={{ m: 1, minWidth: 120 }}
                     />
-                  </td>
+                  </td> */}
                 </tr>
               ))}
           </tbody>
@@ -214,7 +261,7 @@ export default function PPolitical() {
         onClick={openExitModal}
       >
         EXIT
-      </Button> 
+      </Button>
       <Button
         variant="solid"
         className="save"
@@ -223,7 +270,7 @@ export default function PPolitical() {
       >
         SAVE
       </Button>
-      <Button
+      {/* <Button
         variant="solid"
         className="prev"
         sx={{ margin: 1 }}
@@ -245,8 +292,12 @@ export default function PPolitical() {
         }}
       >
         Next
-      </Button>
-      <MUISaveChanges open={saveModalOpen} closeModal={closeSaveModal} />
+      </Button> */}
+      <MUISaveChanges
+        open={saveModalOpen}
+        closeModal={closeSaveModal}
+        saveCB={saveCsvChanges}
+      />
       <MUIExitModal open={exitModalOpen} closeModal={closeExitModal} />
     </div>
   );

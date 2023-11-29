@@ -221,6 +221,7 @@ function StoreContextProvider(props) {
 
     api.createMap(data, auth.user.username, title, mapType).then((response) => {
       console.log(response);
+      store.setCurrentMapObj(response.data.mapData);
     });
 
     // console.log(file);
@@ -362,15 +363,18 @@ function StoreContextProvider(props) {
       
       // store.currentMapObject = mapObj;
 
-      storeReducer({
-        type: StoreActionType.CHANGE_CURRENT_MAP_OBJ,
-        payload: mapObj,
-      });
+      store.setCurrentMapObj(mapObj);
       
 
-
-
   };
+
+
+  store.setCurrentMapObj = function(mapObj){
+    storeReducer({
+      type: StoreActionType.CHANGE_CURRENT_MAP_OBJ,
+      payload: mapObj,
+    });
+  }
 
   store.updateMap = function (mapObject) {
     console.log("publishing map: ", mapObject);

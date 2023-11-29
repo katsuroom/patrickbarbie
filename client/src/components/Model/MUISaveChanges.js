@@ -108,6 +108,11 @@ const MUISaveChanges = (props) => {
   const confirmationInfo = "Do you want to save your changes?";
 
   const handleSave = () => {
+    if (props.saveCB){
+      props.saveCB();
+    }
+
+      
     store.saveCSV();
     handleClose();
   };
