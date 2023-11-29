@@ -395,6 +395,8 @@ function StoreContextProvider(props) {
   };
 
   store.setCsvKey = function (key) {
+    store.setCsvKeyWithoutRerendering(key);
+
     if (key !== undefined) {
       store.key = key; // for synchronization purpose
       console.log(store.key);
@@ -406,7 +408,6 @@ function StoreContextProvider(props) {
   };
 
   store.setCsvKeyWithoutRerendering = function (key) {
-    store.setCsvKeyWithoutRerendering(key);
     if (key !== undefined) {
       store.key = key;
     }

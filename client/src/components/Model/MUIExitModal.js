@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import StoreContext from "../../store";
+
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -102,6 +104,8 @@ export const ConfirmationDialog = ({
 const MUIExit = (props) => {
     const history = useHistory();
     const [open, setOpen] = useState(props.open);
+  const { store } = useContext(StoreContext);
+
 
     const handleOpen = () => setOpen(true);
     useEffect(() => {
@@ -115,6 +119,7 @@ const MUIExit = (props) => {
     const confirmationInfo = "Do you want to save your changes before leaving this page?";
 
     const handleSave = () => {
+        store.saveCSV();
         console.log("Map Saved!");
 
 
