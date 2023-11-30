@@ -1,25 +1,24 @@
 // const baseURL = 'http://localhost:4000/auth';
-const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "auth"
+const baseURL = "https://patrick-barbie-f64046e3bb4b.herokuapp.com/" + "auth";
 
 // Function to perform a login request
 const loginUser = (email, password) => {
   return fetch(`${baseURL}/login/`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('token')
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("token"),
     },
     body: JSON.stringify({
       email: email,
       password: password,
     }),
-  })
-  .then(response => {
+  }).then((response) => {
     // Parse JSON and include status in the resolved value
-    return response.json().then(data => ({ status: response.status, data }));
-  })
+    return response.json().then((data) => ({ status: response.status, data }));
+  });
 };
- 
+
 // Function to perform a registration request
 const registerUser = (username, email, password) => {
   return fetch(`${baseURL}/register/`, {
@@ -43,6 +42,7 @@ const getLoggedIn = () => {
   console.log("in api.");
   console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
   let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
+
   return fetch(`${baseURL}/loggedIn/`, {
     method: "GET",
     headers: {
@@ -83,16 +83,11 @@ const logoutUser = () => {
         message: "Error logging out: " + error,
       };
     });
-}
-
-
-
+};
 
 export default {
   loginUser,
   registerUser,
   getLoggedIn,
-  logoutUser
-
+  logoutUser,
 };
-

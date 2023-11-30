@@ -11,6 +11,7 @@ import "./font.css"
 
 
 import AuthContext from "../auth";
+import StoreContext from "../store";
 import { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -38,6 +39,12 @@ const MenuButton = (displayText) => {
 
 export default function SplashScreen() {
   const { auth } = useContext(AuthContext);
+  const { store } = useContext(StoreContext);
+
+  if (!store.disableSearchBar) {
+    store.setDisableSearchBar(true);
+  }
+
   const history = useHistory();
   useEffect(() => {
     if(auth.loggedIn) {

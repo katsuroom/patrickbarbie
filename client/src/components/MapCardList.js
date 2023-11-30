@@ -31,8 +31,11 @@ export default function MapCardList() {
 
   useEffect(() => {
     if (!auth.loggedIn) {
+      console.log("change view to community");
+
       store.changeView(store.viewTypes.COMMUNITY);
     } else {
+      console.log("change view to home");
       store.changeView(store.viewTypes.HOME);
     }
   }, [auth.loggedIn]);
@@ -56,20 +59,15 @@ export default function MapCardList() {
     console.log(store.currentMapObject);
     if (selected) {
       setSelectedMap(selected);
-      if (selected.type === "hardcoded") {
-        // hardcoded maps
-        setSelectedMap(selected);
-        store.getMapFile(selected.fileName);
-        console.log("Hardcoded map clicked:", selected.title);
-      } else if (selected.type === "fetched") {
+      
         // fetched map click
         var mapData = selected.mapData;
         console.log("mapData: ", selected);
         const encodedData = geobuf.decode(new Pbf(mapData.data));
         console.log("encodedData: ", encodedData);
         store.setRawMapFile(encodedData);
-        store.getMapFile(selected.fileName);
-      }
+        // store.getMapFile(selected.fileName);
+      
     }
   };
 

@@ -1,6 +1,6 @@
 import './App.css';
-import { React } from 'react'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import React, {useEffect, useState  } from 'react'
+import { BrowserRouter, Route, Switch  } from 'react-router-dom'
 import { AuthContextProvider } from './auth';
 import { StoreContextProvider } from './store';
 import {
@@ -26,6 +26,8 @@ import {
 } from './components'
 
 const App = () => {
+
+
     return (
         <BrowserRouter>
             <AuthContextProvider>

@@ -24,7 +24,8 @@ export const StoreActionType = {
   DELETE_MAP: "DELETE_MAP",
   SET_PARSED_CSV_DATA: "SET_PARSED_CSV_DATA",
   CHANGE_VIEW: "CHANGE_VIEW",
-  CHANGE_CURRENT_MAP_OBJ: "CHANGE_CURRENT_MAP_OBJ"
+  CHANGE_CURRENT_MAP_OBJ: "CHANGE_CURRENT_MAP_OBJ",
+  SET_DISABLE_SEARCH_BAR: "SET_DISABLE_SEARCH_BAR"
 };
 
 export const CurrentModal = {
@@ -66,7 +67,8 @@ function StoreContextProvider(props) {
     mapType: null,
     currentMapObject: null,
     mapList: [],
-    currentView: View.HOME
+    currentView: View.HOME,
+    disableSearchBar: false
   });
 
   store.viewTypes = View;
@@ -140,6 +142,13 @@ function StoreContextProvider(props) {
         return setStore({
           ...store,
           mapType: payload.mapType,
+        });
+      }
+
+      case StoreActionType.SET_DISABLE_SEARCH_BAR: {
+        return setStore({
+          ...store,
+          disableSearchBar: payload,
         });
       }
 
@@ -558,12 +567,25 @@ function StoreContextProvider(props) {
 
 
   store.changeView = function (view) {
+
+
+    if (view === store.viewTypes.HOME && !auth.loggedin){
+      return;
+    }
     console.log("changing view to", view)
+    store.currentView = view; 
     storeReducer({
       type: StoreActionType.CHANGE_VIEW,
       payload: {view}
     });
   };
+
+  store.setDisableSearchBar = function(disableSearchBar) {
+    storeReducer({
+      type: StoreActionType.SET_DISABLE_SEARCH_BAR,
+      payload: disableSearchBar
+    });
+  }
 
   store.isCommunityPage = ()=>{return store.currentView === View.COMMUNITY};
   store.isHomePage = ()=>{return store.currentView === View.HOME};

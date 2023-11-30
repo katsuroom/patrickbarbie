@@ -5,8 +5,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import PeopleIcon from "@mui/icons-material/People";
 import HomeIcon from "@mui/icons-material/Home";
 import AuthContext from "../auth";
-import StoreContext from '../store';
-
+import StoreContext from "../store";
 
 import patrickBarbie from "../images/patrick-barbie.png";
 import SearchBar from "./SearchBar";
@@ -15,7 +14,6 @@ export default function TitleBar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const { auth } = useContext(AuthContext);
   const { store } = useContext(StoreContext);
-
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -41,48 +39,54 @@ export default function TitleBar() {
             }}
           />
         </Link>
-        <HomeIcon
-          sx={{
-            position: "absolute",
-            top: "1%",
-            left: "8%",
-            fontSize: "30pt",
-            color: store.isHomePage() ? "#f786b9" : "lightpink",
-            "&:hover": {
-              border: "2px solid #f786b9",
-              borderRadius: "50%",
-              padding: "4px",
-              cursor: "pointer",
-            },
-          }}
-          disabled={store.isHomePage() || !auth.loggedIn}
-          onClick={() => {
-            store.changeView(store.viewTypes.HOME);
-          }}
-        />
-        <PeopleIcon
-          sx={{
-            position: "absolute",
-            top: "1%",
-            left: "13%",
-            fontSize: "30pt",
-            color: store.isCommunityPage() ? "#f786b9" :"lightpink",
-            "&:hover": {
-              border: "2px solid #f786b9",
-              borderRadius: "50%",
-              padding: "4px",
-              cursor: "pointer",
-            },
-          }}
-          disabled={store.isCommunityPage()}
-
-          onClick={() => {
-            store.changeView(store.viewTypes.COMMUNITY);
-
-          }}
-        />
+        {!store.disableSearchBar ? (
+          <HomeIcon
+            sx={{
+              position: "absolute",
+              top: "1%",
+              left: "8%",
+              fontSize: "30pt",
+              color: store.isHomePage() ? "#f786b9" : "lightpink",
+              "&:hover": {
+                border: "2px solid #f786b9",
+                borderRadius: "50%",
+                padding: "4px",
+                cursor: "pointer",
+              },
+            }}
+            disabled={store.isHomePage() || !auth.loggedIn}
+            onClick={() => {
+              store.changeView(store.viewTypes.HOME);
+            }}
+          />
+        ) : (
+          <></>
+        )}
+        {!store.disableSearchBar ? (
+          <PeopleIcon
+            sx={{
+              position: "absolute",
+              top: "1%",
+              left: "13%",
+              fontSize: "30pt",
+              color: store.isCommunityPage() ? "#f786b9" : "lightpink",
+              "&:hover": {
+                border: "2px solid #f786b9",
+                borderRadius: "50%",
+                padding: "4px",
+                cursor: "pointer",
+              },
+            }}
+            disabled={store.isCommunityPage()}
+            onClick={() => {
+              store.changeView(store.viewTypes.COMMUNITY);
+            }}
+          />
+        ) : (
+          <></>
+        )}
         <Box sx={{ position: "absolute", top: "1%", right: "50%" }}>
-          {auth.loggedIn ? <SearchBar /> : <></>}
+          {!store.disableSearchBar ? <SearchBar /> : <></>}
         </Box>
         <IconButton
           className="icon-menu"

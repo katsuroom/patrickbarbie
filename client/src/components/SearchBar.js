@@ -21,7 +21,6 @@ export default function SelectVariants() {
     if (event.code === "Enter") {
       console.log("enter key");
       console.log(text,", ", age);
-      
     }
   }
 

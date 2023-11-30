@@ -43,7 +43,6 @@
     "nodemon": "^3.0.1",
     "npm": "^10.2.3",
     "pako": "^2.1.0",
-    "react-router-dom": "^5.3.4",
     "react-screen-capture": "^1.1.1"
   },
   "devDependencies": {
@@ -78,6 +77,7 @@
     "react": "^18.2.0",
     "react-csv-reader": "^4.0.0",
     "react-papaparse": "^4.4.0",
+    "react-router-dom": "^5.2.0",
     "react-script": "^2.0.5",
     "react-scripts": "^5.0.1",
     "shpjs": "^4.0.4",
