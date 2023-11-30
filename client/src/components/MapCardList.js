@@ -26,35 +26,25 @@ const hardcodedMaps = [
 export default function MapCardList() {
   const { store } = useContext(StoreContext);
   const { auth } = useContext(AuthContext);
-  const [maps, setMaps] = useState([...hardcodedMaps]);
+  // const [maps, setMaps] = useState([...hardcodedMaps]);
   const [selectedMap, setSelectedMap] = useState(null);
 
-  useEffect(() => {
-    if (!auth.loggedIn) {
-      console.log("change view to community");
-
-      store.changeView(store.viewTypes.COMMUNITY);
-    } else {
-      console.log("change view to home");
-      store.changeView(store.viewTypes.HOME);
-    }
-  }, [auth.loggedIn]);
 
   useEffect(() => {
     store.getMapList();
   }, [store.currentView]);
 
-  useEffect(() => {
-    let fetchedMaps = store.mapList;
-    const typedFetchedMaps = fetchedMaps.map((map) => ({
-      ...map,
-      type: "fetched",
-    }));
-    setMaps([...hardcodedMaps, ...typedFetchedMaps]);
-  }, [store.mapList]);
+  // useEffect(() => {
+  //   let fetchedMaps = store.mapList;
+  //   const typedFetchedMaps = fetchedMaps.map((map) => ({
+  //     ...map,
+  //     type: "fetched",
+  //   }));
+  //   // setMaps([...hardcodedMaps, ...typedFetchedMaps]);
+  // }, [store.mapList]);
 
   const handleMapClick = (mapId) => {
-    const selected = maps.find((map) => map._id === mapId);
+    const selected = store.mapList.find((map) => map._id === mapId);
     store.currentMapObject = selected;
     console.log(store.currentMapObject);
     if (selected) {
@@ -99,7 +89,7 @@ export default function MapCardList() {
           },
         }}
       >
-        {maps.map((map, index) => [
+        {store.mapList.map((map, index) => [
           index > 0 && <Divider key={`divider-${map._id}`} />,
           <ListItem
             button

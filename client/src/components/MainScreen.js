@@ -3,12 +3,32 @@ import MapDisplay from "./MapDisplay";
 import MapView from "./MapView";
 import StoreContext from "../store";
 import React, { useContext, useEffect } from "react";
+import AuthContext from "../auth";
+
 
 export default function MainScreen() {
   const { store } = useContext(StoreContext);
+  const { auth } = useContext(AuthContext);
+
   if (store.disableSearchBar) {
     store.setDisableSearchBar(false);
   }
+
+  useEffect(() => {
+    const func = async () => {
+    if (!auth.loggedIn) {
+      console.log("change view to community");
+
+      await store.changeView(store.viewTypes.COMMUNITY);
+    } else {
+      console.log("change view to home");
+      console.log("auth.loggedIn", auth.loggedIn)
+      await store.changeView(store.viewTypes.HOME);
+    }
+}
+func();
+  }, [auth.loggedIn]);
+
 
   useEffect(() => {
     const func = async () => {

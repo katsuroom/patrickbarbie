@@ -1,4 +1,6 @@
-import * as React from 'react';
+
+import React, { useState, useEffect, useContext } from "react";
+
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
@@ -6,21 +8,36 @@ import Box from '@mui/material/Box';
 import Sort from './Sort';
 
 
+import StoreContext from '../store';
+
+
+
 export default function SelectVariants() {
-  const [age, setAge] = React.useState('');
-  const [text, setText] = React.useState('');
+
+  const { store } = useContext(StoreContext);
+  const [searchBy, setsearchBy] = useState('Map ID');
+  const [searchText, setsearchText] = useState('');
 
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setsearchBy(event.target.value);
   };
   const handleSearch = (event) =>{
-    setText(event.target.value);
+    store.changeView(store.viewTypes.COMMUNITY);
+    setsearchText(event.target.value);
     console.log(event.target.value);
   }
-  const handleKeyPress = (event) =>{
+  const handleKeyPress = async (event) =>{
     if (event.code === "Enter") {
-      console.log("enter key");
-      console.log(text,", ", age);
+      if (searchBy === "Map ID"){
+        let mapObj = await store.getMapById(searchText);
+        await store.setMapList([mapObj]);
+      }
+      else if (searchBy === "Map Name"){
+      }
+
+      else if (searchBy === "Property"){
+      }
+
     }
   }
 
@@ -29,7 +46,7 @@ export default function SelectVariants() {
         <Select
           labelId="demo-simple-select-standard-label"
           id="searchOn"
-          value={age}
+          value={searchBy}
           required
           onChange={handleChange}
           variant="standard"
@@ -45,7 +62,7 @@ export default function SelectVariants() {
           label="search" 
           variant="standard"
           onChange = {handleSearch}
-          onKeyPress = {handleKeyPress}
+          onKeyUp = {(event)=>{handleKeyPress(event);}}
           sx={{ m: -2, minWidth: 120, marginLeft: "3px", marginBottom: "3px", marginRight: "20px"}}/>
           <Sort/>
     </div>

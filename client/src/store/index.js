@@ -25,7 +25,8 @@ export const StoreActionType = {
   SET_PARSED_CSV_DATA: "SET_PARSED_CSV_DATA",
   CHANGE_VIEW: "CHANGE_VIEW",
   CHANGE_CURRENT_MAP_OBJ: "CHANGE_CURRENT_MAP_OBJ",
-  SET_DISABLE_SEARCH_BAR: "SET_DISABLE_SEARCH_BAR"
+  SET_DISABLE_SEARCH_BAR: "SET_DISABLE_SEARCH_BAR",
+  SET_MAP_LIST: "SET_MAP_LIST"
 };
 
 export const CurrentModal = {
@@ -160,6 +161,14 @@ function StoreContextProvider(props) {
       }
 
       case StoreActionType.LOAD_MAP_LIST: {
+        return setStore({
+          ...store,
+          mapList: payload.mapList,
+          currentModal: CurrentModal.NONE,
+        });
+      }
+
+      case StoreActionType.SET_MAP_LIST: {
         return setStore({
           ...store,
           mapList: payload.mapList,
@@ -518,6 +527,13 @@ function StoreContextProvider(props) {
       });
     }
   };
+  store.setMapList = async function (mapList) {
+    store.mapList = mapList;
+      storeReducer({
+        type: StoreActionType.SET_MAP_LIST,
+        payload: { mapList },
+      });
+  };
 
   store.getMapById = async function (id) {
     const response = await api.getMapById(id);
@@ -569,7 +585,7 @@ function StoreContextProvider(props) {
   store.changeView = function (view) {
 
 
-    if (view === store.viewTypes.HOME && !auth.loggedin){
+    if (view === store.viewTypes.HOME && !auth.loggedIn){
       return;
     }
     console.log("changing view to", view)
@@ -587,8 +603,8 @@ function StoreContextProvider(props) {
     });
   }
 
-  store.isCommunityPage = ()=>{return store.currentView === View.COMMUNITY};
-  store.isHomePage = ()=>{return store.currentView === View.HOME};
+  store.isCommunityPage = ()=>{return store.currentView === store.viewTypes.COMMUNITY};
+  store.isHomePage = ()=>{return store.currentView === store.viewTypes.HOME};
 
 
   return (

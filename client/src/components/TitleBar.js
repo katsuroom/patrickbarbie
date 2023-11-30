@@ -46,7 +46,10 @@ export default function TitleBar() {
               top: "1%",
               left: "8%",
               fontSize: "30pt",
-              color: store.isHomePage() ? "#f786b9" : "lightpink",
+              color:
+                store.currentView === store.viewTypes.HOME
+                  ? "#f786b9"
+                  : "lightpink",
               "&:hover": {
                 border: "2px solid #f786b9",
                 borderRadius: "50%",
@@ -54,7 +57,9 @@ export default function TitleBar() {
                 cursor: "pointer",
               },
             }}
-            disabled={store.isHomePage() || !auth.loggedIn}
+            disabled={
+              store.currentView === store.viewTypes.HOME || !auth.loggedIn
+            }
             onClick={() => {
               store.changeView(store.viewTypes.HOME);
             }}
@@ -69,7 +74,10 @@ export default function TitleBar() {
               top: "1%",
               left: "13%",
               fontSize: "30pt",
-              color: store.isCommunityPage() ? "#f786b9" : "lightpink",
+              color:
+                store.currentView === store.viewTypes.COMMUNITY
+                  ? "#f786b9"
+                  : "lightpink",
               "&:hover": {
                 border: "2px solid #f786b9",
                 borderRadius: "50%",
@@ -77,7 +85,7 @@ export default function TitleBar() {
                 cursor: "pointer",
               },
             }}
-            disabled={store.isCommunityPage()}
+            disabled={store.currentView === store.viewTypes.COMMUNITY}
             onClick={() => {
               store.changeView(store.viewTypes.COMMUNITY);
             }}
