@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { IconButton, Typography, Grid } from '@mui/material';
@@ -92,6 +92,9 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
     ];
 
 
+    console.log("in MapView,js", store.currentMapObject?.comments);
+
+
     // Main component render
     const res = (
       <div style={{ overflowY: "scroll", height: "80vh" }}>
@@ -169,7 +172,7 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
           </Grid>
         </div>
         <div style={{ backgroundColor: "#FDF4F3", padding: 10, margin: 10 }}>
-          <CommentSection initialComments={initialComments} />
+          <CommentSection initialComments={store.currentMapObject?.comments} />
         </div>
         <MUIDeleteMap />
         <MUIForkMap />
