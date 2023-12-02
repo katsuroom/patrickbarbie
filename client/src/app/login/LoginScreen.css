@@ -1,0 +1,57 @@
+body {
+  margin: 0;
+}
+
+h1 {
+  text-align: center;
+}
+
+p {
+  margin: 0;
+  color: grey;
+}
+
+.loginInfo {
+  height: 80vh;
+  width: 100%;
+  background-color: white;
+}
+
+.inputContainer {
+  display: flex;
+  justify-content: space-around;
+}
+
+.inputContainer {
+  display: flex;
+  justify-content: space-around;
+}
+
+.inputRow {
+  width: 35%;
+  margin-bottom: 35px;
+} 
+
+.inputLabel {
+  width: 100%;
+  margin-top: 55px;
+  height: 35%;
+} 
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.need {
+  text-align: center;
+}
+
+input[type="password"],
+input[type="email"] {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}

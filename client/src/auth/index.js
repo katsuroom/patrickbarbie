@@ -1,3 +1,5 @@
+"use client"
+
 import React, { createContext, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import api from "./auth-request-api";
