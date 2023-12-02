@@ -1,5 +1,5 @@
-// const baseURL = 'http://localhost:4000/auth';
-const baseURL = "https://patrick-barbie-f64046e3bb4b.herokuapp.com/" + "auth";
+const baseURL = 'http://localhost:4000/auth';
+// const baseURL = "https://patrick-barbie-f64046e3bb4b.herokuapp.com/" + "auth";
 
 // Function to perform a login request
 const loginUser = (email, password) => {
@@ -85,9 +85,102 @@ const logoutUser = () => {
     });
 };
 
+
+const getHashedPassword = (email) => {
+  return fetch(`${baseURL}/hashedPw?email=${email}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    // credentials: "include",
+  })
+    .then((response) => {
+      return response.json().then((data) => ({ status: response.status, PwHash: data.data }));
+    })
+    .catch((error) => {
+      console.log("Error getHashedPassword: " + error);
+      return {
+        message: "Error getHashedPassword: " + error,
+      };
+    });
+}
+
+const sendPasswordRecoveryEmail = async (email) =>{
+
+  if (!email){
+    return {status: 400,
+      message: "You have to provide email"}
+  }
+  console.log(await getHashedPassword(email));
+  const hashedPassword = (await getHashedPassword(email)).PwHash;
+
+  if (!hashedPassword){
+    return {status: 404,
+    message: "User Not Found"}
+  }
+  
+
+  return fetch(`${baseURL}/sendPasswordRecoveryEmail?email=${email}&PwHash=${hashedPassword}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    // credentials: "include",
+  })
+    .then((response) => {
+      console.log("response: " + response);
+      return {
+        status: response.status
+      };
+    })
+    .catch((error) => {
+      console.log("Error sendPasswordRecoveryEmail: " + error);
+      return {
+        status: 404,
+        message: "Error sendPasswordRecoveryEmail: " + error
+      };
+    });
+}
+
+const setNewPassword = function (email, newPassword){
+  if (!email || !newPassword){
+    return {status: 400,
+      message: "You have to provide email and new password"}
+  }
+
+  return fetch(`${baseURL}/setNewPassword?email=${email}&newPassword=${newPassword}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    // credentials: "include",
+  })
+    .then((response) => {
+      console.log("response: " + response);
+      return {
+        status: response.status
+      };
+    })
+    .catch((error) => {
+      console.log("Error setNewPassword: " + error);
+      return {
+        status: 404,
+        message: "Error setNewPassword: " + error
+      };
+    });
+
+  
+
+}
+
+
+
 export default {
   loginUser,
   registerUser,
   getLoggedIn,
   logoutUser,
+  getHashedPassword,
+  sendPasswordRecoveryEmail,
+  setNewPassword
 };

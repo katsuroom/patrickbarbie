@@ -42,6 +42,7 @@
     "mongoose": "^8.0.0",
     "nodemon": "^3.0.1",
     "npm": "^10.2.3",
+    "nylas": "^6.11.0",
     "pako": "^2.1.0",
     "react-screen-capture": "^1.1.1"
   },
@@ -73,6 +74,7 @@
     "leaflet-heatmap": "^1.0.0",
     "leaflet-image": "^0.4.0",
     "leaflet.heat": "^0.2.0",
+    "nodemailer": "^6.9.7",
     "pbf": "^3.2.1",
     "react": "^18.2.0",
     "react-csv-reader": "^4.0.0",

@@ -12,6 +12,7 @@ import MUIExportMap from './Model/MUIExportMap'
 import MUIExit from './Model/MUIExitModal'
 import MainScreen from './MainScreen'
 import EditScreen from './EditScreen'
+import ResetPassword from "./ResetPassword"
 
 
 import Sort from './Sort'
@@ -42,6 +43,7 @@ export {
     MUIExportMap,
     TitleBar,
     StatusBar,
+    ResetPassword,
     Sort,
     PHeatmap,
     PPolitical,

@@ -4,6 +4,7 @@ import AuthContext from '../../auth';
 import "./LoginScreen.css"
 import Button from "@mui/material/Button";
 import { Link } from 'react-router-dom';
+import StoreContext from "../../store";
 
 
 export default function LoginPage() {
@@ -11,6 +12,11 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const { auth } = useContext(AuthContext);
+    const { store } = useContext(StoreContext);
+
+    if (!store.disableSearchBar) {
+        store.setDisableSearchBar(true);
+    }
 
 
     const handleSubmit = async (event) => {
