@@ -29,7 +29,7 @@ import {
 
 const QueryParameterExtractor = () => {
     let { email, token } = useParams();
-    token = token.replace("SPECIAL_ESCAPE_CHAR", "/");
+    token = token.replace(/SPECIAL_ESCAPE_CHAR/g, "/");
 
     console.log('Email:', email);
     console.log('Token:', token);

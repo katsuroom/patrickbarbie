@@ -210,7 +210,7 @@ sendPasswordRecoveryEmail = async (req, res) => {
 
   const email = req.query.email;
   let PwHash = req.query.PwHash;
-  PwHash = PwHash.replace("/", "SPECIAL_ESCAPE_CHAR")
+  PwHash = PwHash.replace(/\//g, "SPECIAL_ESCAPE_CHAR");
 
   let transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
