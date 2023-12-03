@@ -161,7 +161,7 @@ export default function PPolitical() {
   //   setRenderTable(true);
   // }
   if (menuItems.length === 0 && store.parsed_CSV_Data) {
-    setMenuItems(Object.keys(store.parsed_CSV_Data));
+    setMenuItems(Object.keys(store.parsed_CSV_Data).sort(-1));
   }
 
   // let maxPage =
