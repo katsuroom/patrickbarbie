@@ -1,5 +1,7 @@
 // const baseURL = 'http://localhost:4000/auth';
-const baseURL = "https://patrick-barbie-f64046e3bb4b.herokuapp.com/" + "auth";
+// const baseURL = "https://patrick-barbie-f64046e3bb4b.herokuapp.com/auth";
+
+const baseURL = process.env.NODE_ENV == "development" ? "http://localhost:4000/auth" : "https://patrick-barbie-f64046e3bb4b.herokuapp.com/auth";
 
 // Function to perform a login request
 const loginUser = (email, password) => {

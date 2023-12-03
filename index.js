@@ -12,9 +12,6 @@ app.use(express.json({limit: '1000mb'}));
 app.use(express.urlencoded({limit: '1000mb', extended: true, parameterLimit: 50000}));
 
 
-const mongoose = require('mongoose')
-
-//
 app.use(express.urlencoded({ extended: true }))
 app.use(cors(
     {
@@ -26,26 +23,10 @@ app.use(cors(
 app.use(express.json());
 app.use(cookieParser());
 
-
-// app.use(
-//   expressJwt({ secret: process.env.JWT_SECRET }).unless({
-//     path: [/^\/login/, /^\/auth/, /^\/published-maps/, /^\/mapFile/],
-//   })
-// );
-// app.use((err, req, res, next) => {
-//   if (err.name === "UnauthorizedError") {
-//     res.status(401).send({ message: "token Unauthorized" });
-//   }else{
-//     console.log("pass authorization");
-//   }
-// });
-
-
-const authRouter = require('./routers/authRoutes')
+const authRouter = require('./routers/authRoutes');
 app.use('/auth', authRouter)
-const mapRouter = require('./routers/mapRoute')
+const mapRouter = require('./routers/mapRoute');
 app.use("/api", mapRouter);
-// app.use( mapRouter)
 
 
 
@@ -55,10 +36,30 @@ connectDB();
 
 if(process.env.NODE_ENV === "production")
 {
-    app.use(express.static(path.join(__dirname, "/client/build")));
+    app.use(express.static(path.join(__dirname, "/client/out")));
 
-    app.get("*", (req, res) => {
-        res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+    app.get("/", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "out", "index.html"));
+    });
+
+    app.get("/login", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "out", "login.html"));
+    });
+
+    app.get("/register", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "out", "register.html"));
+    });
+
+    app.get("/recovery", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "out", "recovery.html"));
+    });
+
+    app.get("/main", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "out", "main.html"));
+    });
+
+    app.get("/password-recovery", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "out", "password-recovery.html"));
     });
 }
 

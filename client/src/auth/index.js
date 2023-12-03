@@ -1,6 +1,9 @@
+"use client"
+
 import React, { createContext, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import api from "./auth-request-api";
+import { useRouter } from 'next/navigation';
 
 const AuthContext = createContext();
 console.log("create AuthContext: " + AuthContext);
@@ -20,7 +23,7 @@ function AuthContextProvider(props) {
     loggedIn: false,
     errorMessage: null,
   });
-  const history = useHistory();
+  const router = useRouter();
 
   useEffect(() => {
     let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
@@ -95,7 +98,7 @@ function AuthContextProvider(props) {
             errorMessage: null,
           },
         });
-        history.push("/login");
+        router.push("/login");
         console.log("NOW WE LOGIN");
         auth.loginUser(email, password);
         console.log("LOGGED IN");
@@ -151,7 +154,7 @@ function AuthContextProvider(props) {
               errorMessage: null,
             },
           });
-          history.push("/main");
+          router.push("/main");
         } else {
           console.log("Login failed:", response);
           authReducer({
@@ -190,7 +193,7 @@ function AuthContextProvider(props) {
           payload: null,
         });
         localStorage.removeItem("user");
-        history.push("/");
+        router.push("/");
       } else {
         console.log("Logout failed:", response);
       }
@@ -219,6 +222,7 @@ function AuthContextProvider(props) {
   }
 
   auth.setNewPassword = function(email, newPassword){
+    console.log("in auth");
     return api.setNewPassword(email, newPassword);
   }
 

@@ -1,3 +1,5 @@
+"use client"
+
 import React, { createContext, useState, useContext } from "react";
 import AuthContext from "../auth";
 
@@ -61,7 +63,6 @@ function StoreContextProvider(props) {
     key: null, // csv key [column name] for map displaying
     label: null,
     currentModal: CurrentModal.NONE, // the currently open modal
-    mapFile: null, // map file uploaded for creating a new map
     rawMapFile: null, // geojson object
     key: null, // csv key [column name] for map displaying
     parsed_CSV_Data: null,
@@ -241,77 +242,6 @@ function StoreContextProvider(props) {
       console.log(response);
       store.setCurrentMapObj(response.data.mapData);
     });
-
-    // console.log(file);
-
-    // console.log("type of file:", typeof file);
-
-    // var data = geobuf.encode(file, new Pbf());
-
-    // api.createMap(data, auth.user.username, title, mapType).then((response) => {
-    //   console.log(response);
-    // });
-
-    //   const reader = new FileReader();
-    //   reader.onload = function (event) {
-    //     try {
-    //       const textData = event.target.result;
-    //       const jsonData = JSON.parse(textData);
-
-    //       let mapFile = {
-    //         title,
-    //         author: auth.user?.username || "guest",
-    //         views: 0,
-    //         likes: 0,
-    //         likedUsers: [],
-    //         isPublished: false,
-    //         mapData: {
-    //           type: mapType,
-    //           // data: Base64.encode(textData)
-    //           //   data: jsonData,
-    //           data: geobuf.encode(jsonData, new Pbf()),
-    //         },
-    //         csvField: {},
-    //         comments: [],
-    //       };
-
-    //       switch (mapType) {
-    //         // POLITICAL MAP
-    //         case MapType.POLITICAL_MAP:
-    //           mapFile.mapData.polygons = [];
-    //           mapFile.mapData.key = [];
-    //           break;
-    //         // HEATMAP
-    //         case MapType.HEATMAP:
-    //           mapFile.mapData.color1 = "#FFC0CB"; // Light Pink
-    //           mapFile.mapData.color2 = "#FF69B4"; // Brighter Pink
-    //           mapFile.mapData.min = 0;
-    //           mapFile.mapData.max = 100;
-    //           mapFile.mapData.display = "property";
-    //           break;
-    //       }
-
-    //       //   console.log("mapFile: ", mapFile.mapData);
-    //       //   console.log("type of: ", typeof(mapFile.mapData));
-
-    //       //   api
-    //       //     .createMap(mapFile.mapData.data, auth.user.username, title)
-    //       //     .then((response) => {
-    //       //       console.log(response);
-    //       //     });
-
-    //       mapFile.mapData.data = jsonData;
-
-    //       storeReducer({
-    //         type: StoreActionType.UPDATE_MAP,
-    //         payload: { file: mapFile },
-    //       });
-    //     } catch (error) {
-    //       console.error("Error parsing GeoJSON:", error);
-    //     }
-    //   };
-
-    // reader.readAsText(file);
   };
 
   store.getMapFile = async function (fileName) {
@@ -540,7 +470,7 @@ function StoreContextProvider(props) {
       });
     }
   };
-
+  
   store.setMapList = async function (mapList) {
     store.mapList = mapList;
       storeReducer({

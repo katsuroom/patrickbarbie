@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 
@@ -24,7 +24,6 @@ const Comments = new Schema(
 );
 
 
-
 // TODO: (done) Changed required to true
 // TODO: after handle the mapDate buffer in the front end, change required to true
 const MapSchema = new Schema(
@@ -43,4 +42,4 @@ const MapSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Map", MapSchema);
+module.exports = mongoose.model('Map', MapSchema);

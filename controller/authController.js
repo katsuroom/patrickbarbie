@@ -224,6 +224,10 @@ sendPasswordRecoveryEmail = async (req, res) => {
 
   try {
     // Define the email content
+
+    let url = `https://patrick-barbie-f64046e3bb4b.herokuapp.com/password-recovery?email=${email}&token=${PwHash}`;
+    // let url = `localhost:4000/password-recovery?email=${email}&token=${PwHash}`;
+
     let info = await transporter.sendMail({
       from: '"Patrick Barbie" <TeamPink416@gmail.com>',
       to: email,
@@ -233,9 +237,9 @@ sendPasswordRecoveryEmail = async (req, res) => {
       <p>Hello,</p>
       <p>We received a request to reset your password. If you did not make this request, please ignore this email.</p>
       <p>To reset your password, click the link below:</p>
-      <a href="https://patrick-barbie-f64046e3bb4b.herokuapp.com/password-recovery/${email}/${PwHash}">Reset Password</a>
+      <a href="${url}">Reset Password</a>
       <p>If the above link does not work, copy and paste the following URL into your browser:</p>
-      <p>https://patrick-barbie-f64046e3bb4b.herokuapp.com/password-recovery/${email}/${PwHash}</p>
+      <p style="text-decoration:none;">${url}</p>
       <p>Thank you,</p>
       <p>Patrick Barbie Team</p>
     `,

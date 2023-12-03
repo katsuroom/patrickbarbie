@@ -10,4 +10,3 @@ this.onmessage = function (e) {
       console.error("Error parsing JSON in worker:", error);
     }
 };
-  
