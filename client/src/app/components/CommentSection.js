@@ -2,11 +2,19 @@
 
 import React, { useState, useContext } from 'react';
 import AuthContext from '@/auth';
+import StoreContext from '@/store';
 import Comment from './Comment';
 import './CommentSection.css';
 
 const CommentSection = ({ initialComments }) => {
     const { auth } = useContext(AuthContext);
+    const { store } = useContext(StoreContext);
+
+    // Use the useEffect hook to update the state when initialComments changes
+    useEffect(() => {
+        setComments(initialComments);
+    }, [initialComments]);
+
     const [comments, setComments] = useState(initialComments);
     const [newCommentText, setNewCommentText] = useState('');
 
@@ -31,7 +39,13 @@ const CommentSection = ({ initialComments }) => {
             replies: []
         };
 
-        setComments([newComment, ...comments]);
+        setComments((prevComments) => {
+            const updatedComments = [newComment, ...prevComments];
+            var mapObject = store.currentMapObject;
+            mapObject.comments = updatedComments;
+            store.updateMap(mapObject);
+            return updatedComments;
+        });
         setNewCommentText('');
     };
 

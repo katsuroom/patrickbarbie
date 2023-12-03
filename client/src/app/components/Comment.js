@@ -8,7 +8,6 @@ const Comment = ({ comment, setComments }) => {
   const { auth } = useContext(AuthContext);
   const [showReply, setShowReply] = useState(false);
   const [replyText, setReplyText] = useState('');
-
   
   const handleReply = () => {
     if (!auth.loggedIn) {

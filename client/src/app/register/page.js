@@ -57,22 +57,22 @@ export default function RegisterScreen() {
             return;
         }
 
-        if(!/[A-Z]/.test(password)) {
+        if(!(/[A-Z]/.test(password))) {
             setError("Password must contain at least one uppercase letter");
             return;
         }
 
-        if(!/[a-z]/.test(password)) {
+        if(!(/[a-z]/.test(password))) {
             setError("Password must contain at least one lowercase letter");
             return;
         }
 
-        if(!/[0-9]/.test(password)) {
+        if(!(/[0-9]/.test(password))) {
             setError("Password must contain at least one number");
             return;
         }
 
-        if(!/[#?!@$%^&*-]/.test(password)) {
+        if(!(/[#?!@$%^&*-]/.test(password))) {
             setError("Password must contain at least one special character");
             return;
         }

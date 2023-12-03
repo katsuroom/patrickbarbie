@@ -334,6 +334,19 @@ function StoreContextProvider(props) {
     });
   };
 
+  store.updateViews = function (mapObject){
+    console.log("updating views");
+    api.updateMap(mapObject).then((response) => {
+      console.log(response);
+      if (response.status === 200) {
+        // storeReducer({
+        //   type: StoreActionType.CHANGE_CURRENT_MAP_OBJ,
+        //   payload: { mapObject },
+        // });
+      }
+    });
+  }
+
   store.updateCSV = function (csvObject) {
     api.updateCSV(csvObject).then((response) => {
       console.log(response);
@@ -457,6 +470,7 @@ function StoreContextProvider(props) {
       });
     }
   };
+  
   store.setMapList = async function (mapList) {
     store.mapList = mapList;
       storeReducer({
