@@ -22,13 +22,37 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
     const history = useHistory();
 
     // State for likes and like status
-    const [likes, setLikes] = useState(0);
+    console.log("likes: ", store.currentMapObject?.likes);
+    let likes = store.currentMapObject?.likes;
+    // const [likes, setLikes] = useState(store.currentMapObject?.likes);
     const [hasLiked, setHasLiked] = useState(false);
+    // let initialComments = [];
+    const [initialComments, setInitialComments] = useState([]);
+
+
+    useEffect(() => {
+      // This effect runs whenever store.currentMapObject changes
+      if (store.currentMapObject) {
+      console.log("in MapView.js", store.currentMapObject);
+
+      // Shallow copy of comments array
+      var newInitialComments = store.currentMapObject.comments;
+      console.log("newInitialComments: ", newInitialComments);
+
+      // Update the state with the new initialComments
+      // initialComments = newInitialComments;
+      setInitialComments(newInitialComments);
+      console.log("initialComments: ", initialComments);
+      }
+    }, [store.currentMapObject]);
 
     // Handling the like click
     const handleLikeClick = () => {
         if (auth.loggedIn && !hasLiked) {
-            setLikes(likes + 1);
+            // setLikes(likes + 1);
+            var mapObject = store.currentMapObject;
+            mapObject.likes = likes + 1;
+            store.updateMap(mapObject);
             setHasLiked(true);
         }
     };
@@ -60,40 +84,49 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
     }
 
     // Hardcoded comments
-    const initialComments = [
-        {
-            id: 1,
-            author: "Scott",
-            timestamp: "1 hour ago",
-            text: "I love this map, thanks for sharing",
-            replies: [
-                {
-                    id: 101,
-                    author: "Yuxuan",
-                    timestamp: "45 minutes ago",
-                    text: "I agree, it was brilliant and creative"
-                }
-            ]
-        },
-        {
-            id: 2,
-            author: "Kerrance",
-            timestamp: "2 hours ago",
-            text: "Creative map! I forked to make some edits myself",
-            replies: []
-        },
-        {
-            id: 3,
-            author: "Tom",
-            timestamp: "3 hours ago",
-            text: "I think you can make improvements in the state section of the map",
-            replies: []
-        }
-    ];
+    // const initialComments = [
+    //     {
+    //         id: 1,
+    //         author: "Scott",
+    //         timestamp: "1 hour ago",
+    //         text: "I love this map, thanks for sharing",
+    //         replies: [
+    //             {
+    //                 id: 101,
+    //                 author: "Yuxuan",
+    //                 timestamp: "45 minutes ago",
+    //                 text: "I agree, it was brilliant and creative"
+    //             }
+    //         ]
+    //     },
+    //     {
+    //         id: 2,
+    //         author: "Kerrance",
+    //         timestamp: "2 hours ago",
+    //         text: "Creative map! I forked to make some edits myself",
+    //         replies: []
+    //     },
+    //     {
+    //         id: 3,
+    //         author: "Tom",
+    //         timestamp: "3 hours ago",
+    //         text: "I think you can make improvements in the state section of the map",
+    //         replies: []
+    //     }
+    // ];
 
+  
+    console.log("in MapView,js", store.currentMapObject);
+    // if (store.currentMapObject && store.currentMapObject.comments) {
+    //   var initialComments = [...store.currentMapObject.comments];
+    //   // Rest of your code
+    // } else {
+    //   console.error(
+    //     "store.currentMapObject or its comments property is undefined or null."
+    //   );
+    // }
 
-    console.log("in MapView,js", store.currentMapObject?.comments);
-
+    console.log("initialComments: ", initialComments);
 
     // Main component render
     const res = (
@@ -116,16 +149,30 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
         >
           <Grid container spacing={2}>
             <Grid item xs={3} style={{ display: "flex", alignItems: "center" }}>
-              <Typography sx={{ fontFamily: "Sen", color: "black", fontWeight: "bold"}}>
+              <Typography
+                sx={{ fontFamily: "Sen", color: "black", fontWeight: "bold" }}
+              >
                 {store.currentMapObject?.author}
               </Typography>
             </Grid>
             <Grid item xs={1} style={{ display: "flex", alignItems: "center" }}>
               <VisibilityIcon />
-              <Typography sx={{ fontFamily: "Sen", color: "black", marginLeft: 1 }}>{0}</Typography>
+              <Typography
+                sx={{ fontFamily: "Sen", color: "black", marginLeft: 1 }}
+              >
+                {store.currentMapObject?.views}
+              </Typography>
             </Grid>
-            <Grid item xs={5.4} style={{ display: "flex", alignItems: "center" }}>
-              <IconButton className="likeButton" onClick={handleLikeClick} disabled={!auth.loggedIn}>
+            <Grid
+              item
+              xs={5.4}
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <IconButton
+                className="likeButton"
+                onClick={handleLikeClick}
+                disabled={!auth.loggedIn}
+              >
                 <FavoriteIcon />
               </IconButton>
               <Typography
@@ -135,24 +182,41 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
               </Typography>
             </Grid>
             <Grid item xs={0.5}>
-              <IconButton className="deleteButton" onClick={handleDeleteClick} disabled={!auth.loggedIn || !store.currentMapObject || auth.user.username !== store.currentMapObject.author}>
+              <IconButton
+                className="deleteButton"
+                onClick={handleDeleteClick}
+                disabled={
+                  !auth.loggedIn ||
+                  !store.currentMapObject ||
+                  auth.user.username !== store.currentMapObject.author
+                }
+              >
                 <Delete />
               </IconButton>
             </Grid>
-            {store.currentView === store.viewTypes.HOME ?
+            {store.currentView === store.viewTypes.HOME ? (
+              <Grid item xs={0.5}>
+                <IconButton
+                  className="publishButton"
+                  disabled={store.currentMapObject?.isPublished}
+                  onClick={handlePublishClick}
+                >
+                  <CloudUpload />
+                </IconButton>
+              </Grid>
+            ) : (
+              <></>
+            )}
             <Grid item xs={0.5}>
               <IconButton
-                className="publishButton"
-                disabled={store.currentMapObject?.isPublished}
-                onClick={handlePublishClick}
+                className="editButton"
+                onClick={handleEditClick}
+                disabled={
+                  !auth.loggedIn ||
+                  !store.currentMapObject ||
+                  auth.user.username !== store.currentMapObject.author
+                }
               >
-                <CloudUpload />
-              </IconButton>
-            </Grid>
-            : <></>
-            }
-            <Grid item xs={0.5}>
-              <IconButton className="editButton" onClick={handleEditClick} disabled={!auth.loggedIn || !store.currentMapObject || auth.user.username !== store.currentMapObject.author}>
                 <Edit />
               </IconButton>
             </Grid>
@@ -165,14 +229,18 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
               </IconButton>
             </Grid>
             <Grid item xs={0.5}>
-              <IconButton className="forkButton" onClick={handleForkClick} disabled={!auth.loggedIn}>
+              <IconButton
+                className="forkButton"
+                onClick={handleForkClick}
+                disabled={!auth.loggedIn}
+              >
                 <Share />
               </IconButton>
             </Grid>
           </Grid>
         </div>
         <div style={{ backgroundColor: "#FDF4F3", padding: 10, margin: 10 }}>
-          <CommentSection initialComments={store.currentMapObject?.comments} />
+          <CommentSection initialComments={initialComments} />
         </div>
         <MUIDeleteMap />
         <MUIForkMap />

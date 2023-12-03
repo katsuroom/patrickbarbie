@@ -7,10 +7,17 @@ import StoreContext from "../../store";
 const CommentSection = ({ initialComments }) => {
     const { store } = useContext(StoreContext);
     const { auth } = useContext(AuthContext);
-    // console.log("initialComments: ", initialComments);
+    console.log("initialComments: ", initialComments);
+
+    // Use the useEffect hook to update the state when initialComments changes
+    useEffect(() => {
+      setComments(initialComments);
+    }, [initialComments]);
+
     const [comments, setComments] = useState(initialComments);
-    // console.log("comments: ", comments);
+    console.log("comments: ", comments);
     const [newCommentText, setNewCommentText] = useState('');
+
 
     const handleAddComment = () => {
         if (!auth.loggedIn) {

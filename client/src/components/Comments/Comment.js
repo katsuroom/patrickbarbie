@@ -9,6 +9,8 @@ const Comment = ({ comment, setComments , comments}) => {
   const [showReply, setShowReply] = useState(false);
   const [replyText, setReplyText] = useState('');
 
+  console.log("comments: ", comments);
+
   
   const handleReply = () => {
     if (!auth.loggedIn) {
