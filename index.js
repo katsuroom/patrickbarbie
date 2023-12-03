@@ -12,9 +12,6 @@ app.use(express.json({limit: '1000mb'}));
 app.use(express.urlencoded({limit: '1000mb', extended: true, parameterLimit: 50000}));
 
 
-const mongoose = require('mongoose')
-
-//
 app.use(express.urlencoded({ extended: true }))
 app.use(cors(
     {
@@ -45,7 +42,6 @@ const authRouter = require('./routers/authRoutes')
 app.use('/auth', authRouter)
 const mapRouter = require('./routers/mapRoute')
 app.use("/api", mapRouter);
-// app.use( mapRouter)
 
 
 
