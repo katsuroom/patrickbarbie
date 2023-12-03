@@ -7,7 +7,7 @@ import '../font.css';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Delete, CloudUpload, Edit, Download, Share } from '@mui/icons-material';
-import { useHistory } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import CommentSection from './CommentSection';
 import StoreContext from '@/store';
 import { CurrentModal } from '@/store';
@@ -20,7 +20,7 @@ import MUIPublishMap from '../modals/MUIPublishMap';
 export default function MapView({ fileSelected, projectName, mapType, views }) {
     const { store } = useContext(StoreContext);
     const { auth } = useContext(AuthContext);
-    const history = useHistory();
+    const router = useRouter();
 
     // State for likes and like status
     const [likes, setLikes] = useState(0);
@@ -44,11 +44,10 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
     }
 
     function handleEditClick() {
-        history.push("/edit");
+        router.push("/edit");
     }
 
     function handleDownloadClick() {
-        // history.push("/exportMap");
         let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(store.rawMapFile));
         let downloadAnchor = document.getElementById("download-anchor");
         downloadAnchor.setAttribute("href", dataStr);

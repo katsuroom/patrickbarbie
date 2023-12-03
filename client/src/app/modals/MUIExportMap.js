@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import { useHistory } from 'react-router-dom';
+import { useRouter } from "next/navigation";
 
 export const ConfirmationDialog = ({ open, onClose, onConfirm }) => {
     const buttonStyle = {
@@ -74,13 +74,13 @@ export const ConfirmationDialog = ({ open, onClose, onConfirm }) => {
 
 
 const MUIExportMap = () => {
-    const history = useHistory();
+    const router = useRouter
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
         setOpen(false);
-        history.push("/main");
+        router.push("/main");
     }
 
 

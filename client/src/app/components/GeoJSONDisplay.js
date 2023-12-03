@@ -202,8 +202,8 @@ export default function GeoJSONDisplay(props) {
           return [centroid.lat, centroid.lng, 0];
         }
 
-        console.log(store.parsed_CSV_Data)
-        console.log(store.key)
+        // console.log(store.parsed_CSV_Data);
+        // console.log(store.key);
 
         const intensity = parseFloat(store.parsed_CSV_Data[store.key][idx]);
         // const intensity = normalize(

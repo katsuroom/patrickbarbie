@@ -27,7 +27,7 @@ export default function TitleBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <div
-        style={{ backgroundColor: "#fce8f1", minHeight: "50px", height: "9vh" }}
+        style={{ backgroundColor: "#fce8f1", height: "9vh" }}
       >
         <Link href="/main">
           <img

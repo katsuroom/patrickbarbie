@@ -9,7 +9,7 @@ import Modal from "@mui/material/Modal";
 import Alert from "@mui/material/Alert";
 import './MUIPublishMap.css'
 import './ModalAnimation.css'
-import {useHistory} from 'react-router-dom';
+import { useRouter } from "next/navigation";
 
 export const ConfirmationDialog = ({
     open,
@@ -104,7 +104,7 @@ export const ConfirmationDialog = ({
   
 
 const MUIExit = (props) => {
-    const history = useHistory();
+    const router = useRouter();
     const [open, setOpen] = useState(props.open);
   const { store } = useContext(StoreContext);
 
@@ -127,12 +127,12 @@ const MUIExit = (props) => {
 
         // TODO: save here ...
 
-        history.push("/main");
+        router.push("/main");
     };
 
     const handleDiscard = () => {
         console.log("Map Discarded!");
-        history.push("/main");
+        router.push("/main");
     }
 
 

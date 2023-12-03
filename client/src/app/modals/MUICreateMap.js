@@ -7,14 +7,14 @@ import Modal from "@mui/material/Modal";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import "./MUIPublishMap.css";
-import { useHistory } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { TextField } from "@mui/material";
 
 import StoreContext from "@/store";
 import { CurrentModal, MapType } from "@/store";
 
 export default function MUICreateMap() {
-  const history = useHistory();
+  const router = useRouter();
   const { store } = useContext(StoreContext);
 
   const [projectName, setProjectName] = useState("");
@@ -54,7 +54,7 @@ export default function MUICreateMap() {
 
     store.closeModal();
     store.createMap(projectName, mapType);
-    history.push("/edit");
+    router.push("/edit");
     console.log("mapType : " + mapType);
   };
 
