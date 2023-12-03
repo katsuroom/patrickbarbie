@@ -65,9 +65,7 @@ export default function TitleBar() {
               store.changeView(store.viewTypes.HOME);
             }}
           />
-        ) : (
-          <></>
-        )}
+        ) : null}
         {!store.disableSearchBar ? (
           <PeopleIcon
             sx={{
