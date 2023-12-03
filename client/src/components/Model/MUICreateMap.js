@@ -50,7 +50,7 @@ export default function MUICreateMap() {
     //     `name: ${projectName}\n` +
     //     `type: ${mapType}\n` +
     //     `file: ${store.mapFile.name}`);
-
+    store.mapType = mapType
     store.closeModal();
     store.createMap(projectName, mapType);
     history.push("/edit");

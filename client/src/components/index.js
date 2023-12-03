@@ -19,6 +19,7 @@ import PHeatmap from './PHeatmap'
 import PPolitical from './PPolitical'
 import TitleBar from './TitleBar'
 import StatusBar from './StatusBar'
+import TravelMapPage from './TravelMapPage'
 import Discovery from './Discovery/Discovery'
 import GeoJSONDisplay from './Discovery/GeoJSONDisplay'
 /*
@@ -49,5 +50,5 @@ export {
     EditScreen,
     Discovery,
     GeoJSONDisplay,
-
+    TravelMapPage,
  }

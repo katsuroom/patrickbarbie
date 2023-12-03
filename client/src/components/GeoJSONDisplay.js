@@ -5,7 +5,6 @@ import "leaflet/dist/leaflet.css";
 import StoreContext from "../store";
 import domtoimage from "dom-to-image";
 import { saveAs } from "file-saver";
-import southAmericaData from "./south_america (1).json";
 import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
 
 function normalize(value, min, max) {
@@ -66,16 +65,6 @@ export default function GeoJSONDisplay(props) {
 
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
   const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
-
-  useEffect(() => {
-    const resizeListener = () => {
-      setMapHeight(window.innerHeight / 2);
-    };
-    window.addEventListener('resize', resizeListener);
-    return () => {
-      window.removeEventListener('resize', resizeListener);
-    };
-  }, []);
 
   useEffect(() => {
     if(store.rawMapFile)
