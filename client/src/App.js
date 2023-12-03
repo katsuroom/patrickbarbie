@@ -1,6 +1,6 @@
 import './App.css';
 import React, {useEffect, useState  } from 'react'
-import { BrowserRouter, Route, Switch  } from 'react-router-dom'
+import { BrowserRouter, Route, Switch, useParams  } from 'react-router-dom'
 import { AuthContextProvider } from './auth';
 import { StoreContextProvider } from './store';
 import {
@@ -23,8 +23,21 @@ import {
     StatusBar,
     EditScreen,
     Discovery,
+    ResetPassword
 } from './components'
 
+
+const QueryParameterExtractor = () => {
+    let { email, token } = useParams();
+    token = token.replace(/SPECIAL_ESCAPE_CHAR/g, "/");
+
+    console.log('Email:', email);
+    console.log('Token:', token);
+  
+    return <ResetPassword email={email} token={token}/>;
+  };
+
+  
 const App = () => {
 
 
@@ -51,6 +64,8 @@ const App = () => {
                     <Route path="/MUIExit/" exact component={MUIExit} />
                     <Route path="/edit/" exact component={EditScreen} />
                     <Route path="/discovery/" exact component={Discovery} />
+                    <Route path="/password-recovery/:email/:token" component={QueryParameterExtractor} />
+                    
                 </Switch>
                 <StatusBar />
             </StoreContextProvider>

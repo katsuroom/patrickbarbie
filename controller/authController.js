@@ -2,6 +2,7 @@ const auth = require("../auth");
 const User = require("../models/user_model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 
 loginUser = async (req, res) => {
   console.log("loginUser");
@@ -14,7 +15,9 @@ loginUser = async (req, res) => {
         .json({ errorMessage: "Please enter all required fields." });
     }
 
-    const existingUser = await User.findOne({ email: req.body.email });
+    const caseInsensitiveEmail = new RegExp("^" + req.body.email + "$", "i");
+
+    const existingUser = await User.findOne({ email: caseInsensitiveEmail });
     console.log("existingUser: " + existingUser);
     if (!existingUser) {
       console.log("Wrong email.", email);
@@ -37,21 +40,22 @@ loginUser = async (req, res) => {
 
     // LOGIN THE USER
     // const token = auth.signToken(existingUser._id);
-    const token = jwt.sign({ userId: existingUser._id }, process.env.JWT_SECRET);
+    const token = jwt.sign(
+      { userId: existingUser._id },
+      process.env.JWT_SECRET
+    );
     console.log(token);
     console.log(existingUser.username);
 
-    res
-      .status(200)
-      .json({
-        token: `Bearer ${token}`,
-        success: true,
-        user: {
-          username: existingUser.username,
-          email: existingUser.email,
-        },
+    res.status(200).json({
+      token: `Bearer ${token}`,
+      success: true,
+      user: {
+        username: existingUser.username,
+        email: existingUser.email,
+      },
     });
-    
+
     // console.log("header: ", res.getHeaders());
     console.log("token sent");
 
@@ -113,15 +117,13 @@ registerUser = async (req, res) => {
     // console.log("token:" + token);
     // console.log("env:", process.env.NODE_ENV);
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        user: {
-          username: savedUser.username,
-          email: savedUser.email,
-        },
-      });
+    res.status(200).json({
+      success: true,
+      user: {
+        username: savedUser.username,
+        email: savedUser.email,
+      },
+    });
 
     console.log("token sent");
   } catch (err) {
@@ -170,9 +172,134 @@ logoutUser = async (req, res) => {
   console.log("sent logout response");
 };
 
+getHashedPassword = async (req, res) => {
+  console.log("getting hashed password");
+
+  const email = req.query.email;
+
+  console.log("email", email);
+
+  const caseInsensitiveEmail = new RegExp("^" + email + "$", "i");
+
+  User.findOne({ email: caseInsensitiveEmail })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          error: "User not found",
+        });
+      }
+      console.log("user found: " + JSON.stringify(user));
+      return res.status(200).json({
+        success: true,
+        data: user.passwordHash,
+        message: "User found",
+      });
+    })
+    .catch((error) => {
+      console.log("Error getting user: " + error);
+      return res.status(500).json({
+        success: false,
+        error: "Error getting user",
+      });
+    });
+};
+
+sendPasswordRecoveryEmail = async (req, res) => {
+  console.log("sendPasswordRecoveryEmail");
+
+  const email = req.query.email;
+  let PwHash = req.query.PwHash;
+  PwHash = PwHash.replace(/\//g, "SPECIAL_ESCAPE_CHAR");
+
+  let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: "TeamPink416@gmail.com",
+      pass: "ycrl ahby kbwf ijrn",
+    },
+  });
+
+  try {
+    // Define the email content
+    let info = await transporter.sendMail({
+      from: '"Patrick Barbie" <TeamPink416@gmail.com>',
+      to: email,
+      subject: "Password Recovery",
+      html: `
+      <h1>Password Recovery</h1>
+      <p>Hello,</p>
+      <p>We received a request to reset your password. If you did not make this request, please ignore this email.</p>
+      <p>To reset your password, click the link below:</p>
+      <a href="https://patrick-barbie-f64046e3bb4b.herokuapp.com/password-recovery/${email}/${PwHash}">Reset Password</a>
+      <p>If the above link does not work, copy and paste the following URL into your browser:</p>
+      <p>https://patrick-barbie-f64046e3bb4b.herokuapp.com/password-recovery/${email}/${PwHash}</p>
+      <p>Thank you,</p>
+      <p>Patrick Barbie Team</p>
+    `,
+    });
+
+    console.log("Email sent: ", info.messageId);
+
+    res.status(200).json({
+      success: true,
+      message: "Password recovery email sent successfully.",
+    });
+  } catch (error) {
+    console.error("Error sending email:", error);
+
+    res.status(500).json({
+      success: false,
+      error: "Error sending password recovery email.",
+    });
+  }
+};
+
+
+setNewPassword  = async (req, res) => {
+  const email = req.query.email;
+  const newPassword = req.query.newPassword;
+
+  const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
+    const passwordHash = await bcrypt.hash(newPassword, salt);
+    console.log("passwordHash: " + passwordHash);
+
+
+
+  const caseInsensitiveEmail = new RegExp("^" + email + "$", "i");
+
+  User.findOne({ email: caseInsensitiveEmail })
+  .then((user) => {
+    console.log("user found: " + JSON.stringify(user));
+    user.passwordHash = passwordHash
+    return user.save();
+  })
+  .then(() => {
+    return res.status(201).json({
+      success: true,
+      message: "Password Updated!",
+    });
+  })
+  .catch((error) => {
+    return res.status(400).json({
+      error,
+      message: "Password Not Updated!",
+    });
+  });
+
+
+
+}
+
 module.exports = {
   registerUser,
   loginUser,
   getLoggedIn,
   logoutUser,
+  getHashedPassword,
+  sendPasswordRecoveryEmail,
+  setNewPassword
 };
