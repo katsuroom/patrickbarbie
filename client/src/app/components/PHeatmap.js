@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from 'react';
 import Table from '@mui/joy/Table';
 import Button from '@mui/joy/Button';
@@ -10,11 +12,11 @@ import FormControl from '@mui/material/FormControl';
 import Compact from '@uiw/react-color-compact';
 import './property.css'
 import { useContext, useEffect } from "react";
-import StoreContext from "../store";
+import StoreContext from '@/store';
 import CsvFileReader from "./CsvFileReader";
 
-import MUISaveChanges from "./Model/MUISaveChanges";
-import MUIExitModal from "./Model/MUIExitModal";
+import MUISaveChanges from '../modals/MUISaveChanges';
+import MUIExit from '../modals/MUIExitModal';
 
 
 const Data = {
