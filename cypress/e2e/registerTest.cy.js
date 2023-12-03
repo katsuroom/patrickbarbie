@@ -8,7 +8,7 @@ describe('template spec', () => {
 
     cy.url().should('include', '/register')
 
-    cy.get('input[type="text"]').eq(0).type('Yuwenqianchen1'); 
+    cy.get('input[type="text"]').eq(1).type('Yuwenqianchen1');
     cy.get('input[type="email"]').type("Yuwenqianchen1@gmail.com");
     cy.get('input[type="password"]').eq(0).type("Yuwenqianchen1@gmail.com");
     cy.get('input[type="password"]').eq(1).type("Yuwenqianchen1@gmail.com"); 
