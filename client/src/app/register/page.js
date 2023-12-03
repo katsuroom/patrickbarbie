@@ -8,6 +8,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import AuthContext from '@/auth';
+import { Stack } from '@mui/material';
 
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
@@ -114,20 +115,19 @@ export default function RegisterScreen() {
                             <label>
                                 Password:
                                 <br />
-                                <input
-                                    type={showPassword ? 'text' : 'password'}
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                />
-                                <IconButton
-                                    onClick={togglePasswordVisibility}
-                                    edge="end"
-                                >
-                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
+                                <Stack direction="row" justifyContent="flex-start" spacing={1}>
+                                    <input
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                    />
+                                    <IconButton onClick={togglePasswordVisibility}>
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </Stack>
                             </label>
-                            <p>Password must contain at least 8 characters, include both uppercase
+                            <p style={{fontSize: "10pt"}}>Password must contain at least 8 characters, include both uppercase
                                 and lowercase letters, and at least 1 special character.
                             </p>
                         </div>
@@ -135,18 +135,17 @@ export default function RegisterScreen() {
                             <label>
                                 Confirm Password:
                                 <br />
-                                <input
-                                    type={showConfirmPassword ? 'text' : 'password'}
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    required
-                                />
-                                <IconButton
-                                    onClick={toggleConfirmPasswordVisibility}
-                                    edge="end"
-                                >
-                                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
+                                <Stack direction="row" justifyContent="flex-start" spacing={1}>
+                                    <input
+                                        type={showConfirmPassword ? 'text' : 'password'}
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        required
+                                    />
+                                    <IconButton onClick={toggleConfirmPasswordVisibility} >
+                                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </Stack>
                             </label>
                         </div>
                     </div>
