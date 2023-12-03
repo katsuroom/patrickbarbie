@@ -29,7 +29,7 @@ export default function TitleBar() {
       <div
         style={{ backgroundColor: "#fce8f1", height: "9vh" }}
       >
-        <Link href="/main">
+        <Link href={auth.loggedIn ? "/main" : "/"}>
           <img
             src="/patrick-barbie.png"
             width="5%"

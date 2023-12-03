@@ -12,12 +12,17 @@ import { Stack } from '@mui/material';
 
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
+
+    // input fields
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+
+    // show/hide
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     const [error, setError] = useState('');
     useEffect(() => {
         if (auth.errorMessage) {
@@ -29,21 +34,46 @@ export default function RegisterScreen() {
         event.preventDefault();
 
         if (username.length < 5 || username.length > 50) {
-            setError('Username must be between 5 and 50 characters.');
+            setError("Username must be between 5 and 50 characters.");
             return;
         }
 
-        // Regular expression for email validation
         const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         if (!emailPattern.test(email)) {
-            setError('Please enter a valid email address.');
+            setError("Please enter a valid email address.");
             return;
         }
 
-        // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        const passwordPattern = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-        if (!passwordPattern.test(password)) {
-            setError('Password must contain at least 8 characters, including one uppercase letter, one number, and one special character.');
+        /*
+            password requirements:
+            - 8+ characters
+            - 1 uppercase
+            - 1 lowercase
+            - 1 number
+            - 1 special character
+        */
+        if(password.length < 8) {
+            setError("Password must contain at least 8 charcters");
+            return;
+        }
+
+        if(!/[A-Z]/.test(password)) {
+            setError("Password must contain at least one uppercase letter");
+            return;
+        }
+
+        if(!/[a-z]/.test(password)) {
+            setError("Password must contain at least one lowercase letter");
+            return;
+        }
+
+        if(!/[0-9]/.test(password)) {
+            setError("Password must contain at least one number");
+            return;
+        }
+
+        if(!/[#?!@$%^&*-]/.test(password)) {
+            setError("Password must contain at least one special character");
             return;
         }
 

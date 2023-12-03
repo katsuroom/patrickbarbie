@@ -187,18 +187,7 @@ const updateCSV = (csvObject) =>{
     });
 }
 
-// const getMainScreenMap = (fileName) => {
-//   return api.get(/mapFile/, {
-//     params: {
-//       fileName: fileName,
-//     },
-//   });
-// };
-
 const getMainScreenMap = (fileName) => {
-    // console.log("in api.getMainScreenMap");
-    // console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
-    // let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
     return fetch(`${baseURL}/mapFile?fileName=${fileName}`, {
       method: "GET",
       headers: {

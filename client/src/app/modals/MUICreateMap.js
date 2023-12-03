@@ -46,12 +46,6 @@ export default function MUICreateMap() {
   };
 
   const handleCreateMap = () => {
-    // console.log(
-    //     `Map Created!\n` +
-    //     `name: ${projectName}\n` +
-    //     `type: ${mapType}\n` +
-    //     `file: ${store.mapFile.name}`);
-
     store.closeModal();
     store.createMap(projectName, mapType);
     router.push("/edit");

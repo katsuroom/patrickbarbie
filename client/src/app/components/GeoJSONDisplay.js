@@ -34,36 +34,6 @@ export default function GeoJSONDisplay(props) {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (!(store.rawMapFile instanceof File)) {
-  //     setGeoJsonData(store.rawMapFile);
-  //   } else {
-  //     const reader = new FileReader();
-
-  //     if (window.Worker) {
-  //       workerRef.current = new Worker("worker.js");
-  //     }
-
-  //     reader.onload = function (event) {
-  //       const jsonDataString = event.target.result;
-  //       workerRef.current.postMessage(jsonDataString);
-  //     };
-
-  //     workerRef.current.onmessage = function (event) {
-  //       console.log(event.data)
-  //       setGeoJsonData(event.data);
-  //     };
-
-  //     reader.readAsText(store.rawMapFile);
-
-  //     // Clean up the worker when component unmounts
-  //     return () => {
-  //       workerRef.current.terminate();
-  //     };
-  //   }
-  // }, []);
-
-  // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
   const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 
   useEffect(() => {

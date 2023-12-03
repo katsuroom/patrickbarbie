@@ -10,7 +10,7 @@ start client:
 ```
 cd client
 npm install
-npm start
+npm run dev
 ```
 
 BEFORE MERGING TO MAIN:
