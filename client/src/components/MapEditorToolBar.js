@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from "react";
+import StoreContext from "../store";
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -69,6 +70,7 @@ const textStylePopup = {
 };
 
 const MapEditorToolbar = () => {
+  const { store } = useContext(StoreContext);
   const [isFontDropdownVisible, setFontDropdownVisible] = useState(false);
   const [isTextSizePopupVisible, setTextSizePopupVisible] = useState(false);
   const [textSize, setTextSize] = useState(14);
@@ -141,36 +143,66 @@ const MapEditorToolbar = () => {
   );
 
   return (
-    <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', padding: '10px' }}>
-      <button style={buttonStyle} onClick={handleUndoClick}><UndoIcon /></button>
-      <button style={buttonStyle} onClick={handleRedoClick}><RedoIcon /></button>
-      <div style={{ position: 'relative' }}>
-        <button style={buttonStyle} onClick={handleFontClick}>Font <ArrowDropDownIcon /></button>
+    <div
+      style={{
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        padding: "10px",
+      }}
+    >
+      <button style={buttonStyle} onClick={handleUndoClick}>
+        <UndoIcon />
+      </button>
+      <button style={buttonStyle} onClick={handleRedoClick}>
+        <RedoIcon />
+      </button>
+      <div style={{ position: "relative" }}>
+        <button style={buttonStyle} onClick={handleFontClick}>
+          Font <ArrowDropDownIcon />
+        </button>
         {isFontDropdownVisible && <FontDropdown />}
       </div>
 
-
-
-      <button style={buttonStyle} onClick={handleTextIncreaseClick}><TextIncreaseIcon /></button>
-      <div style={{ position: 'relative' }}>
-        <button style={buttonStyle} onClick={handleTextSizeClick}><FormatSizeIcon /></button>
+      <button style={buttonStyle} onClick={handleTextIncreaseClick}>
+        <TextIncreaseIcon />
+      </button>
+      <div style={{ position: "relative" }}>
+        <button style={buttonStyle} onClick={handleTextSizeClick}>
+          <FormatSizeIcon />
+        </button>
         {isTextSizePopupVisible && <TextSizePopup />}
       </div>
-      <button style={buttonStyle} onClick={handleTextDecreaseClick}><TextDecreaseIcon /></button>
-      <button style={buttonStyle} onClick={handleBoldClick}><FormatBoldIcon /></button>
-      <button style={buttonStyle} onClick={handleItalicClick}><FormatItalicIcon /></button>
-      <button style={buttonStyle} onClick={handleUnderlinedClick}><FormatUnderlinedIcon /></button>
-      <button style={buttonStyle} onClick={handleFillColorClick}><FormatColorFillIcon /></button>
-      <button style={buttonStyle} onClick={handleBorderColorClick}><BorderColorIcon /></button>
+      <button style={buttonStyle} onClick={handleTextDecreaseClick}>
+        <TextDecreaseIcon />
+      </button>
+      <button style={buttonStyle} onClick={handleBoldClick}>
+        <FormatBoldIcon />
+      </button>
+      <button style={buttonStyle} onClick={handleItalicClick}>
+        <FormatItalicIcon />
+      </button>
+      <button style={buttonStyle} onClick={handleUnderlinedClick}>
+        <FormatUnderlinedIcon />
+      </button>
+      <button style={buttonStyle} onClick={handleFillColorClick}>
+        <FormatColorFillIcon />
+      </button>
+      <button style={buttonStyle} onClick={handleBorderColorClick}>
+        <BorderColorIcon />
+      </button>
 
-      <div style={{ position: 'relative' }}>
-        <button style={buttonStyle} onClick={handleShapeClick}>
-          Shape <ArrowDropDownIcon />
-        </button>
-        {isShapeDropdownVisible && <ShapeDropdown />}
-      </div>
+      {store.currentMapObject?.mapType === "Travel Map"  ? (
+        <div style={{ position: "relative" }}>
+          <button style={buttonStyle} onClick={handleShapeClick}>
+            Shape <ArrowDropDownIcon />
+          </button>
+          {isShapeDropdownVisible && <ShapeDropdown />}
+        </div>
+      ) : (
+        <> </>
+      )}
     </div>
-
   );
 };
 

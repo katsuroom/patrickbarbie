@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useContext, useState } from "react";
 import PPolitical from "./PPolitical";
 import MapEditorToolbar from "./MapEditorToolBar";
+import PHeatmap from "./PHeatmap";
 
 import MapDisplay from "./MapDisplay";
 import StoreContext from "../store";
@@ -10,6 +11,7 @@ export default function EditScreen() {
 
 
   useEffect(() => {
+    console.log("currentMapObject", store.currentMapObject?.mapType);
     const func = async () => {
 
         // clear CSV fields
@@ -56,8 +58,13 @@ export default function EditScreen() {
         <MapDisplay />
       </div>
       <div style={politicalStyle}>
-        <PPolitical />
-        {/* <PHeatmap /> */}
+        {store.currentMapObject?.mapType === "Political Map" ||
+        store.currentMapObject?.mapType === "Dot Distribution Map" ||
+        store.currentMapObject?.mapType === "Travel Map" ? (
+          <PPolitical />
+        ) : (
+          <PHeatmap />
+        )}
       </div>
     </div>
   );
