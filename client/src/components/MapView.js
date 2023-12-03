@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from 'react';
-import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { IconButton, Typography, Grid } from '@mui/material';
 import './font.css';
@@ -16,33 +15,32 @@ import MUIDeleteMap from './Model/MUIDeleteMap';
 import MUIForkMap from './Model/MUIForkMap';
 import MUIPublishMap from './Model/MUIPublishMap';
 
-export default function MapView({ fileSelected, projectName, mapType, views }) {
+export default function MapView({ fileSelected, projectName, mapType}) {
     const { store } = useContext(StoreContext);
     const { auth } = useContext(AuthContext);
     const history = useHistory();
 
     // State for likes and like status
-    console.log("likes: ", store.currentMapObject?.likes);
+    // console.log("likes: ", store.currentMapObject?.likes);
     let likes = store.currentMapObject?.likes;
     // const [likes, setLikes] = useState(store.currentMapObject?.likes);
     const [hasLiked, setHasLiked] = useState(false);
     // let initialComments = [];
     const [initialComments, setInitialComments] = useState([]);
-
+   
 
     useEffect(() => {
       // This effect runs whenever store.currentMapObject changes
       if (store.currentMapObject) {
-      console.log("in MapView.js", store.currentMapObject);
 
       // Shallow copy of comments array
       var newInitialComments = store.currentMapObject.comments;
-      console.log("newInitialComments: ", newInitialComments);
+      // console.log("newInitialComments: ", newInitialComments);
 
       // Update the state with the new initialComments
-      // initialComments = newInitialComments;
       setInitialComments(newInitialComments);
-      console.log("initialComments: ", initialComments);
+      // console.log("initialComments: ", initialComments);
+
       }
     }, [store.currentMapObject]);
 
@@ -83,50 +81,10 @@ export default function MapView({ fileSelected, projectName, mapType, views }) {
         store.openModal(CurrentModal.FORK_MAP);
     }
 
-    // Hardcoded comments
-    // const initialComments = [
-    //     {
-    //         id: 1,
-    //         author: "Scott",
-    //         timestamp: "1 hour ago",
-    //         text: "I love this map, thanks for sharing",
-    //         replies: [
-    //             {
-    //                 id: 101,
-    //                 author: "Yuxuan",
-    //                 timestamp: "45 minutes ago",
-    //                 text: "I agree, it was brilliant and creative"
-    //             }
-    //         ]
-    //     },
-    //     {
-    //         id: 2,
-    //         author: "Kerrance",
-    //         timestamp: "2 hours ago",
-    //         text: "Creative map! I forked to make some edits myself",
-    //         replies: []
-    //     },
-    //     {
-    //         id: 3,
-    //         author: "Tom",
-    //         timestamp: "3 hours ago",
-    //         text: "I think you can make improvements in the state section of the map",
-    //         replies: []
-    //     }
-    // ];
-
   
     console.log("in MapView,js", store.currentMapObject);
-    // if (store.currentMapObject && store.currentMapObject.comments) {
-    //   var initialComments = [...store.currentMapObject.comments];
-    //   // Rest of your code
-    // } else {
-    //   console.error(
-    //     "store.currentMapObject or its comments property is undefined or null."
-    //   );
-    // }
 
-    console.log("initialComments: ", initialComments);
+    // console.log("initialComments: ", initialComments);
 
     // Main component render
     const res = (

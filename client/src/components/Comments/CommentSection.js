@@ -7,7 +7,7 @@ import StoreContext from "../../store";
 const CommentSection = ({ initialComments }) => {
     const { store } = useContext(StoreContext);
     const { auth } = useContext(AuthContext);
-    console.log("initialComments: ", initialComments);
+    // console.log("initialComments: ", initialComments);
 
     // Use the useEffect hook to update the state when initialComments changes
     useEffect(() => {
@@ -15,7 +15,7 @@ const CommentSection = ({ initialComments }) => {
     }, [initialComments]);
 
     const [comments, setComments] = useState(initialComments);
-    console.log("comments: ", comments);
+    // console.log("comments: ", comments);
     const [newCommentText, setNewCommentText] = useState('');
 
 
@@ -32,7 +32,7 @@ const CommentSection = ({ initialComments }) => {
             return;
         }
 
-        console.log("now: ", new Date());
+        // console.log("now: ", new Date());
 
         const newComment = {
             id: comments.length + 1,
@@ -48,12 +48,12 @@ const CommentSection = ({ initialComments }) => {
 
         setComments((prevComments) => {
           const updatedComments = [newComment, ...prevComments];
-          console.log("Updated comments:", updatedComments);
+        //   console.log("Updated comments:", updatedComments);
 
           // Call the function to update the database
           var mapObject = store.currentMapObject;
           mapObject.comments = updatedComments;
-          console.log(mapObject);
+        //   console.log(mapObject);
           store.updateMap(mapObject);
 
           return updatedComments;

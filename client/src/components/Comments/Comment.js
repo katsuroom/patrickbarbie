@@ -9,7 +9,7 @@ const Comment = ({ comment, setComments , comments}) => {
   const [showReply, setShowReply] = useState(false);
   const [replyText, setReplyText] = useState('');
 
-  console.log("comments: ", comments);
+  // console.log("comments: ", comments);
 
   
   const handleReply = () => {
@@ -42,11 +42,11 @@ const Comment = ({ comment, setComments , comments}) => {
       c.id === comment.id ? { ...c, replies: [...c.replies, newReply] } : c
     );
 
-    console.log("comments: ", comments);
+    // console.log("comments: ", comments);
 
     var mapObject = store.currentMapObject;
     mapObject.comments = comments;
-    console.log(mapObject);
+    // console.log(mapObject);
     store.updateMap(mapObject);
 
     setReplyText('');
