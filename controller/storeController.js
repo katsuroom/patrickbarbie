@@ -380,18 +380,34 @@ createCSV = async (req, res) => {
     csvData: body.csvData,
   });
 
+  if (key === null || label === null || csvData === null) {
+    return res.status(400).json({
+      success: false,
+      error: "You must provide a key, label, and csvData",
+    });
+  }
+
   if (!csv) {
     return res.status(403).json({ success: false, error: err });
   }
 
+  try{
   const savedCSV = await csv.save();
   console.log(savedCSV);
-
   return res.status(201).json({
     success: true,
     csvData: savedCSV,
     message: "CSV created!",
   });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      error: error,
+    });
+  }
+  
+
+  
 };
 
 getCSVById = (req, res) => {
