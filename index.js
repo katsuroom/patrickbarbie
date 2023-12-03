@@ -57,8 +57,28 @@ if(process.env.NODE_ENV === "production")
 {
     app.use(express.static(path.join(__dirname, "/client/out")));
 
-    app.get("*", (req, res) => {
+    app.get("/", (req, res) => {
         res.sendFile(path.join(__dirname, "client", "out", "index.html"));
+    });
+
+    app.get("/login", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "out", "login.html"));
+    });
+
+    app.get("/register", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "out", "register.html"));
+    });
+
+    app.get("/recovery", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "out", "recovery.html"));
+    });
+
+    app.get("/main", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "out", "main.html"));
+    });
+
+    app.get("/password-recovery", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "out", "password-recovery.html"));
     });
 }
 
