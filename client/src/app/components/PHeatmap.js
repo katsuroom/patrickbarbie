@@ -1,21 +1,34 @@
-"use client"
-
-import * as React from "react";
-import Table from "@mui/joy/Table";
-import Button from "@mui/joy/Button";
-import Add from "@mui/icons-material/Add";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import TextField from "@mui/material/TextField";
-import "./property.css";
-import { useHistory } from "react-router-dom";
-import CsvFileReader from "./CsvFileReader";
-import MUISaveChanges from "../modals/MUISaveChanges";
-import MUIExit from "../modals/MUIExitModal";
+import * as React from 'react';
+import Table from '@mui/joy/Table';
+import Button from '@mui/joy/Button';
+import Add from '@mui/icons-material/Add';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Compact from '@uiw/react-color-compact';
+import './property.css'
 import { useContext, useEffect } from "react";
-import StoreContext from "@/store";
+import StoreContext from "../store";
+import CsvFileReader from "./CsvFileReader";
 
-export default function PPolitical() {
+import MUISaveChanges from "./Model/MUISaveChanges";
+import MUIExitModal from "./Model/MUIExitModal";
+
+
+const Data = {
+  "population": 20,
+  "GDP": 50,
+  "Color": "FFFFFF",
+}
+
+
+export default function PHeatmap() {
+  const [MinHex, setMinHex] = React.useState("#fff");
+  const [MaxHex, setMaxHex] = React.useState("#fff");
+  const [age, setAge] = React.useState('');
+
   const { store } = useContext(StoreContext);
 
   const [menuItems, setMenuItems] = React.useState([]);
@@ -26,25 +39,25 @@ export default function PPolitical() {
   const [textFields, setTextFields] = React.useState([]);
 
   useEffect(() => {
-  let tfs = [];
-  if (store.parsed_CSV_Data) {
-    for (let idx in store.parsed_CSV_Data[store.key]) {
-      console.log(111);
-      tfs.push(
-        <TextField
-          id={"tf-" + idx}
-          defaultValue={store.parsed_CSV_Data[store.key][idx]}
-          variant="standard"
-          sx={{ m: 1, minWidth: 120 }}
-          onChange={(e) => store.parsed_CSV_Data[store.key][idx] = e.target.value}
-        />
-      );
+    let tfs = [];
+    if (store.parsed_CSV_Data) {
+      for (let idx in store.parsed_CSV_Data[store.key]) {
+        console.log(111);
+        tfs.push(
+          <TextField
+            id={"tf-" + idx}
+            defaultValue={store.parsed_CSV_Data[store.key][idx]}
+            variant="standard"
+            sx={{ m: 1, minWidth: 120 }}
+            onChange={(e) =>
+              (store.parsed_CSV_Data[store.key][idx] = e.target.value)
+            }
+          />
+        );
+      }
     }
-  }
-  setTextFields(tfs);
-}, [store.parsed_CSV_Data])
-
-
+    setTextFields(tfs);
+  }, [store.parsed_CSV_Data]);
 
   console.log(store.key);
   console.log(store.label);
@@ -53,13 +66,12 @@ export default function PPolitical() {
 
   function zip(...arrays) {
     let length;
-    try{
+    try {
       length = Math.min(...arrays.map((arr) => arr.length));
-    }
-    catch(error){
+    } catch (error) {
       length = 0;
     }
-    
+
     return Array.from({ length }, (_, index) =>
       arrays.map((arr) => arr[index])
     );
@@ -81,7 +93,9 @@ export default function PPolitical() {
           defaultValue={store.parsed_CSV_Data[store.key][idx]}
           variant="standard"
           sx={{ m: 1, minWidth: 120 }}
-          onChange={(e) => store.parsed_CSV_Data[store.key][idx] = e.target.value}
+          onChange={(e) =>
+            (store.parsed_CSV_Data[store.key][idx] = e.target.value)
+          }
         />
       );
     }
@@ -176,6 +190,21 @@ export default function PPolitical() {
   console.log(store.label);
   console.log(menuItems);
 
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
+
+  const handleMinColorChange = (event) => {
+    setMinHex(event.hex);
+  }
+
+  const handleMaxColorChange = (event) => {
+    setMaxHex(event.hex);
+  }
+
+  console.log(Data.population);
+  console.log(MinHex);
+
   return (
     <div>
       <div className="propertyTitle">Property</div>
@@ -200,7 +229,7 @@ export default function PPolitical() {
                   }}
                 >
                   {menuItems.map((mi) => (
-                    <MenuItem key={mi} value={mi}>{mi}</MenuItem>
+                    <MenuItem value={mi}>{mi}</MenuItem>
                   ))}
                   {/* <MenuItem>
                     <Button variant="text" startDecorator={<Add />}>
@@ -222,7 +251,7 @@ export default function PPolitical() {
                   }}
                 >
                   {menuItems.map((mi) => (
-                    <MenuItem key={mi} value={mi}>{mi}</MenuItem>
+                    <MenuItem value={mi}>{mi}</MenuItem>
                   ))}
                   {/* <MenuItem>
                     <Button variant="text" startDecorator={<Add />}>
@@ -261,6 +290,55 @@ export default function PPolitical() {
           </tbody>
         </Table>
       </div>
+      <div>
+        <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
+          <InputLabel id="demo-simple-select-helper-label">Property</InputLabel>
+          <Select
+            labelId="demo-simple-select-standard-label"
+            id="searchOn"
+            value={store.key ? store.key : "key"}
+            required
+            onChange={handleChangeKey}
+            sx={{ minWidth: "80%" }}
+            MenuProps={{
+              style: { maxHeight: "50%" },
+            }}
+          >
+            {menuItems.map((mi) => (
+              <MenuItem value={mi}>{mi}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
+          <InputLabel id="demo-simple-select-helper-label">Min</InputLabel>
+          <Select
+            labelId="demo-simple-select-helper-label"
+            id="demo-simple-select-helper"
+            label="Age"
+            sx={{ minWidth: 130 }}
+          >
+            <MenuItem value={MinHex}>
+              <Compact onChange={handleMinColorChange} color={MinHex} />
+            </MenuItem>
+          </Select>
+        </FormControl>
+
+        <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
+          <InputLabel id="demo-simple-select-helper-label">Max</InputLabel>
+          <Select
+            labelId="demo-simple-select-helper-label"
+            id="demo-simple-select-helper"
+            label="Age"
+            sx={{ minWidth: 130 }}
+          >
+            <MenuItem value={MaxHex}>
+              <Compact onChange={handleMaxColorChange} color={MaxHex} />
+            </MenuItem>
+          </Select>
+        </FormControl>
+      </div>
+
       <Button
         variant="solid"
         className="exit"
@@ -277,35 +355,13 @@ export default function PPolitical() {
       >
         SAVE
       </Button>
-      {/* <Button
-        variant="solid"
-        className="prev"
-        sx={{ margin: 1 }}
-        disabled={page <= 0}
-        onClick={() => {
-          setPage(page <= 0 ? 0 : page - 1);
-        }}
-      >
-        Prev
-      </Button>
-      Page: {page + 1}
-      <Button
-        variant="solid"
-        className="next"
-        sx={{ margin: 1 }}
-        disabled={page >= maxPage}
-        onClick={() => {
-          setPage(page >= maxPage ? maxPage : page + 1);
-        }}
-      >
-        Next
-      </Button> */}
+
       <MUISaveChanges
         open={saveModalOpen}
         closeModal={closeSaveModal}
         saveCB={saveCsvChanges}
       />
-      <MUIExit open={exitModalOpen} closeModal={closeExitModal} />
+      <MUIExitModal open={exitModalOpen} closeModal={closeExitModal} />
     </div>
   );
 }

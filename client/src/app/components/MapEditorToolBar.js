@@ -1,6 +1,8 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import StoreContext from '@/store';
+
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -23,8 +25,6 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';  // Add location
 import LocationOffIcon from '@mui/icons-material/LocationOff'; // Delete location
 import StarBorderIcon from '@mui/icons-material/StarBorder'; // Add star
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-
-
 
 
 const buttonStyle = {
@@ -71,6 +71,7 @@ const textStylePopup = {
 };
 
 const MapEditorToolbar = () => {
+  const { store } = useContext(StoreContext);
   const [isFontDropdownVisible, setFontDropdownVisible] = useState(false);
   const [isTextSizePopupVisible, setTextSizePopupVisible] = useState(false);
   const [textSize, setTextSize] = useState(14);
@@ -165,14 +166,17 @@ const MapEditorToolbar = () => {
       <button style={buttonStyle} onClick={handleFillColorClick}><FormatColorFillIcon /></button>
       <button style={buttonStyle} onClick={handleBorderColorClick}><BorderColorIcon /></button>
 
-      <div style={{ position: 'relative' }}>
-        <button style={buttonStyle} onClick={handleShapeClick}>
-          Shape <ArrowDropDownIcon />
-        </button>
-        {isShapeDropdownVisible && <ShapeDropdown />}
-      </div>
+      {store.currentMapObject?.mapType === "Travel Map"  ? (
+        <div style={{ position: "relative" }}>
+          <button style={buttonStyle} onClick={handleShapeClick}>
+            Shape <ArrowDropDownIcon />
+          </button>
+          {isShapeDropdownVisible && <ShapeDropdown />}
+        </div>
+      ) : (
+        <> </>
+      )}
     </div>
-
   );
 };
 

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import AuthContext from '@/auth';
 import StoreContext from '@/store';
 import Comment from './Comment';
@@ -34,7 +34,7 @@ const CommentSection = ({ initialComments }) => {
         const newComment = {
             id: comments.length + 1,
             author: auth.user?.username,
-            timestamp: 'Just now',
+            timestamp: new Date(),
             text: newCommentText,
             replies: []
         };
@@ -72,7 +72,7 @@ const CommentSection = ({ initialComments }) => {
                 </div>
             )}
             {comments.map(comment => (
-                <Comment key={comment.id} comment={comment} setComments={setComments} />
+                <Comment key={comment.id} comment={comment} setComments={setComments} comments={comments}/>
             ))}
         </div>
     );

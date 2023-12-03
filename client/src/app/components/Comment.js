@@ -2,10 +2,12 @@
 
 import React, { useState, useContext } from 'react';
 import AuthContext from '@/auth';
+import StoreContext from '@/store';
 import './Comment.css';
 
-const Comment = ({ comment, setComments }) => {
+const Comment = ({ comment, setComments, comments }) => {
   const { auth } = useContext(AuthContext);
+  const { store } = useContext(StoreContext);
   const [showReply, setShowReply] = useState(false);
   const [replyText, setReplyText] = useState('');
   
@@ -23,17 +25,29 @@ const Comment = ({ comment, setComments }) => {
     }
 
     const newReply = {
-      id: new Date().getTime(), 
+      id: comment.replies.length + 1, 
       author: auth.user?.username,
-      timestamp: 'A moment ago',
-      text: replyText
+      timestamp: new Date(),
+      text: replyText,
     };
   
-    setComments(currentComments =>
-      currentComments.map(c =>
+    setComments((currentComments) =>
+      currentComments.map((c) =>
         c.id === comment.id ? { ...c, replies: [...c.replies, newReply] } : c
       )
     );
+
+    comments = comments.map((c) =>
+      c.id === comment.id ? { ...c, replies: [...c.replies, newReply] } : c
+    );
+
+    // console.log("comments: ", comments);
+
+    var mapObject = store.currentMapObject;
+    mapObject.comments = comments;
+    // console.log(mapObject);
+    store.updateMap(mapObject);
+
     setReplyText('');
     setShowReply(false);
   };
@@ -48,7 +62,7 @@ const Comment = ({ comment, setComments }) => {
   return (
     <div className="comment">
       <div className="comment-author">{comment.author}</div>
-      <div className="comment-timestamp">{comment.timestamp}</div>
+      <div className="comment-timestamp">{comment.timestamp.toLocaleString()}</div>
       <div className="comment-text">{comment.text}</div>
       {auth.loggedIn && (
         <>
@@ -70,7 +84,7 @@ const Comment = ({ comment, setComments }) => {
       {comment.replies && comment.replies.map(reply => (
         <div key={reply.id} className="comment-reply">
           <div className="comment-author">{reply.author}</div>
-          <div className="comment-timestamp">{reply.timestamp}</div>
+          <div className="comment-timestamp">{reply.timestamp.toLocaleString()}</div>
           <div className="comment-text">{reply.text}</div>
         </div>
       ))}
