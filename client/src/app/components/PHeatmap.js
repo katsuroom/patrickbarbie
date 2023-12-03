@@ -363,7 +363,7 @@ export default function PHeatmap() {
         closeModal={closeSaveModal}
         saveCB={saveCsvChanges}
       />
-      <MUIExitModal open={exitModalOpen} closeModal={closeExitModal} />
+      <MUIExit open={exitModalOpen} closeModal={closeExitModal} />
     </div>
   );
 }
