@@ -4,7 +4,6 @@ import { AuthContextProvider } from '@/auth';
 import { StoreContextProvider } from '@/store';
 import TitleBar from './components/TitleBar';
 import StatusBar from './components/StatusBar';
-import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,8 +20,6 @@ export default function RootLayout({ children }) {
           <body className={inter.className}>
             <TitleBar />
             {children}
-            <Script src="https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js"></Script>
-            <Script src="https://cdn.jsdelivr.net/npm/leaflet-heatmap@1.0.0/leaflet-heatmap.js"></Script>
             <a id="download-anchor" style={{display: "none"}}></a>
             <StatusBar />
           </body>

@@ -5,6 +5,7 @@ import StoreContext from "@/store";
 import domtoimage from "dom-to-image";
 import { saveAs } from "file-saver";
 import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
+import Script from "next/script";
 
 function normalize(value, min, max) {
   return (value - min) / (max - min) * 10;
@@ -277,6 +278,10 @@ export default function GeoJSONDisplay(props) {
   }
 
   return (
-    <div id={"map-display"} style={{height: `${mapHeight}px`, margin: '10px' }}></div>
+    <div>
+      <Script src="https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js"></Script>
+      <Script src="https://cdn.jsdelivr.net/npm/leaflet-heatmap@1.0.0/leaflet-heatmap.js"></Script>
+      <div id={"map-display"} style={{height: `${mapHeight}px`, margin: '10px' }}></div>
+    </div>
   );
 }
