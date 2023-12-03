@@ -1,10 +1,10 @@
 // DO NOT USE AXIOS
 
 // when you push to main, use the heroku url
-// const baseURL = "https://patrick-barbie-f64046e3bb4b.herokuapp.com/api";
+const baseURL = "https://patrick-barbie-f64046e3bb4b.herokuapp.com/api";
 
 // when you test locally, use the localhost url
-const baseURL = "http://localhost:4000/api";
+// const baseURL = "http://localhost:4000/api";
 
 // const api = axios.create({
 //     baseURL: baseURL,

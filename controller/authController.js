@@ -225,8 +225,8 @@ sendPasswordRecoveryEmail = async (req, res) => {
   try {
     // Define the email content
 
-    // let url = `https://patrick-barbie-f64046e3bb4b.herokuapp.com/password-recovery?email=${email}&token=${PwHash}`;
-    let url = `localhost:4000/password-recovery?email=${email}&token=${PwHash}`;
+    let url = `https://patrick-barbie-f64046e3bb4b.herokuapp.com/password-recovery?email=${email}&token=${PwHash}`;
+    // let url = `localhost:4000/password-recovery?email=${email}&token=${PwHash}`;
 
     let info = await transporter.sendMail({
       from: '"Patrick Barbie" <TeamPink416@gmail.com>',
