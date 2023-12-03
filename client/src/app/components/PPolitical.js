@@ -200,7 +200,7 @@ export default function PPolitical() {
                   }}
                 >
                   {menuItems.map((mi) => (
-                    <MenuItem value={mi}>{mi}</MenuItem>
+                    <MenuItem key={mi} value={mi}>{mi}</MenuItem>
                   ))}
                   {/* <MenuItem>
                     <Button variant="text" startDecorator={<Add />}>
@@ -222,7 +222,7 @@ export default function PPolitical() {
                   }}
                 >
                   {menuItems.map((mi) => (
-                    <MenuItem value={mi}>{mi}</MenuItem>
+                    <MenuItem key={mi} value={mi}>{mi}</MenuItem>
                   ))}
                   {/* <MenuItem>
                     <Button variant="text" startDecorator={<Add />}>
