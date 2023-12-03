@@ -231,7 +231,7 @@ export default function PHeatmap() {
                   }}
                 >
                   {menuItems.map((mi) => (
-                    <MenuItem value={mi}>{mi}</MenuItem>
+                    <MenuItem key={mi} value={mi}>{mi}</MenuItem>
                   ))}
                   {/* <MenuItem>
                     <Button variant="text" startDecorator={<Add />}>
@@ -253,7 +253,7 @@ export default function PHeatmap() {
                   }}
                 >
                   {menuItems.map((mi) => (
-                    <MenuItem value={mi}>{mi}</MenuItem>
+                    <MenuItem key={mi} value={mi}>{mi}</MenuItem>
                   ))}
                   {/* <MenuItem>
                     <Button variant="text" startDecorator={<Add />}>
@@ -307,7 +307,7 @@ export default function PHeatmap() {
             }}
           >
             {menuItems.map((mi) => (
-              <MenuItem value={mi}>{mi}</MenuItem>
+              <MenuItem key={mi} value={mi}>{mi}</MenuItem>
             ))}
           </Select>
         </FormControl>
