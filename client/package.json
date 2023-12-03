@@ -53,6 +53,7 @@
     "@mui/joy": "^5.0.0-beta.14",
     "dotenv-webpack": "^8.0.1",
     "msw": "^2.0.6",
+    "nodemailer": "^6.9.7",
     "path-browserify": "^1.0.1"
   }
 }

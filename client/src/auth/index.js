@@ -207,6 +207,21 @@ function AuthContextProvider(props) {
     return initials;
   };
 
+
+
+  auth.sendPasswordRecoveryEmail = function(email) {
+    return api.sendPasswordRecoveryEmail(email);
+  }
+
+
+  auth.getHashedPassword = function(email){
+    return api.getHashedPassword(email);
+  }
+
+  auth.setNewPassword = function(email, newPassword){
+    return api.setNewPassword(email, newPassword);
+  }
+
   return (
     <AuthContext.Provider
       value={{

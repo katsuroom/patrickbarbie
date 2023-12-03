@@ -45,6 +45,13 @@ export default function MapCardList() {
 
   const handleMapClick = (mapId) => {
     const selected = store.mapList.find((map) => map._id === mapId);
+    console.log("selected: ", selected);
+    console.log("store.currentMapObject: ", store.currentMapObject);
+    if (!store.currentMapObject || selected._id != store.currentMapObject._id){
+      console.log("incrementing views");
+      selected.views = selected.views + 1;
+      store.updateViews(selected);
+    }
     store.currentMapObject = selected;
     console.log(store.currentMapObject);
     if (selected) {
