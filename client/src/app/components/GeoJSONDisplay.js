@@ -1,41 +1,26 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import StoreContext from "@/store";
-import domtoimage from "dom-to-image";
-import { saveAs } from "file-saver";
-import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
-import Script from "next/script";
+import React, { useEffect, useState, useRef, useContext } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import StoreContext from '@/store';
+import domtoimage from 'dom-to-image';
+import { saveAs } from 'file-saver';
+import HeatmapOverlay from 'heatmap.js/plugins/leaflet-heatmap';
+import Script from 'next/script';
 
-function normalize(value, min, max) {
-  return (value - min) / (max - min) * 10;
-}
-
-export default function GeoJSONDisplay(props) {
+function GeoJSONDisplay(props) {
   const [geoJsonData, setGeoJsonData] = useState(null);
   const [buttonAdded, setButtonAdded] = useState(false);
+  const [heatmapScriptLoaded, setHeatmapScriptLoaded] = useState(false); // State to track if heatmap.js has loaded
   const mapRef = useRef(null);
   const geoJsonLayerRef = useRef(null);
   const heatmapOverlayRef = useRef(null);
   const markers = useRef([]);
   const { store } = useContext(StoreContext);
   let downloadComplete = props.downloadComplete;
-  // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
-
-
-  useEffect(() => {
-    const resizeListener = () => {
-      setMapHeight(window.innerHeight / 2);
-    };
-    window.addEventListener('resize', resizeListener);
-    return () => {
-      window.removeEventListener('resize', resizeListener);
-    };
-  }, []);
-
   const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 
   useEffect(() => {
+    // Handlers for window resize event
     const resizeListener = () => {
       setMapHeight(window.innerHeight / 2);
     };
@@ -45,14 +30,16 @@ export default function GeoJSONDisplay(props) {
     };
   }, []);
 
+  // Effect for loading GeoJSON data
   useEffect(() => {
-    if(store.rawMapFile)
+    if (store.rawMapFile)
       setGeoJsonData(store.rawMapFile);
   }, [store.rawMapFile]);
 
+  // Main effect to initialize and update the map
   useEffect(() => {
-
-    if (!geoJsonData ) {
+    // Early return if data is not ready
+    if (!geoJsonData || !heatmapScriptLoaded) {
       return;
     }
 
@@ -244,12 +231,20 @@ export default function GeoJSONDisplay(props) {
   } else {
     console.log("download already completed!!!");
   }
-
   return (
     <div>
-      <Script src="https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js"></Script>
-      <Script src="https://cdn.jsdelivr.net/npm/leaflet-heatmap@1.0.0/leaflet-heatmap.js"></Script>
-      <div id={"map-display"} style={{height: `${mapHeight}px`, margin: '10px' }}></div>
+      <Script 
+        src="https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js"
+        onLoad={() => setHeatmapScriptLoaded(true)}
+      />
+      {heatmapScriptLoaded && (
+        <Script 
+          src="https://cdn.jsdelivr.net/npm/leaflet-heatmap@1.0.0/leaflet-heatmap.js"
+        />
+      )}
+      <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div>
     </div>
   );
 }
+
+export default GeoJSONDisplay;
