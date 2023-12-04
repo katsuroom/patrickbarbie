@@ -150,9 +150,9 @@ const TravelMap = (props) => {
             });
         };
 
-        // if (mapRef.current) {
-        //     mapRef.current.remove();
-        // }
+        if (mapRef.current) {
+            mapRef.current.remove();
+        }
 
         loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
             .then(() => {
