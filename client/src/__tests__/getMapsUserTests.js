@@ -20,7 +20,7 @@ const loginAndGetToken = async (email, password) => {
 
 // Function to get maps by user
 const getMapsByUser = (token) => {
-    console.log("in api.getMapsByUser");
+    // console.log("in api.getMapsByUser");
 
     return mapApi.get('/getMapsByUser', {
         headers: {
@@ -28,11 +28,11 @@ const getMapsByUser = (token) => {
         }
     })
     .then(response => {
-        console.log("Maps retrieved:", response.data);
+        // console.log("Maps retrieved:", response.data);
         return { status: response.status, data: response.data };
     })
     .catch(error => {
-        console.error("Error getting maps by user:", error);
+        // console.error("Error getting maps by user:", error);
         return Promise.reject(error);
     });
 };

@@ -26,7 +26,7 @@ const loginAndGetToken = async (email, password) => {
 };
 
 const createMap = (mapData, username, mapName, mapType, token) => {
-    console.log("in api.createMap");
+    // console.log("in api.createMap");
 
     return mapApi.post(`/map/`, {
         title: mapName,
@@ -39,17 +39,17 @@ const createMap = (mapData, username, mapName, mapType, token) => {
         }
     })
         .then(response => {
-            console.log(response.data);
+            // console.log(response.data);
             return { status: response.status, data: response.data };
         })
         .catch(error => {
-            console.error("Error creating map:", error);
+            // console.error("Error creating map:", error);
             return Promise.reject(error);
         });
 };
 
 const forkMap = (mapData, username, mapName, mapType, token) => {
-    console.log("in api.forkMap");
+    // console.log("in api.forkMap");
 
     return mapApi.post(`/forkmap/`, {
         title: mapName,
@@ -62,17 +62,17 @@ const forkMap = (mapData, username, mapName, mapType, token) => {
         }
     })
         .then(response => {
-            console.log(response.data);
+            // console.log(response.data);
             return { status: response.status, data: response.data };
         })
         .catch(error => {
-            console.error("Error forking map:", error);
+            // console.error("Error forking map:", error);
             return Promise.reject(error);
         });
 };
 
 const getMapById = (mapId, token) => {
-    console.log("in api.getMapById");
+    // console.log("in api.getMapById");
 
     return mapApi.get(`/map/${mapId}`, {
         headers: {
@@ -80,17 +80,17 @@ const getMapById = (mapId, token) => {
         }
     })
         .then(response => {
-            console.log("Map found:", response.data);
+            // console.log("Map found:", response.data);
             return { status: response.status, data: response.data };
         })
         .catch(error => {
-            console.error("Error getting map:", error);
+            // console.error("Error getting map:", error);
             return Promise.reject(error);
         });
 };
 
 const deleteMap = (mapId, token) => {
-    console.log("in api.deleteMap");
+    // console.log("in api.deleteMap");
 
     return mapApi.delete(`/map/${mapId}`, {
         headers: {
@@ -98,17 +98,17 @@ const deleteMap = (mapId, token) => {
         }
     })
         .then(response => {
-            console.log("Map deleted:", response.data);
+            // console.log("Map deleted:", response.data);
             return { status: response.status, data: response.data };
         })
         .catch(error => {
-            console.error("Error deleting map:", error);
+            // console.error("Error deleting map:", error);
             return Promise.reject(error);
         });
 };
 
 const updateMap = (mapId, mapData, token) => {
-    console.log("in api.updateMap");
+    // console.log("in api.updateMap");
 
     return mapApi.put(`/map/${mapId}`, mapData, {
         headers: {
@@ -116,17 +116,17 @@ const updateMap = (mapId, mapData, token) => {
         }
     })
         .then(response => {
-            console.log("Map updated:", response.data);
+            // console.log("Map updated:", response.data);
             return { status: response.status, data: response.data };
         })
         .catch(error => {
-            console.error("Error updating map:", error);
+            // console.error("Error updating map:", error);
             return Promise.reject(error);
         });
 };
 
 const getMapsByUser = (token) => {
-    console.log("in api.getMapsByUser");
+    // console.log("in api.getMapsByUser");
 
     return mapApi.get('/getMapsByUser', {
         headers: {
@@ -134,11 +134,11 @@ const getMapsByUser = (token) => {
         }
     })
     .then(response => {
-        console.log("Maps retrieved:", response.data);
+        // console.log("Maps retrieved:", response.data);
         return { status: response.status, data: response.data };
     })
     .catch(error => {
-        console.error("Error getting maps by user:", error);
+        // console.error("Error getting maps by user:", error);
         return Promise.reject(error);
     });
 };
@@ -150,11 +150,11 @@ const createCSV = (csvData, token) => {
         }
     })
     .then(response => {
-        console.log("CSV created:", response.data);
+        // console.log("CSV created:", response.data);
         return { status: response.status, data: response.data };
     })
     .catch(error => {
-        console.error("Error creating CSV:", error);
+        // console.error("Error creating CSV:", error);
         return Promise.reject(error);
     });
 };

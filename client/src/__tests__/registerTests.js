@@ -5,7 +5,7 @@ const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/auth';
 const api = axios.create({ baseURL: baseURL });
 
 const registerUser = (username, email, password) => {
-    console.log("in register: ", baseURL);
+    // console.log("in register: ", baseURL);
     return api.post(`/register/`, { username, email, password });
 };
 
