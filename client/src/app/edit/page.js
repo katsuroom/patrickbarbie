@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useContext } from "react";
-import PPolitical from "../components/PPolitical";
+import PPolitical from "../components/PHeatMap";
 import MapEditorToolbar from "../components/MapEditorToolBar";
 import PHeatmap from "../components/PHeatmap";
 

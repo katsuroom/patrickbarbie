@@ -408,31 +408,31 @@ function StoreContextProvider(props) {
   };
 
 
-  // store.setCsvStartKey = function (StartKey) {
-  //   store.setCsvKeyWithoutRerendering(StartKey);
+  store.setCsvStartKey = function (StartKey) {
+    store.setCsvKeyWithoutRerendering(StartKey);
 
-  //   if (StartKey !== undefined) {
-  //     store.StartKey = StartKey; 
-  //     console.log(store.StartKey);
-  //     storeReducer({
-  //       type: StoreActionType.SET_CSV_KEY,
-  //       payload: { StartKey },
-  //     });
-  //   }
-  // };
+    if (StartKey !== undefined) {
+      store.StartKey = StartKey; 
+      console.log(store.StartKey);
+      storeReducer({
+        type: StoreActionType.SET_CSV_KEY,
+        payload: { StartKey },
+      });
+    }
+  };
 
-  // store.setCsvEndKey = function (EndKey) {
-  //   store.setCsvKeyWithoutRerendering(EndKey);
+  store.setCsvEndKey = function (EndKey) {
+    store.setCsvKeyWithoutRerendering(EndKey);
 
-  //   if (EndKey !== undefined) {
-  //     store.EndKey = EndKey;
-  //     console.log(store.EndKey);
-  //     storeReducer({
-  //       type: StoreActionType.SET_CSV_KEY,
-  //       payload: { EndKey },
-  //     });
-  //   }
-  // };
+    if (EndKey !== undefined) {
+      store.EndKey = EndKey;
+      console.log(store.EndKey);
+      storeReducer({
+        type: StoreActionType.SET_CSV_KEY,
+        payload: { EndKey },
+      });
+    }
+  };
 
 
   store.setCsvKeyWithoutRerendering = function (key) {

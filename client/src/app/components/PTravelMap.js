@@ -3,10 +3,12 @@
 import * as React from "react";
 import Table from "@mui/joy/Table";
 import Button from "@mui/joy/Button";
+import Add from "@mui/icons-material/Add";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import "./property.css";
+import { useHistory } from "react-router-dom";
 import CsvFileReader from "./CsvFileReader";
 import MUISaveChanges from "../modals/MUISaveChanges";
 import MUIExit from "../modals/MUIExitModal";
@@ -14,31 +16,35 @@ import { useContext, useEffect } from "react";
 import StoreContext from "@/store";
 
 export default function PTravelMap() {
-  console.log("---PTravelMap---")
   const { store } = useContext(StoreContext);
 
   const [menuItems, setMenuItems] = React.useState([]);
+  // const [renderTable, setRenderTable] = React.useState(false);
+  // const [page, setPage] = React.useState(0);
   const [saveModalOpen, setSaveModalOpen] = React.useState(false);
   const [exitModalOpen, setExitModalOpen] = React.useState(false);
   const [textFields, setTextFields] = React.useState([]);
 
-  //   useEffect(() => {
-  //   let tfs = [];
-  //   if (store.parsed_CSV_Data) {
-  //     for (let idx in store.parsed_CSV_Data[store.key]) {
-  //       tfs.push(
-  //         <TextField
-  //           id={"tf-" + idx}
-  //           defaultValue={store.parsed_CSV_Data[store.key][idx]}
-  //           variant="standard"
-  //           sx={{ m: 1, minWidth: 120 }}
-  //           onChange={(e) => store.parsed_CSV_Data[store.key][idx] = e.target.value}
-  //         />
-  //       );
-  //     }
-  //   }
-  //   setTextFields(tfs);
-  // }, [store.parsed_CSV_Data])
+  useEffect(() => {
+    let tfs = [];
+    if (store.parsed_CSV_Data) {
+      for (let idx in store.parsed_CSV_Data[store.key]) {
+        console.log(111);
+        tfs.push(
+          <TextField
+            id={"tf-" + idx}
+            defaultValue={store.parsed_CSV_Data[store.key][idx]}
+            variant="standard"
+            sx={{ m: 1, minWidth: 120 }}
+            onChange={(e) => store.parsed_CSV_Data[store.key][idx] = e.target.value}
+          />
+        );
+      }
+    }
+    setTextFields(tfs);
+  }, [store.parsed_CSV_Data])
+
+
 
   console.log(store.key);
   console.log(store.label);
@@ -59,15 +65,29 @@ export default function PTravelMap() {
     );
   }
 
-  // const handleChangeKeyStart = (event) => {
-  //   console.log(event.target.value);
-  //   store.setCsvStartKey(event.target.value);
-  // };
+  const handleChangeKey = (event) => {
+    console.log(event.target.value);
 
-  // const handleChangeKeyEnd = (event) => {
-  //   console.log(event.target.value);
-  //   store.setCsvEndKey(event.target.value);
-  // };
+    let tfs = [];
+    for (let idx in store.parsed_CSV_Data[store.key]) {
+      tfs.push(
+        // <input
+        //   id={"search-" + idx}
+        //   defaultValue={store.parsed_CSV_Data[store.key][idx]}
+        //   style={{margin: "8px", width: "100px", height:"30px"}}
+        // />
+        <TextField
+          id={"tf-" + idx}
+          defaultValue={store.parsed_CSV_Data[store.key][idx]}
+          variant="standard"
+          sx={{ m: 1, minWidth: 120 }}
+          onChange={(e) => store.parsed_CSV_Data[store.key][idx] = e.target.value}
+        />
+      );
+    }
+    setTextFields(tfs);
+    store.setCsvKey(event.target.value);
+  };
 
   const handleChangeLabel = (event) => {
     console.log(event.target.value);
@@ -128,12 +148,15 @@ export default function PTravelMap() {
 
     store.setParsedCsvDataWOR(csv_data);
     store.setCsvKeyWithoutRerendering(keys[1]);
+    // store.setCsvKey(keys[1]);
     console.log("setting key to", keys[1]);
     store.setCsvLabelWithoutRerendering(keys[0]);
     console.log("setting label to", keys[0]);
     setMenuItems(keys);
     console.log("setting menu item to", keys);
     // setRenderTable(true);
+    store.setCsvLabel(keys[0]);
+    store.setCsvKey(keys[1]);
   };
 
   // if (store.parsed_CSV_Data && !renderTable){
@@ -145,7 +168,10 @@ export default function PTravelMap() {
     setMenuItems(Object.keys(store.parsed_CSV_Data));
   }
 
-
+  // let maxPage =
+  //   store.label && store.parsed_CSV_Data && store.parsed_CSV_Data[store.label]
+  //     ? parseInt(store.parsed_CSV_Data[store.label].length / ROW_PER_PAGE)
+  //     : 0;
 
   console.log(store.currentMapObject);
   console.log(store.parsed_CSV_Data);
@@ -165,6 +191,8 @@ export default function PTravelMap() {
             <tr>
               <th>
                 <Select
+                  // labelId="demo-simple-select-standard-label"
+                  // id="searchOn"
                   value={store.label ? store.label : "label"}
                   required
                   onChange={handleChangeLabel}
@@ -176,9 +204,14 @@ export default function PTravelMap() {
                   {menuItems.map((mi) => (
                     <MenuItem key={mi} value={mi}>{mi}</MenuItem>
                   ))}
+                  {/* <MenuItem>
+                    <Button variant="text" startDecorator={<Add />}>
+                      New Label
+                    </Button>
+                  </MenuItem> */}
                 </Select>
               </th>
-              {/* <th>
+              <th>
                 <Select
                   labelId="demo-simple-select-standard-label"
                   id="searchOn"
@@ -193,45 +226,40 @@ export default function PTravelMap() {
                   {menuItems.map((mi) => (
                     <MenuItem key={mi} value={mi}>{mi}</MenuItem>
                   ))}
+                  {/* <MenuItem>
+                    <Button variant="text" startDecorator={<Add />}>
+                      New Column
+                    </Button>
+                  </MenuItem> */}
                 </Select>
-              </th> */}
+              </th>
+              {/* <th>Update</th> */}
             </tr>
           </thead>
           <tbody>
-            <td>
-              <Select
-                labelId="select1-label"
-                id="select1"
-                value={store.StartKey ? store.StartKey : "key"}
-                required
-                onChange={handleChangeKeyStart}
-                sx={{ minWidth: "80%" }}
-                MenuProps={{
-                  style: { maxHeight: "50%" },
-                }}
-              >
-                {store.parsed_CSV_Data && store.parsed_CSV_Data[store.label].map((item, index) => (
-                  <MenuItem key={index} value={item}>{item}</MenuItem>  
-                ))}
-              </Select>
-            </td>
-            <td>
-              <Select
-                labelId="select2-label"
-                id="select2"
-                value={store.EndKey ? store.EndKey : "key"}
-                required
-                onChange={handleChangeKeyEnd}
-                sx={{ minWidth: "80%" }}
-                MenuProps={{
-                  style: { maxHeight: "50%" },
-                }}
-              >
-                {store.parsed_CSV_Data && store.parsed_CSV_Data[store.label].map((item, index) => (
-                  <MenuItem key={index} value={item}>{item}</MenuItem>
-                ))}
-              </Select>
-            </td>
+            {store.parsed_CSV_Data &&
+              zip(
+                // store.parsed_CSV_Data[store.label].slice(
+                //   page * ROW_PER_PAGE,
+                //   (page + 1) * ROW_PER_PAGE
+                // ),
+                // textFields.slice(page * ROW_PER_PAGE, (page + 1) * ROW_PER_PAGE)
+                store.parsed_CSV_Data[store.label],
+                textFields
+              ).map((row) => (
+                <tr key={row.name}>
+                  <td>{row[0]}</td>
+                  <td>{row[1]}</td>
+                  {/* <td>
+                    <TextField
+                      id="search"
+                      defaultValue={row.calories}
+                      variant="standard"
+                      sx={{ m: 1, minWidth: 120 }}
+                    />
+                  </td> */}
+                </tr>
+              ))}
           </tbody>
         </Table>
       </div>
@@ -251,6 +279,29 @@ export default function PTravelMap() {
       >
         SAVE
       </Button>
+      {/* <Button
+        variant="solid"
+        className="prev"
+        sx={{ margin: 1 }}
+        disabled={page <= 0}
+        onClick={() => {
+          setPage(page <= 0 ? 0 : page - 1);
+        }}
+      >
+        Prev
+      </Button>
+      Page: {page + 1}
+      <Button
+        variant="solid"
+        className="next"
+        sx={{ margin: 1 }}
+        disabled={page >= maxPage}
+        onClick={() => {
+          setPage(page >= maxPage ? maxPage : page + 1);
+        }}
+      >
+        Next
+      </Button> */}
       <MUISaveChanges
         open={saveModalOpen}
         closeModal={closeSaveModal}

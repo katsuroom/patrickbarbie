@@ -12,8 +12,8 @@ import StoreContext from "@/store";
 
 
 const TravelMap = (props) => {
-    const [start, setStart] = useState('');
-    const [end, setEnd] = useState('');
+    // const [start, setStart] = useState('');
+    // const [end, setEnd] = useState('');
     const mapRef = useRef(null);
     const routeControlRef = useRef(null);
     const [geoJsonData, setGeoJsonData] = useState(null);
@@ -116,14 +116,24 @@ const TravelMap = (props) => {
                 .addEventListener("click", props.openModal);
             setButtonAdded(true);
         }
-        if (!(geoJsonData && store.label && store.StartKey && store.Endkey && store.parsed_CSV_Data)) {
+        if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
             return;
         }
         
         setLoadScripts(true)
-        runDirection(store.StartKey, store.EndKey)
 
-    }, [geoJsonData, store.label, store.StartKey, store.Endkey, store.parsed_CSV_Data]);
+        // runDirection(store.parsed_CSV_Data[store.label][0], store.parsed_CSV_Data[store.key][0]);
+
+    }, [geoJsonData, store.label, store.key, store.parsed_CSV_Data]);
+
+
+    useEffect(() => {
+        if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
+            return;
+        }
+        runDirection(store.parsed_CSV_Data[store.label][0], store.parsed_CSV_Data[store.key][0]);
+    }, [store.label, store.key, store.parsed_CSV_Data])
+
 
     useEffect(() => {
         const loadScript = (src) => {
@@ -135,6 +145,10 @@ const TravelMap = (props) => {
                 document.body.appendChild(script);
             });
         };
+
+        // if (mapRef.current) {
+        //     mapRef.current.remove();
+        // }
 
         loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
             .then(() => {
@@ -211,7 +225,7 @@ const TravelMap = (props) => {
 
     const submitForm = (event) => {
         event.preventDefault();
-        runDirection(start, end);
+        // runDirection(start, end);
         setStart('');
         setEnd('');
     };
