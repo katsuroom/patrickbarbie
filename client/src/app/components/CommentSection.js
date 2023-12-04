@@ -25,8 +25,7 @@ const CommentSection = ({ initialComments }) => {
         }
 
         // check for empty comment
-        if(newCommentText.trim().length == 0)
-        {
+        if (newCommentText.trim().length == 0) {
             alert("Cannot post empty comment.");
             return;
         }
@@ -72,7 +71,7 @@ const CommentSection = ({ initialComments }) => {
                 </div>
             )}
             {comments.map(comment => (
-                <Comment key={comment.id} comment={comment} setComments={setComments} comments={comments}/>
+                <Comment key={comment.id} comment={comment} setComments={setComments} comments={comments} />
             ))}
         </div>
     );

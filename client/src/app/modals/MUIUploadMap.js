@@ -80,7 +80,7 @@ export default function MUIUploadMap() {
 
                     reader.onload = async function (event) {
                         const data = await shp(event.target.result);
-                        geojson = data[2];
+                        geojson = data[data.length - 1];
                         console.log(geojson);
                         store.uploadMapFile(geojson);
                     }

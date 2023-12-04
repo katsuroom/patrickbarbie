@@ -1,12 +1,13 @@
 "use client"
 
 import React, { useEffect, useContext } from "react";
-import PPolitical from "../components/PPolitical";
 import MapEditorToolbar from "../components/MapEditorToolBar";
 import PHeatmap from "../components/PHeatmap";
 
 import MapDisplay from "../components/MapDisplay";
 import StoreContext from "@/store";
+import PTravelMap from "../components/PTravelMap";
+import PPolitical from "../components/PPolitical";
 
 export default function EditScreen() {
   const { store } = useContext(StoreContext);
@@ -39,10 +40,11 @@ export default function EditScreen() {
   const politicalStyle = {
     width: "30%",
     position: "absolute",
-    top: "20%",
+    top: "10%",
     right: "5%",
-    paddingBottom: "10%",
+    maxHeight: "10vh"
   };
+
   const toolbarStyle = {
     justifyContent: "center",
     display: "flex",
@@ -60,13 +62,17 @@ export default function EditScreen() {
         <MapDisplay />
       </div>
       <div style={politicalStyle}>
-        {store.currentMapObject?.mapType === "Political Map" ||
+        {/* {store.currentMapObject?.mapType === "Political Map" ||
         store.currentMapObject?.mapType === "Dot Distribution Map" ||
         store.currentMapObject?.mapType === "Travel Map" ? (
           <PPolitical />
         ) : (
           <PHeatmap />
-        )}
+        )} */}
+
+        {store.mapType === store.mapTypes.POLITICAL_MAP || store.currentMapObject?.mapType === store.mapTypes.POLITICAL_MAP ? <PPolitical /> : null}
+        {store.mapType === store.mapTypes.TRAVEL_MAP || store.currentMapObject?.mapType === store.mapTypes.TRAVEL_MAP ? <PTravelMap /> : null}
+        {store.mapType === store.mapTypes.HEATMAP || store.currentMapObject?.mapType === store.mapTypes.HEATMAP ? <PHeatmap /> : null}
       </div>
     </div>
   );

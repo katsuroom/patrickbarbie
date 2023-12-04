@@ -228,7 +228,6 @@ getMapById = (req, res) => {
           error: "Map not found",
         });
       }
-      console.log("map found: " + JSON.stringify(map));
       return res.status(200).json({
         success: true,
         data: map,
@@ -380,7 +379,7 @@ createCSV = async (req, res) => {
     csvData: body.csvData,
   });
 
-  if (key === null || label === null || csvData === null) {
+  if (body.key === null || body.label === null || body.csvData === null) {
     return res.status(400).json({
       success: false,
       error: "You must provide a key, label, and csvData",

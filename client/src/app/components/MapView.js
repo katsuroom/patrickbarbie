@@ -47,14 +47,17 @@ export default function MapView({ fileSelected, projectName, mapType }) {
     // Handling the like click
     const handleLikeClick = () => {
       if (auth.loggedIn) {
-        console.log(store.currentMapObject.likedUsers.includes(auth.user.username));
-        if(store.currentMapObject.likedUsers.includes(auth.user.username)){
-          alert("You have already liked this map!");
-        }else{
-          store.currentMapObject.likedUsers.push(auth.user.username);
-          console.log(store.currentMapObject.likedUsers);
-          store.updateMap(store.currentMapObject);
+        let currentMap = store.currentMapObject;
+        console.log(currentMap.likedUsers.includes(auth.user.username));
+        if(currentMap.likedUsers.includes(auth.user.username)){
+           let index = currentMap.likedUsers.findIndex((user) => user == auth.user.username);
+           currentMap.likedUsers.splice(index, 1);
         }
+        else {
+          currentMap.likedUsers.push(auth.user.username);
+        }
+
+        store.updateMap(currentMap);
       }
     };
 
@@ -75,7 +78,7 @@ export default function MapView({ fileSelected, projectName, mapType }) {
         let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(store.rawMapFile));
         let downloadAnchor = document.getElementById("download-anchor");
         downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", "map.json");
+        downloadAnchor.setAttribute("download", `${store.currentMapObject.title || "map"}.json`);
         downloadAnchor.click();
     }
 
@@ -86,7 +89,7 @@ export default function MapView({ fileSelected, projectName, mapType }) {
     // Main component render
     const res = (
       <div style={{ overflowY: "scroll", height: "80vh" }}>
-        <div style={{ width: "76vw" }}>
+        <div >
           <MapDisplay />
         </div>
         <div
@@ -126,9 +129,9 @@ export default function MapView({ fileSelected, projectName, mapType }) {
               <IconButton
                 className="likeButton"
                 onClick={handleLikeClick}
-                disabled={!auth.loggedIn || store.currentMapObject?.likedUsers.includes(auth.user.username)}
+                disabled={!auth.loggedIn /*|| store.currentMapObject?.likedUsers.includes(auth.user.username)*/}
               >
-                <FavoriteIcon />
+                <FavoriteIcon sx={{color: store.currentMapObject?.likedUsers.includes(auth.user?.username) ? "red" : "dark-gray"}}/>
               </IconButton>
               <Typography
                 sx={{ fontFamily: "Sen", color: "black", marginLeft: 1 }}

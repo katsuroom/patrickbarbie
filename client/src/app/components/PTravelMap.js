@@ -13,9 +13,9 @@ import CsvFileReader from "./CsvFileReader";
 import MUISaveChanges from "../modals/MUISaveChanges";
 import MUIExit from "../modals/MUIExitModal";
 import { useContext, useEffect } from "react";
-import StoreContext, { CurrentModal } from "@/store";
+import StoreContext, {CurrentModal} from "@/store";
 
-export default function PPolitical() {
+export default function PTravelMap() {
   const { store } = useContext(StoreContext);
 
   const [menuItems, setMenuItems] = React.useState([]);
@@ -24,40 +24,35 @@ export default function PPolitical() {
   const [textFields, setTextFields] = React.useState([]);
 
   useEffect(() => {
-  let tfs = [];
-  if (store.parsed_CSV_Data) {
-    for (let idx in store.parsed_CSV_Data[store.key]) {
-      console.log(111);
-      tfs.push(
-        <TextField
-          id={"tf-" + idx}
-          defaultValue={store.parsed_CSV_Data[store.key][idx]}
-          variant="standard"
-          sx={{ m: 1, minWidth: 120 }}
-          onChange={(e) => store.parsed_CSV_Data[store.key][idx] = e.target.value}
-        />
-      );
+    let tfs = [];
+    if (store.parsed_CSV_Data) {
+      for (let idx in store.parsed_CSV_Data[store.key]) {
+        console.log(111);
+        tfs.push(
+          <TextField
+            id={"tf-" + idx}
+            defaultValue={store.parsed_CSV_Data[store.key][idx]}
+            variant="standard"
+            sx={{ m: 1, minWidth: 120 }}
+            onChange={(e) => store.parsed_CSV_Data[store.key][idx] = e.target.value}
+          />
+        );
+      }
     }
-  }
-  setTextFields(tfs);
-}, [store.parsed_CSV_Data, store.key, store.label])
-
-
-
-  console.log(store.key);
-  console.log(store.label);
+    setTextFields(tfs);
+  }, [store.parsed_CSV_Data, store.key, store.label])
 
   // const ROW_PER_PAGE = 30;
 
   function zip(...arrays) {
     let length;
-    try{
+    try {
       length = Math.min(...arrays.map((arr) => arr.length));
     }
-    catch(error){
+    catch (error) {
       length = 0;
     }
-    
+
     return Array.from({ length }, (_, index) =>
       arrays.map((arr) => arr[index])
     );
@@ -83,7 +78,7 @@ export default function PPolitical() {
         />
       );
     }
-    setTextFields(tfs);
+    // setTextFields(tfs);
     store.setCsvKey(event.target.value);
   };
 
@@ -250,45 +245,12 @@ export default function PPolitical() {
           </tbody>
         </Table>
       </div>
-      <Button
-        variant="solid"
-        className="exit"
-        sx={{ margin: 1 }}
-        onClick={openExitModal}
-      >
+      <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
         EXIT
       </Button>
-      <Button
-        variant="solid"
-        className="save"
-        sx={{ margin: 1 }}
-        onClick={openSaveModal}
-      >
+      <Button variant="solid" className="save" sx={{ margin: 1 }} onClick={openSaveModal}>
         SAVE
       </Button>
-      {/* <Button
-        variant="solid"
-        className="prev"
-        sx={{ margin: 1 }}
-        disabled={page <= 0}
-        onClick={() => {
-          setPage(page <= 0 ? 0 : page - 1);
-        }}
-      >
-        Prev
-      </Button>
-      Page: {page + 1}
-      <Button
-        variant="solid"
-        className="next"
-        sx={{ margin: 1 }}
-        disabled={page >= maxPage}
-        onClick={() => {
-          setPage(page >= maxPage ? maxPage : page + 1);
-        }}
-      >
-        Next
-      </Button> */}
       <MUISaveChanges />
       <MUIExit />
     </div>

@@ -2,12 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
-import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { Typography } from "@mui/material";
 import "./MUIPublishMap.css";
-import "./ModalAnimation.css";
 
 export const ConfirmationDialog = ({
   open,
