@@ -15,7 +15,7 @@ import MUIExit from "../modals/MUIExitModal";
 import { useContext, useEffect } from "react";
 import StoreContext, {CurrentModal} from "@/store";
 
-export default function PPolitical() {
+export default function PTravelMap() {
   const { store } = useContext(StoreContext);
 
   const [menuItems, setMenuItems] = React.useState([]);
@@ -24,35 +24,35 @@ export default function PPolitical() {
   const [textFields, setTextFields] = React.useState([]);
 
   useEffect(() => {
-  let tfs = [];
-  if (store.parsed_CSV_Data) {
-    for (let idx in store.parsed_CSV_Data[store.key]) {
-      console.log(111);
-      tfs.push(
-        <TextField
-          id={"tf-" + idx}
-          defaultValue={store.parsed_CSV_Data[store.key][idx]}
-          variant="standard"
-          sx={{ m: 1, minWidth: 120 }}
-          onChange={(e) => store.parsed_CSV_Data[store.key][idx] = e.target.value}
-        />
-      );
+    let tfs = [];
+    if (store.parsed_CSV_Data) {
+      for (let idx in store.parsed_CSV_Data[store.key]) {
+        console.log(111);
+        tfs.push(
+          <TextField
+            id={"tf-" + idx}
+            defaultValue={store.parsed_CSV_Data[store.key][idx]}
+            variant="standard"
+            sx={{ m: 1, minWidth: 120 }}
+            onChange={(e) => store.parsed_CSV_Data[store.key][idx] = e.target.value}
+          />
+        );
+      }
     }
-  }
-  setTextFields(tfs);
-}, [store.parsed_CSV_Data])
+    setTextFields(tfs);
+  }, [store.parsed_CSV_Data])
 
   // const ROW_PER_PAGE = 30;
 
   function zip(...arrays) {
     let length;
-    try{
+    try {
       length = Math.min(...arrays.map((arr) => arr.length));
     }
-    catch(error){
+    catch (error) {
       length = 0;
     }
-    
+
     return Array.from({ length }, (_, index) =>
       arrays.map((arr) => arr[index])
     );
@@ -136,6 +136,8 @@ export default function PPolitical() {
     setMenuItems(keys);
     console.log("setting menu item to", keys);
     // setRenderTable(true);
+    store.setCsvLabel(keys[0]);
+    store.setCsvKey(keys[1]);
   };
 
   // if (store.parsed_CSV_Data && !renderTable){

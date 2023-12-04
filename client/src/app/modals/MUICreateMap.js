@@ -46,6 +46,7 @@ export default function MUICreateMap() {
   };
 
   const handleCreateMap = () => {
+    store.mapType = mapType
     store.closeModal();
     store.createMap(projectName, mapType);
     router.push("/edit");

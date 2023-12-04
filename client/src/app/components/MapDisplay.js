@@ -11,6 +11,7 @@ import dynamic from "next/dynamic";
 
 const GeoJSONDisplay = dynamic(() => import('./GeoJSONDisplay'));
 import "leaflet/dist/leaflet.css";
+import TravelMap from "./TravelMap";
 
 export default function MapDisplay() {
   const { store } = useContext(StoreContext);
@@ -37,8 +38,21 @@ export default function MapDisplay() {
             }}
           />
         )}
-        {store.rawMapFile ? (
-          <GeoJSONDisplay
+        {
+          store.rawMapFile && store.currentMapObject && store.currentMapObject.mapType
+          && store.mapType === store.mapTypes.TRAVEL_MAP && <TravelMap
+            file={store.rawMapFile}
+            openModal={() => {
+              setDownloadModalOpen(true);
+            }}
+            imageType={imageType}
+            completeDownloadCB={() => {
+              setImageType(null);
+            }}
+            downloadComplete={false} />
+        }
+        {store.rawMapFile && store.currentMapObject && store.currentMapObject.mapType 
+          && store.mapType === store.mapTypes.HEATMAP && <GeoJSONDisplay
             file={store.rawMapFile}
             openModal={() => {
               setDownloadModalOpen(true);
@@ -49,7 +63,7 @@ export default function MapDisplay() {
             }}
             downloadComplete={false}
           />
-        ) : null}
+        )}
       </div>
     </div>
   );
