@@ -11,7 +11,7 @@ import dynamic from "next/dynamic";
 
 const GeoJSONDisplay = dynamic(() => import('./GeoJSONDisplay'));
 import "leaflet/dist/leaflet.css";
-import TravelMap from "./TravelMap";
+import TravelMap from "./travelmap";
 
 export default function MapDisplay() {
   const { store } = useContext(StoreContext);
@@ -63,7 +63,7 @@ export default function MapDisplay() {
             }}
             downloadComplete={false}
           />
-        )}
+        }
       </div>
     </div>
   );
