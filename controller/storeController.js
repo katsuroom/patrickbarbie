@@ -350,7 +350,7 @@ forkMap = (req, res) => {
       return res.status(201).json({
         success: true,
         mapData: map,
-        message: "Map created!",
+        message: "Map created! (Forked)",
       });
     })
     .catch((error) => {
