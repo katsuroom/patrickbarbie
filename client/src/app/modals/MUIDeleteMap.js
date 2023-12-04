@@ -65,7 +65,7 @@ export default function MUIDeleteMap() {
             <Button onClick={handleSave} variant="contained" sx={buttonStyle}>
               Confirm
             </Button>
-            <Button onClick={onClose} variant="contained" sx={buttonStyle}>
+            <Button onClick={onClose} variant="contained" sx={buttonStyle} className = "modal-button">
               Cancel
             </Button>
           </div>

@@ -1,5 +1,5 @@
 describe("template spec", () => {
-    it("add a long comment", () => {
+    it("zoom in asia", () => {
         cy.visit("https://patrick-barbie-f64046e3bb4b.herokuapp.com/");
 
         cy.wait(500);
@@ -17,8 +17,10 @@ describe("template spec", () => {
 
         cy.contains(".map-list-name", "Asia").click();
 
-        cy.get('input[placeholder="Add a comment..."]').type("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        cy.contains("button", "Post").click();
+        cy.wait(500); 
+
+        cy.get('.leaflet-control-zoom-in').click(); 
+
 
     });
 });
