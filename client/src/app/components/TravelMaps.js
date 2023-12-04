@@ -131,7 +131,11 @@ const TravelMap = (props) => {
         if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
             return;
         }
-        runDirection(store.parsed_CSV_Data[store.label][0], store.parsed_CSV_Data[store.key][0]);
+
+        for (let i = 0; i < store.parsed_CSV_Data[store.label].length; i++) {
+
+            runDirection(store.parsed_CSV_Data[store.label][i], store.parsed_CSV_Data[store.key][i]);
+        }
     }, [store.label, store.key, store.parsed_CSV_Data])
 
 
@@ -165,11 +169,11 @@ const TravelMap = (props) => {
             })
             .catch(error => console.error(error));
 
-        return () => {
-            if (mapRef.current) {
-                mapRef.current.remove();
-            }
-        };
+        // return () => {
+        //     if (mapRef.current) {
+        //         mapRef.current.remove();
+        //     }
+        // };
     }, [loadScripts]);
 
     const runDirection = async (start, end) => {
@@ -200,9 +204,9 @@ const TravelMap = (props) => {
             });
             console.log('endIcon' + endIcon)
 
-            if (routeControlRef.current) {
-                mapRef.current.removeControl(routeControlRef.current);
-            }
+            // if (routeControlRef.current) {
+            //     mapRef.current.removeControl(routeControlRef.current);
+            // }
 
             const routingControl = L.Routing.control({
                 waypoints: [
