@@ -114,8 +114,7 @@ export default function GeoJSONDisplay(props) {
       const saveImageButton = L.control({ position: "bottomleft" });
       saveImageButton.onAdd = function () {
         this._div = L.DomUtil.create("div", "saveImageButton");
-        this._div.innerHTML =
-          '<Button id="saveImageButton" >Save Image</Button>';
+        this._div.innerHTML = '<Button id="saveImageButton" data-cy="save-image-button">Save Image</Button>';
         return this._div;
       };
       saveImageButton.addTo(mapRef.current);
