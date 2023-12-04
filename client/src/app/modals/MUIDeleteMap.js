@@ -62,6 +62,9 @@ export default function MUIDeleteMap() {
             Are you sure you want to delete this map?
           </div>
           <div className="confirm">
+            <Button onClick={handleSave} variant="contained" sx={buttonStyle} className = "modal-button-confirm">
+              Confirm
+            </Button>
             <Button onClick={onClose} variant="contained" sx={buttonStyle} className = "modal-button">
               Cancel
             </Button>

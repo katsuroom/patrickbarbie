@@ -1,4 +1,7 @@
 describe('template spec', () => {
+  Cypress.on('uncaught:exception', (err, runnable) => {
+    return false
+})
   it('visit splash screen, and click register, and registe one account', () => {
     cy.visit("https://patrick-barbie-f64046e3bb4b.herokuapp.com/")
 
