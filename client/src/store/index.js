@@ -60,11 +60,12 @@ function StoreContextProvider(props) {
     currentModal: CurrentModal.NONE, // the currently open modal
     mapFile: null, // map file uploaded for creating a new map
     rawMapFile: null,
-    key: null, // csv key [column name] for map displaying
     label: null,
     currentModal: CurrentModal.NONE, // the currently open modal
     rawMapFile: null, // geojson object
     key: null, // csv key [column name] for map displaying
+    StartKey: null, // csv key [column name] for map displaying
+    EndKey: null, // csv key [column name] for map displaying
     parsed_CSV_Data: null,
     mapType: null,
     currentMapObject: null,
@@ -405,6 +406,34 @@ function StoreContextProvider(props) {
       });
     }
   };
+
+
+  // store.setCsvStartKey = function (StartKey) {
+  //   store.setCsvKeyWithoutRerendering(StartKey);
+
+  //   if (StartKey !== undefined) {
+  //     store.StartKey = StartKey; 
+  //     console.log(store.StartKey);
+  //     storeReducer({
+  //       type: StoreActionType.SET_CSV_KEY,
+  //       payload: { StartKey },
+  //     });
+  //   }
+  // };
+
+  // store.setCsvEndKey = function (EndKey) {
+  //   store.setCsvKeyWithoutRerendering(EndKey);
+
+  //   if (EndKey !== undefined) {
+  //     store.EndKey = EndKey;
+  //     console.log(store.EndKey);
+  //     storeReducer({
+  //       type: StoreActionType.SET_CSV_KEY,
+  //       payload: { EndKey },
+  //     });
+  //   }
+  // };
+
 
   store.setCsvKeyWithoutRerendering = function (key) {
     if (key !== undefined) {

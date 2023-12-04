@@ -7,6 +7,7 @@ import PHeatmap from "../components/PHeatmap";
 
 import MapDisplay from "../components/MapDisplay";
 import StoreContext from "@/store";
+import PTravelMap from "../components/PTravelMap";
 
 export default function EditScreen() {
   const { store } = useContext(StoreContext);
@@ -60,13 +61,16 @@ export default function EditScreen() {
         <MapDisplay />
       </div>
       <div style={politicalStyle}>
-        {store.currentMapObject?.mapType === "Political Map" ||
+        {/* {store.currentMapObject?.mapType === "Political Map" ||
         store.currentMapObject?.mapType === "Dot Distribution Map" ||
         store.currentMapObject?.mapType === "Travel Map" ? (
           <PPolitical />
         ) : (
           <PHeatmap />
-        )}
+        )} */}
+
+        {store.mapType === store.mapTypes.TRAVEL_MAP && <PTravelMap />}
+        {store.mapType === store.mapTypes.HEATMAP && <PHeatmap />}
       </div>
     </div>
   );

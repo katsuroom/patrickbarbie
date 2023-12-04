@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import './travelmap.css';
+import './TravelMap.css';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
@@ -116,12 +116,14 @@ const TravelMap = (props) => {
                 .addEventListener("click", props.openModal);
             setButtonAdded(true);
         }
-        if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
+        if (!(geoJsonData && store.label && store.StartKey && store.Endkey && store.parsed_CSV_Data)) {
             return;
         }
         
         setLoadScripts(true)
-    }, [geoJsonData, store.label, store.key, store.parsed_CSV_Data]);
+        runDirection(store.StartKey, store.EndKey)
+
+    }, [geoJsonData, store.label, store.StartKey, store.Endkey, store.parsed_CSV_Data]);
 
     useEffect(() => {
         const loadScript = (src) => {
@@ -217,13 +219,13 @@ const TravelMap = (props) => {
     return (
         <div>
             {/* <div id='map' style={{ height: '100vh', width: '100%' }}></div> */}
-            <div className="formBlock">
+            {/* <div className="formBlock">
                 <form id="form" onSubmit={submitForm}>
                     <input type="text" value={start} onChange={e => setStart(e.target.value)} className="input" id="start" placeholder="Choose starting point" />
                     <input type="text" value={end} onChange={e => setEnd(e.target.value)} className="input" id="destination" placeholder="Choose destination point" />
                     <button style={{ display: 'none' }} type="submit">Get Directions</button>
                 </form>
-            </div>
+            </div> */}
             <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div>
         </div>
 
