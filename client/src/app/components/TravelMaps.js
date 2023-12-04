@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import './TravelMap.css';
+import './travelmap.css';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
