@@ -230,7 +230,8 @@ export default function PHeatmap() {
                 // ),
                 // textFields.slice(page * ROW_PER_PAGE, (page + 1) * ROW_PER_PAGE)
                 store.parsed_CSV_Data[store.label],
-                textFields
+                store.parsed_CSV_Data[store.key]
+                // textFields
               ).map((row) => (
                 <tr key={row.name}>
                   <td>{row[0]}</td>
