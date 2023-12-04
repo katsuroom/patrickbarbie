@@ -54,10 +54,10 @@ export default function MUISaveChanges() {
         <div className="alertContainer">
           <div className="alert">Do you want to save your changes?</div>
           <div className="confirm">
-            <Button onClick={handleClose} variant="contained" sx={buttonStyle}>
+            <Button onClick={handleClose} variant="contained" sx={buttonStyle} className="modal-button-save-cancel">
               Cancel
             </Button>
-            <Button onClick={handleSave} variant="contained" sx={buttonStyle}>
+            <Button onClick={handleSave} variant="contained" sx={buttonStyle} className="modal-button-save-save">
               Save
             </Button>
           </div>

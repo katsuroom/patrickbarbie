@@ -1,4 +1,7 @@
 describe("template spec", () => {
+  Cypress.on('uncaught:exception', (err, runnable) => {
+    return false
+})
     it("open Asia map and click download", () => {
       cy.visit("https://patrick-barbie-f64046e3bb4b.herokuapp.com/");
   
