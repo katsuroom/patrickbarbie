@@ -60,10 +60,10 @@ export default function MUIPublishMap() {
           <div className="alertContainer">
             <div className="alert">Are you sure you want to publish this map?</div>
             <div className="confirm">
-              <Button onClick={onClose} variant="contained" sx={buttonStyle}>
+              <Button onClick={onClose} variant="contained" sx={buttonStyle} className="modal-button-publish-cancel">
                 Cancel
               </Button>
-              <Button onClick={handlePublish} variant="contained" sx={buttonStyle}>
+              <Button onClick={handlePublish} variant="contained" sx={buttonStyle} className="modal-button-confirm">
                 Confirm
               </Button>
             </div>

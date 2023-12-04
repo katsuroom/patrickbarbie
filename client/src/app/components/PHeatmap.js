@@ -13,16 +13,14 @@ import CsvFileReader from "./CsvFileReader";
 import MUISaveChanges from "../modals/MUISaveChanges";
 import MUIExit from "../modals/MUIExitModal";
 import { useContext, useEffect } from "react";
-import StoreContext from "@/store";
+import StoreContext, { CurrentModal } from "@/store";
 
-export default function PPolitical() {
+export default function PHeatmap() {
   const { store } = useContext(StoreContext);
 
   const [menuItems, setMenuItems] = React.useState([]);
   // const [renderTable, setRenderTable] = React.useState(false);
   // const [page, setPage] = React.useState(0);
-  const [saveModalOpen, setSaveModalOpen] = React.useState(false);
-  const [exitModalOpen, setExitModalOpen] = React.useState(false);
   const [textFields, setTextFields] = React.useState([]);
 
   useEffect(() => {
@@ -42,7 +40,7 @@ export default function PPolitical() {
     }
   }
   setTextFields(tfs);
-}, [store.parsed_CSV_Data])
+}, [store.parsed_CSV_Data, store.key, store.label])
 
 
 
@@ -66,10 +64,9 @@ export default function PPolitical() {
   }
 
   const handleChangeKey = (event) => {
-    console.log(event.target.value);
-
     let tfs = [];
-    for (let idx in store.parsed_CSV_Data[store.key]) {
+    for (let idx in store.parsed_CSV_Data[event.target.value]) {
+      console.log("gay", idx);
       tfs.push(
         // <input
         //   id={"search-" + idx}
@@ -78,10 +75,10 @@ export default function PPolitical() {
         // />
         <TextField
           id={"tf-" + idx}
-          defaultValue={store.parsed_CSV_Data[store.key][idx]}
+          defaultValue={store.parsed_CSV_Data[event.target.value][idx]}
           variant="standard"
           sx={{ m: 1, minWidth: 120 }}
-          onChange={(e) => store.parsed_CSV_Data[store.key][idx] = e.target.value}
+          onChange={(e) => store.parsed_CSV_Data[event.target.value][idx] = e.target.value}
         />
       );
     }
@@ -170,7 +167,7 @@ export default function PPolitical() {
     <div>
       <div className="propertyTitle">Property</div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
-      <div style={{ overflow: "auto", maxHeight: "400px" }}>
+      <div style={{ overflow: "auto", maxHeight: "60vh" }}>
         <Table
           className="property-table"
           sx={{ "& thead th::nth-of-type(1)": { width: "40%" } }}
@@ -233,7 +230,8 @@ export default function PPolitical() {
                 // ),
                 // textFields.slice(page * ROW_PER_PAGE, (page + 1) * ROW_PER_PAGE)
                 store.parsed_CSV_Data[store.label],
-                textFields
+                store.parsed_CSV_Data[store.key]
+                // textFields
               ).map((row) => (
                 <tr key={row.name}>
                   <td>{row[0]}</td>
@@ -290,12 +288,8 @@ export default function PPolitical() {
       >
         Next
       </Button> */}
-      <MUISaveChanges
-        open={saveModalOpen}
-        closeModal={closeSaveModal}
-        saveCB={saveCsvChanges}
-      />
-      <MUIExit open={exitModalOpen} closeModal={closeExitModal} />
+      <MUISaveChanges />
+      <MUIExit />
     </div>
   );
 }

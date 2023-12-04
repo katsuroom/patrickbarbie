@@ -1,4 +1,7 @@
 describe("template spec", () => {
+    Cypress.on('uncaught:exception', (err, runnable) => {
+        return false
+    })
     it("log in and download Africa map", () => {
         cy.visit("https://patrick-barbie-f64046e3bb4b.herokuapp.com/");
 

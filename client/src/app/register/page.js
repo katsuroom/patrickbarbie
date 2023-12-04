@@ -53,7 +53,7 @@ export default function RegisterScreen() {
             - 1 special character
         */
         if(password.length < 8) {
-            setError("Password must contain at least 8 charcters");
+            setError("Password must contain at least 8 characters");
             return;
         }
 

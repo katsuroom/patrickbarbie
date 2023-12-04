@@ -63,14 +63,15 @@ export default function MUIForkMap() {
             <div className="alert">Enter the new name of the forked map:</div>
             <div className="confirm">
               <input
+                className = "projectName"
                 type="text"
                 onChange={handleInputChange}
                 placeholder="Your Project Name"
               />
-              <Button onClick={handleSave} variant="contained" sx={buttonStyle}>
+              <Button onClick={handleSave} variant="contained" sx={buttonStyle} className = "modal-button-fork-confirm">
                 Confirm
               </Button>
-              <Button onClick={onClose} variant="contained" sx={buttonStyle}>
+              <Button onClick={onClose} variant="contained" sx={buttonStyle} className = "modal-button-fork-cancel">
                 Cancel
               </Button>
             </div>

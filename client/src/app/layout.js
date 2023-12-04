@@ -4,6 +4,7 @@ import { AuthContextProvider } from '@/auth';
 import { StoreContextProvider } from '@/store';
 import TitleBar from './components/TitleBar';
 import StatusBar from './components/StatusBar';
+import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,6 +23,7 @@ export default function RootLayout({ children }) {
             {children}
             <a id="download-anchor" style={{display: "none"}}></a>
             <StatusBar />
+            <Script src="https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js"></Script>
           </body>
         </StoreContextProvider>
       </AuthContextProvider>
