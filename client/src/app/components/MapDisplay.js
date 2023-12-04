@@ -12,7 +12,7 @@ import dynamic from "next/dynamic";
 const GeoJSONDisplay = dynamic(() => import('./GeoJSONDisplay'));
 const ProportionalMap = dynamic(() => import('./ProportionalMap'));
 import "leaflet/dist/leaflet.css";
-import TravelMap from "./TravelMaps";
+// import TravelMap from "./TravelMaps";
 const TravelMap = dynamic(() => import('./TravelMaps'));
 
 
