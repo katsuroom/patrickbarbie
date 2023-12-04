@@ -13,6 +13,12 @@ npm install
 npm run dev
 ```
 
+cypress testing:
+```
+patrickbarbie>
+npx cypress open
+```
+
 BEFORE MERGING TO MAIN:
 - git checkout main --> go to main
 - git pull --> get most remote changes for main

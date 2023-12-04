@@ -45,7 +45,7 @@ export default function TitleBar() {
             sx={{
               position: "absolute",
               top: "1%",
-              left: "8%",
+              left: "10vw",
               fontSize: "30pt",
               color:
                 store.currentView === store.viewTypes.HOME
@@ -71,7 +71,7 @@ export default function TitleBar() {
             sx={{
               position: "absolute",
               top: "1%",
-              left: "13%",
+              left: "16vw",
               fontSize: "30pt",
               color:
                 store.currentView === store.viewTypes.COMMUNITY
@@ -92,7 +92,7 @@ export default function TitleBar() {
         ) : (
           <></>
         )}
-        <Box sx={{ position: "absolute", top: "1%", right: "50%" }}>
+        <Box sx={{ position: "absolute", top: "1%", left: "30%" }}>
           {!store.disableSearchBar ? <SearchBar /> : <></>}
         </Box>
         <IconButton

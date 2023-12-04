@@ -92,6 +92,60 @@ export default function GeoJSONDisplay(props) {
             ).addTo(mapRef.current);
             markers.current.push(label);
           }
+          else if(feature.properties.NAME_0 || feature.properties.NAME_1 || feature.properties.NAME_2)
+          {
+            // display Shapefile
+            if (feature.properties.NAME_2) {
+              const countryLabel = L.marker(layer.getBounds().getCenter(), {
+                icon: L.divIcon({
+                  className: 'countryLabel',
+                  html: feature.properties.NAME_2,
+                  iconSize: [1000, 0],
+                  iconAnchor: [0, 0]
+                })
+              }).addTo(mapRef.current);
+              markers.current.push(countryLabel);
+            }
+            else if (feature.properties.NAME_1) {
+              const stateLabel = L.marker(layer.getBounds().getCenter(), {
+                icon: L.divIcon({
+                  className: 'stateLabel',
+                  html: feature.properties.NAME_1,
+                  iconSize: [1000, 0],
+                  iconAnchor: [0, 0]
+                })
+              }).addTo(mapRef.current);
+              markers.current.push(stateLabel);
+            }
+            else if (feature.properties.NAME_0) {
+              const cityLabel = L.marker(layer.getBounds().getCenter(), {
+                icon: L.divIcon({
+                  className: 'cityLabel',
+                  html: feature.properties.NAME_0,
+                  iconSize: [1000, 0],
+                  iconAnchor: [0, 0]
+                })
+              }).addTo(mapRef.current);
+              markers.current.push(cityLabel);
+            }
+          }
+          else // KML
+          {
+            if (feature.properties.name) {
+              var htmlData = feature.properties.name;
+            }else{
+              htmlData = "Area: " + feature.properties.shape_area;
+            }
+              const label = L.marker(layer.getBounds().getCenter(), {
+                icon: L.divIcon({
+                  className: 'countryLabel',
+                  html: htmlData,
+                  iconSize: [1000, 0],
+                  iconAnchor: [0, 0]
+                })
+              }).addTo(mapRef.current);
+              markers.current.push(label);
+          }
         },
       });
 

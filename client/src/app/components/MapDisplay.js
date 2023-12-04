@@ -52,9 +52,10 @@ export default function MapDisplay() {
             }}
             downloadComplete={false} />
         }
-        {store.rawMapFile && store.currentMapObject && store.currentMapObject.mapType 
+        {store.rawMapFile && store.currentMapObject?.mapType != store.mapTypes.TRAVEL_MAP
+        /* && store.currentMapObject && store.currentMapObject.mapType 
           && (store.mapType === store.mapTypes.HEATMAP ||
-          store.currentMapObject.mapType === store.mapTypes.HEATMAP) && <GeoJSONDisplay
+          store.currentMapObject.mapType === store.mapTypes.HEATMAP)*/ && <GeoJSONDisplay
             file={store.rawMapFile}
             openModal={() => {
               setDownloadModalOpen(true);
