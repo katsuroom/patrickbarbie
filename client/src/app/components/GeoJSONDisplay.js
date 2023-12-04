@@ -247,8 +247,8 @@ export default function GeoJSONDisplay(props) {
 
   return (
     <div>
-      <script src="https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/leaflet-heatmap@1.0.0/leaflet-heatmap.js"></script>
+      <Script src="https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js" strategy="beforeInteractive"></Script>
+      <Script src="https://cdn.jsdelivr.net/npm/leaflet-heatmap@1.0.0/leaflet-heatmap.js" strategy="beforeInteractive"></Script>
       <div id={"map-display"} style={{height: `${mapHeight}px`, margin: '10px' }}></div>
     </div>
   );
