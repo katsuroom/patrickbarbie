@@ -37,7 +37,7 @@ export default function MapDisplay() {
             }}
           />
         )}
-        {store.rawMapFile && store.currentMapObject && store.currentMapObject.mapType && (
+        {store.rawMapFile ? (
           <GeoJSONDisplay
             file={store.rawMapFile}
             openModal={() => {
@@ -49,7 +49,7 @@ export default function MapDisplay() {
             }}
             downloadComplete={false}
           />
-        )}
+        ) : null}
       </div>
     </div>
   );

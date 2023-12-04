@@ -228,7 +228,6 @@ getMapById = (req, res) => {
           error: "Map not found",
         });
       }
-      console.log("map found: " + JSON.stringify(map));
       return res.status(200).json({
         success: true,
         data: map,

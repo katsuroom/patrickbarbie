@@ -31,7 +31,6 @@ const MapSchema = new Schema(
     title: { type: String, required: true },
     author: { type: String, required: true },
     views: { type: Number, required: true, default: 0 },
-    likes: { type: Number, required: true, default: 0 },
     likedUsers: { type: Array, required: false },
     isPublished: { type: Boolean, required: true, default: false },
     mapData: { type: Buffer, required: true },

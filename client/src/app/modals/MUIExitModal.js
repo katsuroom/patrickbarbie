@@ -1,155 +1,81 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect, useContext } from "react";
-import StoreContext from "@/store";
+import React, { useContext } from "react";
+import StoreContext, { CurrentModal } from "@/store";
 
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import Alert from "@mui/material/Alert";
-import './MUIPublishMap.css'
-import './ModalAnimation.css'
+import "./MUIPublishMap.css";
 import { useRouter } from "next/navigation";
 
-export const ConfirmationDialog = ({
-    open,
-    onClose,
-    onConfirm,
-    confirmationInfo,
-    onDiscard
-  }) => {
-    const [openDialog, setOpenDialog] = useState(open);
-    useEffect(() => {
-      setOpenDialog(open);
-    }, [open]);
-    const buttonStyle = {
-      mt: 1,
-      mb: 3,
-      backgroundColor: "white",
-      color: "black",
-      ":hover": {
-        backgroundColor: "lightpink",
-      },
-      border: "3px solid white",
-      width: "80px",
-      margin: "20px",
-    };
-  
-    return (
-      <Modal open={openDialog} onClose={onClose}>
-        <Box
-          sx={{
-            position: "absolute",
-            width: 500,
-            bgcolor: "lightPink",
-            color: "black",
-            border: "2px solid #000",
-            boxShadow: 24,
-            p: 10,
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            padding: 0,
-            textAlign: "center",
-          }}
-          className="modal-root"
-        >
-          <div
-            className={openDialog ? "modal-dialog is-visible" : "modal-dialog"}
-          >
-            <header className="dialog-header">
-              <Alert
-                style={{ fontSize: 20, width: "90%", height: 100 }}
-                severity="error"
-              >
-                {confirmationInfo}
-              </Alert>
-            </header>
-            <div className="ErrorModalSouth">
-              <div className="alertContainer" sx={{}}>
-                <div className="confrim">
-                <Button
-                    onClick={onClose}
-                    variant="contained"
-                    sx={buttonStyle}
-                    className="modal-button"
-                  >
-                    Cancel
-                  </Button>
-                                  <Button
-                    onClick={onDiscard}
-                    variant="contained"
-                    sx={buttonStyle}
-                    className="modal-button"
-                  >
-                    Discard
-                  </Button>
-                  <Button
-                    onClick={onConfirm}
-                    variant="contained"
-                    sx={buttonStyle}
-                    className="modal-button"
-                  >
-                    Save
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Box>
-      </Modal>
-    );
-  };
-  
-  
-
-const MUIExit = (props) => {
-    const router = useRouter();
-    const [open, setOpen] = useState(props.open);
+export default function MUIExit() {
+  const router = useRouter();
   const { store } = useContext(StoreContext);
 
+  const buttonStyle = {
+    mt: 1,
+    mb: 3,
+    backgroundColor: "white",
+    color: "black",
+    ":hover": {
+      backgroundColor: "lightpink",
+    },
+    border: "3px solid white",
+    width: "80px",
+    margin: "20px",
+  };
 
-    const handleOpen = () => setOpen(true);
-    useEffect(() => {
-        setOpen(props.open);
-    }, [props.open]);
+  const handleClose = () => {
+    store.closeModal();
+  };
 
-    const handleClose = () => {
-        props.closeModal();
-    }
+  const handleSave = () => {
+    store.saveCSV();
+    console.log("Map Saved!");
+    router.push("/main");
+  };
 
-    const confirmationInfo = "Do you want to save your changes before leaving this page?";
+  const handleDiscard = () => {
+    console.log("Map Discarded!");
+    router.push("/main");
+  };
 
-    const handleSave = () => {
-        store.saveCSV();
-        console.log("Map Saved!");
-
-
-        // TODO: save here ...
-
-        router.push("/main");
-    };
-
-    const handleDiscard = () => {
-        console.log("Map Discarded!");
-        router.push("/main");
-    }
-
-
-
-    return (
-        <div>
-             {/* //Save button should link to here */}
-            {/* <Button onClick={handleOpen}>Open Confirmation</Button> */}
-            <ConfirmationDialog
-                open={open}
-                onClose={handleClose}
-                onDiscard={handleDiscard}
-                onConfirm={handleSave}
-                confirmationInfo={confirmationInfo}
-            />
+  return (
+    <Modal open={store.currentModal === CurrentModal.EXIT_EDIT}>
+      <Box
+        sx={{
+          position: "absolute",
+          width: 500,
+          bgcolor: "lightPink",
+          color: "black",
+          border: "2px solid #000",
+          boxShadow: 24,
+          p: 10,
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          padding: 0,
+          textAlign: "center",
+        }}
+      >
+        <div className="alertContainer">
+          <div className="alert">
+            Do you want to save your changes before leaving this page?
+          </div>
+          <div className="confirm">
+            <Button onClick={handleClose} variant="contained" sx={buttonStyle}>
+              Cancel
+            </Button>
+            <Button onClick={handleDiscard} variant="contained" sx={buttonStyle}>
+              Discard
+            </Button>
+            <Button onClick={handleSave} variant="contained" sx={buttonStyle}>
+              Save
+            </Button>
+          </div>
         </div>
-    );
-};
-
-export default MUIExit;
+      </Box>
+    </Modal>
+  );
+}
