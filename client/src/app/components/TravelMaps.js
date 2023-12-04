@@ -29,7 +29,7 @@ const TravelMap = (props) => {
     const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
     useEffect(() => {
         const resizeListener = () => {
-            setMapHeight(window.innerHeight * 2 / 3);
+            setMapHeight(window.innerHeight / 2);
         };
         window.addEventListener('resize', resizeListener);
         return () => {
