@@ -85,6 +85,7 @@ export default function TitleBar() {
               },
             }}
             disabled={store.currentView === store.viewTypes.COMMUNITY}
+            className= "peopleIcon"
             onClick={() => {
               store.changeView(store.viewTypes.COMMUNITY);
             }}
