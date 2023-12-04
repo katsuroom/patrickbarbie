@@ -86,7 +86,7 @@ export default function MapView({ fileSelected, projectName, mapType }) {
     // Main component render
     const res = (
       <div style={{ overflowY: "scroll", height: "80vh" }}>
-        <div style={{ width: "76vw" }}>
+        <div >
           <MapDisplay />
         </div>
         <div

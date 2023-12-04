@@ -18,7 +18,6 @@ export default function GeoJSONDisplay(props) {
   const geoJsonLayerRef = useRef(null);
   const heatmapOverlayRef = useRef(null);
   const markers = useRef([]);
-  const workerRef = useRef(null);
   const { store } = useContext(StoreContext);
   let downloadComplete = props.downloadComplete;
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);

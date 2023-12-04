@@ -13,7 +13,7 @@ import CsvFileReader from "./CsvFileReader";
 import MUISaveChanges from "../modals/MUISaveChanges";
 import MUIExit from "../modals/MUIExitModal";
 import { useContext, useEffect } from "react";
-import StoreContext from "@/store";
+import StoreContext, {CurrentModal} from "@/store";
 
 export default function PPolitical() {
   const { store } = useContext(StoreContext);
@@ -21,8 +21,6 @@ export default function PPolitical() {
   const [menuItems, setMenuItems] = React.useState([]);
   // const [renderTable, setRenderTable] = React.useState(false);
   // const [page, setPage] = React.useState(0);
-  const [saveModalOpen, setSaveModalOpen] = React.useState(false);
-  const [exitModalOpen, setExitModalOpen] = React.useState(false);
   const [textFields, setTextFields] = React.useState([]);
 
   useEffect(() => {
@@ -43,11 +41,6 @@ export default function PPolitical() {
   }
   setTextFields(tfs);
 }, [store.parsed_CSV_Data])
-
-
-
-  console.log(store.key);
-  console.log(store.label);
 
   // const ROW_PER_PAGE = 30;
 
@@ -94,21 +87,9 @@ export default function PPolitical() {
     store.setCsvLabel(event.target.value);
   };
 
-  const openSaveModal = () => {
-    setSaveModalOpen(true);
-  };
+  const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
 
-  const closeSaveModal = () => {
-    setSaveModalOpen(false);
-  };
-
-  const openExitModal = () => {
-    setExitModalOpen(true);
-  };
-
-  const closeExitModal = () => {
-    setExitModalOpen(false);
-  };
+  const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
   const saveCsvChanges = () => {
     // for (let idx in store.parsed_CSV_Data[store.key]) {
@@ -261,51 +242,14 @@ export default function PPolitical() {
           </tbody>
         </Table>
       </div>
-      <Button
-        variant="solid"
-        className="exit"
-        sx={{ margin: 1 }}
-        onClick={openExitModal}
-      >
+      <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
         EXIT
       </Button>
-      <Button
-        variant="solid"
-        className="save"
-        sx={{ margin: 1 }}
-        onClick={openSaveModal}
-      >
+      <Button variant="solid" className="save" sx={{ margin: 1 }} onClick={openSaveModal}>
         SAVE
       </Button>
-      {/* <Button
-        variant="solid"
-        className="prev"
-        sx={{ margin: 1 }}
-        disabled={page <= 0}
-        onClick={() => {
-          setPage(page <= 0 ? 0 : page - 1);
-        }}
-      >
-        Prev
-      </Button>
-      Page: {page + 1}
-      <Button
-        variant="solid"
-        className="next"
-        sx={{ margin: 1 }}
-        disabled={page >= maxPage}
-        onClick={() => {
-          setPage(page >= maxPage ? maxPage : page + 1);
-        }}
-      >
-        Next
-      </Button> */}
-      <MUISaveChanges
-        open={saveModalOpen}
-        closeModal={closeSaveModal}
-        saveCB={saveCsvChanges}
-      />
-      <MUIExit open={exitModalOpen} closeModal={closeExitModal} />
+      <MUISaveChanges />
+      <MUIExit />
     </div>
   );
 }

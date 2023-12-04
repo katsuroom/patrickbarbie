@@ -37,6 +37,8 @@ export const CurrentModal = {
   FORK_MAP: "FORK_MAP",
   PUBLISH_MAP: "PUBLISH_MAP",
   DELETE_MAP: "DELETE_MAP",
+  EXIT_EDIT: "EXIT_EDIT",
+  SAVE_EDIT: "SAVE_EDIT",
 };
 
 export const MapType = {
