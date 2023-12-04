@@ -41,8 +41,6 @@ const registerUser = (username, email, password) => {
 };
 
 const getLoggedIn = () => {
-  console.log("in api.");
-  console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
   let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
 
   return fetch(`${baseURL}/loggedIn/`, {

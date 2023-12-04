@@ -6,17 +6,14 @@ axios.defaults.withCredentials = true;
 const baseURL = 'https://patrick-barbie-f64046e3bb4b.herokuapp.com/' + "api"
 // const baseURL = 'http://localhost:4000/api';
 const api = axios.create({
-    baseURL: baseURL,
+  baseURL: baseURL,
 })
-
-
-
 
 const getMainScreenMap = (fileName) => {
   return api.get(`/mapFile/`, {
-      params: {
-          fileName: fileName
-      }
+    params: {
+      fileName: fileName
+    }
   })
 }
 
@@ -24,13 +21,29 @@ const apis = {
   getMainScreenMap
 }
 
-
 // test
 describe("Retrieve Map Files Test", () => {
   it("get NA.json", async () => {
     const response = await apis.getMainScreenMap("NA.json");
     expect(response.status).toEqual(200);
   });
+
+  it("Fail to get map with nonexistent file name", async () => {
+    await expect(apis.getMainScreenMap("Nonexistent.json"))
+      .rejects
+      .toEqual(expect.objectContaining({
+        response: expect.objectContaining({ status: 404 }) // Not Found
+      }));
+  });
+
+  it("Fail to get map with empty string as file name", async () => {
+    await expect(apis.getMainScreenMap(""))
+      .rejects
+      .toEqual(expect.objectContaining({
+        response: expect.objectContaining({ status: 404 })
+      }));
+  });
+
   it("get SA.json", async () => {
     const response = await apis.getMainScreenMap("SA.json");
     expect(response.status).toEqual(200);

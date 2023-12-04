@@ -228,7 +228,6 @@ getMapById = (req, res) => {
           error: "Map not found",
         });
       }
-      console.log("map found: " + JSON.stringify(map));
       return res.status(200).json({
         success: true,
         data: map,
@@ -350,7 +349,7 @@ forkMap = (req, res) => {
       return res.status(201).json({
         success: true,
         mapData: map,
-        message: "Map created!",
+        message: "Map created! (Forked)",
       });
     })
     .catch((error) => {

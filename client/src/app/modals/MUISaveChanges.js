@@ -1,26 +1,16 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import Button from "@mui/material/Button";
-import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import './MUIPublishMap.css'
-import './ModalAnimation.css'
+import "./MUIPublishMap.css";
 
-import { useHistory } from "react-router-dom";
-import StoreContext from '@/store';
+import StoreContext, { CurrentModal } from "@/store";
 
-export const ConfirmationDialog = ({
-  open,
-  onClose,
-  onConfirm,
-  confirmationInfo,
-}) => {
-  const [openDialog, setOpenDialog] = useState(open);
-  useEffect(() => {
-    setOpenDialog(open);
-  }, [open]);
+export default function MUISaveChanges() {
+  const { store } = useContext(StoreContext);
+
   const buttonStyle = {
     mt: 1,
     mb: 3,
@@ -34,8 +24,17 @@ export const ConfirmationDialog = ({
     margin: "20px",
   };
 
+  const handleClose = () => {
+    store.closeModal();
+  };
+
+  const handleSave = () => {
+    store.saveCSV();
+    console.log("Map Saved!");
+  };
+
   return (
-    <Modal open={openDialog} onClose={onClose}>
+    <Modal open={store.currentModal === CurrentModal.SAVE_EDIT}>
       <Box
         sx={{
           position: "absolute",
@@ -51,86 +50,19 @@ export const ConfirmationDialog = ({
           padding: 0,
           textAlign: "center",
         }}
-        className="modal-root"
       >
-        <div
-          className={openDialog ? "modal-dialog is-visible" : "modal-dialog"}
-        >
-          <header className="dialog-header">
-            <Alert
-              style={{ fontSize: 20, width: "90%", height: 100 }}
-              severity="error"
-            >
-              {confirmationInfo}
-            </Alert>
-          </header>
-          <div className="ErrorModalSouth">
-            <div className="alertContainer" sx={{}}>
-              <div className="confrim">
-                <Button
-                  onClick={onClose}
-                  variant="contained"
-                  sx={buttonStyle}
-                  className="modal-button"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={onConfirm}
-                  variant="contained"
-                  sx={buttonStyle}
-                  className="modal-button"
-                >
-                  Save
-                </Button>
-              </div>
-            </div>
+        <div className="alertContainer">
+          <div className="alert">Do you want to save your changes?</div>
+          <div className="confirm">
+            <Button onClick={handleClose} variant="contained" sx={buttonStyle}>
+              Cancel
+            </Button>
+            <Button onClick={handleSave} variant="contained" sx={buttonStyle}>
+              Save
+            </Button>
           </div>
         </div>
       </Box>
     </Modal>
   );
-};
-
-const MUISaveChanges = (props) => {
-  const history = useHistory();
-  const { store } = useContext(StoreContext);
-
-  console.log(props);
-  const [open, setOpen] = useState(props.open);
-
-  useEffect(() => {
-    setOpen(props.open);
-  }, [props.open]);
-
-  const handleClose = () => {
-    props.closeModal();
-  };
-
-  const confirmationInfo = "Do you want to save your changes?";
-
-  const handleSave = () => {
-    if (props.saveCB){
-      props.saveCB();
-    }
-
-      
-    store.saveCSV();
-    handleClose();
-  };
-
-  return (
-    <div>
-      {/* //Save button should link to here */}
-      {/* <Button onClick={handleOpen}>Open Confirmation</Button> */}
-      <ConfirmationDialog
-        open={open}
-        onClose={handleClose}
-        onConfirm={handleSave}
-        confirmationInfo={confirmationInfo}
-      />
-    </div>
-  );
-};
-
-export default MUISaveChanges;
+}

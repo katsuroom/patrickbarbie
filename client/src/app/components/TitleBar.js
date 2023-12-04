@@ -32,7 +32,7 @@ export default function TitleBar() {
         <Link href={auth.loggedIn ? "/main" : "/"}>
           <img
             src="/patrick-barbie.png"
-            width="5%"
+            height="150%"
             style={{
               marginTop: 5,
               marginLeft: 10,

@@ -94,21 +94,9 @@ export default function PPolitical() {
     store.setCsvLabel(event.target.value);
   };
 
-  const openSaveModal = () => {
-    setSaveModalOpen(true);
-  };
+  const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
 
-  const closeSaveModal = () => {
-    setSaveModalOpen(false);
-  };
-
-  const openExitModal = () => {
-    setExitModalOpen(true);
-  };
-
-  const closeExitModal = () => {
-    setExitModalOpen(false);
-  };
+  const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
   const saveCsvChanges = () => {
     // for (let idx in store.parsed_CSV_Data[store.key]) {

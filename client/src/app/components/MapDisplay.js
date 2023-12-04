@@ -63,7 +63,7 @@ export default function MapDisplay() {
             }}
             downloadComplete={false}
           />
-        }
+        )}
       </div>
     </div>
   );

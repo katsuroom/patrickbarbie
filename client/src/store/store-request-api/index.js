@@ -83,7 +83,7 @@ return fetch(`${baseURL}/forkmap/`, {
 
 const getMapsByUser = () => {
   console.log("in api.getMapsByUser");
-  console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
+  // console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
   let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
   return fetch(`${baseURL}/maps/`, {
     method: "GET",
@@ -112,9 +112,7 @@ const getMapById = (id) => {
     },
     }).then((response) => {
       // Parse JSON and include status in the resolved value
-      console.log(response);
       return response.json().then((data) => {
-        console.log(data);
         return { status: response.status, data };
       });
     });
@@ -143,7 +141,8 @@ const deleteMap = (mapId) => {
 
 const updateMap = (mapObject) =>{
     console.log("in api.updateMap");
-    console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
+    // console.log(mapObject);
+    // console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
     let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
     return fetch(`${baseURL}/map/${mapObject._id}`, {
         method: "PUT",
@@ -156,9 +155,7 @@ const updateMap = (mapObject) =>{
         }),
         }).then((response) => {
         // Parse JSON and include status in the resolved value
-        console.log(response);
         return response.json().then((data) => {
-            console.log(data);
             return { status: response.status, data };
         });
       });
