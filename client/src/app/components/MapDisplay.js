@@ -10,6 +10,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 
 const GeoJSONDisplay = dynamic(() => import('./GeoJSONDisplay'));
+const ProportionalMap = dynamic(() => import('./ProportionalMap'));
 import "leaflet/dist/leaflet.css";
 
 export default function MapDisplay() {
@@ -37,18 +38,81 @@ export default function MapDisplay() {
             }}
           />
         )}
-        {store.rawMapFile && store.currentMapObject && store.currentMapObject.mapType && (
-          <GeoJSONDisplay
-            file={store.rawMapFile}
-            openModal={() => {
-              setDownloadModalOpen(true);
-            }}
-            imageType={imageType}
-            completeDownloadCB={() => {
-              setImageType(null);
-            }}
-            downloadComplete={false}
-          />
+        {store.rawMapFile &&
+        store.currentMapObject &&
+        store.currentMapObject.mapType ? (
+          store.mapType === store.mapTypes.PROPORTIONAL_SYMBOL_MAP ||
+          store.currentMapObject.mapType ===
+            store.mapTypes.PROPORTIONAL_SYMBOL_MAP ? (
+            <ProportionalMap
+              file={store.rawMapFile}
+              openModal={() => {
+                setDownloadModalOpen(true);
+              }}
+              imageType={imageType}
+              completeDownloadCB={() => {
+                setImageType(null);
+              }}
+              downloadComplete={false}
+            />
+          ) : store.mapType === store.mapTypes.HEATMAP ||
+            store.currentMapObject.mapType === store.mapTypes.HEATMAP ? (
+            <GeoJSONDisplay
+              file={store.rawMapFile}
+              openModal={() => {
+                setDownloadModalOpen(true);
+              }}
+              imageType={imageType}
+              completeDownloadCB={() => {
+                setImageType(null);
+              }}
+              downloadComplete={false}
+            />
+          ) : store.mapType === store.mapTypes.POLITICAL_MAP ||
+            store.currentMapObject.mapType === store.mapTypes.POLITICAL_MAP ? (
+            <GeoJSONDisplay
+              file={store.rawMapFile}
+              openModal={() => {
+                setDownloadModalOpen(true);
+              }}
+              imageType={imageType}
+              completeDownloadCB={() => {
+                setImageType(null);
+              }}
+              downloadComplete={false}
+            />
+          ) : store.mapType === store.mapTypes.DOT_DISTRIBUTION_MAP ||
+            store.currentMapObject.mapType ===
+              store.mapTypes.DOT_DISTRIBUTION_MAP ? (
+            <ProportionalMap
+              file={store.rawMapFile}
+              openModal={() => {
+                setDownloadModalOpen(true);
+              }}
+              imageType={imageType}
+              completeDownloadCB={() => {
+                setImageType(null);
+              }}
+              downloadComplete={false}
+            />
+          ) : store.mapType === store.mapTypes.TRAVEL_MAP ||
+            store.currentMapObject.mapType === store.mapTypes.TRAVEL_MAP ? (
+            <ProportionalMap
+              file={store.rawMapFile}
+              openModal={() => {
+                setDownloadModalOpen(true);
+              }}
+              imageType={imageType}
+              completeDownloadCB={() => {
+                setImageType(null);
+              }}
+              downloadComplete={false}
+            />
+          ) : (
+            <></>
+          )
+        ) : (
+          <></>
         )}
       </div>
     </div>
