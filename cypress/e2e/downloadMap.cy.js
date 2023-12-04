@@ -1,7 +1,6 @@
 describe("template spec", () => {
-    it("open EU map and click delete then cancel", () => {
+    it("open Asia map and click download", () => {
       cy.visit("https://patrick-barbie-f64046e3bb4b.herokuapp.com/");
-      // cy.visit("http://localhost:3000");
   
       cy.wait(500);
   
@@ -16,15 +15,11 @@ describe("template spec", () => {
   
       cy.url().should("include", "/main");
    
-      cy.contains(".map-list-name", "EU").click();
+      cy.contains(".map-list-name", "Asia").click();
                   
       cy.wait(500);
 
-      cy.get('.deleteButton').click();
-
-      cy.wait(500);
-
-      cy.contains(".modal-button", "Cancel").click();
+      cy.get('.downloadButton').click();
 
     });
   });
