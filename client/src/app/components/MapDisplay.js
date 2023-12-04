@@ -40,7 +40,8 @@ export default function MapDisplay() {
         )}
         {
           store.rawMapFile && store.currentMapObject && store.currentMapObject.mapType
-          && store.mapType === store.mapTypes.TRAVEL_MAP && <TravelMap
+          && (store.mapType === store.mapTypes.TRAVEL_MAP ||
+            store.currentMapObject.mapType === store.mapTypes.TRAVEL_MAP) && <TravelMap
             file={store.rawMapFile}
             openModal={() => {
               setDownloadModalOpen(true);
@@ -52,7 +53,8 @@ export default function MapDisplay() {
             downloadComplete={false} />
         }
         {store.rawMapFile && store.currentMapObject && store.currentMapObject.mapType 
-          && store.mapType === store.mapTypes.HEATMAP && <GeoJSONDisplay
+          && (store.mapType === store.mapTypes.HEATMAP ||
+          store.currentMapObject.mapType === store.mapTypes.HEATMAP) && <GeoJSONDisplay
             file={store.rawMapFile}
             openModal={() => {
               setDownloadModalOpen(true);
