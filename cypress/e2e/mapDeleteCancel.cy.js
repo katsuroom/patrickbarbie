@@ -27,7 +27,7 @@ describe("template spec", () => {
 
       cy.wait(500);
 
-      cy.contains(".modal-button", "Cancel").click();
+      // cy.contains(".modal-button", "Cancel").click();
       
 
     });

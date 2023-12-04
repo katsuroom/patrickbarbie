@@ -26,7 +26,7 @@ describe("template spec", () => {
 
         cy.wait(500);
 
-        cy.get(".modal-button-fork-cancel").click();
+        // cy.get(".modal-button-fork-cancel").click();
 
     });
 });

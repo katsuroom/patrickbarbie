@@ -13,6 +13,8 @@ const GeoJSONDisplay = dynamic(() => import('./GeoJSONDisplay'));
 const ProportionalMap = dynamic(() => import('./ProportionalMap'));
 import "leaflet/dist/leaflet.css";
 import TravelMap from "./TravelMaps";
+const TravelMap = dynamic(() => import('./TravelMaps'));
+
 
 export default function MapDisplay() {
   const { store } = useContext(StoreContext);

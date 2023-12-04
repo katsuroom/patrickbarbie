@@ -24,5 +24,7 @@ describe("template spec", () => {
         cy.contains("button", "Post").click();
 
         cy.contains(".comment-text", "short comment").should("exist");
+
+        
     });
 });
