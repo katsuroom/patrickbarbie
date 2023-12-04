@@ -6,8 +6,8 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
 
-import endIconUrl from './img/red.png';
-import startIconUrl from './img/blue.png';
+// import endIconUrl from './img/red.png';
+// import startIconUrl from './img/blue.png';
 import StoreContext from "@/store";
 
 
@@ -187,14 +187,14 @@ const TravelMap = (props) => {
 
             const startIcon = L.icon({
                 // iconUrl: startIconUrl,
-                iconUrl: startIconUrl.default,
+                iconUrl: "/blue.png",
                 iconSize: [25, 41],
                 iconAnchor: [12, 41]
             });
 
             const endIcon = L.icon({
                 // iconUrl: endIconUrl,
-                iconUrl: endIconUrl.default,
+                iconUrl: "/red.png",
                 iconSize: [25, 41],
                 iconAnchor: [12, 41]
             });
