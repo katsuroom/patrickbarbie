@@ -78,7 +78,7 @@ export default function MapView({ fileSelected, projectName, mapType }) {
         let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(store.rawMapFile));
         let downloadAnchor = document.getElementById("download-anchor");
         downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", "map.json");
+        downloadAnchor.setAttribute("download", `${store.currentMapObject.title || "map"}.json`);
         downloadAnchor.click();
     }
 

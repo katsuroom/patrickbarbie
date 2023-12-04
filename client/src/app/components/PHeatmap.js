@@ -40,7 +40,7 @@ export default function PHeatmap() {
     }
   }
   setTextFields(tfs);
-}, [store.parsed_CSV_Data])
+}, [store.parsed_CSV_Data, store.key, store.label])
 
 
 
@@ -64,10 +64,9 @@ export default function PHeatmap() {
   }
 
   const handleChangeKey = (event) => {
-    console.log(event.target.value);
-
     let tfs = [];
-    for (let idx in store.parsed_CSV_Data[store.key]) {
+    for (let idx in store.parsed_CSV_Data[event.target.value]) {
+      console.log("gay", idx);
       tfs.push(
         // <input
         //   id={"search-" + idx}
@@ -76,10 +75,10 @@ export default function PHeatmap() {
         // />
         <TextField
           id={"tf-" + idx}
-          defaultValue={store.parsed_CSV_Data[store.key][idx]}
+          defaultValue={store.parsed_CSV_Data[event.target.value][idx]}
           variant="standard"
           sx={{ m: 1, minWidth: 120 }}
-          onChange={(e) => store.parsed_CSV_Data[store.key][idx] = e.target.value}
+          onChange={(e) => store.parsed_CSV_Data[event.target.value][idx] = e.target.value}
         />
       );
     }
@@ -231,7 +230,8 @@ export default function PHeatmap() {
                 // ),
                 // textFields.slice(page * ROW_PER_PAGE, (page + 1) * ROW_PER_PAGE)
                 store.parsed_CSV_Data[store.label],
-                textFields
+                store.parsed_CSV_Data[store.key]
+                // textFields
               ).map((row) => (
                 <tr key={row.name}>
                   <td>{row[0]}</td>

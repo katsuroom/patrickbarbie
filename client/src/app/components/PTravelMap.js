@@ -40,7 +40,7 @@ export default function PTravelMap() {
       }
     }
     setTextFields(tfs);
-  }, [store.parsed_CSV_Data])
+  }, [store.parsed_CSV_Data, store.key, store.label])
 
   // const ROW_PER_PAGE = 30;
 
@@ -78,7 +78,7 @@ export default function PTravelMap() {
         />
       );
     }
-    setTextFields(tfs);
+    // setTextFields(tfs);
     store.setCsvKey(event.target.value);
   };
 
@@ -226,7 +226,8 @@ export default function PTravelMap() {
                 // ),
                 // textFields.slice(page * ROW_PER_PAGE, (page + 1) * ROW_PER_PAGE)
                 store.parsed_CSV_Data[store.label],
-                textFields
+                store.parsed_CSV_Data[store.key]
+                // textFields
               ).map((row) => (
                 <tr key={row.name}>
                   <td>{row[0]}</td>
