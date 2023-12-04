@@ -24,6 +24,22 @@ export default function GeoJSONDisplay(props) {
 
 
   useEffect(() => {
+    const loadScript = (src, callback) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = callback;
+      document.head.appendChild(script);
+    };
+
+    loadScript('https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js', () => {
+      console.log('heatmap.js loaded');
+      loadScript('https://cdn.jsdelivr.net/npm/leaflet-heatmap@1.0.0/leaflet-heatmap.js', () => {
+        console.log('leaflet-heatmap loaded');
+      });
+    });
+  }, []);
+
+  useEffect(() => {
     const resizeListener = () => {
       setMapHeight(window.innerHeight / 2);
     };
@@ -247,8 +263,8 @@ export default function GeoJSONDisplay(props) {
 
   return (
     <div>
-      <Script src="https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js" strategy="beforeInteractive"></Script>
-      <Script src="https://cdn.jsdelivr.net/npm/leaflet-heatmap@1.0.0/leaflet-heatmap.js" strategy="beforeInteractive"></Script>
+      <script src="https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/leaflet-heatmap@1.0.0/leaflet-heatmap.js"></script>
       <div id={"map-display"} style={{height: `${mapHeight}px`, margin: '10px' }}></div>
     </div>
   );
