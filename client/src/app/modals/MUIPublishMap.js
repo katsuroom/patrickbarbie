@@ -25,7 +25,7 @@ export default function MUIPublishMap() {
         margin: '20px',
     };
 
-    const handleSave = () => {
+    const handlePublish = () => {
         console.log("publish map");
         // TODO: I need pass the mapId to the backend here
 
@@ -33,11 +33,10 @@ export default function MUIPublishMap() {
         mapObject.isPublished = true;
         console.log(mapObject);
         store.updateMap(mapObject);
-        onClose();
     }
 
     const onClose = () => {
-        store.closeModal();
+      store.closeModal();
     }
 
     return (
@@ -64,7 +63,7 @@ export default function MUIPublishMap() {
               <Button onClick={onClose} variant="contained" sx={buttonStyle}>
                 Cancel
               </Button>
-              <Button onClick={handleSave} variant="contained" sx={buttonStyle}>
+              <Button onClick={handlePublish} variant="contained" sx={buttonStyle}>
                 Confirm
               </Button>
             </div>
