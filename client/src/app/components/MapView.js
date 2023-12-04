@@ -23,10 +23,7 @@ export default function MapView({ fileSelected, projectName, mapType }) {
     const router = useRouter();
 
     // State for likes and like status
-    // console.log("likes: ", store.currentMapObject?.likes);
-    let likes = store.currentMapObject?.likes;
-    // const [likes, setLikes] = useState(store.currentMapObject?.likes);
-    const [hasLiked, setHasLiked] = useState(false);
+    
     // let initialComments = [];
     const [initialComments, setInitialComments] = useState([]);
 
@@ -49,13 +46,16 @@ export default function MapView({ fileSelected, projectName, mapType }) {
 
     // Handling the like click
     const handleLikeClick = () => {
-        if (auth.loggedIn && !hasLiked) {
-            // setLikes(likes + 1);
-            var mapObject = store.currentMapObject;
-            mapObject.likes = likes + 1;
-            store.updateMap(mapObject);
-            setHasLiked(true);
+      if (auth.loggedIn) {
+        console.log(store.currentMapObject.likedUsers.includes(auth.user.username));
+        if(store.currentMapObject.likedUsers.includes(auth.user.username)){
+          alert("You have already liked this map!");
+        }else{
+          store.currentMapObject.likedUsers.push(auth.user.username);
+          console.log(store.currentMapObject.likedUsers);
+          store.updateMap(store.currentMapObject);
         }
+      }
     };
 
     // Other event handlers
@@ -104,45 +104,74 @@ export default function MapView({ fileSelected, projectName, mapType }) {
         >
           <Grid container spacing={2}>
             <Grid item xs={3} style={{ display: "flex", alignItems: "center" }}>
-              <Typography sx={{ fontFamily: "Sen", color: "black", fontWeight: "bold"}}>
+              <Typography
+                sx={{ fontFamily: "Sen", color: "black", fontWeight: "bold" }}
+              >
                 {store.currentMapObject?.author}
               </Typography>
             </Grid>
             <Grid item xs={1} style={{ display: "flex", alignItems: "center" }}>
               <VisibilityIcon />
-              <Typography sx={{ fontFamily: "Sen", color: "black", marginLeft: 1 }}>
+              <Typography
+                sx={{ fontFamily: "Sen", color: "black", marginLeft: 1 }}
+              >
                 {store.currentMapObject?.views}
               </Typography>
             </Grid>
-            <Grid item xs={5.4} style={{ display: "flex", alignItems: "center" }}>
-              <IconButton className="likeButton" onClick={handleLikeClick} disabled={!auth.loggedIn}>
+            <Grid
+              item
+              xs={5.4}
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <IconButton
+                className="likeButton"
+                onClick={handleLikeClick}
+                disabled={!auth.loggedIn || store.currentMapObject?.likedUsers.includes(auth.user.username)}
+              >
                 <FavoriteIcon />
               </IconButton>
               <Typography
                 sx={{ fontFamily: "Sen", color: "black", marginLeft: 1 }}
               >
-                {likes}
+                {store.currentMapObject?.likedUsers.length}
               </Typography>
             </Grid>
             <Grid item xs={0.5}>
-              <IconButton className="deleteButton" onClick={handleDeleteClick} disabled={!auth.loggedIn || !store.currentMapObject || auth.user.username !== store.currentMapObject.author}>
+              <IconButton
+                className="deleteButton"
+                onClick={handleDeleteClick}
+                disabled={
+                  !auth.loggedIn ||
+                  !store.currentMapObject ||
+                  auth.user.username !== store.currentMapObject.author
+                }
+              >
                 <Delete />
               </IconButton>
             </Grid>
-            {store.currentView === store.viewTypes.HOME ?
+            {store.currentView === store.viewTypes.HOME ? (
+              <Grid item xs={0.5}>
+                <IconButton
+                  className="publishButton"
+                  disabled={store.currentMapObject?.isPublished}
+                  onClick={handlePublishClick}
+                >
+                  <CloudUpload />
+                </IconButton>
+              </Grid>
+            ) : (
+              <></>
+            )}
             <Grid item xs={0.5}>
               <IconButton
-                className="publishButton"
-                disabled={store.currentMapObject?.isPublished}
-                onClick={handlePublishClick}
+                className="editButton"
+                onClick={handleEditClick}
+                disabled={
+                  !auth.loggedIn ||
+                  !store.currentMapObject ||
+                  auth.user.username !== store.currentMapObject.author
+                }
               >
-                <CloudUpload />
-              </IconButton>
-            </Grid>
-            : <></>
-            }
-            <Grid item xs={0.5}>
-              <IconButton className="editButton" onClick={handleEditClick} disabled={!auth.loggedIn || !store.currentMapObject || auth.user.username !== store.currentMapObject.author}>
                 <Edit />
               </IconButton>
             </Grid>
@@ -155,7 +184,11 @@ export default function MapView({ fileSelected, projectName, mapType }) {
               </IconButton>
             </Grid>
             <Grid item xs={0.5}>
-              <IconButton className="forkButton" onClick={handleForkClick} disabled={!auth.loggedIn}>
+              <IconButton
+                className="forkButton"
+                onClick={handleForkClick}
+                disabled={!auth.loggedIn}
+              >
                 <Share />
               </IconButton>
             </Grid>
