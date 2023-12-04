@@ -2,7 +2,7 @@ describe("template spec", () => {
   Cypress.on('uncaught:exception', (err, runnable) => {
     return false
 })
-    it("like EU map", () => {
+    it("open Asia map and click download", () => {
       cy.visit("https://patrick-barbie-f64046e3bb4b.herokuapp.com/");
   
       cy.wait(500);
@@ -18,15 +18,12 @@ describe("template spec", () => {
   
       cy.url().should("include", "/main");
    
-      cy.contains(".map-list-name", "EU").click();
+      cy.contains(".map-list-name", "Asia").click();
                   
-      cy.get(".likeButton").click();
-
       cy.wait(500);
 
-      cy.get(".likeButton").click();
+      cy.get('.downloadButton').click();
 
-      
     });
   });
   
