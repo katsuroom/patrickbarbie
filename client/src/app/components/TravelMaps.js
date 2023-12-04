@@ -45,7 +45,7 @@ const TravelMap = (props) => {
 
     useEffect(() => {
         console.log('travel map + ' + geoJsonData )
-        if (!geoJsonData) {
+        if (!loadScripts || !geoJsonData) {
             return;
         }
 
@@ -124,7 +124,7 @@ const TravelMap = (props) => {
 
         // runDirection(store.parsed_CSV_Data[store.label][0], store.parsed_CSV_Data[store.key][0]);
 
-    }, [geoJsonData, store.label, store.key, store.parsed_CSV_Data]);
+    }, [geoJsonData, loadScripts, store.label, store.key, store.parsed_CSV_Data]);
 
 
     useEffect(() => {
@@ -139,6 +139,43 @@ const TravelMap = (props) => {
     }, [store.label, store.key, store.parsed_CSV_Data])
 
 
+    // useEffect(() => {
+    //     const loadScript = (src) => {
+    //         return new Promise((resolve, reject) => {
+    //             const script = document.createElement('script');
+    //             script.src = src;
+    //             script.onload = () => resolve(script);
+    //             script.onerror = () => reject(new Error(`Script load error for ${src}`));
+    //             document.body.appendChild(script);
+    //         });
+    //     };
+
+    //     if (mapRef.current) {
+    //         mapRef.current.remove();
+    //     }
+
+    //     loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
+    //         .then(() => {
+    //             loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
+    //                 .then(() => {
+    //                     console.log('L.Routing' + L.Routing)
+    //                     mapRef.current = L.map('map-display', {
+    //                         center: [35.791188, -78.636755],
+    //                         zoom: 12,
+    //                         layers: window.MQ.mapLayer()
+    //                     });
+    //                 })
+    //                 .catch(error => console.error(error));
+    //         })
+    //         .catch(error => console.error(error));
+
+    //     // return () => {
+    //     //     if (mapRef.current) {
+    //     //         mapRef.current.remove();
+    //     //     }
+    //     // };
+    // }, [loadScripts]);
+
     useEffect(() => {
         const loadScript = (src) => {
             return new Promise((resolve, reject) => {
@@ -150,31 +187,16 @@ const TravelMap = (props) => {
             });
         };
 
-        if (mapRef.current) {
-            mapRef.current.remove();
-        }
+        Promise.all([
+            loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+            loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
+        ]).then(() => {
+            setLoadScripts(true);
+        }).catch(error => console.error(error));
+    }, []);
 
-        loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
-            .then(() => {
-                loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
-                    .then(() => {
-                        console.log('L.Routing' + L.Routing)
-                        mapRef.current = L.map('map-display', {
-                            center: [35.791188, -78.636755],
-                            zoom: 12,
-                            layers: window.MQ.mapLayer()
-                        });
-                    })
-                    .catch(error => console.error(error));
-            })
-            .catch(error => console.error(error));
 
-        // return () => {
-        //     if (mapRef.current) {
-        //         mapRef.current.remove();
-        //     }
-        // };
-    }, [loadScripts]);
+
 
     const runDirection = async (start, end) => {
         const geocode = async (address) => {
