@@ -83,7 +83,7 @@ return fetch(`${baseURL}/forkmap/`, {
 
 const getMapsByUser = () => {
   console.log("in api.getMapsByUser");
-  console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
+  // console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
   let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
   return fetch(`${baseURL}/maps/`, {
     method: "GET",

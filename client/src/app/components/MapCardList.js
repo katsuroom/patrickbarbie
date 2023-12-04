@@ -8,7 +8,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
-import StoreContext, { CurrentModal } from "@/store";
+import StoreContext, { CurrentModal, View } from "@/store";
 import AuthContext from "@/auth";
 import MUIUploadMap from "../modals/MUIUploadMap";
 import MUICreateMap from "../modals/MUICreateMap";
@@ -29,21 +29,20 @@ export default function MapCardList() {
   const { store } = useContext(StoreContext);
   const { auth } = useContext(AuthContext);
   // const [maps, setMaps] = useState([...hardcodedMaps]);
-  const [selectedMap, setSelectedMap] = useState(null);
 
 
   useEffect(() => {
     store.getMapList();
   }, [store.currentView]);
 
-  useEffect(() => {
-    let fetchedMaps = store.mapList;
-    const typedFetchedMaps = fetchedMaps.map((map) => ({
-      ...map,
-      type: "fetched",
-    }));
-    // setMaps([...hardcodedMaps, ...typedFetchedMaps]);
-  }, [store.mapList]);
+  // useEffect(() => {
+  //   let fetchedMaps = store.mapList;
+  //   const typedFetchedMaps = fetchedMaps.map((map) => ({
+  //     ...map,
+  //     type: "fetched",
+  //   }));
+  //   // setMaps([...hardcodedMaps, ...typedFetchedMaps]);
+  // }, [store.mapList]);
 
   const handleMapClick = (mapId) => {
     const selected = store.mapList.find((map) => map._id === mapId);
@@ -57,8 +56,6 @@ export default function MapCardList() {
     store.currentMapObject = selected;
     console.log(store.currentMapObject);
     if (selected) {
-      setSelectedMap(selected);
-      
         // fetched map click
         var mapData = selected.mapData;
         const encodedData = geobuf.decode(new Pbf(mapData.data));
@@ -118,7 +115,7 @@ export default function MapCardList() {
           </ListItem>,
         ])}
       </List>
-      {auth.loggedIn && (
+      {auth.loggedIn && store.currentView == View.HOME ? (
         <Fab
           sx={{
             position: "absolute",
@@ -133,7 +130,7 @@ export default function MapCardList() {
         >
           <AddIcon />
         </Fab>
-      )}
+      ) : null}
       <MUIUploadMap />
       <MUICreateMap />
     </Box>

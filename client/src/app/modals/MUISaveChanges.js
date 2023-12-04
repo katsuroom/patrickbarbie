@@ -10,6 +10,7 @@ import './ModalAnimation.css'
 
 import { useHistory } from "react-router-dom";
 import StoreContext from '@/store';
+import { useRouter } from "next/navigation";
 
 export const ConfirmationDialog = ({
   open,
@@ -95,6 +96,7 @@ export const ConfirmationDialog = ({
 const MUISaveChanges = (props) => {
   const history = useHistory();
   const { store } = useContext(StoreContext);
+  const router = useRouter();
 
   console.log(props);
   const [open, setOpen] = useState(props.open);
@@ -117,6 +119,7 @@ const MUISaveChanges = (props) => {
       
     store.saveCSV();
     handleClose();
+    router.push("/main");
   };
 
   return (

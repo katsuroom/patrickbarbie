@@ -6,7 +6,6 @@ import api from "./auth-request-api";
 import { useRouter } from 'next/navigation';
 
 const AuthContext = createContext();
-console.log("create AuthContext: " + AuthContext);
 
 //comment
 // THESE ARE ALL THE TYPES OF UPDATES TO OUR AUTH STATE THAT CAN BE PROCESSED

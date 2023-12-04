@@ -15,7 +15,6 @@ export const StoreActionType = {
   OPEN_MODAL: "OPEN_MODAL",
   CLOSE_MODAL: "CLOSE_MODAL",
   UPLOAD_MAP_FILE: "UPLOAD_MAP_FILE",
-  UPDATE_MAP: "UPDATE_MAP",
   GET_MAP_FILE: "GET_MAP_FILE",
   EMPTY_RAW_MAP_FILE: "EMPTY_RAW_MAP_FILE",
   SET_CSV_KEY: "SET_CSV_KEY",
@@ -57,18 +56,15 @@ function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
 
   const [store, setStore] = useState({
-    currentModal: CurrentModal.NONE, // the currently open modal
-    mapFile: null, // map file uploaded for creating a new map
-    rawMapFile: null,
-    key: null, // csv key [column name] for map displaying
+    currentModal: CurrentModal.NONE,    // the currently open modal
+    rawMapFile: null,                   // decoded geojson from currentMapObject
+    key: null,                          // csv key [column name] for map displaying
     label: null,
-    currentModal: CurrentModal.NONE, // the currently open modal
-    rawMapFile: null, // geojson object
-    key: null, // csv key [column name] for map displaying
+    currentModal: CurrentModal.NONE,    // the currently open modal
     parsed_CSV_Data: null,
     mapType: null,
     currentMapObject: null,
-    mapList: [],
+    mapList: [],                        // loaded list of maps (idNamePairs)
     currentView: View.HOME,
     disableSearchBar: false
   });
@@ -100,12 +96,6 @@ function StoreContextProvider(props) {
           ...store,
           currentModal: CurrentModal.CREATE_MAP,
           rawMapFile: payload.file,
-        });
-      }
-      case StoreActionType.UPDATE_MAP: {
-        return setStore({
-          ...store,
-          mapFile: payload.file,
         });
       }
 
@@ -455,18 +445,20 @@ function StoreContextProvider(props) {
   store.getMapList = async function () {
     if (store.isHomePage()) {
       api.getMapsByUser().then((response) => {
-        console.log(response.data.data);
+        console.log("fetched user maps", response.data.data);
         storeReducer({
           type: StoreActionType.LOAD_MAP_LIST,
           payload: { mapList: response.data.data },
         });
       });
     } else {
-      const publishedMaps = await store.getPublishedMaps();
-      console.log(publishedMaps);
-      storeReducer({
-        type: StoreActionType.LOAD_MAP_LIST,
-        payload: { mapList: publishedMaps },
+
+      api.getPublishedMaps().then((response) => {
+        console.log("fetched published maps", response.data.data);
+        storeReducer({
+          type: StoreActionType.LOAD_MAP_LIST,
+          payload: { mapList: response.data.data },
+        });
       });
     }
   };
@@ -495,6 +487,14 @@ function StoreContextProvider(props) {
 
   store.saveCSV = async function () {
     let csvObj;
+    console.log(store.currentMapObject.csvData);
+
+    if(!store.parsed_CSV_Data)
+    {
+      store.updateMap(store.currentMapObject);
+      return;
+    }
+
     if (!store.currentMapObject.csvData) {
       const response = await api.createCSV(
         store.key,
