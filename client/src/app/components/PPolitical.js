@@ -40,7 +40,7 @@ export default function PPolitical() {
     }
   }
   setTextFields(tfs);
-}, [store.parsed_CSV_Data])
+}, [store.parsed_CSV_Data, store.key, store.label])
 
 
 

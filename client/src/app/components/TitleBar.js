@@ -71,7 +71,7 @@ export default function TitleBar() {
             sx={{
               position: "absolute",
               top: "1%",
-              left: "16vw",
+              left: "15vw",
               fontSize: "30pt",
               color:
                 store.currentView === store.viewTypes.COMMUNITY

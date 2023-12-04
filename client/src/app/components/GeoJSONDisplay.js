@@ -273,7 +273,7 @@ export default function GeoJSONDisplay(props) {
           },
         })
         .then(function (dataUrl) {
-          saveAs(dataUrl, "map.jpeg");
+          saveAs(dataUrl, `${store.currentMapObject.title}.jpeg`);
         });
       downloadComplete = true;
       props.completeDownloadCB();
@@ -290,7 +290,7 @@ export default function GeoJSONDisplay(props) {
           },
         })
         .then(function (blob) {
-          saveAs(blob, "map.png");
+          saveAs(blob, `${store.currentMapObject.title}.png`);
         });
       downloadComplete = true;
       props.completeDownloadCB();
@@ -301,7 +301,6 @@ export default function GeoJSONDisplay(props) {
 
   return (
     <div>
-      <Script src="https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js"></Script>
       <Script src="https://cdn.jsdelivr.net/npm/leaflet-heatmap@1.0.0/leaflet-heatmap.js"></Script>
       <div id={"map-display"} style={{height: `${mapHeight}px`, margin: '10px' }}></div>
     </div>
