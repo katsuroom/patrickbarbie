@@ -8,7 +8,7 @@ import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
 import Script from "next/script";
 
 function normalize(value, min, max) {
-  return (value - min) / (max - min) * 10;
+  return ((value - min) / (max - min)) * 10;
 }
 
 export default function GeoJSONDisplay(props) {
@@ -22,14 +22,13 @@ export default function GeoJSONDisplay(props) {
   let downloadComplete = props.downloadComplete;
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
 
-
   useEffect(() => {
     const resizeListener = () => {
       setMapHeight(window.innerHeight / 2);
     };
-    window.addEventListener('resize', resizeListener);
+    window.addEventListener("resize", resizeListener);
     return () => {
-      window.removeEventListener('resize', resizeListener);
+      window.removeEventListener("resize", resizeListener);
     };
   }, []);
 
@@ -39,23 +38,20 @@ export default function GeoJSONDisplay(props) {
     const resizeListener = () => {
       setMapHeight(window.innerHeight / 2);
     };
-    window.addEventListener('resize', resizeListener);
+    window.addEventListener("resize", resizeListener);
     return () => {
-      window.removeEventListener('resize', resizeListener);
+      window.removeEventListener("resize", resizeListener);
     };
   }, []);
 
   useEffect(() => {
-    if(store.rawMapFile)
-      setGeoJsonData(store.rawMapFile);
+    if (store.rawMapFile) setGeoJsonData(store.rawMapFile);
   }, [store.rawMapFile]);
 
   useEffect(() => {
-
-    if (!geoJsonData ) {
+    if (!geoJsonData) {
       return;
     }
-
 
     if (!mapRef.current) {
       mapRef.current = L.map("map-display").setView([0, 0], 2);
@@ -63,7 +59,7 @@ export default function GeoJSONDisplay(props) {
         mapRef.current
       );
     }
-    
+
     if (geoJsonLayerRef.current) {
       mapRef.current.removeLayer(geoJsonLayerRef.current);
     }
@@ -75,10 +71,8 @@ export default function GeoJSONDisplay(props) {
     if (geoJsonData) {
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
         onEachFeature: (feature, layer) => {
-
           // check if label_y and label_x exist, since they don't exist for KML
-          if(feature.properties.label_y && feature.properties.label_x)
-          {
+          if (feature.properties.label_y && feature.properties.label_x) {
             const label = L.marker(
               [feature.properties.label_y, feature.properties.label_x],
               {
@@ -92,6 +86,18 @@ export default function GeoJSONDisplay(props) {
             ).addTo(mapRef.current);
             markers.current.push(label);
           }
+          // Add mouse hover response
+          layer.on({
+            mouseover: function (e) {
+              e.target.setStyle({
+                weight: 10, 
+                color: "yellow"
+              });
+            },
+            mouseout: function (e) {
+              geoJsonLayerRef.current.resetStyle(e.target); 
+            },
+          });
         },
       });
 
@@ -113,7 +119,8 @@ export default function GeoJSONDisplay(props) {
       const saveImageButton = L.control({ position: "bottomleft" });
       saveImageButton.onAdd = function () {
         this._div = L.DomUtil.create("div", "saveImageButton");
-        this._div.innerHTML = '<Button id="saveImageButton" data-cy="save-image-button">Save Image</Button>';
+        this._div.innerHTML =
+          '<Button id="saveImageButton" data-cy="save-image-button">Save Image</Button>';
         return this._div;
       };
       saveImageButton.addTo(mapRef.current);
@@ -132,12 +139,11 @@ export default function GeoJSONDisplay(props) {
       return;
     }
 
-
-    
-    if (store.mapType === store.mapTypes.HEATMAP || (store.currentMapObject && store.currentMapObject.mapType === store.mapTypes.HEATMAP)) {
-      
-
-     
+    if (
+      store.mapType === store.mapTypes.HEATMAP ||
+      (store.currentMapObject &&
+        store.currentMapObject.mapType === store.mapTypes.HEATMAP)
+    ) {
       let heatMapData = geoJsonData.features.map((feature) => {
         let idx = -1;
 
@@ -185,24 +191,28 @@ export default function GeoJSONDisplay(props) {
       });
 
       console.log("heatMapData", heatMapData);
-      
-      heatMapData = heatMapData.filter(item => {
-        return item && typeof item === 'object' && item.constructor === Object && item.value;
-      })
+
+      heatMapData = heatMapData.filter((item) => {
+        return (
+          item &&
+          typeof item === "object" &&
+          item.constructor === Object &&
+          item.value
+        );
+      });
 
       console.log("heatMapData", heatMapData);
 
       heatmapOverlayRef.current = new HeatmapOverlay({
-        "useLocalExtrema": false,
-        "scaleRadius": true,
-        "maxOpacity": .8,
-        valueField: 'value',
-        radius: 20
+        useLocalExtrema: false,
+        scaleRadius: true,
+        maxOpacity: 0.8,
+        valueField: "value",
+        radius: 20,
       }).addTo(mapRef.current);
 
       heatmapOverlayRef.current.setData({ data: heatMapData });
     }
-
   }, [geoJsonData, store.label, store.key, store.parsed_CSV_Data]);
 
   if (!downloadComplete) {
@@ -249,7 +259,10 @@ export default function GeoJSONDisplay(props) {
     <div>
       <Script src="https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js"></Script>
       <Script src="https://cdn.jsdelivr.net/npm/leaflet-heatmap@1.0.0/leaflet-heatmap.js"></Script>
-      <div id={"map-display"} style={{height: `${mapHeight}px`, margin: '10px' }}></div>
+      <div
+        id={"map-display"}
+        style={{ height: `${mapHeight}px`, margin: "10px" }}
+      ></div>
     </div>
   );
 }
