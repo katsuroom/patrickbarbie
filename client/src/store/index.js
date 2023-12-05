@@ -615,6 +615,12 @@ function StoreContextProvider(props) {
     });
   };
 
+  store.clearCsv = function() {
+    store.setParsedCsvData(null);
+    store.setCsvKey(null);
+    store.setCsvLabel(null);
+  }
+
   store.isCommunityPage = () => {
     return store.currentView === store.viewTypes.COMMUNITY;
   };

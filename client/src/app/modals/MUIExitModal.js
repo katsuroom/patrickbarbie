@@ -33,11 +33,13 @@ export default function MUIExit() {
   const handleSave = () => {
     store.saveCSV();
     console.log("Map Saved!");
+    store.clearCsv();
     router.push("/main");
   };
 
   const handleDiscard = () => {
     console.log("Map Discarded!");
+    store.clearCsv();
     router.push("/main");
   };
 
