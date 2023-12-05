@@ -614,7 +614,7 @@ function StoreContextProvider(props) {
       payload: disableSearchBar,
     });
   };
-
+ 
   store.clearCsv = function() {
     store.setParsedCsvData(null);
     store.setCsvKey(null);
