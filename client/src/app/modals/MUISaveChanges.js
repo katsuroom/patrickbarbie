@@ -31,6 +31,7 @@ export default function MUISaveChanges() {
   const handleSave = () => {
     store.saveCSV();
     console.log("Map Saved!");
+    store.closeModal();
   };
 
   return (
