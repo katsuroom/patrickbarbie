@@ -4,9 +4,18 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
-loginUser = async (req, res) => {
-  console.log("loginUser");
+const tryCatchWrapper = async (handler) => {
   try {
+    await handler();
+  } catch (err) {
+    console.error(err);
+    res.status(500).send();
+  }
+};
+
+const loginUser = async (req, res) => {
+  console.log("loginUser");
+  tryCatchWrapper(async () => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -22,7 +31,7 @@ loginUser = async (req, res) => {
     if (!existingUser) {
       console.log("Wrong email.", email);
       return res.status(401).json({
-        errorMessage: "User does not exists.",
+        errorMessage: "User does not exist.",
       });
     }
 
@@ -38,8 +47,6 @@ loginUser = async (req, res) => {
       });
     }
 
-    // LOGIN THE USER
-    // const token = auth.signToken(existingUser._id);
     const token = jwt.sign(
       { userId: existingUser._id },
       process.env.JWT_SECRET
@@ -56,19 +63,14 @@ loginUser = async (req, res) => {
       },
     });
 
-    // console.log("header: ", res.getHeaders());
     console.log("token sent");
-
     console.log("sent status 200");
-  } catch (err) {
-    console.error(err);
-    res.status(500).send();
-  }
+  });
 };
 
-registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
   console.log("REGISTERING USER IN BACKEND");
-  try {
+  tryCatchWrapper(async () => {
     const { username, email, password } = req.body;
     console.log("create user: " + username + " " + email + " " + password);
     if (!username || !email || !password) {
@@ -76,33 +78,6 @@ registerUser = async (req, res) => {
         .status(400)
         .json({ errorMessage: "Please enter all required fields." });
     }
-    console.log("all fields provided");
-    // if (password.length < 8) {
-    //     return res
-    //         .status(400)
-    //         .json({
-    //             errorMessage: "Please enter a password of at least 8 characters."
-    //         });
-    // }
-    // console.log("password long enough");
-    // if (password !== passwordVerify) {
-    //     return res
-    //         .status(400)
-    //         .json({
-    //             errorMessage: "Please enter the same password twice."
-    //         })
-    // }
-    // console.log("password and password verify match");
-    // const existingUser = await User.findOne({ email: email });
-    // console.log("existingUser: " + existingUser);
-    // if (existingUser) {
-    //     return res
-    //         .status(400)
-    //         .json({
-    //             success: false,
-    //             errorMessage: "An account with this email address already exists."
-    //         })
-    // }
 
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
@@ -113,10 +88,6 @@ registerUser = async (req, res) => {
     const savedUser = await newUser.save();
     console.log("new user saved: " + savedUser._id);
 
-    // const token = auth.signToken(savedUser._id);
-    // console.log("token:" + token);
-    // console.log("env:", process.env.NODE_ENV);
-
     res.status(200).json({
       success: true,
       user: {
@@ -126,14 +97,11 @@ registerUser = async (req, res) => {
     });
 
     console.log("token sent");
-  } catch (err) {
-    console.error(err);
-    res.status(400).json({ error: err.message });
-  }
+  });
 };
 
-getLoggedIn = async (req, res) => {
-  try {
+const getLoggedIn = async (req, res) => {
+  tryCatchWrapper(async () => {
     let userId = req?.userId;
     if (!userId) {
       return res.status(200).json({
@@ -153,78 +121,67 @@ getLoggedIn = async (req, res) => {
         email: loggedInUser.email,
       },
     });
-  } catch (err) {
-    console.log("err: " + err);
-    res.json(false);
-  }
-};
-
-logoutUser = async (req, res) => {
-  console.log("logoutUser in backend controller");
-  res
-    .cookie("token", "", {
-      httpOnly: true,
-      expires: new Date(0),
-      secure: true,
-      sameSite: "none",
-    })
-    .send();
-  console.log("sent logout response");
-};
-
-getHashedPassword = async (req, res) => {
-  console.log("getting hashed password");
-
-  const email = req.query.email;
-
-  console.log("email", email);
-
-  const caseInsensitiveEmail = new RegExp("^" + email + "$", "i");
-
-  User.findOne({ email: caseInsensitiveEmail })
-    .then((user) => {
-      if (!user) {
-        return res.status(404).json({
-          success: false,
-          error: "User not found",
-        });
-      }
-      console.log("user found: " + JSON.stringify(user));
-      return res.status(200).json({
-        success: true,
-        data: user.passwordHash,
-        message: "User found",
-      });
-    })
-    .catch((error) => {
-      console.log("Error getting user: " + error);
-      return res.status(500).json({
-        success: false,
-        error: "Error getting user",
-      });
-    });
-};
-
-sendPasswordRecoveryEmail = async (req, res) => {
-  console.log("sendPasswordRecoveryEmail");
-
-  const email = req.query.email;
-  let PwHash = req.query.PwHash;
-  PwHash = PwHash.replace(/\//g, "SPECIAL_ESCAPE_CHAR");
-
-  let transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: "TeamPink416@gmail.com",
-      pass: "ycrl ahby kbwf ijrn",
-    },
   });
+};
 
-  try {
+const logoutUser = async (req, res) => {
+  console.log("logoutUser in backend controller");
+  tryCatchWrapper(async () => {
+    res
+      .cookie("token", "", {
+        httpOnly: true,
+        expires: new Date(0),
+        secure: true,
+        sameSite: "none",
+      })
+      .send();
+    console.log("sent logout response");
+  });
+};
+
+const getHashedPassword = async (req, res) => {
+  console.log("getting hashed password");
+  tryCatchWrapper(async () => {
+    const email = req.query.email;
+    console.log("email", email);
+
+    const caseInsensitiveEmail = new RegExp("^" + email + "$", "i");
+
+    const user = await User.findOne({ email: caseInsensitiveEmail });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found",
+      });
+    }
+
+    console.log("user found: " + JSON.stringify(user));
+    return res.status(200).json({
+      success: true,
+      data: user.passwordHash,
+      message: "User found",
+    });
+  });
+};
+
+const sendPasswordRecoveryEmail = async (req, res) => {
+  console.log("sendPasswordRecoveryEmail");
+  tryCatchWrapper(async () => {
+    const email = req.query.email;
+    let PwHash = req.query.PwHash;
+    PwHash = PwHash.replace(/\//g, "SPECIAL_ESCAPE_CHAR");
+
+    let transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "TeamPink416@gmail.com",
+        pass: "ycrl ahby kbwf ijrn",
+      },
+    });
+
     // Define the email content
-
     let url = `https://patrick-barbie-f64046e3bb4b.herokuapp.com/password-recovery?email=${email}&token=${PwHash}`;
     // let url = `localhost:4000/password-recovery?email=${email}&token=${PwHash}`;
 
@@ -251,52 +208,39 @@ sendPasswordRecoveryEmail = async (req, res) => {
       success: true,
       message: "Password recovery email sent successfully.",
     });
-  } catch (error) {
-    console.error("Error sending email:", error);
-
-    res.status(500).json({
-      success: false,
-      error: "Error sending password recovery email.",
-    });
-  }
+  });
 };
 
+const setNewPassword = async (req, res) => {
+  tryCatchWrapper(async () => {
+    const email = req.query.email;
+    const newPassword = req.query.newPassword;
 
-setNewPassword  = async (req, res) => {
-  const email = req.query.email;
-  const newPassword = req.query.newPassword;
-
-  const saltRounds = 10;
+    const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
     const passwordHash = await bcrypt.hash(newPassword, salt);
     console.log("passwordHash: " + passwordHash);
 
+    const caseInsensitiveEmail = new RegExp("^" + email + "$", "i");
 
+    const user = await User.findOne({ email: caseInsensitiveEmail });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found",
+      });
+    }
 
-  const caseInsensitiveEmail = new RegExp("^" + email + "$", "i");
-
-  User.findOne({ email: caseInsensitiveEmail })
-  .then((user) => {
     console.log("user found: " + JSON.stringify(user));
-    user.passwordHash = passwordHash
-    return user.save();
-  })
-  .then(() => {
+    user.passwordHash = passwordHash;
+    await user.save();
+
     return res.status(201).json({
       success: true,
       message: "Password Updated!",
     });
-  })
-  .catch((error) => {
-    return res.status(400).json({
-      error,
-      message: "Password Not Updated!",
-    });
   });
-
-
-
-}
+};
 
 module.exports = {
   registerUser,
