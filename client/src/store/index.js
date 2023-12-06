@@ -219,6 +219,7 @@ function StoreContextProvider(props) {
   };
 
   store.setMinColor = function (color) {
+    console.log("setMinColor", color);
     storeReducer({
       type: StoreActionType.SET_MIN_COLOR,
       payload: color,
@@ -226,6 +227,8 @@ function StoreContextProvider(props) {
   };
 
   store.setMaxColor = function (color) {
+    console.log("setMaxColor", color);
+
     storeReducer({
       type: StoreActionType.SET_MAX_COLOR,
       payload: color,
