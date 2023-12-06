@@ -81,20 +81,20 @@ export default function GeoJSONDisplay(props) {
     else{
 
         fillColor = interpolateColor(
-
             "#FFFFFF",
             "#FF0000",
             Math.min(...store.parsed_CSV_Data[store.key]),
             Math.max(...store.parsed_CSV_Data[store.key]),
-            
+
             store.parsed_CSV_Data[store.key][idx]
+
             );
 
 
     }
     return {
       stroke: true,
-      color: fillColor,
+      color: "black",
       weight: 1,
       fillColor,
       fillOpacity: 1,
@@ -155,20 +155,8 @@ export default function GeoJSONDisplay(props) {
             markers.current.push(label);
           }
           
-        //   layer.on({
-        //     mouseover: function (e) {
-        //       e.target.setStyle({
-        //         weight: 10, 
-        //         // color: "yellow"
-        //       });
-        //     },
-        //     mouseout: function (e) {
-        //         e.target.setStyle({
-        //             weight: 2, 
-        //             // color: "yellow"
-        //           });
-        //     },
-        //   });
+         
+
         },
       });
 
@@ -217,9 +205,27 @@ export default function GeoJSONDisplay(props) {
     ) {
 
         heatmapOverlayRef.current = L.geoJSON(geoJsonData, {
-            style: geoJsonStyle
+            style: geoJsonStyle,
+            onEachFeature: (feature, layer) => {
+            layer.on({
+              mouseover: function (e) {
+                  console.log(e.target);
+                e.target.setStyle({
+                  weight: 10, 
+                  // color: "black"
+                });
+              },
+              mouseout: function (e) {
+                  e.target.setStyle({
+                      weight: 2, 
+                      // color: "light blue"
+                    });
+              },
+            });
+          }
           });
 
+          
           heatmapOverlayRef.current.addTo(mapRef.current);
     }
   }, [geoJsonData, store.label, store.key, store.parsed_CSV_Data]);
