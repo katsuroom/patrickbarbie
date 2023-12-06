@@ -653,6 +653,8 @@ function StoreContextProvider(props) {
     store.setParsedCsvData(null);
     store.setCsvKey(null);
     store.setCsvLabel(null);
+    store.setMinColor("#FFFFFF");
+    store.setMaxColor("#FF0000")
   }
 
   store.isCommunityPage = () => {
