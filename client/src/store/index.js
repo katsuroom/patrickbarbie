@@ -28,6 +28,8 @@ export const StoreActionType = {
   CHANGE_CURRENT_MAP_OBJ: "CHANGE_CURRENT_MAP_OBJ",
   SET_DISABLE_SEARCH_BAR: "SET_DISABLE_SEARCH_BAR",
   SET_MAP_LIST: "SET_MAP_LIST",
+  SET_MIN_COLOR: "SET_MIN_COLOR",
+  SET_MAX_COLOR: "SET_MAX_COLOR"
 };
 
 export const CurrentModal = {
@@ -73,6 +75,8 @@ function StoreContextProvider(props) {
     mapList: [], // loaded list of maps (idNamePairs)
     currentView: View.HOME,
     disableSearchBar: false,
+    minColor: "#FFFFFF",
+    maxColor: "#FF0000"
   });
 
   store.viewTypes = View;
@@ -196,11 +200,38 @@ function StoreContextProvider(props) {
           currentModal: CurrentModal.NONE
         });
       }
+      case StoreActionType.SET_MIN_COLOR: {
+        return setStore({
+          ...store,
+          minColor: payload,
+        });
+      }
+      case StoreActionType.SET_MAX_COLOR: {
+        return setStore({
+          ...store,
+          maxColor: payload,
+        });
+      }
 
       default:
         return store;
     }
   };
+
+  store.setMinColor = function (color) {
+    storeReducer({
+      type: StoreActionType.SET_MIN_COLOR,
+      payload: color,
+    });
+  };
+
+  store.setMaxColor = function (color) {
+    storeReducer({
+      type: StoreActionType.SET_MAX_COLOR,
+      payload: color,
+    });
+  };
+  
 
   store.openModal = function (modal) {
     console.log("opening modal: ", modal);

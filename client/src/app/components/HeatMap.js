@@ -81,8 +81,8 @@ export default function GeoJSONDisplay(props) {
     else{
 
         fillColor = interpolateColor(
-            "#FFFFFF",
-            "#FF0000",
+            store.minColor,
+            store.maxColor,
             Math.min(...store.parsed_CSV_Data[store.key]),
             Math.max(...store.parsed_CSV_Data[store.key]),
 
