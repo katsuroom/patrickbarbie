@@ -9,7 +9,7 @@ import { useState } from "react";
 
 import dynamic from "next/dynamic";
 
-const GeoJSONDisplay = dynamic(() => import('./GeoJSONDisplay'));
+const GeoJSONDisplay = dynamic(() => import('./HeatMap'));
 const ProportionalMap = dynamic(() => import('./ProportionalMap'));
 const TravelMap = dynamic(() => import("./TravelMaps"));
 import "leaflet/dist/leaflet.css";
