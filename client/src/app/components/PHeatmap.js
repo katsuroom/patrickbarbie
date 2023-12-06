@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import * as React from "react";
 import Table from "@mui/joy/Table";
@@ -15,6 +15,26 @@ import MUIExit from "../modals/MUIExitModal";
 import { useContext, useEffect } from "react";
 import StoreContext, { CurrentModal } from "@/store";
 
+
+
+// import Table from '@mui/joy/Table';
+// import Button from '@mui/joy/Button';
+// import Add from '@mui/icons-material/Add';
+// import MenuItem from '@mui/material/MenuItem';
+// import Select from '@mui/material/Select';
+// import TextField from '@mui/material/TextField';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Compact from '@uiw/react-color-compact';
+// import './property.css'
+// import { useContext, useEffect } from "react";
+// import StoreContext from "../store";
+// import CsvFileReader from "./CsvFileReader";
+
+// import MUISaveChanges from "./Model/MUISaveChanges";
+// import MUIExitModal from "./Model/MUIExitModal";
+
+
 export default function PHeatmap() {
   const { store } = useContext(StoreContext);
 
@@ -23,26 +43,39 @@ export default function PHeatmap() {
   // const [page, setPage] = React.useState(0);
   const [textFields, setTextFields] = React.useState([]);
 
+  const [MinHex, setMinHex] = React.useState(store.minColor);
+  const [MaxHex, setMaxHex] = React.useState(store.maxColor);
+
+  const handleMinColorChange = (event) => {
+    setMinHex(event.hex);
+    store.setMinColor(event.hex);
+  };
+
+  const handleMaxColorChange = (event) => {
+    setMaxHex(event.hex);
+    store.setMaxColor(event.hex);
+  };
+
   useEffect(() => {
-  let tfs = [];
-  if (store.parsed_CSV_Data) {
-    for (let idx in store.parsed_CSV_Data[store.key]) {
-      console.log(111);
-      tfs.push(
-        <TextField
-          id={"tf-" + idx}
-          defaultValue={store.parsed_CSV_Data[store.key][idx]}
-          variant="standard"
-          sx={{ m: 1, minWidth: 120 }}
-          onChange={(e) => store.parsed_CSV_Data[store.key][idx] = e.target.value}
-        />
-      );
+    let tfs = [];
+    if (store.parsed_CSV_Data) {
+      for (let idx in store.parsed_CSV_Data[store.key]) {
+        console.log(111);
+        tfs.push(
+          <TextField
+            id={"tf-" + idx}
+            defaultValue={store.parsed_CSV_Data[store.key][idx]}
+            variant="standard"
+            sx={{ m: 1, minWidth: 120 }}
+            onChange={(e) =>
+              (store.parsed_CSV_Data[store.key][idx] = e.target.value)
+            }
+          />
+        );
+      }
     }
-  }
-  setTextFields(tfs);
-}, [store.parsed_CSV_Data, store.key, store.label])
-
-
+    setTextFields(tfs);
+  }, [store.parsed_CSV_Data, store.key, store.label]);
 
   console.log(store.key);
   console.log(store.label);
@@ -51,13 +84,12 @@ export default function PHeatmap() {
 
   function zip(...arrays) {
     let length;
-    try{
+    try {
       length = Math.min(...arrays.map((arr) => arr.length));
-    }
-    catch(error){
+    } catch (error) {
       length = 0;
     }
-    
+
     return Array.from({ length }, (_, index) =>
       arrays.map((arr) => arr[index])
     );
@@ -78,7 +110,9 @@ export default function PHeatmap() {
           defaultValue={store.parsed_CSV_Data[event.target.value][idx]}
           variant="standard"
           sx={{ m: 1, minWidth: 120 }}
-          onChange={(e) => store.parsed_CSV_Data[event.target.value][idx] = e.target.value}
+          onChange={(e) =>
+            (store.parsed_CSV_Data[event.target.value][idx] = e.target.value)
+          }
         />
       );
     }
@@ -167,7 +201,7 @@ export default function PHeatmap() {
     <div>
       <div className="propertyTitle">Property</div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
-      <div style={{ overflow: "auto", maxHeight: "60vh" }}>
+      <div style={{ overflow: "auto", maxHeight: "45vh" }}>
         <Table
           className="property-table"
           sx={{ "& thead th::nth-of-type(1)": { width: "40%" } }}
@@ -187,7 +221,9 @@ export default function PHeatmap() {
                   }}
                 >
                   {menuItems.map((mi) => (
-                    <MenuItem key={mi} value={mi}>{mi}</MenuItem>
+                    <MenuItem key={mi} value={mi}>
+                      {mi}
+                    </MenuItem>
                   ))}
                   {/* <MenuItem>
                     <Button variant="text" startDecorator={<Add />}>
@@ -209,7 +245,9 @@ export default function PHeatmap() {
                   }}
                 >
                   {menuItems.map((mi) => (
-                    <MenuItem key={mi} value={mi}>{mi}</MenuItem>
+                    <MenuItem key={mi} value={mi}>
+                      {mi}
+                    </MenuItem>
                   ))}
                   {/* <MenuItem>
                     <Button variant="text" startDecorator={<Add />}>
@@ -249,6 +287,35 @@ export default function PHeatmap() {
           </tbody>
         </Table>
       </div>
+      <div>
+        <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
+          <InputLabel id="demo-simple-select-helper-label">Min</InputLabel>
+          <Select
+            labelId="demo-simple-select-helper-label"
+            id="demo-simple-select-helper"
+            label="Age"
+            sx={{ minWidth: 130 }}
+          >
+            <MenuItem value={MinHex}>
+              <Compact onChange={handleMinColorChange} color={MinHex} />
+            </MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
+          <InputLabel id="demo-simple-select-helper-label">Max</InputLabel>
+          <Select
+            labelId="demo-simple-select-helper-label"
+            id="demo-simple-select-helper"
+            label="Age"
+            sx={{ minWidth: 130 }}
+          >
+            <MenuItem value={MaxHex}>
+              <Compact onChange={handleMaxColorChange} color={MaxHex} />
+            </MenuItem>
+          </Select>
+        </FormControl>
+      </div>
+      <div>
       <Button
         variant="solid"
         className="exit"
@@ -265,6 +332,7 @@ export default function PHeatmap() {
       >
         SAVE
       </Button>
+      </div>
       {/* <Button
         variant="solid"
         className="prev"
@@ -294,7 +362,6 @@ export default function PHeatmap() {
   );
 }
 
-
 // import * as React from 'react';
 // import Table from '@mui/joy/Table';
 // import Button from '@mui/joy/Button';
@@ -313,13 +380,11 @@ export default function PHeatmap() {
 // import MUISaveChanges from "./Model/MUISaveChanges";
 // import MUIExitModal from "./Model/MUIExitModal";
 
-
 // const Data = {
 //   "population": 20,
 //   "GDP": 50,
 //   "Color": "FFFFFF",
 // }
-
 
 // export default function PHeatmap() {
 //   const [MinHex, setMinHex] = React.useState("#fff");

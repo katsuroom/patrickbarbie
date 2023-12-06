@@ -6,41 +6,40 @@ import domtoimage from "dom-to-image";
 import { saveAs } from "file-saver";
 import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
 import Script from "next/script";
-
+ 
 function normalize(value, min, max) {
   return (value - min) / (max - min);
 }
 function interpolateColor(minColor, maxColor, minValue, maxValue, value) {
-  
-    // Convert hex colors to RGB format
-    const hexToRgb = (hex) =>
-      hex.match(/\w\w/g).map((hex) => parseInt(hex, 16));
-  
-    const minRGB = hexToRgb(minColor);
-    const maxRGB = hexToRgb(maxColor);
-    console.log(minRGB, maxRGB, value)
-  
-    // Calculate the fraction between the min and max values
-    const fraction = (value - minValue) / (maxValue - minValue);
-  
-    // Interpolate each RGB component
-    const interpolatedRGB = minRGB.map((component, index) =>
-      Math.round(component + fraction * (maxRGB[index] - component))
-    );
-  
-    // Convert back to hex format
-    const rgbToHex = (rgb) =>
-      rgb.map((value) => Math.max(0, Math.min(255, Math.round(value))))
-        .map((value) => value.toString(16).padStart(2, '0')).join('');
-  
-    const interpolatedColor = `#${rgbToHex(interpolatedRGB)}`;
+  // Convert hex colors to RGB format
+  const hexToRgb = (hex) => hex.match(/\w\w/g).map((hex) => parseInt(hex, 16));
 
-    console.log(interpolatedColor);
-  
-    return interpolatedColor;
-  }
-  
-  
+  const minRGB = hexToRgb(minColor);
+  const maxRGB = hexToRgb(maxColor);
+  console.log(minRGB, maxRGB, value);
+
+  // Calculate the fraction between the min and max values
+  const fraction = (value - minValue) / (maxValue - minValue);
+
+  // Interpolate each RGB component
+  const interpolatedRGB = minRGB.map((component, index) =>
+    Math.round(component + fraction * (maxRGB[index] - component))
+  );
+
+  // Convert back to hex format
+  const rgbToHex = (rgb) =>
+    rgb
+      .map((value) => Math.max(0, Math.min(255, Math.round(value))))
+      .map((value) => value.toString(16).padStart(2, "0"))
+      .join("");
+
+  const interpolatedColor = `#${rgbToHex(interpolatedRGB)}`;
+
+  console.log(interpolatedColor);
+
+  return interpolatedColor;
+}
+
 export default function GeoJSONDisplay(props) {
   const [geoJsonData, setGeoJsonData] = useState(null);
   const [buttonAdded, setButtonAdded] = useState(false);
@@ -64,33 +63,25 @@ export default function GeoJSONDisplay(props) {
 
   const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 
-
   function geoJsonStyle(feature) {
     let fillColor;
     let idx;
 
     try {
-        idx = store.parsed_CSV_Data[store.label].indexOf(
-            feature.properties.name
-        );
+      idx = store.parsed_CSV_Data[store.label].indexOf(feature.properties.name);
     } catch (error) {}
 
     if (!idx || idx < 0 || !store.parsed_CSV_Data) {
-        fillColor = "white"
-    }
-    else{
+      fillColor = "white";
+    } else {
+      fillColor = interpolateColor(
+        store.minColor,
+        store.maxColor,
+        Math.min(...store.parsed_CSV_Data[store.key]),
+        Math.max(...store.parsed_CSV_Data[store.key]),
 
-        fillColor = interpolateColor(
-            "#FFFFFF",
-            "#FF0000",
-            Math.min(...store.parsed_CSV_Data[store.key]),
-            Math.max(...store.parsed_CSV_Data[store.key]),
-
-            store.parsed_CSV_Data[store.key][idx]
-
-            );
-
-
+        store.parsed_CSV_Data[store.key][idx]
+      );
     }
     return {
       stroke: true,
@@ -100,7 +91,6 @@ export default function GeoJSONDisplay(props) {
       fillOpacity: 1,
     };
   }
-
 
   useEffect(() => {
     const resizeListener = () => {
@@ -154,9 +144,6 @@ export default function GeoJSONDisplay(props) {
             ).addTo(mapRef.current);
             markers.current.push(label);
           }
-          
-         
-
         },
       });
 
@@ -203,35 +190,40 @@ export default function GeoJSONDisplay(props) {
       (store.currentMapObject &&
         store.currentMapObject.mapType === store.mapTypes.HEATMAP)
     ) {
-
-        heatmapOverlayRef.current = L.geoJSON(geoJsonData, {
-            style: geoJsonStyle,
-            onEachFeature: (feature, layer) => {
-            layer.on({
-              mouseover: function (e) {
-                  console.log(e.target);
-                e.target.setStyle({
-                  weight: 10, 
-                  // color: "black"
-                });
-              },
-              mouseout: function (e) {
-                  e.target.setStyle({
-                      weight: 2, 
-                      // color: "light blue"
-                    });
-              },
-              click: function (e) {
-                console.log('Layer clicked!');
-              },
-            });
-          }
+      heatmapOverlayRef.current = L.geoJSON(geoJsonData, {
+        style: geoJsonStyle,
+        onEachFeature: (feature, layer) => {
+          layer.on({
+            mouseover: function (e) {
+              console.log(e.target);
+              e.target.setStyle({
+                weight: 10,
+                // color: "black"
+              });
+            },
+            mouseout: function (e) {
+              e.target.setStyle({
+                weight: 2,
+                // color: "light blue"
+              });
+            },
+            click: function (e) {
+              console.log("Layer clicked!");
+            },
           });
+        },
+      });
 
-          
-          heatmapOverlayRef.current.addTo(mapRef.current);
+      heatmapOverlayRef.current.addTo(mapRef.current);
     }
-  }, [geoJsonData, store.label, store.key, store.parsed_CSV_Data]);
+  }, [
+    geoJsonData,
+    store.label,
+    store.key,
+    store.parsed_CSV_Data,
+    store.minColor,
+    store.maxColor,
+  ]);
 
   if (!downloadComplete) {
     if (props.imageType === "JPEG") {
