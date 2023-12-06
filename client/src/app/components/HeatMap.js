@@ -221,6 +221,9 @@ export default function GeoJSONDisplay(props) {
                       // color: "light blue"
                     });
               },
+              click: function (e) {
+                console.log('Layer clicked!');
+              },
             });
           }
           });
