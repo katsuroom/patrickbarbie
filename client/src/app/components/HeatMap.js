@@ -6,7 +6,7 @@ import domtoimage from "dom-to-image";
 import { saveAs } from "file-saver";
 import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
 import Script from "next/script";
-
+ 
 function normalize(value, min, max) {
   return (value - min) / (max - min);
 }
