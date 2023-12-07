@@ -121,6 +121,7 @@ export default function RegisterScreen() {
                                 <br />
                                 <input
                                     type='text'
+                                    id="username"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                     required
