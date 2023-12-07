@@ -186,7 +186,8 @@ function StoreContextProvider(props) {
       case StoreActionType.CHANGE_CURRENT_MAP_OBJ: {
         return setStore({
           ...store,
-          currentMapObject: payload,
+          currentMapObject: payload.mapObject,
+          mapList: payload.mapList || store.mapList,
           currentModal: CurrentModal.NONE,
           minColor: "#FFFFFF",
           maxColor: "#FF0000"
@@ -339,7 +340,7 @@ function StoreContextProvider(props) {
   store.setCurrentMapObj = function (mapObj) {
     storeReducer({
       type: StoreActionType.CHANGE_CURRENT_MAP_OBJ,
-      payload: mapObj,
+      payload: { mapObj },
     });
   };
 
@@ -348,16 +349,21 @@ function StoreContextProvider(props) {
     async function asyncUpdateMap(mapObject) {
       let response = await api.updateMap(mapObject);
       if (response.status != 200) return;
-      getMapById(mapObject._id);
-      async function getMapById(id) {
-        response = await api.getMapById(id);
-        if (response.status != 200) return;
-        storeReducer({
-          type: StoreActionType.CHANGE_CURRENT_MAP_OBJ,
-          payload: response.data.data,
-        });
-      }
     }
+    mapObject.__v++;  // temporary hack
+
+    // replace the map in maplist
+    let list = store.mapList;
+    let index = list.findIndex(map => map._id == mapObject._id);
+    list[index] = mapObject;
+
+    storeReducer({
+      type: StoreActionType.CHANGE_CURRENT_MAP_OBJ,
+      payload: {
+        mapObject,
+        mapList: list
+      }
+    });
   };
 
   store.updateViews = function (mapObject) {
