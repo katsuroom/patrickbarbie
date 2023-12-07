@@ -50,23 +50,13 @@ export default function PHeatmap() {
     const color = event.hex;
     setMinHex(color);
     store.setMinColor(color);
-    if (!store.currentMapObject.mapProps){
-      store.currentMapObject.mapProps = {}
-    }
-    store.currentMapObject.mapProps.minColor = color;
-    
-    store.updateMap(store.currentMapObject);
+
   };
 
   const handleMaxColorChange = (event) => {
     const color = event.hex;
     setMaxHex(color);
     store.setMaxColor(color);
-    if (!store.currentMapObject.mapProps){
-      store.currentMapObject.mapProps = {}
-    }
-    store.currentMapObject.mapProps.maxColor = color;
-    store.updateMap(store.currentMapObject);
 
   };
 
