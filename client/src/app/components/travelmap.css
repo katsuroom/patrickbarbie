@@ -40,5 +40,9 @@ input:nth-child(1) {
 }
 
 .leaflet-routing-alternatives-container {
-    display: none;
+    /* display: none; */
+
+    width: 400px; 
+    max-height: 200px;
+    overflow-y: auto;
 }
