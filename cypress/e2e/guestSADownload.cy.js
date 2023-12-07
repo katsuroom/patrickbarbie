@@ -2,7 +2,7 @@ describe('template spec', () => {
     Cypress.on('uncaught:exception', (err, runnable) => {
         return false
     })
-    it('visit guest', () => {
+    it('guest download map', () => {
         cy.visit("https://patrick-barbie-f64046e3bb4b.herokuapp.com/");
 
         cy.wait(500);
@@ -11,7 +11,7 @@ describe('template spec', () => {
 
         cy.url().should('include', '/main')
 
-        cy.get('[data-testid="PeopleIcon"]').click()
+        cy.wait(500);
 
         cy.contains(".map-list-name", "SA").click();
 
