@@ -24,7 +24,6 @@ export default function SelectVariants() {
   };
   const handleSearch = (event) =>{
     setSearchText(event.target.value);
-    console.log(event.target.value);
   }
   const handleKeyPress = async (event) =>{
     if (event.code === "Enter") {
@@ -64,12 +63,12 @@ export default function SelectVariants() {
         </Select>
           <TextField 
           id="search" 
-          required
           label="search" 
-          variant="standard"
+          variant="filled"
+          size="small"
           onChange = {handleSearch}
           onKeyUp = {(event)=>{handleKeyPress(event);}}
-          sx={{ m: -2, minWidth: 120, marginLeft: "3px", marginBottom: "3px", marginRight: "20px"}}/>
+          sx={{ m: -2, width: "30vw", marginLeft: "3px", marginTop: 0, marginRight: "20px"}}/>
           <Sort/>
     </div>
   );

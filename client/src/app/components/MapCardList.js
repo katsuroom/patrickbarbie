@@ -100,11 +100,11 @@ export default function MapCardList() {
       >
         {store.mapList.map((map, index) => [
           index > 0 && <Divider key={`divider-${map._id}`} />,
-          <div style={{margin: "8px", boxSizing: "border-box"}}>
+          <div style={{margin: "8px", boxSizing: "border-box"}} key={map._id}>
             <ListItem
               onClick={() => handleMapClick(map._id)}
-              key={map._id}
               sx={{
+                padding: 0.5,
                 backgroundColor:
                   store.currentMapObject && store.currentMapObject._id === map._id
                     ? "#FDF4F3"
@@ -113,12 +113,12 @@ export default function MapCardList() {
               }}
             >
               <ListItemText
-                primaryTypographyProps={{fontFamily: "Sen", letterSpacing: "1px"}}
+                primaryTypographyProps={{fontFamily: "Sen", letterSpacing: "1px", marginLeft: 1}}
                 className="map-list-name"
                 primary={map.title}
               />
             </ListItem>
-          </div>,
+          </div>
         ])}
       </List>
       {auth.loggedIn && store.currentView == View.HOME ? (
