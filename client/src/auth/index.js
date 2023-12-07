@@ -1,8 +1,7 @@
 "use client"
 
 import React, { createContext, useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import api from "./auth-request-api";
+import api from "./api";
 import { useRouter } from 'next/navigation';
 
 const AuthContext = createContext();
@@ -12,8 +11,9 @@ const AuthContext = createContext();
 export const AuthActionType = {
   GET_LOGGED_IN: "GET_LOGGED_IN",
   LOGIN_USER: "LOGIN_USER",
+  LOGIN_GUEST: "LOGIN_GUEST",
   LOGOUT_USER: "LOGOUT_USER",
-  REGISTER_USER: "REGISTER_USER",
+  SET_ERROR: "SET_ERROR"
 };
 
 function AuthContextProvider(props) {
@@ -44,8 +44,15 @@ function AuthContextProvider(props) {
       case AuthActionType.LOGIN_USER: {
         return setAuth({
           user: payload.user,
-          loggedIn: payload.loggedIn,
-          errorMessage: payload.errorMessage,
+          loggedIn: true,
+          errorMessage: null
+        });
+      }
+      case AuthActionType.LOGIN_GUEST: {
+        return setAuth({
+          user: payload.user,
+          loggedIn: false,
+          errorMessage: null
         });
       }
       case AuthActionType.LOGOUT_USER: {
@@ -55,18 +62,18 @@ function AuthContextProvider(props) {
           errorMessage: null,
         });
       }
-      case AuthActionType.REGISTER_USER: {
+      case AuthActionType.SET_ERROR: {
         return setAuth({
-          user: payload.user,
-          loggedIn: payload.loggedIn,
-          errorMessage: payload.errorMessage,
-        });
+          ...auth,
+          errorMessage: payload.errorMessage
+        })
       }
       default:
         return auth;
     }
   };
 
+  // recover user from local stored token and login
   auth.getLoggedIn = async function () {
     console.log("getLoggedIn");
     api.getLoggedIn().then((response) => {
@@ -83,105 +90,94 @@ function AuthContextProvider(props) {
     });
   };
 
+  // register user and immediately login on success
   auth.registerUser = async function (username, email, password) {
     console.log("REGISTERING USER");
-
     api.registerUser(username, email, password).then((response) => {
-      if (response.status === 200) {
-        console.log("Registration successful:", response);
-        authReducer({
-          type: AuthActionType.REGISTER_USER,
-          payload: {
-            user: response.data.user,
-            loggedIn: true,
-            errorMessage: null,
-          },
-        });
-        router.push("/login");
-        console.log("NOW WE LOGIN");
+      console.log(response.data);
+      if (response.status === 200)
         auth.loginUser(email, password);
-        console.log("LOGGED IN");
-      } else {
-        let errorMessage = "Registration failed. Please try again.";
-        if (
-          response.data.error.includes(
-            "E11000 duplicate key error collection: test.users index: username_1 dup key"
-          )
-        ) {
-          errorMessage =
-            "The username is already in use. Please try a different username.";
-        } else if (
-          response.data.error.includes(
-            "E11000 duplicate key error collection: test.users index: email_1 dup key"
-          )
-        ) {
-          errorMessage =
-            "The email is already in use. Please try a different email.";
+      else
+      {
+        let errorMessage = "Registration failed: Unknown error";
+        switch(true)
+        {
+          case response.data.error.includes("username_1 dup key"):
+            errorMessage = "The username is already in use. Please try a different username.";
+            break;
+
+          case response.data.error.includes("email_1 dup key"):
+            errorMessage = "The email is already in use. Please try a different email.";
+            break;
+
+          default:
+            break;
         }
 
         // Dispatch the error message
         authReducer({
-          type: AuthActionType.REGISTER_USER,
+          type: AuthActionType.SET_ERROR,
           payload: {
-            user: auth.user,
-            loggedIn: false,
-            errorMessage: errorMessage,
+            errorMessage
           },
         });
       }
     });
   };
 
+  // login user
   auth.loginUser = async function (email, password) {
-    api
-      .loginUser(email, password)
+    api.loginUser(email, password)
       .then((response) => {
         // Handle the successful login response
         if (response.status === 200) {
           console.log("Login successful:", response);
-          console.log("token: ", response.data.token);
           if (response.data.token) {
             const jsonData = JSON.stringify(response);
             localStorage.setItem("user", jsonData);
-            console.log("token: ", localStorage.getItem("user"));
           }
           authReducer({
             type: AuthActionType.LOGIN_USER,
             payload: {
-              user: response.data.user,
-              loggedIn: true,
-              errorMessage: null,
+              user: response.data.user
             },
           });
           router.push("/main");
         } else {
           console.log("Login failed:", response);
           authReducer({
-            type: AuthActionType.LOGIN_USER,
+            type: AuthActionType.SET_ERROR,
             payload: {
-              user: auth.user,
-              loggedIn: false,
               errorMessage: response.data.errorMessage,
             },
           });
-          window.alert(response.data.errorMessage);
         }
       })
       .catch((error) => {
         // Handle any errors that occurred during the login
-        var message = "something went wrong";
+        let message = "something went wrong";
         console.error("Login failed:", error);
         authReducer({
-          type: AuthActionType.LOGIN_USER,
+          type: AuthActionType.SET_ERROR,
           payload: {
-            user: auth.user,
-            loggedIn: false,
             errorMessage: message,
           },
         });
       });
   };
 
+  // login guest
+  auth.loginGuest = async function () {
+    authReducer({
+      type: AuthActionType.LOGIN_GUEST,
+      payload: {
+        user: { username: "guest" }
+      },
+    });
+    router.push("/main");
+  }
+
+  // logout user
   auth.logoutUser = async function () {
     console.log("Logout user");
     api.logoutUser().then((response) => {
@@ -199,38 +195,20 @@ function AuthContextProvider(props) {
     });
   };
 
-  auth.getUserInitials = function () {
-    let initials = "";
-    if (auth.user) {
-      initials += auth.user.firstName.charAt(0);
-      initials += auth.user.lastName.charAt(0);
-    }
-    console.log("user initials: " + initials);
-    return initials;
-  };
-
-
-
   auth.sendPasswordRecoveryEmail = function(email) {
     return api.sendPasswordRecoveryEmail(email);
   }
-
 
   auth.getHashedPassword = function(email){
     return api.getHashedPassword(email);
   }
 
   auth.setNewPassword = function(email, newPassword){
-    console.log("in auth");
     return api.setNewPassword(email, newPassword);
   }
 
   return (
-    <AuthContext.Provider
-      value={{
-        auth,
-      }}
-    >
+    <AuthContext.Provider value={{ auth }} >
       {props.children}
     </AuthContext.Provider>
   );

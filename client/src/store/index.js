@@ -2,6 +2,7 @@
 
 import React, { createContext, useState, useContext } from "react";
 import AuthContext from "../auth";
+import { usePathname } from "next/navigation";
 
 import api from "./store-request-api";
 
@@ -26,7 +27,6 @@ export const StoreActionType = {
   SET_PARSED_CSV_DATA: "SET_PARSED_CSV_DATA",
   CHANGE_VIEW: "CHANGE_VIEW",
   CHANGE_CURRENT_MAP_OBJ: "CHANGE_CURRENT_MAP_OBJ",
-  SET_DISABLE_SEARCH_BAR: "SET_DISABLE_SEARCH_BAR",
   SET_MAP_LIST: "SET_MAP_LIST",
   SET_MIN_COLOR: "SET_MIN_COLOR",
   SET_MAX_COLOR: "SET_MAX_COLOR"
@@ -58,14 +58,12 @@ export const View = {
 
 function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
+  const pathname = usePathname();
 
   const [store, setStore] = useState({
     currentModal: CurrentModal.NONE, // the currently open modal
-    mapFile: null, // map file uploaded for creating a new map
     rawMapFile: null,
     label: null,
-    currentModal: CurrentModal.NONE, // the currently open modal
-    rawMapFile: null, // geojson object
     key: null, // csv key [column name] for map displaying
     StartKey: null, // csv key [column name] for map displaying
     EndKey: null, // csv key [column name] for map displaying
@@ -73,8 +71,7 @@ function StoreContextProvider(props) {
     mapType: null,
     currentMapObject: null,
     mapList: [], // loaded list of maps (idNamePairs)
-    currentView: View.HOME,
-    disableSearchBar: false,
+    currentView: View.COMMUNITY,
     minColor: "#FFFFFF",
     maxColor: "#FF0000"
   });
@@ -142,13 +139,6 @@ function StoreContextProvider(props) {
         return setStore({
           ...store,
           mapType: payload.mapType,
-        });
-      }
-
-      case StoreActionType.SET_DISABLE_SEARCH_BAR: {
-        return setStore({
-          ...store,
-          disableSearchBar: payload,
         });
       }
 
@@ -238,7 +228,6 @@ function StoreContextProvider(props) {
     });
   };
   
-
   store.openModal = function (modal) {
     console.log("opening modal: ", modal);
     storeReducer({
@@ -354,16 +343,6 @@ function StoreContextProvider(props) {
     });
   };
 
-  // store.updateMap = function (mapObject) {
-  //   console.log("publishing map: ", mapObject);
-  //   api.updateMap(mapObject).then((response) => {
-  //     console.log(response);
-  //     if (response.status === 200) {
-  //       store.getMapList();
-  //     }
-  //   });
-  // };
-
   store.updateMap = function (mapObject) {
     asyncUpdateMap(mapObject);
     async function asyncUpdateMap(mapObject) {
@@ -453,7 +432,6 @@ function StoreContextProvider(props) {
     }
   };
 
-
   store.setCsvStartKey = function (StartKey) {
     store.setCsvKeyWithoutRerendering(StartKey);
 
@@ -479,7 +457,6 @@ function StoreContextProvider(props) {
       });
     }
   };
-
 
   store.setCsvKeyWithoutRerendering = function (key) {
     if (key !== undefined) {
@@ -572,13 +549,13 @@ function StoreContextProvider(props) {
     }
   };
 
-  store.setMapList = async function (mapList) {
-    store.mapList = mapList;
+  store.searchMapsById = async function(id) {
+    let mapObj = await store.getMapById(id);
     storeReducer({
       type: StoreActionType.SET_MAP_LIST,
-      payload: { mapList },
+      payload: { mapList: [mapObj] },
     });
-  };
+  }
 
   store.getMapById = async function (id) {
     const response = await api.getMapById(id);
@@ -627,12 +604,6 @@ function StoreContextProvider(props) {
     }
   };
 
-  store.getPublishedMaps = async function () {
-    const response = await api.getPublishedMaps();
-    const publishedMaps = response.data.data;
-    return publishedMaps;
-  };
-
   store.changeView = function (view) {
     if (view === store.viewTypes.HOME && !auth.loggedIn) {
       return;
@@ -642,13 +613,6 @@ function StoreContextProvider(props) {
     storeReducer({
       type: StoreActionType.CHANGE_VIEW,
       payload: { view },
-    });
-  };
-
-  store.setDisableSearchBar = function (disableSearchBar) {
-    storeReducer({
-      type: StoreActionType.SET_DISABLE_SEARCH_BAR,
-      payload: disableSearchBar,
     });
   };
  
@@ -666,6 +630,9 @@ function StoreContextProvider(props) {
   store.isHomePage = () => {
     return store.currentView === store.viewTypes.HOME;
   };
+  store.showSearchBar = () => {
+    return pathname == "/main";
+  }
 
   return (
     <StoreContext.Provider

@@ -14,42 +14,28 @@ import StoreContext from "@/store";
 import { useContext, useEffect } from "react";
 import { redirect } from "next/navigation";
 
-const MenuButton = (displayText) => {
-  return (
-    <Button
-      type="submit"
-      variant="contained"
-      sx={{
-        mt: 1,
-        mb: 1,
-        backgroundColor: "#F06292",
-        color: "black",
-        ":hover": {
-          backgroundColor: "pink",
-        },
-        border: "3px solid white",
-        width: "340px",
-      }}
-    >
-      {displayText}
-    </Button>
-  );
-};
-
 export default function SplashScreen() {
   const { auth } = useContext(AuthContext);
   const { store } = useContext(StoreContext);
-
-  if (!store.disableSearchBar) {
-    store.setDisableSearchBar(true);
-  }
 
   useEffect(() => {
     if(auth.loggedIn) {
       console.log("logged in");
       redirect("/main");
     }
-  });
+  }, []);
+
+  const buttonStyle = {
+    mt: 1,
+    mb: 1,
+    backgroundColor: "#F06292",
+    color: "black",
+    ":hover": {
+      backgroundColor: "pink",
+    },
+    border: "3px solid white",
+    width: "340px",
+  };
 
   return (
     <div style={{ backgroundColor: "#fcc0db" }}>
@@ -98,13 +84,17 @@ export default function SplashScreen() {
               }}
             >
               <Grid item xs={12} sx={{ marginLeft: { xs: "30%" } }}>
-                <Link href="/register">{MenuButton("Create Account")}</Link>
+                <Link href="/register">
+                  <Button type="submit" variant="contained" sx={buttonStyle}>Create Account</Button>
+                </Link>
               </Grid>
               <Grid item xs={12} sx={{ marginLeft: { xs: "30%" } }}>
-                <Link href="/login">{MenuButton("Log in")}</Link>
+                <Link href="/login">
+                  <Button type="submit" variant="contained" sx={buttonStyle}>Log in</Button>
+                </Link>
               </Grid>
               <Grid item xs={12} sx={{ marginLeft: { xs: "30%" } }}>
-              <Link href="/main">{MenuButton("Continue as Guest")}</Link>
+                <Button type="submit" variant="contained" onClick={auth.loginGuest} sx={buttonStyle}>Continue as Guest</Button>
               </Grid>
             </Grid>
           </Grid>

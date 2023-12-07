@@ -106,7 +106,7 @@ export default function MapView({ fileSelected, projectName, mapType }) {
           }}
         >
           <Grid container spacing={2}>
-            <Grid item xs={3} style={{ display: "flex", alignItems: "center" }}>
+            <Grid item xs={5} style={{ display: "flex", alignItems: "center" }}>
               <Typography
                 sx={{ fontFamily: "Sen", color: "black", fontWeight: "bold" }}
               >
@@ -123,13 +123,13 @@ export default function MapView({ fileSelected, projectName, mapType }) {
             </Grid>
             <Grid
               item
-              xs={5.4}
+              xs={3.4}
               style={{ display: "flex", alignItems: "center" }}
             >
               <IconButton
                 className="likeButton"
                 onClick={handleLikeClick}
-                disabled={!auth.loggedIn /*|| store.currentMapObject?.likedUsers.includes(auth.user.username)*/}
+                disabled={!auth.loggedIn}
               >
                 <FavoriteIcon sx={{color: store.currentMapObject?.likedUsers.includes(auth.user?.username) ? "red" : "dark-gray"}}/>
               </IconButton>
@@ -152,19 +152,15 @@ export default function MapView({ fileSelected, projectName, mapType }) {
                 <Delete />
               </IconButton>
             </Grid>
-            {store.currentView === store.viewTypes.HOME ? (
-              <Grid item xs={0.5}>
-                <IconButton
-                  className="publishButton"
-                  disabled={store.currentMapObject?.isPublished}
-                  onClick={handlePublishClick}
-                >
-                  <CloudUpload />
-                </IconButton>
-              </Grid>
-            ) : (
-              <></>
-            )}
+            <Grid item xs={0.5}>
+              <IconButton
+                className="publishButton"
+                disabled={store.currentMapObject?.isPublished}
+                onClick={handlePublishClick}
+              >
+                <CloudUpload />
+              </IconButton>
+            </Grid>
             <Grid item xs={0.5}>
               <IconButton
                 className="editButton"

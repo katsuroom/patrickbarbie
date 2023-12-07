@@ -1,10 +1,12 @@
 // const baseURL = 'http://localhost:4000/auth';
 // const baseURL = "https://patrick-barbie-f64046e3bb4b.herokuapp.com/auth";
 
-const baseURL = process.env.NODE_ENV == "development" ? "http://localhost:4000/auth" : "https://patrick-barbie-f64046e3bb4b.herokuapp.com/auth";
+const baseURL = process.env.NODE_ENV == "development" ?
+  "http://localhost:4000/auth" :
+  "https://patrick-barbie-f64046e3bb4b.herokuapp.com/auth";
 
 // Function to perform a login request
-const loginUser = (email, password) => {
+const loginUser = async (email, password) => {
   return fetch(`${baseURL}/login/`, {
     method: "POST",
     headers: {
@@ -22,7 +24,7 @@ const loginUser = (email, password) => {
 };
 
 // Function to perform a registration request
-const registerUser = (username, email, password) => {
+const registerUser = async (username, email, password) => {
   return fetch(`${baseURL}/register/`, {
     method: "POST",
     headers: {
@@ -40,7 +42,7 @@ const registerUser = (username, email, password) => {
   });
 };
 
-const getLoggedIn = () => {
+const getLoggedIn = async () => {
   let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
 
   return fetch(`${baseURL}/loggedIn/`, {
@@ -63,7 +65,7 @@ const getLoggedIn = () => {
     });
 };
 
-const logoutUser = () => {
+const logoutUser = async () => {
   return fetch(`${baseURL}/logout/`, {
     method: "GET",
     headers: {
@@ -85,8 +87,7 @@ const logoutUser = () => {
     });
 };
 
-
-const getHashedPassword = (email) => {
+const getHashedPassword = async (email) => {
   return fetch(`${baseURL}/hashedPw?email=${email}`, {
     method: "GET",
     headers: {
@@ -142,7 +143,7 @@ const sendPasswordRecoveryEmail = async (email) =>{
     });
 }
 
-const setNewPassword = function (email, newPassword){
+const setNewPassword = (email, newPassword) => {
   if (!email || !newPassword){
     return {status: 400,
       message: "You have to provide email and new password"}
@@ -168,12 +169,7 @@ const setNewPassword = function (email, newPassword){
         message: "Error setNewPassword: " + error
       };
     });
-
-  
-
 }
-
-
 
 export default {
   loginUser,
