@@ -197,7 +197,10 @@ function StoreContextProvider(props) {
         return setStore({
           ...store,
           currentMapObject: payload,
-          currentModal: CurrentModal.NONE
+          currentModal: CurrentModal.NONE,
+          minColor: "#FFFFFF",
+          maxColor: "#FF0000"
+
         });
       }
       case StoreActionType.SET_MIN_COLOR: {
