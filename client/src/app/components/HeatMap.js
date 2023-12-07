@@ -6,7 +6,7 @@ import domtoimage from "dom-to-image";
 import { saveAs } from "file-saver";
 import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
 import Script from "next/script";
- 
+
 function normalize(value, min, max) {
   return (value - min) / (max - min);
 }
@@ -52,6 +52,18 @@ export default function GeoJSONDisplay(props) {
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
 
   useEffect(() => {
+    if (store.currentMapObject.mapProps) {
+      console.log("updating")
+      if (store.currentMapObject.mapProps.minColor) {
+        store.minColor = store.currentMapObject.mapProps.minColor;
+        store.setMinColor(store.currentMapObject.mapProps.minColor);
+      }
+      if (store.currentMapObject.mapProps.maxColor) {
+        store.maxColor = store.currentMapObject.mapProps.maxColor;
+        store.setMaxColor(store.currentMapObject.mapProps.maxColor);
+      }
+    }
+
     const resizeListener = () => {
       setMapHeight(window.innerHeight / 2);
     };
@@ -60,6 +72,8 @@ export default function GeoJSONDisplay(props) {
       window.removeEventListener("resize", resizeListener);
     };
   }, []);
+
+
 
   const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 

@@ -47,13 +47,17 @@ export default function PHeatmap() {
   const [MaxHex, setMaxHex] = React.useState(store.maxColor);
 
   const handleMinColorChange = (event) => {
-    setMinHex(event.hex);
-    store.setMinColor(event.hex);
+    const color = event.hex;
+    setMinHex(color);
+    store.setMinColor(color);
+
   };
 
   const handleMaxColorChange = (event) => {
-    setMaxHex(event.hex);
-    store.setMaxColor(event.hex);
+    const color = event.hex;
+    setMaxHex(color);
+    store.setMaxColor(color);
+
   };
 
   useEffect(() => {

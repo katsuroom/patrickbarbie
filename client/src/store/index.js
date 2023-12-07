@@ -197,7 +197,10 @@ function StoreContextProvider(props) {
         return setStore({
           ...store,
           currentMapObject: payload,
-          currentModal: CurrentModal.NONE
+          currentModal: CurrentModal.NONE,
+          minColor: "#FFFFFF",
+          maxColor: "#FF0000"
+
         });
       }
       case StoreActionType.SET_MIN_COLOR: {
@@ -653,6 +656,8 @@ function StoreContextProvider(props) {
     store.setParsedCsvData(null);
     store.setCsvKey(null);
     store.setCsvLabel(null);
+    store.setMinColor("#FFFFFF");
+    store.setMaxColor("#FF0000")
   }
 
   store.isCommunityPage = () => {
