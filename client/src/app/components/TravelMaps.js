@@ -7,6 +7,8 @@ import 'leaflet-routing-machine';
 // import endIconUrl from './img/red.png';
 // import startIconUrl from './img/blue.png';
 import StoreContext from "@/store";
+import 'leaflet-contextmenu';
+import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 
 
 const TravelMap = (props) => {
@@ -21,7 +23,17 @@ const TravelMap = (props) => {
     const [buttonAdded, setButtonAdded] = useState(false);
     const [loadScripts, setLoadScripts] = useState(false);
 
+    const startHere = (e) => {
+        if (routeControlRef.current) {
+            routeControlRef.current.spliceWaypoints(0, 1, e.latlng);
+        }
+    };
 
+    const goHere = (e) => {
+        if (routeControlRef.current) {
+            routeControlRef.current.spliceWaypoints(routeControlRef.current.getWaypoints().length - 1, 1, e.latlng);
+        }
+    };
 
 
     const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
@@ -42,17 +54,27 @@ const TravelMap = (props) => {
     }, [store.rawMapFile]);
 
     useEffect(() => {
-        console.log('travel map + ' + geoJsonData )
+        console.log('travel map + ' + geoJsonData)
         if (!loadScripts || !geoJsonData) {
             return;
         }
+
 
         if (!mapRef.current) {
             var mapLayer = window.MQ.mapLayer();
             mapRef.current = L.map('map-display', {
                 layers: [mapLayer],
                 center: [40.731701, -73.993411],
-                zoom: 12
+                zoom: 12,
+                contextmenu: true,
+                contextmenuWidth: 140,
+                contextmenuItems: [{
+                    text: 'Start from here',
+                    callback: startHere
+                }, {
+                    text: 'Go to here',
+                    callback: goHere
+                }]
             });
 
             L.control.layers({
@@ -62,9 +84,11 @@ const TravelMap = (props) => {
                 'Dark': window.MQ.darkLayer(),
                 'Light': window.MQ.lightLayer()
             }).addTo(mapRef.current);
+
+
         }
 
-        
+
         console.log('L.routing + in mapref + ' + L.routing)
 
         if (geoJsonLayerRef.current) {
@@ -131,7 +155,7 @@ const TravelMap = (props) => {
         if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
             return;
         }
-        
+
         setLoadScripts(true)
 
         // runDirection(store.parsed_CSV_Data[store.label][0], store.parsed_CSV_Data[store.key][0]);
@@ -139,16 +163,16 @@ const TravelMap = (props) => {
     }, [geoJsonData, loadScripts, store.label, store.key, store.parsed_CSV_Data]);
 
 
-    useEffect(() => {
-        if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
-            return;
-        }
+    // useEffect(() => {
+    //     if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
+    //         return;
+    //     }
 
-        for (let i = 0; i < store.parsed_CSV_Data[store.label].length; i++) {
+    //     for (let i = 0; i < store.parsed_CSV_Data[store.label].length; i++) {
 
-            runDirection(store.parsed_CSV_Data[store.label][i], store.parsed_CSV_Data[store.key][i]);
-        }
-    }, [store.label, store.key, store.parsed_CSV_Data])
+    //         runDirection(store.parsed_CSV_Data[store.label][i], store.parsed_CSV_Data[store.key][i]);
+    //     }
+    // }, [store.label, store.key, store.parsed_CSV_Data])
 
     useEffect(() => {
         const loadScript = (src) => {
@@ -170,7 +194,7 @@ const TravelMap = (props) => {
     }, []);
 
     const runDirection = async () => {
-    // const runDirection = async (start, end) => {
+        // const runDirection = async (start, end) => {
         const geocode = async (address) => {
             const url = `https://www.mapquestapi.com/geocoding/v1/address?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC&location=${encodeURIComponent(address)}`;
             const response = await fetch(url);
@@ -223,7 +247,16 @@ const TravelMap = (props) => {
                 geocoder: L.Control.Geocoder.nominatim(),
                 autoRoute: true
             }).addTo(mapRef.current);
+
             routeControlRef.current = routingControl;
+
+            // const startHere = (e) => {
+            //     routingControl.spliceWaypoints(0, 1, e.latlng);
+            // };
+
+            // const goHere = (e) => {
+            //     routingControl.spliceWaypoints(routingControl.getWaypoints().length - 1, 1, e.latlng);
+            // };
 
         } catch (error) {
             console.error('Error in geocoding or routing:', error);
