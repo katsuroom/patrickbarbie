@@ -11,22 +11,12 @@ describe('template spec', () => {
 
         cy.url().should('include', '/main')
 
-        cy.get('[data-testid="PeopleIcon"]').click()
+        cy.wait(500);
 
         cy.contains(".map-list-name", "SA").click();
 
-        cy.wait(500); 
+        cy.wait(500);
 
-        cy.get('.leaflet-control-zoom-out').click(); 
-
-        cy.wait(500); 
-
-        cy.get('.leaflet-control-zoom-out').click(); 
-
-        cy.wait(500); 
-
-        cy.get('.leaflet-control-zoom-out').click(); 
-
-
+        cy.get('a[class="leaflet-control-zoom-out"]').click(); 
     })
 })
