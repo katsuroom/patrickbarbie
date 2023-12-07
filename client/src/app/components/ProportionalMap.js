@@ -50,24 +50,27 @@ export default function ProportionalMap(props) {
       return;
     }
 
+    //add base map
     if (!mapRef.current) {
-        var basemap_options = {
-          attribution:
-            '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-          // subdomains: "abcd",
-          maxZoom: 19,
-        };
+      var basemap_options = {
+        attribution:
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+        // subdomains: "abcd",
+        maxZoom: 19,
+      };
       mapRef.current = L.map("map-display").setView([0, 0], 2);
       L.tileLayer(
-        "https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png", basemap_options
+        "https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png",
+        basemap_options
       ).addTo(mapRef.current);
     }
 
+    // remove old layers
     if (geoJsonLayerRef.current) {
       mapRef.current.removeLayer(geoJsonLayerRef.current);
     }
     if (proportionalRef.current) {
-        mapRef.current.removeLayer(proportionalRef.current);
+      mapRef.current.removeLayer(proportionalRef.current);
     }
     markers.current.forEach((marker) => {
       mapRef.current.removeLayer(marker);
@@ -84,44 +87,8 @@ export default function ProportionalMap(props) {
       };
     }
 
+    // add uploaded geojson data
     if (geoJsonData) {
-        //extract geojson data
-
-        const reducedAndCenteredGeoJSON = {
-          type: "FeatureCollection",
-          features: geoJsonData.features.map((feature) => {
-            const { geometry, properties } = feature;
-
-            // Use Turf.js to calculate the center coordinates of the polygon
-            const centerOfMass = turf.centerOfMass(feature);
-            const centerCoords = centerOfMass.geometry.coordinates;
-
-            // Create a new GeoJSON object with Point geometry
-            const centeredGeometry = {
-              type: "Point",
-              coordinates: centerCoords,
-            };
-
-            // Extract only the necessary properties
-            const reducedProperties = {
-              name: properties.name,
-              gdp_md: properties.gdp_md,
-              adm0_a3: properties.adm0_a3,
-              continent: properties.continent,
-            };
-
-            return {
-              type: "Feature",
-              properties: reducedProperties,
-              geometry: centeredGeometry,
-            };
-          }),
-        };
-
-        console.log(reducedAndCenteredGeoJSON);
-
-
-        console.log(geoJsonData);
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
         style: geoJsonStyle,
         // onEachFeature: (feature, layer) => {
@@ -145,54 +112,7 @@ export default function ProportionalMap(props) {
 
       geoJsonLayerRef.current.addTo(mapRef.current);
 
-      // add proportional circles
-
-      proportionalRef.current = L.geoJson(reducedAndCenteredGeoJSON, {
-         filter: function (feature) {
-           if (feature.properties.name) {
-             // This test to see if the key exits
-             return feature;
-           }
-         },
-         pointToLayer: function (feature, latlng) {
-           // console.log(feature.properties.gdp_md);
-           //   console.log(latlng);
-           return L.circleMarker(latlng, {
-             color: "orange",
-             weight: 1,
-             fillColor: "yellow",
-             fillOpacity: 0.3,
-             radius: getRadius(feature.properties.gdp_md),
-           });
-         },
-         onEachFeature: function (feature, layer) {
-
-           var popup =
-             "<p><b>" +
-             layer.feature.properties.name +
-             "</b></p>" +
-             "<p>GDP: " +
-             layer.feature.properties.gdp_md +
-             " </p>";
-
-           layer.on("mouseover", function () {
-             layer.bindPopup(popup).openPopup();
-             layer.setStyle({
-               fillColor: "yellow",
-               fillOpacity: 1,
-             });
-           });
-
-           layer.on("mouseout", function () {
-             layer.setStyle({
-               fillColor: "yellow",
-               fillOpacity: 0.3,
-             });
-             layer.bindPopup(popup).closePopup();
-           });
-         },
-       }).addTo(mapRef.current);
-
+      // zoom to fit uploaded geojson data
       if (geoJsonLayerRef.current) {
         const bounds = geoJsonLayerRef.current.getBounds();
         if (bounds.isValid()) {
@@ -223,14 +143,130 @@ export default function ProportionalMap(props) {
 
     if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
       return;
-    }
+    } else {
+      // console.log("geoJsonData", geoJsonData);
+      // console.log("store.label", store.label);
+      // console.log("store.key", store.key);
+      // console.log("store.parsed_CSV_Data", store.parsed_CSV_Data);
 
-   
-  }, [geoJsonData, store.label, store.key, store.parsed_CSV_Data]);
+      //extract geojson data
+
+      const reducedAndCenteredGeoJSON = {
+        type: "FeatureCollection",
+        features: geoJsonData.features.map((feature) => {
+          const { geometry, properties } = feature;
+
+          // Use Turf.js to calculate the center coordinates of the polygon
+          const centerOfMass = turf.centerOfMass(feature);
+          const centerCoords = centerOfMass.geometry.coordinates;
+
+          // Create a new GeoJSON object with Point geometry
+          const centeredGeometry = {
+            type: "Point",
+            coordinates: centerCoords,
+          };
+
+          try {
+            var index = store.parsed_CSV_Data[store.label].indexOf(
+              feature.properties.name
+            );
+          } catch (error) {
+            console.log(error);
+          }
+
+          // console.log("matchingCSVEntry", matchingCSVEntry);
+
+          // Extract the value from parsedCSV[store.key]
+          let gdp_md = store.parsed_CSV_Data[store.key][index];
+          gdp_md = gdp_md === "" ? "NA" : Number(gdp_md);
+
+          // console.log("gdp_md", gdp_md);
+
+          // Extract only the necessary properties
+          const reducedProperties = {
+            name: properties.name,
+            gdp_md: gdp_md,
+            adm0_a3: properties.adm0_a3,
+            continent: properties.continent,
+          };
+
+          return {
+            type: "Feature",
+            properties: reducedProperties,
+            geometry: centeredGeometry,
+          };
+        }),
+      };
+
+      console.log(reducedAndCenteredGeoJSON);
+
+      // add proportional circles
+
+      proportionalRef.current = L.geoJson(reducedAndCenteredGeoJSON, {
+        filter: function (feature) {
+          if (feature.properties.name) {
+            // This test to see if the key exits
+            return feature;
+          }
+        },
+        pointToLayer: function (feature, latlng) {
+          // console.log(feature.properties.gdp_md);
+          //   console.log(latlng);
+          return L.circleMarker(latlng, {
+            color: "orange",
+            weight: 1,
+            fillColor: store.maxColor ? store.maxColor : "red",
+            fillOpacity: 0.3,
+            radius: getRadius(feature.properties.gdp_md),
+          });
+        },
+        onEachFeature: function (feature, layer) {
+          var popup =
+            "<p><b>" +
+            layer.feature.properties.name +
+            "</b></p>" +
+            "<p>GDP: " +
+            layer.feature.properties.gdp_md +
+            " </p>";
+
+          layer.on("mouseover", function () {
+            layer.bindPopup(popup).openPopup();
+            layer.setStyle({
+              fillColor: store.maxColor ? store.maxColor : "red",
+              fillOpacity: 1,
+            });
+          });
+
+          layer.on("mouseout", function () {
+            layer.setStyle({
+              fillColor: store.maxColor ? store.maxColor : "red",
+              fillOpacity: 0.3,
+            });
+            layer.bindPopup(popup).closePopup();
+          });
+        },
+      }).addTo(mapRef.current);
+    }
+  }, [
+    geoJsonData,
+    store.label,
+    store.key,
+    store.parsed_CSV_Data,
+    store.maxColor,
+  ]);
+
+  function sigmoid(x) {
+    return 1 / (1 + Math.exp(-x));
+  }
 
   function getRadius(area) {
+    if(area === "NA"){
+      return 0;
+    }
     var radius = Math.sqrt(area / Math.PI);
-    return radius * 0.06;
+    var sigmoidRadius = sigmoid(radius) * 40;
+    // console.log("sigmoid(radius)", sigmoidRadius);
+    return sigmoidRadius;
   }
 
   if (!downloadComplete) {
