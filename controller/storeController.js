@@ -192,8 +192,10 @@ updateMap = (req, res) => {
       }
       // console.log("map found: " + JSON.stringify(map));
 
-      // Update map properties with the data from the request body
-      Object.assign(map, body);
+      for (const [key, value] of Object.entries(body)) {
+        if(!["__v", "createdAt", "updatedAt", "_id"].includes(key))
+          map[key] = value;
+      }
 
       // Save the updated map
       return map.save();

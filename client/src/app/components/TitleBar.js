@@ -41,11 +41,11 @@ export default function TitleBar() {
         <Link href={auth.loggedIn ? "/main" : "/"}>
           <img
             src="/patrick-barbie.png"
-            height="150%"
+            height="125%"
             style={{
               marginTop: 5,
               marginLeft: 10,
-              clipPath: "inset(0% 0% 39% 0%)",
+              clipPath: "inset(0% 0% 27% 0%)",
             }}
           />
         </Link>

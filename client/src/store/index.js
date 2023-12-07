@@ -350,7 +350,6 @@ function StoreContextProvider(props) {
       let response = await api.updateMap(mapObject);
       if (response.status != 200) return;
     }
-    mapObject.__v++;  // temporary hack
 
     // replace the map in maplist
     let list = store.mapList;

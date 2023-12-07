@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import AuthContext from "@/auth";
 import "./LoginScreen.css"
@@ -12,6 +12,10 @@ export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { auth } = useContext(AuthContext);
+
+    useEffect(() => {
+        auth.clearError();
+    }, []);
 
     const handleSubmit = async (event) => {
         event.preventDefault();

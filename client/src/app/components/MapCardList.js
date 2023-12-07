@@ -14,6 +14,8 @@ import MUIUploadMap from "../modals/MUIUploadMap";
 import MUICreateMap from "../modals/MUICreateMap";
 const Pbf = require("pbf");
 const geobuf = require("geobuf");
+import '../font.css';
+import { Typography } from "@mui/material";
 
 const hardcodedMaps = [
   // { _id: '1', title: 'North America', fileName: "NA2.json", type: 'hardcoded' },
@@ -65,6 +67,23 @@ export default function MapCardList() {
         position: "relative",
       }}
     >
+      <Box
+        sx={{
+          height: "8vh",
+          backgroundColor: "#FC9ABD",
+          position: "relative",
+          display: "flex",
+          flexDirection: "column",
+          textAlign: "center",
+          justifyContent: "center",
+        }}>
+          <Typography sx={{
+            color: "white",
+            fontFamily: "Sen",
+            fontSize: "20pt",
+            fontWeight: "bold"
+            }}>{store.currentView}</Typography>
+      </Box>
       <List
         component="nav"
         aria-label="map folders"
@@ -81,24 +100,25 @@ export default function MapCardList() {
       >
         {store.mapList.map((map, index) => [
           index > 0 && <Divider key={`divider-${map._id}`} />,
-          <ListItem
-            button
-            onClick={() => handleMapClick(map._id)}
-            key={map._id}
-          >
-            <ListItemText
-              className="map-list-name"
-              primary={map.title}
-              style={{
-                padding: "0px",
+          <div style={{margin: "8px", boxSizing: "border-box"}}>
+            <ListItem
+              onClick={() => handleMapClick(map._id)}
+              key={map._id}
+              sx={{
                 backgroundColor:
-                  // selectedMap && map._id === selectedMap._id
                   store.currentMapObject && store.currentMapObject._id === map._id
-                    ? "#f6c0fa"
+                    ? "#FDF4F3"
                     : "#F7D3E4",
+                cursor: "pointer",
               }}
-            />
-          </ListItem>,
+            >
+              <ListItemText
+                primaryTypographyProps={{fontFamily: "Sen", letterSpacing: "1px"}}
+                className="map-list-name"
+                primary={map.title}
+              />
+            </ListItem>
+          </div>,
         ])}
       </List>
       {auth.loggedIn && store.currentView == View.HOME ? (

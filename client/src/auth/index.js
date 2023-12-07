@@ -195,6 +195,14 @@ function AuthContextProvider(props) {
     });
   };
 
+  // clear error message
+  auth.clearError = async function() {
+    authReducer({
+      type: AuthActionType.SET_ERROR,
+      payload: {errorMessage: null}
+    });
+  }
+
   auth.sendPasswordRecoveryEmail = function(email) {
     return api.sendPasswordRecoveryEmail(email);
   }

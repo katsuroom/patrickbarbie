@@ -108,7 +108,7 @@ export default function MapView({ fileSelected, projectName, mapType }) {
           <Grid container spacing={2}>
             <Grid item xs={5} style={{ display: "flex", alignItems: "center" }}>
               <Typography
-                sx={{ fontFamily: "Sen", color: "black", fontWeight: "bold" }}
+                sx={{ fontFamily: "Sen", color: "black", fontWeight: "bold", letterSpacing: "1px"}}
               >
                 {store.currentMapObject?.author}
               </Typography>
