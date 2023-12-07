@@ -225,8 +225,8 @@ const TravelMap = (props) => {
 
             const routingControl = L.Routing.control({
                 waypoints: [
-                    L.latLng(12.972442, 77.580643),
-                    L.latLng(31.104605, 77.173424)
+                    // L.latLng(12.972442, 77.580643),
+                    // L.latLng(31.104605, 77.173424)
                     // L.latLng(startPoint.lat, startPoint.lng),
                     // L.latLng(endPoint.lat, endPoint.lng)
                 ],
@@ -246,7 +246,10 @@ const TravelMap = (props) => {
                 show: true,
                 geocoder: L.Control.Geocoder.nominatim(),
                 autoRoute: true
-            }).addTo(mapRef.current);
+            })
+            // .on('routingstart', showSpinner)
+            // .on('routesfound routingerror', hideSpinner)
+            .addTo(mapRef.current);
 
             routeControlRef.current = routingControl;
 
@@ -262,6 +265,16 @@ const TravelMap = (props) => {
             console.error('Error in geocoding or routing:', error);
         }
     };
+
+    // var spinner = true;
+    // const showSpinner = ()=>{
+    //     if(spinner){
+    //         document.getElementById('loader').style.display = "block";
+    //     }
+    // }
+    // const hideSpinner = ()=>{
+    //         document.getElementById('loader').style.display = "none";
+    // }
 
 
     const submitForm = (event) => {
@@ -282,6 +295,7 @@ const TravelMap = (props) => {
                 </form>
             </div> */}
             <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div>
+            <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div>
         </div>
 
     );
