@@ -51,6 +51,8 @@ export default function GeoJSONDisplay(props) {
   let downloadComplete = props.downloadComplete;
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
 
+
+
   useEffect(() => {
     const resizeListener = () => {
       setMapHeight(window.innerHeight / 2);
@@ -60,6 +62,13 @@ export default function GeoJSONDisplay(props) {
       window.removeEventListener("resize", resizeListener);
     };
   }, []);
+
+  useEffect(() => {
+    if (store.currentMapObject.mapProps){
+      store.setMinColor(store.currentMapObject.mapProps.minColor);
+      store.setMaxColor(store.currentMapObject.mapProps.maxColor);
+    }
+  }, [store.currentMapObject.mapProps]);
 
   const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 

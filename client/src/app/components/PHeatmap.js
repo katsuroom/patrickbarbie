@@ -47,13 +47,27 @@ export default function PHeatmap() {
   const [MaxHex, setMaxHex] = React.useState(store.maxColor);
 
   const handleMinColorChange = (event) => {
-    setMinHex(event.hex);
-    store.setMinColor(event.hex);
+    const color = event.hex;
+    setMinHex(color);
+    store.setMinColor(color);
+    if (!store.currentMapObject.mapProps){
+      store.currentMapObject.mapProps = {}
+    }
+    store.currentMapObject.mapProps.minColor = color;
+    
+    store.updateMap(store.currentMapObject);
   };
 
   const handleMaxColorChange = (event) => {
-    setMaxHex(event.hex);
-    store.setMaxColor(event.hex);
+    const color = event.hex;
+    setMaxHex(color);
+    store.setMaxColor(color);
+    if (!store.currentMapObject.mapProps){
+      store.currentMapObject.mapProps = {}
+    }
+    store.currentMapObject.mapProps.maxColor = color;
+    store.updateMap(store.currentMapObject);
+
   };
 
   useEffect(() => {
