@@ -76,7 +76,7 @@ export default function GeoJSONDisplay(props) {
       store.minColor = "#FFFFFF";
       store.maxColor = "#FF0000";
       store.setMinColor("#FFFFFF");
-      store.setMinColor("#FF0000");
+      store.setMaxColor("#FF0000");
     }
   }, [store.currentMapObject]);
 
