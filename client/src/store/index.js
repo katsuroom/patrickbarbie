@@ -433,6 +433,8 @@ function StoreContextProvider(props) {
     let index = list.findIndex(map => map._id == mapObject._id);
     list[index] = mapObject;
 
+    store.currentMapObject = mapObject;
+
     storeReducer({
       type: StoreActionType.CHANGE_CURRENT_MAP_OBJ,
       payload: {
