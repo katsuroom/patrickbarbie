@@ -360,6 +360,10 @@ function StoreContextProvider(props) {
       let res = await api.getMapDataById(mapDataId);
       const rawMapFile = geobuf.decode(new Pbf(res.data.data.mapData.data));
       
+      store.currentMapObject = selected;
+      store.rawMapFile = rawMapFile;
+
+
       storeReducer({
         type: StoreActionType.LOAD_MAP,
         payload: {
