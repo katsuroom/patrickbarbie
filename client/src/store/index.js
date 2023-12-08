@@ -309,12 +309,6 @@ function StoreContextProvider(props) {
       maptitle,
       store.currentMapObject.mapType
     );
-    // .then((response) => {
-    //   console.log(response);
-    //   if (response.status === 200) {
-    //     store.getMapList();
-    //   }
-    // });
 
     const mapObj = forkMapResponse.data.mapData;
 
@@ -327,10 +321,10 @@ function StoreContextProvider(props) {
         await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData)
       ).data.csvData._id;
       mapObj.csvData = forkedCsvData;
-      await store.updateMap(mapObj);
+      // await store.updateMap(mapObj);
     }
 
-    // await store.getMapList();
+    await store.getMapList();
 
     // store.currentMapObject = mapObj;
 

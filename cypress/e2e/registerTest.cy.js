@@ -11,10 +11,10 @@ describe('template spec', () => {
 
     cy.url().should('include', '/register')
 
-    cy.get('input[id="username"]').type('Yuwenqianchen1');
-    cy.get('input[type="email"]').type("Yuwenqianchen1@gmail.com");
-    cy.get('input[type="password"]').eq(0).type("Yuwenqianchen1@gmail.com");
-    cy.get('input[type="password"]').eq(1).type("Yuwenqianchen1@gmail.com"); 
+    cy.get('input[id="username"]').type('admin');
+    cy.get('input[type="email"]').type("Admin123@admin.com");
+    cy.get('input[type="password"]').eq(0).type("Admin123@admin.com");
+    cy.get('input[type="password"]').eq(1).type("Admin123@admin.com");
 
     cy.get('button[type="submit"]').click();
 
