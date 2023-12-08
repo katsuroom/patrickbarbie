@@ -291,6 +291,7 @@ function StoreContextProvider(props) {
       payload: { file },
     });
   };
+  
 
   // create map using uploaded file
   store.createMap = function (title, mapType) {

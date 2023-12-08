@@ -41,7 +41,7 @@ function interpolateColor(minColor, maxColor, minValue, maxValue, value) {
   return interpolatedColor;
 }
 
-export default function GeoJSONDisplay(props) {
+export default function Heatmap(props) {
   const [geoJsonData, setGeoJsonData] = useState(null);
   const [buttonAdded, setButtonAdded] = useState(false);
   const mapRef = useRef(null);
