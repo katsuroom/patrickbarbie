@@ -47,7 +47,6 @@ export default function MUICreateMap() {
 
   const handleCreateMap = () => {
     store.mapType = mapType;
-    store.closeModal();
     store.createMap(projectName, mapType);
     router.push("/edit");
     console.log("mapType : " + mapType);
@@ -76,9 +75,7 @@ export default function MUICreateMap() {
           }}
         >
           <div className="alertContainer">
-            <div className="alert">
-              {"Enter the new name of the forked map:"}
-            </div>
+            <div className="alert">Enter the name of the new map:</div>
             <div className="confirm" style={{ height: "100%" }}>
               <TextField
                 label="Your map name"

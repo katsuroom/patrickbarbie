@@ -8,33 +8,34 @@ import MapDisplay from "../components/MapDisplay";
 import StoreContext from "@/store";
 import PTravelMap from "../components/PTravelMap";
 import PPolitical from "../components/PPolitical";
+import PProportional from "../components/PProportional";
 
 export default function EditScreen() {
   const { store } = useContext(StoreContext);
 
 
-  useEffect(() => {
-    console.log("currentMapObject", store.currentMapObject?.mapType);
-    const func = async () => {
+  // useEffect(() => {
+  //   console.log("currentMapObject", store.currentMapObject?.mapType);
+  //   const func = async () => {
 
-        // clear CSV fields
+  //       // clear CSV fields
        
-        store.setParsedCsvData(null);
-        store.setCsvKey(null);
-        store.setCsvLabel(null);
+  //       store.setParsedCsvData(null);
+  //       store.setCsvKey(null);
+  //       store.setCsvLabel(null);
 
-      if (store.currentMapObject && store.currentMapObject.csvData) {
-        const csvObj = await store.getCsvById(store.currentMapObject.csvData);
+  //     if (store.currentMapObject && store.currentMapObject.csvData) {
+  //       const csvObj = await store.getCsvById(store.currentMapObject.csvData);
         
-        console.log(csvObj);
+  //       console.log(csvObj);
         
-        store.setParsedCsvData(csvObj.csvData);
-        store.setCsvKey(csvObj.key);
-        store.setCsvLabel(csvObj.label);
-      }
-    };
-    func();
-  }, [store.currentMapObject]);
+  //       store.setParsedCsvData(csvObj.csvData);
+  //       store.setCsvKey(csvObj.key);
+  //       store.setCsvLabel(csvObj.label);
+  //     }
+  //   };
+  //   func();
+  // }, [store.currentMapObject]);
 
 
   const politicalStyle = {
@@ -73,6 +74,7 @@ export default function EditScreen() {
         {store.mapType === store.mapTypes.POLITICAL_MAP || store.currentMapObject?.mapType === store.mapTypes.POLITICAL_MAP ? <PPolitical /> : null}
         {store.mapType === store.mapTypes.TRAVEL_MAP || store.currentMapObject?.mapType === store.mapTypes.TRAVEL_MAP ? <PTravelMap /> : null}
         {store.mapType === store.mapTypes.HEATMAP || store.currentMapObject?.mapType === store.mapTypes.HEATMAP ? <PHeatmap /> : null}
+        {store.mapType === store.mapTypes.PROPORTIONAL_SYMBOL_MAP || store.currentMapObject?.mapType === store.mapTypes.PROPORTIONAL_SYMBOL_MAP ? <PProportional /> : null}
       </div>
     </div>
   );

@@ -1,10 +1,14 @@
 const Map = require("../models/map_model");
 const User = require("../models/user_model");
 const CSV = require("../models/csv_model");
+const MapData = require("../models/mapdata_model");
+
 const jwt = require("jsonwebtoken");
 const auth = require("../auth");
 const path = require("path");
 const fs = require("fs");
+
+const mongoose = require('mongoose');
 
 const extractUserIdFromToken = (token) => {
   try {
@@ -26,27 +30,7 @@ const extractUserIdFromToken = (token) => {
   }
 };
 
-createMap = (req, res) => {
-  console.log("start create Map");
-
-  // if (auth.auth(req) === null) {
-  //   return res.status(401).json({
-  //     loggedIn: false,
-  //     user: null,
-  //     errorMessage: "Unauthorized",
-  //   });
-  // }
-
-  var userId;
-
-  //   console.log("req: ", req.body);
-  //   console.log("req: ", req.headers);
-
-  const token = req.headers.authorization.split(" ")[1];
-  userId = extractUserIdFromToken(token);
-
-  console.log("userId: " + req.userId);
-
+createMap = async (req, res) => {
   const body = req.body;
   if (!body) {
     return res.status(400).json({
@@ -55,22 +39,20 @@ createMap = (req, res) => {
     });
   }
 
-  const mapData = Buffer.from(Object.values(body.mapData));
+  // Save map data
+  const mapData = new MapData({
+    mapData: Buffer.from(Object.values(body.mapData))
+  });
+
+  const savedMapData = await mapData.save();
 
   // Create the Map instance
   const map = new Map({
     title: body.title,
     author: body.author,
-    mapData: mapData,
+    mapData: savedMapData.id,
     mapType: body.mapType,
   });
-
-  //   const map = new Map(body);
-  //   console.log("map: " + JSON.stringify(map));
-  if (!map) {
-    return res.status(403).json({ success: false, error: err });
-  }
-  //   console.log("req.userId: ", req.userId);
 
   User.findOne({ _id: req.userId })
     .then((user) => {
@@ -97,22 +79,14 @@ createMap = (req, res) => {
 deleteMap = (req, res) => {
   console.log("start delete Map");
 
-  // if (auth.verifyUser(req) === null) {
-  //   return res.status(401).json({
-  //     loggedIn: false,
-  //     user: null,
-  //     errorMessage: "Unauthorized",
-  //   });
-  // }
-
-  console.log("delete " + req.params.id);
-  console.log("req: ", req.userId);
-
   User.findOne({ _id: req.userId })
     .then((user) => {
       console.log("user found, and try to delete map");
 
       // Assuming you want to delete the map associated with the user
+      let mapData = undefined;
+      let csvData = undefined;
+
       Map.findOneAndDelete({ _id: req.params.id })
         .then((map) => {
           if (!map) {
@@ -124,11 +98,24 @@ deleteMap = (req, res) => {
             });
           }
 
+          mapData = map.mapData;
+          csvData = map.csvData;
+
           // Remove the map from the user's maps array
           user.maps.pull({ _id: req.params.id });
 
           // Save the user after removing the map reference
           return user.save();
+        })
+        .then(() => {
+          // delete map data
+          return MapData.findOneAndDelete({_id: new mongoose.Types.ObjectId(mapData)});
+        })
+        .then(() => {
+          // delete csv if exists
+          if(csvData)
+            return CSV.findOneAndDelete({_id: new mongoose.Types.ObjectId(csvData)});
+          return null;
         })
         .then(() => {
           // Send a response after successfully deleting the map
@@ -192,8 +179,10 @@ updateMap = (req, res) => {
       }
       // console.log("map found: " + JSON.stringify(map));
 
-      // Update map properties with the data from the request body
-      Object.assign(map, body);
+      for (const [key, value] of Object.entries(body)) {
+        if(!["__v", "createdAt", "updatedAt", "_id"].includes(key))
+          map[key] = value;
+      }
 
       // Save the updated map
       return map.save();
@@ -243,6 +232,32 @@ getMapById = (req, res) => {
     });
 };
 
+getMapDataById = (req, res) => {
+  const mapDataId = req.params.id;
+
+  MapData.findById(mapDataId)
+    .then((mapData) => {
+      if (!mapData) {
+        return res.status(404).json({
+          success: false,
+          error: "Map data not found",
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        data: mapData,
+        message: "Map data found",
+      });
+    })
+    .catch((error) => {
+      console.log("Error getting map data: " + error);
+      return res.status(500).json({
+        success: false,
+        error: "Error getting map data",
+      });
+    });
+}
+
 getMapsByUser = (req, res) => {
   console.log("start get Maps");
   var userId;
@@ -290,6 +305,7 @@ getMapsByUser = (req, res) => {
       });
     });
 };
+
 getPublishedMaps = (req, res) => {
   console.log("start get published Maps");
 
@@ -310,13 +326,8 @@ getPublishedMaps = (req, res) => {
     });
 };
 
-forkMap = (req, res) => {
+forkMap = async (req, res) => {
   console.log("start create Map");
-  // var userId;
-  // const token = req.headers.authorization.split(" ")[1];
-  // userId = extractUserIdFromToken(token);
-
-  console.log("userId: " + req.userId);
 
   const body = req.body;
   if (!body) {
@@ -326,13 +337,18 @@ forkMap = (req, res) => {
     });
   }
 
-  // const mapData = Buffer.from(Object.values(body.mapData));
+  // Save map data
+  const mapData = new MapData({
+    mapData: Buffer.from(Object.values(body.mapData))
+  });
+
+  const savedMapData = await mapData.save();
 
   // Create the Map instance
-  const map = new Map(body);
+  // map.mapData is currently in json form, must be changed to id string later
+  let map = new Map(body);
+  map.mapData = savedMapData.id;
 
-  //   const map = new Map(body);
-  //   console.log("map: " + JSON.stringify(map));
   if (!map) {
     return res.status(403).json({ success: false, error: err });
   }
@@ -506,6 +522,7 @@ module.exports = {
   deleteMap,
   updateMap,
   getMapById,
+  getMapDataById,
   getMapsByUser,
   getPublishedMaps,
   forkMap,

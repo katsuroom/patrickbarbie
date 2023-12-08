@@ -9,24 +9,14 @@ describe('template spec', () => {
 
         cy.contains('Continue as Guest').click()
 
-        cy.url().should('include', '/main')
+        cy.url().should('include', '/main');
 
-        cy.get('[data-testid="PeopleIcon"]').click()
+        cy.wait(500);
 
         cy.contains(".map-list-name", "SA").click();
 
-        cy.wait(500); 
+        cy.wait(500);
 
-        cy.get('.leaflet-control-zoom-in').click(); 
-
-        cy.wait(500); 
-
-        cy.get('.leaflet-control-zoom-in').click(); 
-
-        cy.wait(500); 
-
-        cy.get('.leaflet-control-zoom-in').click(); 
-
-
+        cy.get('a[class="leaflet-control-zoom-in"]').click(); 
     })
 })

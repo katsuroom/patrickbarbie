@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { IconButton, Menu, MenuItem, Box } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PeopleIcon from "@mui/icons-material/People";
@@ -24,78 +24,76 @@ export default function TitleBar() {
     setAnchorEl(null);
   };
 
+  const enableHome = () => auth.loggedIn;
+
+  const buttonHoverStyle = {
+      border: "2px solid #f786b9",
+      borderRadius: "50%",
+      padding: "2px",
+      cursor: "pointer",
+    }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <div
         style={{ backgroundColor: "#fce8f1", height: "9vh" }}
       >
-        <Link href={auth.loggedIn ? "/main" : "/"}>
+        <Link href={auth.loggedIn ? "/mapcards" : "/"}>
           <img
             src="/patrick-barbie.png"
-            height="150%"
+            height="125%"
             style={{
               marginTop: 5,
               marginLeft: 10,
-              clipPath: "inset(0% 0% 35% 0%)",
+              clipPath: "inset(0% 0% 27% 0%)",
             }}
           />
         </Link>
-        {!store.disableSearchBar ? (
+        {store.showSearchBar() ? (
+          <div>
           <HomeIcon
             sx={{
               position: "absolute",
-              top: "1%",
+              top: "1.5%",
               left: "10vw",
               fontSize: "30pt",
               color:
                 store.currentView === store.viewTypes.HOME
-                  ? "#f786b9"
-                  : "lightpink",
-              "&:hover": {
-                border: "2px solid #f786b9",
-                borderRadius: "50%",
-                padding: "4px",
-                cursor: "pointer",
-              },
+                  ? "#f786b9" : enableHome()
+                  ? "lightpink":
+                  "darkgray",
+              "&:hover": enableHome() ? buttonHoverStyle : {}
             }}
-            disabled={
-              store.currentView === store.viewTypes.HOME || !auth.loggedIn
-            }
+            disabled={ !enableHome() }
             onClick={() => {
               store.changeView(store.viewTypes.HOME);
+              store.getMapList();
             }}
           />
-        ) : null}
-        {!store.disableSearchBar ? (
           <PeopleIcon
             sx={{
               position: "absolute",
-              top: "1%",
+              top: "1.5%",
               left: "15vw",
               fontSize: "30pt",
               color:
                 store.currentView === store.viewTypes.COMMUNITY
                   ? "#f786b9"
                   : "lightpink",
-              "&:hover": {
-                border: "2px solid #f786b9",
-                borderRadius: "50%",
-                padding: "4px",
-                cursor: "pointer",
-              },
+              "&:hover": buttonHoverStyle
             }}
-            disabled={store.currentView === store.viewTypes.COMMUNITY}
+            disabled={false}
             className= "peopleIcon"
             onClick={() => {
               store.changeView(store.viewTypes.COMMUNITY);
+              store.getMapList();
             }}
           />
-        ) : (
-          <></>
-        )}
         <Box sx={{ position: "absolute", top: "1%", left: "30%" }}>
-          {!store.disableSearchBar ? <SearchBar /> : <></>}
+          <SearchBar />
         </Box>
+        </div>
+        ) : null}
         <IconButton
           className="icon-menu"
           sx={{ position: "absolute", top: "0.5%", right: "1%" }}

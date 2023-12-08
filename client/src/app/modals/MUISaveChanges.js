@@ -30,6 +30,20 @@ export default function MUISaveChanges() {
 
   const handleSave = () => {
     store.saveCSV();
+
+    if (store.currentMapObject.mapType == store.mapTypes.HEATMAP){
+      console.log("save map props heat map")
+
+      if (!store.currentMapObject.mapProps){
+        store.currentMapObject.mapProps = {}
+      }
+      store.currentMapObject.mapProps.minColor = store.minColor;
+      store.currentMapObject.mapProps.maxColor = store.maxColor;
+
+      
+      store.updateMap(store.currentMapObject);
+    }
+    
     console.log("Map Saved!");
     store.closeModal();
   };

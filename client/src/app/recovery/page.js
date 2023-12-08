@@ -5,26 +5,16 @@ import './PasswordRecoveryPage.css'
 import Link from 'next/link';
 import AuthContext from '@/auth';
 
-
 import Button from "@mui/material/Button";
 import StoreContext from '@/store';
-
-
 
 function PasswordRecoveryPage() {
     const [email, setEmail] = useState('');
     const [error, setError] = useState(null);
     const [info, setInfo] = useState(null);
 
-
-
     const {auth} = useContext(AuthContext);
-
     const { store } = useContext(StoreContext);
-
-    if (!store.disableSearchBar) {
-        store.setDisableSearchBar(true);
-    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();

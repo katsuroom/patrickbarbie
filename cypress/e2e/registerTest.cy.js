@@ -3,7 +3,7 @@ describe('template spec', () => {
     return false
 })
   it('visit splash screen, and click register, and registe one account', () => {
-    cy.visit("https://patrick-barbie-f64046e3bb4b.herokuapp.com/")
+    cy.visit("https://patrick-barbie-f64046e3bb4b.herokuapp.com/");
 
     // cy.wait(500);
 
@@ -11,10 +11,10 @@ describe('template spec', () => {
 
     cy.url().should('include', '/register')
 
-    cy.get('input[type="text"]').eq(1).type('Yuwenqianchen1');
-    cy.get('input[type="email"]').type("Yuwenqianchen1@gmail.com");
-    cy.get('input[type="password"]').eq(0).type("Yuwenqianchen1@gmail.com");
-    cy.get('input[type="password"]').eq(1).type("Yuwenqianchen1@gmail.com"); 
+    cy.get('input[id="username"]').type('admin');
+    cy.get('input[type="email"]').type("Admin123@admin.com");
+    cy.get('input[type="password"]').eq(0).type("Admin123@admin.com");
+    cy.get('input[type="password"]').eq(1).type("Admin123@admin.com");
 
     cy.get('button[type="submit"]').click();
 

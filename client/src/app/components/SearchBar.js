@@ -16,29 +16,33 @@ import StoreContext from "@/store";
 export default function SelectVariants() {
 
   const { store } = useContext(StoreContext);
-  const [searchBy, setsearchBy] = useState('Map ID');
-  const [searchText, setsearchText] = useState('');
+  const [searchBy, setSearchBy] = useState('Map ID');
+  const [searchText, setSearchText] = useState('');
 
   const handleChange = (event) => {
-    setsearchBy(event.target.value);
+    setSearchBy(event.target.value);
   };
   const handleSearch = (event) =>{
-    store.changeView(store.viewTypes.COMMUNITY);
-    setsearchText(event.target.value);
-    console.log(event.target.value);
+    setSearchText(event.target.value);
   }
   const handleKeyPress = async (event) =>{
     if (event.code === "Enter") {
-      if (searchBy === "Map ID"){
-        let mapObj = await store.getMapById(searchText);
-        await store.setMapList([mapObj]);
-      }
-      else if (searchBy === "Map Name"){
-      }
+      switch(searchBy)
+      {
+        case "Map ID":
+          store.searchMapsById(searchText);
+          break;
 
-      else if (searchBy === "Property"){
-      }
+        case "Map Name":
+          alert("Search by map name not yet implemented.");
+          break;
 
+        case "Property":
+          alert("Search by property not yet implemented.");
+          break;
+
+        default: break;
+      }
     }
   }
 
@@ -59,12 +63,12 @@ export default function SelectVariants() {
         </Select>
           <TextField 
           id="search" 
-          required
           label="search" 
-          variant="standard"
+          variant="filled"
+          size="small"
           onChange = {handleSearch}
           onKeyUp = {(event)=>{handleKeyPress(event);}}
-          sx={{ m: -2, minWidth: 120, marginLeft: "3px", marginBottom: "3px", marginRight: "20px"}}/>
+          sx={{ m: -2, width: "30vw", marginLeft: "3px", marginTop: 0, marginRight: "20px"}}/>
           <Sort/>
     </div>
   );

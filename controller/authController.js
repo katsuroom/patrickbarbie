@@ -22,7 +22,7 @@ loginUser = async (req, res) => {
     if (!existingUser) {
       console.log("Wrong email.", email);
       return res.status(401).json({
-        errorMessage: "User does not exists.",
+        errorMessage: "User does not exist.",
       });
     }
 

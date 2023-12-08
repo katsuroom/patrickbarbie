@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useContext, useState,useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Link from 'next/link';
 import "./RegisterScreen.css";
 import Button from "@mui/material/Button";
@@ -24,11 +24,10 @@ export default function RegisterScreen() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const [error, setError] = useState('');
+
     useEffect(() => {
-        if (auth.errorMessage) {
-            setError(auth.errorMessage);
-        }
-    }, [auth.errorMessage]);
+        auth.clearError();
+    }, []);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -121,6 +120,7 @@ export default function RegisterScreen() {
                                 <br />
                                 <input
                                     type='text'
+                                    id="username"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                     required

@@ -1,33 +1,26 @@
 "use client"
 
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import AuthContext from "@/auth";
 import "./LoginScreen.css"
 import Button from "@mui/material/Button";
 import Link from "next/link";
-import StoreContext from "@/store";
 
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState(null);
     const { auth } = useContext(AuthContext);
-    const { store } = useContext(StoreContext);
 
-    if (!store.disableSearchBar) {
-        store.setDisableSearchBar(true);
-    }
+    useEffect(() => {
+        auth.clearError();
+    }, []);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setError(null);
         
-        auth.loginUser(
-            email,
-            password
-        );
+        auth.loginUser(email, password);
     };
 
     return (
@@ -35,7 +28,7 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className='loginInfo'>
                 <h1>Login</h1>
 
-                {error && <p className='errorMessage'>{error}</p>}
+                {auth.errorMessage && <p className='errorMessage'>{auth.errorMessage}</p>}
                 <div className='inputContainer'>
                     <div className="inputRow">
                         <label className='inputLabel'>

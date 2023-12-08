@@ -2,7 +2,7 @@ describe("template spec", () => {
   Cypress.on('uncaught:exception', (err, runnable) => {
     return false
 })
-  it("visit splash screen and login then logout", () => {
+  it("click delete button on a map", () => {
     cy.visit("https://patrick-barbie-f64046e3bb4b.herokuapp.com/");
 
     cy.wait(500);
@@ -11,8 +11,8 @@ describe("template spec", () => {
 
     cy.url().should("include", "/login");
 
-    cy.get('input[type="email"]').type("Yuwenqianchen1@gmail.com");
-    cy.get('input[type="password"]').type("Yuwenqianchen1@gmail.com");
+    cy.get('input[type="email"]').type("Admin123@admin.com");
+    cy.get('input[type="password"]').type("Admin123@admin.com");
 
     cy.get('button[type="submit"]').click();
 
@@ -20,10 +20,10 @@ describe("template spec", () => {
 
     cy.contains(".map-list-name", "Asia").click();
 
+    cy.wait(500);
+
     cy.get(".deleteButton").click();
 
-    // cy.wait(1000);
-
-    // cy.contains("Cancel").click();
+    cy.contains("Cancel").click();
   });
 });

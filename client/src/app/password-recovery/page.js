@@ -24,10 +24,6 @@ export default function ResetPassword(/*props*/) {
 
   const { store } = useContext(StoreContext);
 
-  if (!store.disableSearchBar) {
-    store.setDisableSearchBar(true);
-  }
-
   useEffect(() => {
     if (auth.errorMessage) {
       setError(auth.errorMessage);

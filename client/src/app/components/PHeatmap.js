@@ -47,20 +47,23 @@ export default function PHeatmap() {
   const [MaxHex, setMaxHex] = React.useState(store.maxColor);
 
   const handleMinColorChange = (event) => {
-    setMinHex(event.hex);
-    store.setMinColor(event.hex);
+    const color = event.hex;
+    setMinHex(color);
+    store.setMinColor(color);
+
   };
 
   const handleMaxColorChange = (event) => {
-    setMaxHex(event.hex);
-    store.setMaxColor(event.hex);
+    const color = event.hex;
+    setMaxHex(color);
+    store.setMaxColor(color);
+
   };
 
   useEffect(() => {
     let tfs = [];
     if (store.parsed_CSV_Data) {
       for (let idx in store.parsed_CSV_Data[store.key]) {
-        console.log(111);
         tfs.push(
           <TextField
             id={"tf-" + idx}
@@ -288,32 +291,44 @@ export default function PHeatmap() {
         </Table>
       </div>
       <div>
-        <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
-          <InputLabel id="demo-simple-select-helper-label">Min</InputLabel>
-          <Select
-            labelId="demo-simple-select-helper-label"
-            id="demo-simple-select-helper"
-            label="Age"
-            sx={{ minWidth: 130 }}
-          >
-            <MenuItem value={MinHex}>
-              <Compact onChange={handleMinColorChange} color={MinHex} />
-            </MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
-          <InputLabel id="demo-simple-select-helper-label">Max</InputLabel>
-          <Select
-            labelId="demo-simple-select-helper-label"
-            id="demo-simple-select-helper"
-            label="Age"
-            sx={{ minWidth: 130 }}
-          >
-            <MenuItem value={MaxHex}>
-              <Compact onChange={handleMaxColorChange} color={MaxHex} />
-            </MenuItem>
-          </Select>
-        </FormControl>
+       <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
+        <InputLabel id="min-color-label">Min</InputLabel>
+        <Select
+          labelId="min-color-label"
+          id="min-color-select"
+          label="Min Color"
+          sx={{ minWidth: 130 }}
+        >
+          <MenuItem value={MinHex}>
+            <Compact
+              onChange={handleMinColorChange}
+              color={MinHex}
+              disableAlpha={true} // Disable alpha channel
+            />
+          </MenuItem>
+        </Select>
+      </FormControl>
+
+      <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
+        <InputLabel id="max-color-label">Max</InputLabel>
+        <Select
+          labelId="max-color-label"
+          id="max-color-select"
+          label="Max Color"
+          sx={{ minWidth: 130 }}
+
+          value={MaxHex} 
+          onChange={(event) => setMaxHex(event.target.value)}
+        >
+          <MenuItem value={MaxHex}>
+            <Compact
+              onChange={handleMaxColorChange}
+              color={MaxHex}
+              disableAlpha={true} // Disable alpha channel
+            />
+          </MenuItem>
+        </Select>
+      </FormControl>
       </div>
       <div>
       <Button

@@ -8,6 +8,7 @@ import './MUIPublishMap.css'
 
 import StoreContext from '@/store';
 import { CurrentModal } from '@/store';
+import { TextField } from "@mui/material";
 
 export default function MUIForkMap() {
     const { store } = useContext(StoreContext);
@@ -26,18 +27,21 @@ export default function MUIForkMap() {
         margin: '20px',
     };
 
+    const selectStyle = {
+      width: "100%",
+      marginBottom: "20px",
+    };
+
     const handleInputChange = (e) => {
         setProjectName(e.target.value);
     }
 
-    const handleSave = () => {
+    const handleConfirm = () => {
         console.log("fork map: ", projectName);
         store.forkMap(projectName);
-        onClose();
     }
 
     const onClose = () => {
-        store.emptyRawMapFile();
         store.closeModal();
     }
 
@@ -51,7 +55,6 @@ export default function MUIForkMap() {
             color: "black",
             border: "2px solid #000",
             boxShadow: 24,
-            p: 10,
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
@@ -62,17 +65,18 @@ export default function MUIForkMap() {
           <div className="alertContainer">
             <div className="alert">Enter the new name of the forked map:</div>
             <div className="confirm">
-              <input
+              <TextField
                 className = "projectName"
-                type="text"
+                label="Your map name"
+                variant="outlined"
                 onChange={handleInputChange}
-                placeholder="Your Project Name"
+                style={selectStyle}
               />
-              <Button onClick={handleSave} variant="contained" sx={buttonStyle} className = "modal-button-fork-confirm">
-                Confirm
-              </Button>
               <Button onClick={onClose} variant="contained" sx={buttonStyle} className = "modal-button-fork-cancel">
                 Cancel
+              </Button>
+              <Button onClick={handleConfirm} variant="contained" sx={buttonStyle} className = "modal-button-fork-confirm">
+                Confirm
               </Button>
             </div>
           </div>
