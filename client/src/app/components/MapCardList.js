@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState, useContext, useEffect } from "react";
 import Box from "@mui/material/Box";
@@ -14,8 +14,9 @@ import MUIUploadMap from "../modals/MUIUploadMap";
 import MUICreateMap from "../modals/MUICreateMap";
 const Pbf = require("pbf");
 const geobuf = require("geobuf");
-import '../font.css';
+import "../font.css";
 import { Typography } from "@mui/material";
+import Stack from "@mui/material/Stack";
 
 export default function MapCardList() {
   const { store } = useContext(StoreContext);
@@ -48,13 +49,18 @@ export default function MapCardList() {
           flexDirection: "column",
           textAlign: "center",
           justifyContent: "center",
-        }}>
-          <Typography sx={{
+        }}
+      >
+        <Typography
+          sx={{
             color: "white",
             fontFamily: "Sen",
             fontSize: "20pt",
-            fontWeight: "bold"
-            }}>{store.currentView}</Typography>
+            fontWeight: "bold",
+          }}
+        >
+          {store.currentView}
+        </Typography>
       </Box>
       <List
         component="nav"
@@ -72,25 +78,67 @@ export default function MapCardList() {
       >
         {store.mapList.map((map, index) => [
           index > 0 && <Divider key={`divider-${map._id}`} />,
-          <div style={{margin: "8px", boxSizing: "border-box"}} key={map._id}>
+          <div style={{ margin: "8px", boxSizing: "border-box" }} key={map._id}>
             <ListItem
               onClick={() => handleMapClick(map._id)}
               sx={{
                 padding: 0.5,
-                backgroundColor:
-                  store.currentMapObject && store.currentMapObject._id === map._id
-                    ? "#FDF4F3"
-                    : "#F7D3E4",
                 cursor: "pointer",
               }}
             >
-              <ListItemText
-                primaryTypographyProps={{fontFamily: "Sen", letterSpacing: "1px", marginLeft: 1}}
-                className="map-list-name"
-                primary={map.title}
-              />
+              <Stack
+                direction="column"
+                spacing={1}
+                sx={{
+                  marginLeft: 1,
+                  // borderRadius: "16px",
+                  paddingLeft: "16px",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                  width: "90%",
+                  backgroundColor:
+                    store.currentMapObject &&
+                    store.currentMapObject._id === map._id
+                      ? "#FDF4F3"
+                      : "pink",
+                  transition: "background-color 0.3s ease", // Add a smooth transition for background color change
+                  ":hover": {
+                    backgroundColor: "#FDF4F3", // Change background color on hover
+                  },
+                }}
+              >
+                <ListItemText
+                  primaryTypographyProps={{
+                    fontFamily: "Sen",
+                    fontSize: "1.25rem",
+                    fontWeight: "bold", 
+                    // letterSpacing: "1px",
+                  }}
+                  className="map-list-name"
+                  primary={map.title}
+                />
+
+                <ListItemText
+                  primaryTypographyProps={{
+                    fontFamily: "Sen",
+                    fontSize: "1rem", 
+                    // letterSpacing: "1px",
+                  }}
+                  className="map-list-types"
+                  primary={`Map Type: ${map.mapType}`}
+                />
+
+                <ListItemText
+                  primaryTypographyProps={{
+                    fontFamily: "Sen",
+                    fontSize: "1rem", 
+                    // letterSpacing: "1px",
+                  }}
+                  className="map-list-author"
+                  primary={`Author: ${map.author}`}
+                />
+              </Stack>
             </ListItem>
-          </div>
+          </div>,
         ])}
       </List>
       {auth.loggedIn && store.currentView == View.HOME ? (

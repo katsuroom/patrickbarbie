@@ -3,11 +3,15 @@
 import React, { createContext, useState, useContext } from "react";
 import AuthContext from "../auth";
 import { usePathname } from "next/navigation";
+import { useRouter } from 'next/navigation';
+
 
 import api from "./store-request-api";
 
 const geobuf = require("geobuf");
 const Pbf = require("pbf");
+
+
 
 const StoreContext = createContext();
 
@@ -65,6 +69,7 @@ export const View = {
 function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
   const pathname = usePathname();
+  const router = useRouter();
 
   const [store, setStore] = useState({
     currentModal: CurrentModal.NONE,  // the currently open modal
@@ -291,6 +296,7 @@ function StoreContextProvider(props) {
       payload: { file },
     });
   };
+
 
   // create map using uploaded file
   store.createMap = function (title, mapType) {
@@ -577,10 +583,10 @@ function StoreContextProvider(props) {
   };
 
   // fetches map list based on current view
-  store.getMapList = function () {
+  store.getMapList = async function () {
     if (store.isHomePage())
     {
-      api.getMapsByUser().then((response) => {
+      await api.getMapsByUser().then((response) => {
         console.log("fetched user maps", response.data.data);
   
         let currentMapObj = null;
@@ -593,6 +599,7 @@ function StoreContextProvider(props) {
           console.log("found same map", currentMapObj);
         }
   
+        store.mapList = response.data.data;
         storeReducer({
           type: StoreActionType.LOAD_MAP_LIST,
           payload: {
@@ -604,7 +611,7 @@ function StoreContextProvider(props) {
     }
     else
     {
-      api.getPublishedMaps().then((response) => {
+      await api.getPublishedMaps().then((response) => {
         console.log("fetched published maps", response.data.data);
   
         let currentMapObj = null;
@@ -614,6 +621,8 @@ function StoreContextProvider(props) {
             (map) => map._id === store.currentMapObject._id
           );
   
+        store.mapList = response.data.data;
+        
         storeReducer({
           type: StoreActionType.LOAD_MAP_LIST,
           payload: {
@@ -685,11 +694,20 @@ function StoreContextProvider(props) {
       return;
     }
     console.log("changing view to", view);
+
+    if (store.currentView === view){
+      return;
+    }
     store.currentView = view;
+
+    
     storeReducer({
       type: StoreActionType.CHANGE_VIEW,
       payload: { view },
     });
+
+
+
   };
  
   store.clearCsv = function() {
@@ -699,6 +717,7 @@ function StoreContextProvider(props) {
     store.setMinColor("#FFFFFF");
     store.setMaxColor("#FF0000");
   }
+  
 
   store.isCommunityPage = () => {
     return store.currentView === store.viewTypes.COMMUNITY;
@@ -707,7 +726,7 @@ function StoreContextProvider(props) {
     return store.currentView === store.viewTypes.HOME;
   };
   store.showSearchBar = () => {
-    return pathname == "/main";
+    return pathname == "/main" || pathname == "/mapcards";
   }
 
   return (

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import L from "leaflet";
+import 'leaflet-easyprint';
 import "leaflet/dist/leaflet.css";
 import StoreContext from "@/store";
 import domtoimage from "dom-to-image";
@@ -40,7 +41,7 @@ function interpolateColor(minColor, maxColor, minValue, maxValue, value) {
   return interpolatedColor;
 }
 
-export default function GeoJSONDisplay(props) {
+export default function Heatmap(props) {
   const [geoJsonData, setGeoJsonData] = useState(null);
   const [buttonAdded, setButtonAdded] = useState(false);
   const mapRef = useRef(null);
@@ -52,18 +53,6 @@ export default function GeoJSONDisplay(props) {
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
 
   useEffect(() => {
-    if (store.currentMapObject.mapProps) {
-      console.log("updating")
-      if (store.currentMapObject.mapProps.minColor) {
-        store.minColor = store.currentMapObject.mapProps.minColor;
-        store.setMinColor(store.currentMapObject.mapProps.minColor);
-      }
-      if (store.currentMapObject.mapProps.maxColor) {
-        store.maxColor = store.currentMapObject.mapProps.maxColor;
-        store.setMaxColor(store.currentMapObject.mapProps.maxColor);
-      }
-    }
-
     const resizeListener = () => {
       setMapHeight(window.innerHeight / 2);
     };
@@ -73,7 +62,23 @@ export default function GeoJSONDisplay(props) {
     };
   }, []);
 
-
+  useEffect(() => {
+    if (store.currentMapObject.mapProps) {
+      if (store.currentMapObject.mapProps.minColor) {
+        store.minColor = store.currentMapObject.mapProps.minColor;
+        store.setMinColor(store.currentMapObject.mapProps.minColor);
+      }
+      if (store.currentMapObject.mapProps.maxColor) {
+        store.maxColor = store.currentMapObject.mapProps.maxColor;
+        store.setMaxColor(store.currentMapObject.mapProps.maxColor);
+      }
+    } else {
+      store.minColor = "#FFFFFF";
+      store.maxColor = "#FF0000";
+      store.setMinColor("#FFFFFF");
+      store.setMaxColor("#FF0000");
+    }
+  }, [store.currentMapObject]);
 
   const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 
@@ -229,6 +234,17 @@ export default function GeoJSONDisplay(props) {
       });
 
       heatmapOverlayRef.current.addTo(mapRef.current);
+
+    //   L.easyPrint({
+    //     title: 'Save my map',
+    //     position: 'topleft',
+    //     sizeModes: ['Current', 'A4Landscape', 'A4Portrait'],
+    //     filename: 'myMap',
+    //     exportOnly: true,
+    //     hideControlContainer: true
+    // }).addTo(mapRef.current);
+
+    
     }
   }, [
     geoJsonData,
@@ -278,6 +294,8 @@ export default function GeoJSONDisplay(props) {
   } else {
     console.log("download already completed!!!");
   }
+ 
+  
 
   return (
     <div>

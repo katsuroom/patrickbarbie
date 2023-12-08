@@ -21,7 +21,7 @@ export default function SplashScreen() {
   useEffect(() => {
     if(auth.loggedIn) {
       console.log("logged in");
-      redirect("/main");
+      redirect("/mapcards");
     }
   }, [auth.loggedIn]);
 
