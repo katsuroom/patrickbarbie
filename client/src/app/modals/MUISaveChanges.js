@@ -29,18 +29,35 @@ export default function MUISaveChanges() {
   };
 
   const handleSave = () => {
+    console.log("saving map");
+    console.log(store.currentMapObject);
     store.saveCSV();
 
-    if (store.currentMapObject.mapType = store.mapTypes.HEATMAP){
-      console.log("save map props heat map")
+    console.log("mapTypes:", store.currentMapObject);
+    console.log("mapTypes:", store.currentMapObject.mapType === store.mapTypes.HEATMAP);
 
-      if (!store.currentMapObject.mapProps){
-        store.currentMapObject.mapProps = {}
+    if (
+      store.currentMapObject.mapType === store.mapTypes.PROPORTIONAL_SYMBOL_MAP
+    ){
+      console.log("save map props proportional");
+      if (!store.currentMapObject.mapProps) {
+        store.currentMapObject.mapProps = {};
+      }
+      store.currentMapObject.mapProps.maxColor = store.maxColor;
+
+      store.updateMap(store.currentMapObject);
+
+    }
+    
+    if (store.currentMapObject.mapType === store.mapTypes.HEATMAP) {
+      console.log("save map props heat map");
+
+      if (!store.currentMapObject.mapProps) {
+        store.currentMapObject.mapProps = {};
       }
       store.currentMapObject.mapProps.minColor = store.minColor;
       store.currentMapObject.mapProps.maxColor = store.maxColor;
 
-      
       store.updateMap(store.currentMapObject);
     }
     

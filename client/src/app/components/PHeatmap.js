@@ -81,8 +81,8 @@ export default function PHeatmap() {
     setTextFields(tfs);
   }, [store.parsed_CSV_Data, store.key, store.label]);
 
-  console.log(store.key);
-  console.log(store.label);
+  // console.log(store.key);
+  // console.log(store.label);
 
   // const ROW_PER_PAGE = 30;
 
@@ -196,10 +196,10 @@ export default function PHeatmap() {
   //     ? parseInt(store.parsed_CSV_Data[store.label].length / ROW_PER_PAGE)
   //     : 0;
 
-  console.log(store.currentMapObject);
-  console.log(store.parsed_CSV_Data);
-  console.log(store.label);
-  console.log(menuItems);
+  // console.log(store.currentMapObject);
+  // console.log(store.parsed_CSV_Data);
+  // console.log(store.label);
+  // console.log(menuItems);
 
   return (
     <div>

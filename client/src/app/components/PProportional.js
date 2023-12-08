@@ -74,8 +74,8 @@ export default function PProportional() {
     setTextFields(tfs);
   }, [store.parsed_CSV_Data, store.key, store.label]);
 
-  console.log(store.key);
-  console.log(store.label);
+  // console.log(store.key);
+  // console.log(store.label);
 
   // const ROW_PER_PAGE = 30;
 
@@ -95,7 +95,7 @@ export default function PProportional() {
   const handleChangeKey = (event) => {
     let tfs = [];
     for (let idx in store.parsed_CSV_Data[event.target.value]) {
-      console.log("gay", idx);
+      // console.log("gay", idx);
       tfs.push(
         // <input
         //   id={"search-" + idx}
@@ -118,11 +118,13 @@ export default function PProportional() {
   };
 
   const handleChangeLabel = (event) => {
-    console.log(event.target.value);
+    // console.log(event.target.value);
     store.setCsvLabel(event.target.value);
   };
 
-  const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
+  const openSaveModal = () => {
+    console.log(store.currentMapObject);
+    store.openModal(CurrentModal.SAVE_EDIT);}
 
   const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
@@ -135,7 +137,7 @@ export default function PProportional() {
   const fileOnLoadComplete = (data) => {
     // setRenderTable(false);
 
-    console.log(data);
+    // console.log(data);
     let csv_data = {};
     let keys = new Set();
     try {
@@ -158,9 +160,9 @@ export default function PProportional() {
       console.log("parse CSV file failed", error);
     }
 
-    console.log(csv_data);
+    // console.log(csv_data);
     keys = Array.from(keys);
-    console.log(keys);
+    // console.log(keys);
 
     store.setParsedCsvDataWOR(csv_data);
     store.setCsvKeyWithoutRerendering(keys[1]);
@@ -189,10 +191,10 @@ export default function PProportional() {
   //     ? parseInt(store.parsed_CSV_Data[store.label].length / ROW_PER_PAGE)
   //     : 0;
 
-  console.log(store.currentMapObject);
-  console.log(store.parsed_CSV_Data);
-  console.log(store.label);
-  console.log(menuItems);
+  // console.log(store.currentMapObject);
+  // console.log(store.parsed_CSV_Data);
+  // console.log(store.label);
+  // console.log(menuItems);
 
   return (
     <div>

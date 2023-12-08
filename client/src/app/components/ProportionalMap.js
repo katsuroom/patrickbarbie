@@ -20,6 +20,14 @@ export default function ProportionalMap(props) {
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
 
   useEffect(() => {
+    if (store.currentMapObject.mapProps) {
+      console.log("updating");
+      if (store.currentMapObject.mapProps.maxColor) {
+        store.maxColor = store.currentMapObject.mapProps.maxColor;
+        store.setMaxColor(store.currentMapObject.mapProps.maxColor);
+      }
+    }
+
     const resizeListener = () => {
       setMapHeight(window.innerHeight / 2);
     };
@@ -31,15 +39,6 @@ export default function ProportionalMap(props) {
 
   const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 
-  useEffect(() => {
-    const resizeListener = () => {
-      setMapHeight(window.innerHeight / 2);
-    };
-    window.addEventListener("resize", resizeListener);
-    return () => {
-      window.removeEventListener("resize", resizeListener);
-    };
-  }, []);
 
   useEffect(() => {
     if (store.rawMapFile) setGeoJsonData(store.rawMapFile);
@@ -148,6 +147,8 @@ export default function ProportionalMap(props) {
       // console.log("store.label", store.label);
       // console.log("store.key", store.key);
       // console.log("store.parsed_CSV_Data", store.parsed_CSV_Data);
+      console.log("store.currentMapObject", store.currentMapObject);
+      console.log("store.maxColor", store.maxColor);
 
       //extract geojson data
 
