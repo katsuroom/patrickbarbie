@@ -12,11 +12,13 @@ import Stack from "@mui/material/Stack";
 import StoreContext from "@/store";
 import AuthContext from "@/auth";
 import "../font.css";
+import { useRouter } from 'next/navigation';
 
 export default function EditScreen() {
   const { store } = useContext(StoreContext);
   const { auth } = useContext(AuthContext);
   const [hoveredMap, setHoveredMap] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     const func = async () => {
@@ -49,7 +51,8 @@ export default function EditScreen() {
   }, [store.currentMapObject]);
 
   const handleMapClick = (mapId) => {
-    // Implement your click handling logic
+    store.loadMapFile(mapId);
+    router.push("/main");
   };
 
 

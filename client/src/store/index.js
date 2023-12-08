@@ -3,11 +3,15 @@
 import React, { createContext, useState, useContext } from "react";
 import AuthContext from "../auth";
 import { usePathname } from "next/navigation";
+import { useRouter } from 'next/navigation';
+
 
 import api from "./store-request-api";
 
 const geobuf = require("geobuf");
 const Pbf = require("pbf");
+
+
 
 const StoreContext = createContext();
 
@@ -65,6 +69,7 @@ export const View = {
 function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
   const pathname = usePathname();
+  const router = useRouter();
 
   const [store, setStore] = useState({
     currentModal: CurrentModal.NONE,  // the currently open modal
@@ -291,7 +296,7 @@ function StoreContextProvider(props) {
       payload: { file },
     });
   };
-  
+
 
   // create map using uploaded file
   store.createMap = function (title, mapType) {
@@ -686,11 +691,20 @@ function StoreContextProvider(props) {
       return;
     }
     console.log("changing view to", view);
+
+    if (store.currentView === view){
+      return;
+    }
     store.currentView = view;
+
+    
     storeReducer({
       type: StoreActionType.CHANGE_VIEW,
       payload: { view },
     });
+
+
+
   };
  
   store.clearCsv = function() {
