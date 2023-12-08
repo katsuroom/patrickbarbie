@@ -76,7 +76,7 @@ export default function EditScreen() {
           sx={{
             marginLeft: 1,
             paddingLeft: "16px",
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
             width: "100%",
             borderRadius: "16px",
             backgroundColor:

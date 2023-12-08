@@ -31,7 +31,7 @@ export default function MUISaveChanges() {
   const handleSave = () => {
     store.saveCSV();
 
-    if (store.currentMapObject.mapType = store.mapTypes.HEATMAP){
+    if (store.currentMapObject.mapType == store.mapTypes.HEATMAP){
       console.log("save map props heat map")
 
       if (!store.currentMapObject.mapProps){
