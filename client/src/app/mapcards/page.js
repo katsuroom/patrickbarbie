@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useContext, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
@@ -12,7 +12,7 @@ import Stack from "@mui/material/Stack";
 import StoreContext from "@/store";
 import AuthContext from "@/auth";
 import "../font.css";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 export default function EditScreen() {
   const { store } = useContext(StoreContext);
@@ -30,8 +30,8 @@ export default function EditScreen() {
 
       await store.getMapList();
 
-      if (!store.mapList.length){
-        router.push("/main")
+      if (!store.mapList.length) {
+        router.push("/main");
       }
     };
     func();
@@ -59,8 +59,6 @@ export default function EditScreen() {
     router.push("/main");
   };
 
-
-  
   const renderMapItem = (map) => (
     <Grid item xs={12} sm={6} md={4} lg={3} key={map._id}>
       <ListItem
@@ -110,14 +108,18 @@ export default function EditScreen() {
             primary={`Map Type: ${map.mapType}`}
           />
 
-          <ListItemText
-            primaryTypographyProps={{
-              fontFamily: "Sen",
-              fontSize: "1.25rem",
-            }}
-            className="map-list-author"
-            primary={`Author: ${map.author}`}
-          />
+          {store.isCommunityPage() ? (
+            <ListItemText
+              primaryTypographyProps={{
+                fontFamily: "Sen",
+                fontSize: "1.25rem",
+              }}
+              className="map-list-author"
+              primary={`Author: ${map.author}`}
+            />
+          ) : (
+            <></>
+          )}
 
           <Divider sx={{ marginY: 1 }} />
 
