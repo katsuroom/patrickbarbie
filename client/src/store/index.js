@@ -699,6 +699,7 @@ function StoreContextProvider(props) {
     store.setMinColor("#FFFFFF");
     store.setMaxColor("#FF0000");
   }
+  
 
   store.isCommunityPage = () => {
     return store.currentView === store.viewTypes.COMMUNITY;
@@ -707,7 +708,7 @@ function StoreContextProvider(props) {
     return store.currentView === store.viewTypes.HOME;
   };
   store.showSearchBar = () => {
-    return pathname == "/main";
+    return pathname == "/main" || pathname == "/mapcards";
   }
 
   return (

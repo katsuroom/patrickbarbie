@@ -18,28 +18,49 @@ import "../font.css";
 import { Typography } from "@mui/material";
 import Stack from "@mui/material/Stack";
 
-export default function MapCardList() {
+export default function EditScreen() {
   const { store } = useContext(StoreContext);
   const { auth } = useContext(AuthContext);
 
-  const handleMapClick = (mapId) => {
-    store.loadMapFile(mapId);
-  };
+  useEffect(() => {
+    const func = async () => {
+      if (auth.loggedIn) {
+        console.log("change view to home");
+        console.log("auth.loggedIn", auth.loggedIn);
+        await store.changeView(store.viewTypes.HOME);
+      } else {
+        console.log("change view to community");
+        await store.changeView(store.viewTypes.COMMUNITY);
+      }
 
-  const handleCreateMap = () => {
-    store.openModal(CurrentModal.UPLOAD_MAP);
-  };
+      store.getMapList();
+    };
+    func();
+  }, []);
+
+  useEffect(() => {
+    const func = async () => {
+      // clear CSV fields
+
+      store.setParsedCsvData(null);
+      store.setCsvKey(null);
+      store.setCsvLabel(null);
+
+      if (store.currentMapObject && store.currentMapObject.csvData) {
+        const csvObj = await store.getCsvById(store.currentMapObject.csvData);
+
+        console.log(csvObj);
+
+        store.setParsedCsvData(csvObj.csvData);
+        store.setCsvKey(csvObj.key);
+        store.setCsvLabel(csvObj.label);
+      }
+    };
+    func();
+  }, [store.currentMapObject]);
 
   return (
-    <Box
-      sx={{
-        width: "23vw",
-        bgcolor: "#F7D3E4",
-        float: "left",
-        height: "83vh",
-        position: "relative",
-      }}
-    >
+    <>
       <Box
         sx={{
           height: "8vh",
@@ -110,7 +131,7 @@ export default function MapCardList() {
                   primaryTypographyProps={{
                     fontFamily: "Sen",
                     fontSize: "1.25rem",
-                    fontWeight: "bold", 
+                    fontWeight: "bold",
                     // letterSpacing: "1px",
                   }}
                   className="map-list-name"
@@ -120,7 +141,7 @@ export default function MapCardList() {
                 <ListItemText
                   primaryTypographyProps={{
                     fontFamily: "Sen",
-                    fontSize: "1rem", 
+                    fontSize: "1rem",
                     // letterSpacing: "1px",
                   }}
                   className="map-list-types"
@@ -130,7 +151,7 @@ export default function MapCardList() {
                 <ListItemText
                   primaryTypographyProps={{
                     fontFamily: "Sen",
-                    fontSize: "1rem", 
+                    fontSize: "1rem",
                     // letterSpacing: "1px",
                   }}
                   className="map-list-author"
@@ -141,24 +162,6 @@ export default function MapCardList() {
           </div>,
         ])}
       </List>
-      {auth.loggedIn && store.currentView == View.HOME ? (
-        <Fab
-          sx={{
-            position: "absolute",
-            bottom: 16,
-            right: 16,
-            bgcolor: "#ffabd1",
-            "&:hover": {
-              bgcolor: "#ffabd1",
-            },
-          }}
-          onClick={handleCreateMap}
-        >
-          <AddIcon />
-        </Fab>
-      ) : null}
-      <MUIUploadMap />
-      <MUICreateMap />
-    </Box>
+    </>
   );
 }
