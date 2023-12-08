@@ -14,28 +14,28 @@ export default function EditScreen() {
   const { store } = useContext(StoreContext);
 
 
-  useEffect(() => {
-    console.log("currentMapObject", store.currentMapObject?.mapType);
-    const func = async () => {
+  // useEffect(() => {
+  //   console.log("currentMapObject", store.currentMapObject?.mapType);
+  //   const func = async () => {
 
-        // clear CSV fields
+  //       // clear CSV fields
        
-        store.setParsedCsvData(null);
-        store.setCsvKey(null);
-        store.setCsvLabel(null);
+  //       store.setParsedCsvData(null);
+  //       store.setCsvKey(null);
+  //       store.setCsvLabel(null);
 
-      if (store.currentMapObject && store.currentMapObject.csvData) {
-        const csvObj = await store.getCsvById(store.currentMapObject.csvData);
+  //     if (store.currentMapObject && store.currentMapObject.csvData) {
+  //       const csvObj = await store.getCsvById(store.currentMapObject.csvData);
         
-        console.log(csvObj);
+  //       console.log(csvObj);
         
-        store.setParsedCsvData(csvObj.csvData);
-        store.setCsvKey(csvObj.key);
-        store.setCsvLabel(csvObj.label);
-      }
-    };
-    func();
-  }, [store.currentMapObject]);
+  //       store.setParsedCsvData(csvObj.csvData);
+  //       store.setCsvKey(csvObj.key);
+  //       store.setCsvLabel(csvObj.label);
+  //     }
+  //   };
+  //   func();
+  // }, [store.currentMapObject]);
 
 
   const politicalStyle = {
