@@ -17,40 +17,12 @@ const geobuf = require("geobuf");
 import '../font.css';
 import { Typography } from "@mui/material";
 
-const hardcodedMaps = [
-  // { _id: '1', title: 'North America', fileName: "NA2.json", type: 'hardcoded' },
-  // { _id: '2', title: 'South America', fileName: "SA2.json", type: 'hardcoded' },
-  // { _id: '3', title: 'Asia', fileName: "ASIA2.json", type: 'hardcoded' },
-  // { _id: '4', title: 'Africa', fileName: "AFRICA2.json", type: 'hardcoded' },
-  // { _id: '5', title: 'Europe', fileName: "EU2.json", type: 'hardcoded' },
-  // { _id: '6', title: 'Oceania', fileName: "Oceania2.json", type: 'hardcoded' },
-  // { _id: '7', title: 'World', fileName: "World.json", type: 'hardcoded' }
-];
-
 export default function MapCardList() {
   const { store } = useContext(StoreContext);
   const { auth } = useContext(AuthContext);
-  // const [maps, setMaps] = useState([...hardcodedMaps]);
 
   const handleMapClick = (mapId) => {
-    const selected = store.mapList.find((map) => map._id === mapId);
-    console.log("selected: ", selected);
-    console.log("store.currentMapObject: ", store.currentMapObject);
-    if (!store.currentMapObject || selected._id != store.currentMapObject._id){
-      console.log("incrementing views");
-      selected.views = selected.views + 1;
-      store.updateViews(selected);
-    }
-    store.currentMapObject = selected;
-    console.log(store.currentMapObject);
-    if (selected) {
-        // fetched map click
-        var mapData = selected.mapData;
-        const encodedData = geobuf.decode(new Pbf(mapData.data));
-        store.setRawMapFile(encodedData);
-        // store.getMapFile(selected.fileName);
-      
-    }
+    store.loadMapFile(mapId);
   };
 
   const handleCreateMap = () => {

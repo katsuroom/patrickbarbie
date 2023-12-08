@@ -25,6 +25,7 @@ export const StoreActionType = {
   SET_RAW_MAP_FILE: "SET_RAW_MAP_FILE",
   LOAD_MAP_LIST: "LOAD_MAP_LIST",
 
+  LOAD_MAP: "LOAD_MAP",
   CREATE_MAP: "CREATE_MAP", // create a map from the uploaded file
   FORK_MAP: "FORK_MAP", // fork an existing map
   DELETE_MAP: "DELETE_MAP", // delete the currently selected map
@@ -67,7 +68,8 @@ function StoreContextProvider(props) {
 
   const [store, setStore] = useState({
     currentModal: CurrentModal.NONE,  // the currently open modal
-    rawMapFile: null,                 // only used for storing an uploaded file
+    uploadedFile: null,
+    rawMapFile: null,
     label: null,
     key: null, // csv key [column name] for map displaying
     StartKey: null, // csv key [column name] for map displaying
@@ -105,7 +107,7 @@ function StoreContextProvider(props) {
         return setStore({
           ...store,
           currentModal: CurrentModal.CREATE_MAP,
-          rawMapFile: payload.file,
+          uploadedFile: payload.file,
         });
       }
 
@@ -172,11 +174,22 @@ function StoreContextProvider(props) {
         });
       }
 
+      case StoreActionType.LOAD_MAP: {
+        return setStore({
+          ...store,
+          mapList: payload.mapList,
+          currentMapObject: payload.currentMapObject,
+          rawMapFile: payload.rawMapFile
+        });
+      }
+
       case StoreActionType.CREATE_MAP: {
         return setStore({
           ...store,
           mapList: payload.mapList,
           currentMapObject: payload.currentMapObject,
+          rawMapFile: store.uploadedFile,
+          uploadedFile: null,
           currentModal: CurrentModal.NONE
         });
       }
@@ -279,10 +292,11 @@ function StoreContextProvider(props) {
     });
   };
 
+  // create map using uploaded file
   store.createMap = function (title, mapType) {
     console.log("in create map");
 
-    let file = store.rawMapFile;
+    let file = store.uploadedFile;
     var data = geobuf.encode(file, new Pbf());
 
     asyncCreateMap();
@@ -304,6 +318,7 @@ function StoreContextProvider(props) {
     }
   };
 
+  // DELETE ONCE MAP CARD LIST IS FIXED
   store.getMapFile = async function (fileName) {
     console.log("getMapFile: ", fileName);
     const file = await api.getMainScreenMap(fileName);
@@ -317,11 +332,37 @@ function StoreContextProvider(props) {
     });
   };
 
-  store.setRawMapFile = async function (file) {
-    storeReducer({
-      type: StoreActionType.SET_RAW_MAP_FILE,
-      payload: { file },
-    });
+  store.loadMapFile = function (mapId) {
+    const selected = store.mapList.find((map) => map._id === mapId);
+    console.log("selected: ", selected);
+
+    if(!selected)
+      return;
+
+    if (!store.currentMapObject || selected._id != store.currentMapObject._id)
+    {
+      selected.views = selected.views + 1;
+      store.updateViews(selected);
+    }
+
+    // load raw map file
+    let mapDataId = selected.mapData;
+    
+    asyncGetMapData();
+    async function asyncGetMapData()
+    {
+      let res = await api.getMapDataById(mapDataId);
+      const rawMapFile = geobuf.decode(new Pbf(res.data.data.mapData.data));
+      
+      storeReducer({
+        type: StoreActionType.LOAD_MAP,
+        payload: {
+          mapList: store.mapList,
+          currentMapObject: selected,
+          rawMapFile: rawMapFile,
+        }
+      });
+    }
   };
 
   store.emptyRawMapFile = function () {

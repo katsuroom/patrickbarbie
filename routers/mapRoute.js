@@ -12,6 +12,7 @@ router.get('/maps', auth, MapController.getMapsByUser)
 router.get('/map/:id', MapController.getMapById)
 router.get('/published-maps', MapController.getPublishedMaps)
 
+router.get('/mapData/:id', MapController.getMapDataById)
 
 router.get('/mapFile', MapController.sendMapFile);
 router.post('/csv', MapController.createCSV);
