@@ -374,7 +374,7 @@ function StoreContextProvider(props) {
 
   // fork map
   store.forkMap = function (maptitle) {
-    let mapData = store.currentMapObject.mapData;
+    let mapData = geobuf.encode(store.rawMapFile, new Pbf());
     console.log("mapData: ", mapData, auth.user.username, maptitle, store.currentMapObject.mapType);
     asyncForkMap();
     async function asyncForkMap() {

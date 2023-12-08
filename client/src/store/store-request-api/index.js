@@ -134,7 +134,6 @@ const getMapDataById = (id) => {
 
 const deleteMap = (mapId) => {
     console.log("in api.deleteMap");
-    console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
     let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
     return fetch(`${baseURL}/map/${mapId}`, {
         method: "DELETE",
