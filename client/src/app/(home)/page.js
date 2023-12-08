@@ -23,7 +23,7 @@ export default function SplashScreen() {
       console.log("logged in");
       redirect("/main");
     }
-  }, []);
+  }, [auth.loggedIn]);
 
   const buttonStyle = {
     mt: 1,
