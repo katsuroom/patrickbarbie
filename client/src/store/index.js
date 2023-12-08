@@ -23,6 +23,7 @@ export const StoreActionType = {
   SET_MAP_TYPE: "SET_MAP_TYPE",
   SET_RAW_MAP_FILE: "SET_RAW_MAP_FILE",
   LOAD_MAP_LIST: "LOAD_MAP_LIST",
+  FORK_MAP: "FORK_MAP",
   DELETE_MAP: "DELETE_MAP",
   SET_PARSED_CSV_DATA: "SET_PARSED_CSV_DATA",
   CHANGE_VIEW: "CHANGE_VIEW",
@@ -167,11 +168,22 @@ function StoreContextProvider(props) {
         });
       }
 
+      case StoreActionType.FORK_MAP: {
+        return setStore({
+          ...store,
+          mapList: payload.mapList,
+          currentView: View.HOME,
+          currentModal: CurrentModal.NONE,
+          currentMapObject: payload.currentMapObject,
+        });
+      }
+
       case StoreActionType.DELETE_MAP: {
         return setStore({
           ...store,
           mapList: payload.mapList,
           currentModal: CurrentModal.NONE,
+          currentMapObject: null,
           rawMapFile: null,
         });
       }
@@ -294,41 +306,43 @@ function StoreContextProvider(props) {
     });
   };
 
-  store.forkMap = async function (maptitle) {
-    var mapData = store.currentMapObject.mapData;
-    console.log(
-      "mapData: ",
-      mapData,
-      auth.user.username,
-      maptitle,
-      store.currentMapObject.mapType
-    );
-    const forkMapResponse = await api.forkMap(
-      mapData,
-      auth.user.username,
-      maptitle,
-      store.currentMapObject.mapType
-    );
+  // fork map
+  store.forkMap = function (maptitle) {
+    let mapData = store.currentMapObject.mapData;
+    console.log("mapData: ", mapData, auth.user.username, maptitle, store.currentMapObject.mapType);
+    asyncForkMap();
+    async function asyncForkMap() {
 
-    const mapObj = forkMapResponse.data.mapData;
+      // copy csv data
+      let csvData = null;
+      if(store.currentMapObject.csvData)
+      {
+        const csvObj = (await api.getCsvById(store.currentMapObject.csvData)).data.data;
+        csvData = (await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData)).data.csvData._id;
+      }
 
-    console.log(mapObj);
+      let response = await api.forkMap(
+        mapData,
+        csvData ? csvData : undefined,
+        auth.user.username,
+        maptitle,
+        store.currentMapObject.mapType
+      );
 
-    if (store.currentMapObject.csvData) {
-      const csvObj = (await api.getCsvById(store.currentMapObject.csvData)).data
-        .data;
-      const forkedCsvData = (
-        await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData)
-      ).data.csvData._id;
-      mapObj.csvData = forkedCsvData;
-      // await store.updateMap(mapObj);
+      let mapObj = response.data.mapData;
+
+      // refresh user maps
+      api.getMapsByUser().then((response) => {
+        console.log("fetched user maps", response.data.data);
+        storeReducer({
+          type: StoreActionType.FORK_MAP,
+          payload: {
+            mapList: response.data.data,
+            currentMapObject: mapObj,
+          }
+        });
+      });
     }
-
-    await store.getMapList();
-
-    // store.currentMapObject = mapObj;
-
-    store.setCurrentMapObj(mapObj);
   };
 
   store.setCurrentMapObj = function (mapObj) {
@@ -503,13 +517,15 @@ function StoreContextProvider(props) {
     });
   };
 
+  // fetches map list based on current view
   store.getMapList = function () {
-    if (store.isHomePage()) {
+    if (store.isHomePage())
+    {
       api.getMapsByUser().then((response) => {
         console.log("fetched user maps", response.data.data);
-
+  
         let currentMapObj = null;
-
+  
         if (store.currentMapObject) {
           console.log("refreshing same map");
           currentMapObj = response.data.data.find(
@@ -517,7 +533,7 @@ function StoreContextProvider(props) {
           );
           console.log("found same map", currentMapObj);
         }
-
+  
         storeReducer({
           type: StoreActionType.LOAD_MAP_LIST,
           payload: {
@@ -526,17 +542,19 @@ function StoreContextProvider(props) {
           },
         });
       });
-    } else {
+    }
+    else
+    {
       api.getPublishedMaps().then((response) => {
         console.log("fetched published maps", response.data.data);
-
+  
         let currentMapObj = null;
-
+  
         if (store.currentMapObject)
           currentMapObj = response.data.data.find(
             (map) => map._id === store.currentMapObject._id
           );
-
+  
         storeReducer({
           type: StoreActionType.LOAD_MAP_LIST,
           payload: {

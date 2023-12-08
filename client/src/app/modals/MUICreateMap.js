@@ -76,9 +76,7 @@ export default function MUICreateMap() {
           }}
         >
           <div className="alertContainer">
-            <div className="alert">
-              {"Enter the new name of the forked map:"}
-            </div>
+            <div className="alert">Enter the name of the new map:</div>
             <div className="confirm" style={{ height: "100%" }}>
               <TextField
                 label="Your map name"

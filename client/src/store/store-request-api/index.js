@@ -44,9 +44,7 @@ const createMap = (mapData, username, mapName, mapType) => {
     });
 };
 
-const forkMap = (mapData, username, mapName, mapType) => {
-  console.log("in api.createMap");
-  console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
+const forkMap = async (mapData, csvData, username, mapName, mapType) => {
   let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
 return fetch(`${baseURL}/forkmap/`, {
   method: "POST",
@@ -58,7 +56,8 @@ return fetch(`${baseURL}/forkmap/`, {
     title: mapName,
     mapData: mapData,
     author: username,
-    mapType: mapType
+    mapType: mapType,
+    csvData: csvData
   }),
 })
   .then((response) => {
