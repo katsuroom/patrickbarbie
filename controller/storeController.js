@@ -225,6 +225,32 @@ getMapById = (req, res) => {
     });
 };
 
+getMapDataById = (req, res) => {
+  const mapDataId = req.params.id;
+
+  MapData.findById(mapDataId)
+    .then((mapData) => {
+      if (!mapData) {
+        return res.status(404).json({
+          success: false,
+          error: "Map data not found",
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        data: mapData,
+        message: "Map data found",
+      });
+    })
+    .catch((error) => {
+      console.log("Error getting map data: " + error);
+      return res.status(500).json({
+        success: false,
+        error: "Error getting map data",
+      });
+    });
+}
+
 getMapsByUser = (req, res) => {
   console.log("start get Maps");
   var userId;
@@ -309,7 +335,8 @@ forkMap = (req, res) => {
     });
   }
 
-  // const mapData = Buffer.from(Object.values(body.mapData));
+  // Clone map data
+  const mapDataId = body.mapData;
 
   // Create the Map instance
   const map = new Map(body);
@@ -489,6 +516,7 @@ module.exports = {
   deleteMap,
   updateMap,
   getMapById,
+  getMapDataById,
   getMapsByUser,
   getPublishedMaps,
   forkMap,

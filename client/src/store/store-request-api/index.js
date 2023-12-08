@@ -116,6 +116,22 @@ const getMapById = (id) => {
     });
 };
 
+const getMapDataById = (id) => {
+  let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
+  return fetch(`${baseURL}/mapData/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+    }).then((response) => {
+      // Parse JSON and include status in the resolved value
+      return response.json().then((data) => {
+        return { status: response.status, data };
+      });
+    });
+}
+
 const deleteMap = (mapId) => {
     console.log("in api.deleteMap");
     console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
@@ -279,6 +295,7 @@ export default {
   forkMap,
   createCSV,
   getMapById,
+  getMapDataById,
   getCsvById,
   updateCSV,
   getPublishedMaps
