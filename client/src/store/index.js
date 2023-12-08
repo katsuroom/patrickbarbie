@@ -11,11 +11,12 @@ const Pbf = require("pbf");
 
 const StoreContext = createContext();
 
-// THESE ARE ALL THE TYPES OF UPDATES TO OUR AUTH STATE THAT CAN BE PROCESSED
+// comments indicate important action types that must not be removed
 export const StoreActionType = {
-  OPEN_MODAL: "OPEN_MODAL",
-  CLOSE_MODAL: "CLOSE_MODAL",
-  UPLOAD_MAP_FILE: "UPLOAD_MAP_FILE",
+  OPEN_MODAL: "OPEN_MODAL", // display a modal
+  CLOSE_MODAL: "CLOSE_MODAL", // close the current modal
+
+  UPLOAD_MAP_FILE: "UPLOAD_MAP_FILE", // upload a map file
   GET_MAP_FILE: "GET_MAP_FILE",
   EMPTY_RAW_MAP_FILE: "EMPTY_RAW_MAP_FILE",
   SET_CSV_KEY: "SET_CSV_KEY",
@@ -23,8 +24,11 @@ export const StoreActionType = {
   SET_MAP_TYPE: "SET_MAP_TYPE",
   SET_RAW_MAP_FILE: "SET_RAW_MAP_FILE",
   LOAD_MAP_LIST: "LOAD_MAP_LIST",
-  FORK_MAP: "FORK_MAP",
-  DELETE_MAP: "DELETE_MAP",
+
+  CREATE_MAP: "CREATE_MAP", // create a map from the uploaded file
+  FORK_MAP: "FORK_MAP", // fork an existing map
+  DELETE_MAP: "DELETE_MAP", // delete the currently selected map
+
   SET_PARSED_CSV_DATA: "SET_PARSED_CSV_DATA",
   CHANGE_VIEW: "CHANGE_VIEW",
   CHANGE_CURRENT_MAP_OBJ: "CHANGE_CURRENT_MAP_OBJ",
@@ -62,8 +66,8 @@ function StoreContextProvider(props) {
   const pathname = usePathname();
 
   const [store, setStore] = useState({
-    currentModal: CurrentModal.NONE, // the currently open modal
-    rawMapFile: null,
+    currentModal: CurrentModal.NONE,  // the currently open modal
+    rawMapFile: null,                 // only used for storing an uploaded file
     label: null,
     key: null, // csv key [column name] for map displaying
     StartKey: null, // csv key [column name] for map displaying
@@ -168,6 +172,15 @@ function StoreContextProvider(props) {
         });
       }
 
+      case StoreActionType.CREATE_MAP: {
+        return setStore({
+          ...store,
+          mapList: payload.mapList,
+          currentMapObject: payload.currentMapObject,
+          currentModal: CurrentModal.NONE
+        });
+      }
+
       case StoreActionType.FORK_MAP: {
         return setStore({
           ...store,
@@ -256,6 +269,7 @@ function StoreContextProvider(props) {
     });
   };
 
+  // uploading a map file
   store.uploadMapFile = function (file) {
     console.log("file entered store");
     console.log(file);
@@ -269,14 +283,25 @@ function StoreContextProvider(props) {
     console.log("in create map");
 
     let file = store.rawMapFile;
-    console.log("store.rawMapFile", store.rawMapFile);
-
     var data = geobuf.encode(file, new Pbf());
 
-    api.createMap(data, auth.user.username, title, mapType).then((response) => {
-      console.log(response);
-      store.setCurrentMapObj(response.data.mapData);
-    });
+    asyncCreateMap();
+    async function asyncCreateMap() {
+      let response = await api.createMap(data, auth.user.username, title, mapType);
+      let mapObj = response.data.mapData;
+
+      // refresh user maps
+      api.getMapsByUser().then((response) => {
+        console.log("fetched user maps", response.data.data);
+        storeReducer({
+          type: StoreActionType.CREATE_MAP,
+          payload: {
+            mapList: response.data.data,
+            currentMapObject: mapObj
+          }
+        });
+      });
+    }
   };
 
   store.getMapFile = async function (fileName) {
@@ -343,13 +368,6 @@ function StoreContextProvider(props) {
         });
       });
     }
-  };
-
-  store.setCurrentMapObj = function (mapObj) {
-    storeReducer({
-      type: StoreActionType.CHANGE_CURRENT_MAP_OBJ,
-      payload: { mapObj },
-    });
   };
 
   store.updateMap = function (mapObject) {
@@ -638,7 +656,7 @@ function StoreContextProvider(props) {
     store.setCsvKey(null);
     store.setCsvLabel(null);
     store.setMinColor("#FFFFFF");
-    store.setMaxColor("#FF0000")
+    store.setMaxColor("#FF0000");
   }
 
   store.isCommunityPage = () => {

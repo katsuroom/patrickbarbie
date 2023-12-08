@@ -9,7 +9,6 @@ const baseURL = process.env.NODE_ENV == "development" ? "http://localhost:4000/a
 
 const createMap = (mapData, username, mapName, mapType) => {
     console.log("in api.createMap");
-    console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
     let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
   return fetch(`${baseURL}/map/`, {
     method: "POST",

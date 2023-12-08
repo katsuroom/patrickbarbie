@@ -1,6 +1,8 @@
 const Map = require("../models/map_model");
 const User = require("../models/user_model");
 const CSV = require("../models/csv_model");
+const MapData = require("../models/mapdata_model");
+
 const jwt = require("jsonwebtoken");
 const auth = require("../auth");
 const path = require("path");
@@ -26,27 +28,7 @@ const extractUserIdFromToken = (token) => {
   }
 };
 
-createMap = (req, res) => {
-  console.log("start create Map");
-
-  // if (auth.auth(req) === null) {
-  //   return res.status(401).json({
-  //     loggedIn: false,
-  //     user: null,
-  //     errorMessage: "Unauthorized",
-  //   });
-  // }
-
-  var userId;
-
-  //   console.log("req: ", req.body);
-  //   console.log("req: ", req.headers);
-
-  const token = req.headers.authorization.split(" ")[1];
-  userId = extractUserIdFromToken(token);
-
-  console.log("userId: " + req.userId);
-
+createMap = async (req, res) => {
   const body = req.body;
   if (!body) {
     return res.status(400).json({
@@ -55,22 +37,20 @@ createMap = (req, res) => {
     });
   }
 
-  const mapData = Buffer.from(Object.values(body.mapData));
+  // Save map data
+  const mapData = new MapData({
+    mapData: Buffer.from(Object.values(body.mapData))
+  });
+
+  const savedMapData = await mapData.save();
 
   // Create the Map instance
   const map = new Map({
     title: body.title,
     author: body.author,
-    mapData: mapData,
+    mapData: savedMapData.id,
     mapType: body.mapType,
   });
-
-  //   const map = new Map(body);
-  //   console.log("map: " + JSON.stringify(map));
-  if (!map) {
-    return res.status(403).json({ success: false, error: err });
-  }
-  //   console.log("req.userId: ", req.userId);
 
   User.findOne({ _id: req.userId })
     .then((user) => {
@@ -292,6 +272,7 @@ getMapsByUser = (req, res) => {
       });
     });
 };
+
 getPublishedMaps = (req, res) => {
   console.log("start get published Maps");
 

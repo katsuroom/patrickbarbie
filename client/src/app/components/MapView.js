@@ -22,27 +22,14 @@ export default function MapView({ fileSelected, projectName, mapType }) {
     const { auth } = useContext(AuthContext);
     const router = useRouter();
 
-    // State for likes and like status
-    
-    // let initialComments = [];
     const [initialComments, setInitialComments] = useState([]);
 
-
-     useEffect(() => {
-       // This effect runs whenever store.currentMapObject changes
-       if (store.currentMapObject) {
-      //  console.log("in MapView.js", store.currentMapObject);
- 
-       // Shallow copy of comments array
-       var newInitialComments = store.currentMapObject.comments;
-      //  console.log("newInitialComments: ", newInitialComments);
- 
-       // Update the state with the new initialComments
-       // initialComments = newInitialComments;
-       setInitialComments(newInitialComments);
-      //  console.log("initialComments: ", initialComments);
-       }
-     }, [store.currentMapObject]);
+    useEffect(() => {
+      if (store.currentMapObject) {
+      let newInitialComments = store.currentMapObject.comments;
+      setInitialComments(newInitialComments);
+      }
+    }, [store.currentMapObject]);
 
     // Handling the like click
     const handleLikeClick = () => {
