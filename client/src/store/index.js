@@ -583,10 +583,10 @@ function StoreContextProvider(props) {
   };
 
   // fetches map list based on current view
-  store.getMapList = function () {
+  store.getMapList = async function () {
     if (store.isHomePage())
     {
-      api.getMapsByUser().then((response) => {
+      await api.getMapsByUser().then((response) => {
         console.log("fetched user maps", response.data.data);
   
         let currentMapObj = null;
@@ -599,6 +599,7 @@ function StoreContextProvider(props) {
           console.log("found same map", currentMapObj);
         }
   
+        store.mapList = response.data.data;
         storeReducer({
           type: StoreActionType.LOAD_MAP_LIST,
           payload: {
@@ -610,7 +611,7 @@ function StoreContextProvider(props) {
     }
     else
     {
-      api.getPublishedMaps().then((response) => {
+      await api.getPublishedMaps().then((response) => {
         console.log("fetched published maps", response.data.data);
   
         let currentMapObj = null;
@@ -620,6 +621,8 @@ function StoreContextProvider(props) {
             (map) => map._id === store.currentMapObject._id
           );
   
+        store.mapList = response.data.data;
+        
         storeReducer({
           type: StoreActionType.LOAD_MAP_LIST,
           payload: {

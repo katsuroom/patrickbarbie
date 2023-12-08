@@ -28,7 +28,11 @@ export default function EditScreen() {
         await store.changeView(store.viewTypes.COMMUNITY);
       }
 
-      store.getMapList();
+      await store.getMapList();
+
+      if (!store.mapList.length){
+        router.push("/main")
+      }
     };
     func();
   }, []);
