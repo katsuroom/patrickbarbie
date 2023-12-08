@@ -11,8 +11,6 @@ const Heatmap = dynamic(() => import('./HeatMap'));
 const ProportionalMap = dynamic(() => import('./ProportionalMap'));
 const TravelMap = dynamic(() => import("./TravelMaps"));
 import "leaflet/dist/leaflet.css";
-// import TravelMap from "./TravelMaps";
-
 
 
 export default function MapDisplay() {
