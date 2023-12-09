@@ -180,16 +180,6 @@ const TravelMap = (props) => {
 
     const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
     const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
-    // useEffect(() => {
-    //     if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
-    //         return;
-    //     }
-
-    //     for (let i = 0; i < store.parsed_CSV_Data[store.label].length; i++) {
-
-    //         runDirection(store.parsed_CSV_Data[store.label][i], store.parsed_CSV_Data[store.key][i]);
-    //     }
-    // }, [store.label, store.key, store.parsed_CSV_Data])
 
     const runDirection = async () => {
 
@@ -208,6 +198,12 @@ const TravelMap = (props) => {
 
             const startIcon = L.icon({
                 iconUrl: "/blue.png",
+                iconSize: [25, 41],
+                iconAnchor: [12, 41]
+            });
+
+            const inBetweenIcon = L.icon({
+                iconUrl: "/gray.png",
                 iconSize: [25, 41],
                 iconAnchor: [12, 41]
             });
@@ -235,12 +231,12 @@ const TravelMap = (props) => {
                 //     styles: [
                 //         {color: "black", opacity: 0.15, weight: 9},
                 //         {color: "white", opacity: 0.8, weight: 9},
-
                 //     ]
                 // },
                 createMarker: function (i, waypoint, n) {
-                    const markerIcon = i === 0 ? startIcon : endIcon;
-                    return L.marker(waypoint.latLng, { icon: markerIcon });
+                    // const markerIcon = i === 0 ? startIcon : endIcon;
+                    const markerIcon = i === 0 ? startIcon : (i > 0 && i < n - 1) ? inBetweenIcon : endIcon;
+                    return L.marker(waypoint.latLng, { draggable: true, icon: markerIcon });
                 },
                 geocoder: L.Control.Geocoder.nominatim(),
             })
@@ -249,15 +245,6 @@ const TravelMap = (props) => {
             .addTo(mapRef.current);
 
             routeControlRef.current = routingControl;
-
-            // const startHere = (e) => {
-            //     routingControl.spliceWaypoints(0, 1, e.latlng);
-            // };
-
-            // const goHere = (e) => {
-            //     routingControl.spliceWaypoints(routingControl.getWaypoints().length - 1, 1, e.latlng);
-            // };
-
 
             // mapRef.current.forEach((routingControl) => {
             //     mapRef.current.removeLayer(routingControl);
