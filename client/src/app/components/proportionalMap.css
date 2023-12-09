@@ -1,0 +1,28 @@
+.info.legend.leaflet-control {
+    background: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+    box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
+    width: 70px;
+    height: 200px;
+}
+.circle1 {
+    display: block;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+}
+.circle2 {
+    display: block;
+    margin: auto;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+.circle3{
+    display: block;
+    margin: auto;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}

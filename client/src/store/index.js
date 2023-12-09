@@ -38,7 +38,9 @@ export const StoreActionType = {
   CHANGE_CURRENT_MAP_OBJ: "CHANGE_CURRENT_MAP_OBJ",
   SET_MAP_LIST: "SET_MAP_LIST",
   SET_MIN_COLOR: "SET_MIN_COLOR",
-  SET_MAX_COLOR: "SET_MAX_COLOR"
+  SET_MAX_COLOR: "SET_MAX_COLOR",
+  SET_PROPORTIONAL_VALUE: "SET_PROPORTIONAL_VALUE",
+  SET_PROPORTIONAL_COLOR: "SET_PROPORTIONAL_COLOR",
 };
 
 export const CurrentModal = {
@@ -84,7 +86,9 @@ function StoreContextProvider(props) {
     mapList: [], // loaded list of maps (idNamePairs)
     currentView: View.COMMUNITY,
     minColor: null,
-    maxColor: null
+    maxColor: null,
+    proportional_value: [], // proportional symbol map legend data
+    proColor: null,
   });
 
   store.viewTypes = View;
@@ -246,6 +250,18 @@ function StoreContextProvider(props) {
           maxColor: payload,
         });
       }
+      case StoreActionType.SET_PROPORTIONAL_VALUE: {
+        return setStore({
+          ...store,
+          proportional_value: payload,
+        });
+      }
+      case StoreActionType.SET_PROPORTIONAL_COLOR:{
+        return setStore({
+          ...store,
+          proColor: payload,
+        });
+      }
 
       default:
         return store;
@@ -265,6 +281,15 @@ function StoreContextProvider(props) {
 
     storeReducer({
       type: StoreActionType.SET_MAX_COLOR,
+      payload: color,
+    });
+  };
+
+  store.setProColor = function (color) {
+    console.log("setProColor", color);
+
+    storeReducer({
+      type: StoreActionType.SET_PROPORTIONAL_COLOR,
       payload: color,
     });
   };
@@ -745,6 +770,8 @@ function StoreContextProvider(props) {
     store.setCsvLabel(null);
     store.setMinColor(null);
     store.setMaxColor(null);
+    store.setProColor(null);
+    store.setProportionalValue([]);
   }
   
 
@@ -757,6 +784,13 @@ function StoreContextProvider(props) {
   store.showSearchBar = () => {
     return pathname == "/main" || pathname == "/mapcards";
   }
+
+  store.setProportionalValue = function (value) {
+    storeReducer({
+      type: StoreActionType.SET_PROPORTIONAL_VALUE,
+      payload: value,
+    });
+  };
 
   return (
     <StoreContext.Provider
