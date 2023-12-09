@@ -35,7 +35,8 @@ export const StoreActionType = {
   CHANGE_CURRENT_MAP_OBJ: "CHANGE_CURRENT_MAP_OBJ",
   SET_MAP_LIST: "SET_MAP_LIST",
   SET_MIN_COLOR: "SET_MIN_COLOR",
-  SET_MAX_COLOR: "SET_MAX_COLOR"
+  SET_MAX_COLOR: "SET_MAX_COLOR",
+  SET_PROPORTIONAL_VALUE: "SET_PROPORTIONAL_VALUE",
 };
 
 export const CurrentModal = {
@@ -80,7 +81,8 @@ function StoreContextProvider(props) {
     mapList: [], // loaded list of maps (idNamePairs)
     currentView: View.COMMUNITY,
     minColor: "#FFFFFF",
-    maxColor: "#FF0000"
+    maxColor: "#FF0000",
+    proportional_value: [], // proportional symbol map legend data
   });
 
   store.viewTypes = View;
@@ -228,7 +230,8 @@ function StoreContextProvider(props) {
           mapList: payload.mapList || store.mapList,
           currentModal: CurrentModal.NONE,
           minColor: "#FFFFFF",
-          maxColor: "#FF0000"
+          maxColor: "#FF0000", 
+          proportional_value: [],
 
         });
       }
@@ -242,6 +245,12 @@ function StoreContextProvider(props) {
         return setStore({
           ...store,
           maxColor: payload,
+        });
+      }
+      case StoreActionType.SET_PROPORTIONAL_VALUE: {
+        return setStore({
+          ...store,
+          proportional_value: payload,
         });
       }
 
@@ -709,6 +718,13 @@ function StoreContextProvider(props) {
   store.showSearchBar = () => {
     return pathname == "/main";
   }
+
+  store.setProportionalValue = function (value) {
+    storeReducer({
+      type: StoreActionType.SET_PROPORTIONAL_VALUE,
+      payload: value,
+    });
+  };
 
   return (
     <StoreContext.Provider

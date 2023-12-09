@@ -44,11 +44,14 @@ export default function MUISaveChanges() {
         store.currentMapObject.mapProps = {};
       }
       store.currentMapObject.mapProps.maxColor = store.maxColor;
+      store.currentMapObject.mapProps.proportional_value = store.proportional_value;
+
+      console.log("store.currentMapObject", store.currentMapObject);
 
       store.updateMap(store.currentMapObject);
 
     }
-    
+
     if (store.currentMapObject.mapType === store.mapTypes.HEATMAP) {
       console.log("save map props heat map");
 
