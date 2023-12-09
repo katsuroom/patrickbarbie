@@ -265,7 +265,13 @@ const TravelMap = (props) => {
             // .on('routingstart', showSpinner)
             // .on('routesfound routingerror', hideSpinner)
             .addTo(mapRef.current);
-
+            
+            // routingControl.on('routingstart', showSpinner);
+            // routingControl.on('routesfound', hideSpinner);
+            // routingControl.on('routingerror', () => {
+            //     hideSpinner();
+            //     console.error('Routing error occurred');
+            // });
             routeControlRef.current = routingControl;
 
             // mapRef.current.forEach((routingControl) => {
@@ -276,16 +282,19 @@ const TravelMap = (props) => {
         }
     };
 
-    // var spinner = true;
-    // const showSpinner = ()=>{
-    //     if(spinner){
-    //         document.getElementById('loader').style.display = "block";
-    //     }
-    // }
-    // const hideSpinner = ()=>{
-    //         document.getElementById('loader').style.display = "none";
-    // }
+    const showSpinner = () => {
+        const loader = document.getElementById('loader');
+        if (loader) {
+            loader.style.display = "block";
+        }
+    };
 
+    const hideSpinner = () => {
+        const loader = document.getElementById('loader');
+        if (loader) {
+            loader.style.display = "none";
+        }
+    };
 
     const submitForm = (event) => {
         event.preventDefault();
