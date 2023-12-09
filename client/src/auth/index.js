@@ -174,7 +174,7 @@ function AuthContextProvider(props) {
         user: { username: "guest" }
       },
     });
-    router.push("/main");
+    router.push("/mapcards");
   }
 
   // logout user
