@@ -41,7 +41,7 @@ export default function PProportional() {
   const [textFields, setTextFields] = React.useState([]);
 
   const [MinHex, setMinHex] = React.useState(store.minColor);
-  const [MaxHex, setMaxHex] = React.useState(store.maxColor);
+  const [MaxHex, setMaxHex] = React.useState(store.proColor);
 
   const handleMinColorChange = (event) => {
     setMinHex(event.hex);
@@ -50,7 +50,7 @@ export default function PProportional() {
 
   const handleMaxColorChange = (event) => {
     setMaxHex(event.hex);
-    store.setMaxColor(event.hex);
+    store.setProColor(event.hex);
   };
 
   useEffect(() => {

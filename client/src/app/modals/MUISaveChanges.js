@@ -43,7 +43,7 @@ export default function MUISaveChanges() {
       if (!store.currentMapObject.mapProps) {
         store.currentMapObject.mapProps = {};
       }
-      store.currentMapObject.mapProps.maxColor = store.maxColor;
+      store.currentMapObject.mapProps.proColor = store.proColor;
       store.currentMapObject.mapProps.proportional_value = store.proportional_value;
 
       console.log("store.currentMapObject", store.currentMapObject);

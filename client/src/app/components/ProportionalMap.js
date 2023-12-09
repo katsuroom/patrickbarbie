@@ -19,16 +19,14 @@ export default function ProportionalMap(props) {
   const workerRef = useRef(null);
   const { store } = useContext(StoreContext);
   let downloadComplete = props.downloadComplete;
-  const [maxRadiusArray, setMaxRadiusArray] = useState([0, 0]);
-  const [minRadiusArray, setMinRadiusArray] = useState([0, 0]);
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
 
   useEffect(() => {
     if (store.currentMapObject.mapProps) {
       console.log("updating");
-      if (store.currentMapObject.mapProps.maxColor) {
-        store.maxColor = store.currentMapObject.mapProps.maxColor;
-        store.setMaxColor(store.currentMapObject.mapProps.maxColor);
+      if (store.currentMapObject.mapProps.proColor) {
+        store.proColor = store.currentMapObject.mapProps.proColor;
+        store.setProColor(store.currentMapObject.mapProps.proColor);
       }
       if(store.currentMapObject.mapProps.proportional_value){
         console.log("store.currentMapObject.mapProps.proportional_value", store.currentMapObject.mapProps.proportional_value);
@@ -160,7 +158,7 @@ export default function ProportionalMap(props) {
       // console.log("store.key", store.key);
       // console.log("store.parsed_CSV_Data", store.parsed_CSV_Data);
       console.log("store.currentMapObject", store.currentMapObject);
-      console.log("store.maxColor", store.maxColor);
+      console.log("store.proColor", store.proColor);
 
       //extract geojson data
 
@@ -236,7 +234,7 @@ export default function ProportionalMap(props) {
           return L.circleMarker(latlng, {
             color: "orange",
             weight: 1,
-            fillColor: store.maxColor ? store.maxColor : "red",
+            fillColor: store.proColor ? store.proColor : "red",
             fillOpacity: 0.3,
             radius: getRadius(feature.properties.gdp_md),
           });
@@ -253,14 +251,14 @@ export default function ProportionalMap(props) {
           layer.on("mouseover", function () {
             layer.bindPopup(popup).openPopup();
             layer.setStyle({
-              fillColor: store.maxColor ? store.maxColor : "red",
+              fillColor: store.proColor ? store.proColor : "red",
               fillOpacity: 1,
             });
           });
 
           layer.on("mouseout", function () {
             layer.setStyle({
-              fillColor: store.maxColor ? store.maxColor : "red",
+              fillColor: store.proColor ? store.proColor : "red",
               fillOpacity: 0.3,
             });
             layer.bindPopup(popup).closePopup();
@@ -284,24 +282,24 @@ export default function ProportionalMap(props) {
           ];
 
         // console.log("store.proportional_value", store.proportional_value);
-        // console.log("store.maxColor", store.maxColor);
+        // console.log("store.proColor", store.proColor);
         // for (var i = 0; i < categories.length; i++) {
         div.innerHTML =
           '<i class="circle1" style="background: ' +
-          store.maxColor +
+          store.proColor +
           '"></i>' +
           '<div style="text-align: center;">' +
           categories[0] +
           "</div>" +
           "<br>" +
           '<i class="circle2" style="background: ' +
-          store.maxColor +
+          store.proColor +
           '"></i>' +
           '<div style="text-align: center;">' +
           categories[1] +
           "</div><br>" +
           '<i class="circle3" style="background: ' +
-          store.maxColor +
+          store.proColor +
           '"></i>' +
           '<div style="text-align: center;">' +
           categories[2] +
@@ -358,7 +356,6 @@ export default function ProportionalMap(props) {
         // if (area < minRadiusArray[1]) {
         //   setMinRadiusArray([sigmoidRadius, area]);
         // }
-
       }
     }
   }, [
@@ -366,7 +363,7 @@ export default function ProportionalMap(props) {
     store.label,
     store.key,
     store.parsed_CSV_Data,
-    store.maxColor,
+    store.proColor,
   ]);
 
 

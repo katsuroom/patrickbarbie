@@ -37,6 +37,7 @@ export const StoreActionType = {
   SET_MIN_COLOR: "SET_MIN_COLOR",
   SET_MAX_COLOR: "SET_MAX_COLOR",
   SET_PROPORTIONAL_VALUE: "SET_PROPORTIONAL_VALUE",
+  SET_PROPORTIONAL_COLOR: "SET_PROPORTIONAL_COLOR",
 };
 
 export const CurrentModal = {
@@ -83,6 +84,7 @@ function StoreContextProvider(props) {
     minColor: "#FFFFFF",
     maxColor: "#FF0000",
     proportional_value: [], // proportional symbol map legend data
+    proColor: "#FF0000",
   });
 
   store.viewTypes = View;
@@ -232,6 +234,7 @@ function StoreContextProvider(props) {
           minColor: "#FFFFFF",
           maxColor: "#FF0000", 
           proportional_value: [],
+          proColor: "#FF0000",
 
         });
       }
@@ -253,6 +256,12 @@ function StoreContextProvider(props) {
           proportional_value: payload,
         });
       }
+      case StoreActionType.SET_PROPORTIONAL_COLOR:{
+        return setStore({
+          ...store,
+          proColor: payload,
+        });
+      }
 
       default:
         return store;
@@ -272,6 +281,15 @@ function StoreContextProvider(props) {
 
     storeReducer({
       type: StoreActionType.SET_MAX_COLOR,
+      payload: color,
+    });
+  };
+
+  store.setProColor = function (color) {
+    console.log("setProColor", color);
+
+    storeReducer({
+      type: StoreActionType.SET_PROPORTIONAL_COLOR,
       payload: color,
     });
   };
@@ -707,6 +725,8 @@ function StoreContextProvider(props) {
     store.setCsvLabel(null);
     store.setMinColor("#FFFFFF");
     store.setMaxColor("#FF0000");
+    store.setProColor("#FF0000");
+    store.setProportionalValue([]);
   }
 
   store.isCommunityPage = () => {
