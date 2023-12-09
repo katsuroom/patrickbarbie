@@ -21,7 +21,6 @@ export const StoreActionType = {
   CLOSE_MODAL: "CLOSE_MODAL", // close the current modal
 
   UPLOAD_MAP_FILE: "UPLOAD_MAP_FILE", // upload a map file
-  GET_MAP_FILE: "GET_MAP_FILE",
   EMPTY_RAW_MAP_FILE: "EMPTY_RAW_MAP_FILE",
   SET_CSV_KEY: "SET_CSV_KEY",
   SET_CSV_LABEL: "SET_CSV_LABEL",
@@ -461,20 +460,50 @@ function StoreContextProvider(props) {
     });
   };
 
-  store.deleteMap = function (mapId) {
+  store.deleteMap = function (mapObj) {
+    let mapId = mapObj._id;
     console.log("deleting map: ", mapId);
-    api.deleteMap(mapId).then((response) => {
-      console.log(response);
-      if (response.status === 200) {
-        api.getMapsByUser().then((response) => {
-          console.log(response.data.data);
-          storeReducer({
-            type: StoreActionType.DELETE_MAP,
-            payload: { mapList: response.data.data },
-          });
+    let mapData = mapObj.mapData;
+    let csvData = mapObj.csvData;
+
+    // delete map
+    asyncDeleteMap();
+    async function asyncDeleteMap()
+    {
+      let response = await api.deleteMap(mapId);
+      if (response.status != 200) return;
+
+      console.log("delete map success");
+  
+      // delete map data
+      response = await api.deleteMapData(mapData);
+      if (response.status != 200) return;
+
+      console.log("delete map data success");
+  
+      // delete csv data
+      if(csvData)
+      {
+        response = await api.deleteCSV(csvData);
+        if (response.status != 200) return;
+
+        console.log("delete csv data success");
+
+        response = await api.getMapsByUser();
+        storeReducer({
+          type: StoreActionType.DELETE_MAP,
+          payload: { mapList: response.data.data },
         });
       }
-    });
+      else
+      {
+        response = await api.getMapsByUser();
+        storeReducer({
+          type: StoreActionType.DELETE_MAP,
+          payload: { mapList: response.data.data },
+        });
+      }
+    }
   };
 
   store.getMapsByUser = function (callback) {
@@ -639,19 +668,14 @@ function StoreContextProvider(props) {
   };
 
   store.searchMapsById = async function(id) {
-    let mapObj = await store.getMapById(id);
+    const response = await api.getMapById(id);
+    const mapObj = response.data.data;
+    console.log(mapObj);
     storeReducer({
       type: StoreActionType.SET_MAP_LIST,
       payload: { mapList: [mapObj] },
     });
   }
-
-  store.getMapById = async function (id) {
-    const response = await api.getMapById(id);
-    const mapObj = response.data.data;
-    console.log(mapObj);
-    return mapObj;
-  };
 
   store.getCsvById = async function (id) {
     const response = await api.getCsvById(id);
@@ -693,6 +717,7 @@ function StoreContextProvider(props) {
     }
   };
 
+  // switches between home and community
   store.changeView = function (view) {
     if (view === store.viewTypes.HOME && !auth.loggedIn) {
       return;

@@ -88,13 +88,17 @@ export default function MapCardList() {
             >
               <Stack
                 direction="column"
-                spacing={1}
+                spacing={0.25}
                 sx={{
                   marginLeft: 1,
                   // borderRadius: "16px",
-                  paddingLeft: "16px",
+                  paddingLeft: "8px",
+                  paddingTop: "4px",
+                  paddingBottom: "4px",
+                  paddingRight: "8px",
                   boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                   width: "90%",
+                  
                   backgroundColor:
                     store.currentMapObject &&
                     store.currentMapObject._id === map._id
@@ -116,34 +120,40 @@ export default function MapCardList() {
                   className="map-list-name"
                   primary={map.title}
                 />
+                <Box sx={{
+                  display: "flex",
+                  justifyContent: "space-between"
+                }}>
+                  <ListItemText
+                    primaryTypographyProps={{
+                      fontFamily: "Sen",
+                      fontSize: "0.75rem",
+                      // letterSpacing: "1px",
+                    }}
+                    className="map-list-types"
+                    primary={map.mapType}
+                  />
+
+                  { store.isCommunityPage() ? <ListItemText
+                    primaryTypographyProps={{
+                      fontFamily: "Sen",
+                      fontSize: "0.75rem",
+                      textAlign: "right",
+                      fontWeight: "bold",
+                      letterSpacing: 1,
+                    }}
+                    className="map-list-author"
+                    primary={map.author}
+                  /> : null}
+                </Box>
 
                 <ListItemText
                   primaryTypographyProps={{
                     fontFamily: "Sen",
-                    fontSize: "1rem",
-                    // letterSpacing: "1px",
-                  }}
-                  className="map-list-types"
-                  primary={`Map Type: ${map.mapType}`}
-                />
-
-                { store.isCommunityPage() ? <ListItemText
-                  primaryTypographyProps={{
-                    fontFamily: "Sen",
-                    fontSize: "1rem",
-                    // letterSpacing: "1px",
-                  }}
-                  className="map-list-author"
-                  primary={`Author: ${map.author}`}
-                /> : <></>}
-
-                <ListItemText
-                  primaryTypographyProps={{
-                    fontFamily: "Sen",
-                    fontSize: "1rem",
+                    fontSize: "0.75rem",
                   }}
                   className="map-list-created_time"
-                  primary={`Created At: ${new Date(
+                  primary={`Created: ${new Date(
                     map.createdAt
                   ).toLocaleString("en-US", { timeZone: "America/New_York" })}`}
                 />

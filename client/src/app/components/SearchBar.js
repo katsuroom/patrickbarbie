@@ -68,7 +68,7 @@ export default function SelectVariants() {
           size="small"
           onChange = {handleSearch}
           onKeyUp = {(event)=>{handleKeyPress(event);}}
-          sx={{ m: -2, width: "30vw", marginLeft: "3px", marginTop: 0, marginRight: "20px"}}/>
+          sx={{ m: -2, width: "40vw", marginLeft: "3px", marginTop: 0, marginRight: "20px"}}/>
           <Sort/>
     </div>
   );

@@ -23,17 +23,16 @@ export default function EditScreen() {
   useEffect(() => {
     const func = async () => {
       if (auth.loggedIn) {
+        console.log("change view to home");
+        console.log("auth.loggedIn", auth.loggedIn)
         await store.changeView(store.viewTypes.HOME);
       } else {
+        console.log("change view to community");
         await store.changeView(store.viewTypes.COMMUNITY);
       }
 
-      await store.getMapList();
-
-      if (!store.mapList.length) {
-        router.push("/main");
-      }
-    };
+      store.getMapList();
+    }
     func();
   }, []);
 
@@ -70,13 +69,16 @@ export default function EditScreen() {
       >
         <Stack
           direction="column"
-          spacing={1}
+          spacing={0.5}
           sx={{
             marginLeft: 1,
             paddingLeft: "16px",
+            paddingTop: "8px",
+            paddingBottom: "8px",
+            paddingRight: "16px",
             boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
             width: "100%",
-            borderRadius: "16px",
+            borderRadius: "8px",
             backgroundColor:
               store.currentMapObject && store.currentMapObject._id === map._id
                 ? "#FDF4F3"
@@ -99,34 +101,40 @@ export default function EditScreen() {
             primary={map.title}
           />
 
-          <ListItemText
-            primaryTypographyProps={{
-              fontFamily: "Sen",
-              fontSize: "1.25rem",
-            }}
-            className="map-list-types"
-            primary={`Map Type: ${map.mapType}`}
-          />
-
-          {store.isCommunityPage() ? (
+          <Box sx={{
+            display: "flex",
+            justifyContent: "space-between"
+          }}>
             <ListItemText
               primaryTypographyProps={{
                 fontFamily: "Sen",
-                fontSize: "1.25rem",
+                fontSize: "0.75rem"
               }}
-              className="map-list-author"
-              primary={`Author: ${map.author}`}
+              className="map-list-types"
+              primary={map.mapType}
             />
-          ) : (
-            <></>
-          )}
+
+            {store.isCommunityPage() ? (
+              <ListItemText
+                primaryTypographyProps={{
+                  fontFamily: "Sen",
+                  fontSize: "0.75rem",
+                  textAlign: "right",
+                  fontWeight: "bold",
+                  letterSpacing: 1,
+                }}
+                className="map-list-author"
+                primary={`${map.author}`}
+              />
+            ) : null}
+          </Box>
 
           <Divider sx={{ marginY: 1 }} />
 
           <ListItemText
             primaryTypographyProps={{
               fontFamily: "Sen",
-              fontSize: "1rem",
+              fontSize: "0.75rem",
             }}
             className="map-list-likes"
             primary={`Likes: ${map.likedUsers.length}`}
@@ -135,7 +143,7 @@ export default function EditScreen() {
           <ListItemText
             primaryTypographyProps={{
               fontFamily: "Sen",
-              fontSize: "1rem",
+              fontSize: "0.75rem",
             }}
             className="map-list-views"
             primary={`Views: ${map.views}`}
@@ -146,10 +154,10 @@ export default function EditScreen() {
           <ListItemText
             primaryTypographyProps={{
               fontFamily: "Sen",
-              fontSize: "1rem",
+              fontSize: "0.75rem",
             }}
             className="map-list-created_time"
-            primary={`Created At: ${new Date(map.createdAt).toLocaleString(
+            primary={`Created: ${new Date(map.createdAt).toLocaleString(
               "en-US",
               { timeZone: "America/New_York" }
             )}`}
@@ -158,7 +166,7 @@ export default function EditScreen() {
           <ListItemText
             primaryTypographyProps={{
               fontFamily: "Sen",
-              fontSize: "1rem",
+              fontSize: "0.75rem",
             }}
             className="map-list-last-modified"
             primary={`Last Modified: ${new Date(map.updatedAt).toLocaleString(
