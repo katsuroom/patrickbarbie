@@ -13,11 +13,13 @@ router.get('/map/:id', MapController.getMapById)
 router.get('/published-maps', MapController.getPublishedMaps)
 
 router.get('/mapData/:id', MapController.getMapDataById)
+router.delete('/mapData/:id', MapController.deleteMapData)
 
 router.get('/mapFile', MapController.sendMapFile);
 router.post('/csv', MapController.createCSV);
 router.get('/csv/:id', MapController.getCSVById);
 router.put('/csv/:id', MapController.updateCSV);
+router.delete('/csv/:id', MapController.deleteCSV);
 
 
 

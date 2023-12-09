@@ -5,6 +5,7 @@ import { StoreContextProvider } from '@/store';
 import TitleBar from './components/TitleBar';
 import StatusBar from './components/StatusBar';
 import Script from 'next/script';
+import "./app.css";
 
 const inter = Inter({ subsets: ['latin'] })
 

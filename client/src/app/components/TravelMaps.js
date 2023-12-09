@@ -1,20 +1,26 @@
-"use client"
-
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import './travelmap.css';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
 
-// import endIconUrl from './img/red.png';
-// import startIconUrl from './img/blue.png';
-import StoreContext from "@/store";
+// import endIconUrl from './red.png';
+// import startIconUrl from './blue.png';
+import StoreContext, { CurrentModal } from "@/store";
+import 'leaflet-contextmenu';
+import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
+import 'leaflet-control-geocoder';
+import Button from "@mui/joy/Button";
+import MUISaveChanges from "../modals/MUISaveChanges";
+import MUIExit from "../modals/MUIExitModal";
+import 'leaflet-control-geocoder/dist/Control.Geocoder.css';
 
 
 const TravelMap = (props) => {
     // const [start, setStart] = useState('');
     // const [end, setEnd] = useState('');
     const mapRef = useRef(null);
+
     const routeControlRef = useRef(null);
     const [geoJsonData, setGeoJsonData] = useState(null);
     const { store } = useContext(StoreContext);
@@ -23,13 +29,23 @@ const TravelMap = (props) => {
     const [buttonAdded, setButtonAdded] = useState(false);
     const [loadScripts, setLoadScripts] = useState(false);
 
+    const startHere = (e) => {
+        if (routeControlRef.current) {
+            routeControlRef.current.spliceWaypoints(0, 1, e.latlng);
+        }
+    };
+
+    const goHere = (e) => {
+        if (routeControlRef.current) {
+            routeControlRef.current.spliceWaypoints(routeControlRef.current.getWaypoints().length - 1, 1, e.latlng);
+        }
+    };
 
 
-
-    const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
+    const [mapHeight, setMapHeight] = useState(window.innerWidth / 3);
     useEffect(() => {
         const resizeListener = () => {
-            setMapHeight(window.innerHeight / 2);
+            setMapHeight(window.innerWidth / 3);
         };
         window.addEventListener('resize', resizeListener);
         return () => {
@@ -44,18 +60,56 @@ const TravelMap = (props) => {
     }, [store.rawMapFile]);
 
     useEffect(() => {
-        console.log('travel map + ' + geoJsonData )
+        const loadScript = (src) => {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = () => resolve(script);
+                script.onerror = () => reject(new Error(`Script load error for ${src}`));
+                document.body.appendChild(script);
+            });
+        };
+
+        Promise.all([
+            loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+            loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
+        ]).then(() => {
+            setLoadScripts(true);
+        }).catch(error => console.error(error));
+    }, []);
+
+
+    useEffect(() => {
+        console.log('travel map + ' + geoJsonData)
         if (!loadScripts || !geoJsonData) {
             return;
         }
 
         if (!mapRef.current) {
-            mapRef.current = L.map("map-display").setView([0, 0], 2);
-            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
-                mapRef.current
-            );
+            var mapLayer = window.MQ.mapLayer();
+            mapRef.current = L.map('map-display', {
+                layers: [mapLayer],
+                center: [40.731701, -73.993411],
+                zoom: 12,
+                contextmenu: true,
+                contextmenuWidth: 140,
+                contextmenuItems: [{
+                    text: 'Start from here',
+                    callback: startHere
+                }, {
+                    text: 'Go to here',
+                    callback: goHere
+                }]
+            });
         }
-        console.log('L.routing + in mapref + ' + L.routing)
+
+        L.control.layers({
+            'Map': mapLayer,
+            'Hybrid': window.MQ.hybridLayer(),
+            'Satellite': window.MQ.satelliteLayer(),
+            'Dark': window.MQ.darkLayer(),
+            'Light': window.MQ.lightLayer()
+        }).addTo(mapRef.current);
 
         if (geoJsonLayerRef.current) {
             mapRef.current.removeLayer(geoJsonLayerRef.current);
@@ -100,7 +154,7 @@ const TravelMap = (props) => {
                 console.log("geoJsonLayerRef.current is undefined or empty");
             }
         }
-
+        runDirection()
         if (!buttonAdded) {
             const saveImageButton = L.control({ position: "bottomleft" });
             saveImageButton.onAdd = function () {
@@ -116,89 +170,20 @@ const TravelMap = (props) => {
                 .addEventListener("click", props.openModal);
             setButtonAdded(true);
         }
-        if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
-            return;
-        }
-        
-        setLoadScripts(true)
 
-        // runDirection(store.parsed_CSV_Data[store.label][0], store.parsed_CSV_Data[store.key][0]);
-
-    }, [geoJsonData, loadScripts, store.label, store.key, store.parsed_CSV_Data]);
+        // L.Routing.control ({
+        //     geocoder: L.Control.Geocoder.nominatim()
+        // }).addTo(mapRef.current)
 
 
-    useEffect(() => {
-        if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
-            return;
-        }
+    }, [geoJsonData]);
 
-        for (let i = 0; i < store.parsed_CSV_Data[store.label].length; i++) {
+    const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
+    const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
-            runDirection(store.parsed_CSV_Data[store.label][i], store.parsed_CSV_Data[store.key][i]);
-        }
-    }, [store.label, store.key, store.parsed_CSV_Data])
+    const runDirection = async () => {
 
-
-    // useEffect(() => {
-    //     const loadScript = (src) => {
-    //         return new Promise((resolve, reject) => {
-    //             const script = document.createElement('script');
-    //             script.src = src;
-    //             script.onload = () => resolve(script);
-    //             script.onerror = () => reject(new Error(`Script load error for ${src}`));
-    //             document.body.appendChild(script);
-    //         });
-    //     };
-
-    //     if (mapRef.current) {
-    //         mapRef.current.remove();
-    //     }
-
-    //     loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
-    //         .then(() => {
-    //             loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
-    //                 .then(() => {
-    //                     console.log('L.Routing' + L.Routing)
-    //                     mapRef.current = L.map('map-display', {
-    //                         center: [35.791188, -78.636755],
-    //                         zoom: 12,
-    //                         layers: window.MQ.mapLayer()
-    //                     });
-    //                 })
-    //                 .catch(error => console.error(error));
-    //         })
-    //         .catch(error => console.error(error));
-
-    //     // return () => {
-    //     //     if (mapRef.current) {
-    //     //         mapRef.current.remove();
-    //     //     }
-    //     // };
-    // }, [loadScripts]);
-
-    useEffect(() => {
-        const loadScript = (src) => {
-            return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = src;
-                script.onload = () => resolve(script);
-                script.onerror = () => reject(new Error(`Script load error for ${src}`));
-                document.body.appendChild(script);
-            });
-        };
-
-        Promise.all([
-            loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
-            loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
-        ]).then(() => {
-            setLoadScripts(true);
-        }).catch(error => console.error(error));
-    }, []);
-
-
-
-
-    const runDirection = async (start, end) => {
+        // const runDirection = async (start, end) => {
         const geocode = async (address) => {
             const url = `https://www.mapquestapi.com/geocoding/v1/address?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC&location=${encodeURIComponent(address)}`;
             const response = await fetch(url);
@@ -208,23 +193,26 @@ const TravelMap = (props) => {
         };
 
         try {
-            const startPoint = await geocode(start);
-            const endPoint = await geocode(end);
+            // const startPoint = await geocode(start);
+            // const endPoint = await geocode(end);
 
             const startIcon = L.icon({
-                // iconUrl: startIconUrl,
                 iconUrl: "/blue.png",
                 iconSize: [25, 41],
                 iconAnchor: [12, 41]
             });
 
+            const inBetweenIcon = L.icon({
+                iconUrl: "/gray.png",
+                iconSize: [25, 41],
+                iconAnchor: [12, 41]
+            });
+
             const endIcon = L.icon({
-                // iconUrl: endIconUrl,
                 iconUrl: "/red.png",
                 iconSize: [25, 41],
                 iconAnchor: [12, 41]
             });
-            console.log('endIcon' + endIcon)
 
             // if (routeControlRef.current) {
             //     mapRef.current.removeControl(routeControlRef.current);
@@ -232,21 +220,49 @@ const TravelMap = (props) => {
 
             const routingControl = L.Routing.control({
                 waypoints: [
-                    L.latLng(startPoint.lat, startPoint.lng),
-                    L.latLng(endPoint.lat, endPoint.lng)
+                    // L.latLng(12.972442, 77.580643),
+                    // L.latLng(31.104605, 77.173424)
+                    // L.latLng(startPoint.lat, startPoint.lng),
+                    // L.latLng(endPoint.lat, endPoint.lng)
                 ],
                 routeWhileDragging: true,
+                // showAlternatives: true,
+                // altLineOptions: {
+                //     styles: [
+                //         {color: "black", opacity: 0.15, weight: 9},
+                //         {color: "white", opacity: 0.8, weight: 9},
+                //     ]
+                // },
                 createMarker: function (i, waypoint, n) {
-                    const markerIcon = i === 0 ? startIcon : endIcon;
-                    return L.marker(waypoint.latLng, { icon: markerIcon });
-                }
-            }).addTo(mapRef.current);
+                    // const markerIcon = i === 0 ? startIcon : endIcon;
+                    const markerIcon = i === 0 ? startIcon : (i > 0 && i < n - 1) ? inBetweenIcon : endIcon;
+                    return L.marker(waypoint.latLng, { draggable: true, icon: markerIcon });
+                },
+                geocoder: L.Control.Geocoder.nominatim(),
+            })
+            // .on('routingstart', showSpinner)
+            // .on('routesfound routingerror', hideSpinner)
+            .addTo(mapRef.current);
+
             routeControlRef.current = routingControl;
 
+            // mapRef.current.forEach((routingControl) => {
+            //     mapRef.current.removeLayer(routingControl);
+            // });
         } catch (error) {
             console.error('Error in geocoding or routing:', error);
         }
     };
+
+    // var spinner = true;
+    // const showSpinner = ()=>{
+    //     if(spinner){
+    //         document.getElementById('loader').style.display = "block";
+    //     }
+    // }
+    // const hideSpinner = ()=>{
+    //         document.getElementById('loader').style.display = "none";
+    // }
 
 
     const submitForm = (event) => {
@@ -267,6 +283,16 @@ const TravelMap = (props) => {
                 </form>
             </div> */}
             <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div>
+            {/* <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div> */}
+            <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div>
+            <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
+                EXIT
+            </Button>
+            <Button variant="solid" className="save" sx={{ margin: 1 }} onClick={openSaveModal}>
+                SAVE
+            </Button>
+            <MUISaveChanges />
+            <MUIExit />
         </div>
 
     );

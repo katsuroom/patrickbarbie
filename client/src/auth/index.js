@@ -142,7 +142,7 @@ function AuthContextProvider(props) {
               user: response.data.user
             },
           });
-          router.push("/main");
+          router.push("/mapcards");
         } else {
           console.log("Login failed:", response);
           authReducer({

@@ -64,11 +64,7 @@ export default function PTravelMap() {
     let tfs = [];
     for (let idx in store.parsed_CSV_Data[store.key]) {
       tfs.push(
-        // <input
-        //   id={"search-" + idx}
-        //   defaultValue={store.parsed_CSV_Data[store.key][idx]}
-        //   style={{margin: "8px", width: "100px", height:"30px"}}
-        // />
+
         <TextField
           id={"tf-" + idx}
           defaultValue={store.parsed_CSV_Data[store.key][idx]}

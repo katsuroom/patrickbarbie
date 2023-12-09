@@ -3,11 +3,15 @@
 import React, { createContext, useState, useContext } from "react";
 import AuthContext from "../auth";
 import { usePathname } from "next/navigation";
+import { useRouter } from 'next/navigation';
+
 
 import api from "./store-request-api";
 
 const geobuf = require("geobuf");
 const Pbf = require("pbf");
+
+
 
 const StoreContext = createContext();
 
@@ -17,7 +21,6 @@ export const StoreActionType = {
   CLOSE_MODAL: "CLOSE_MODAL", // close the current modal
 
   UPLOAD_MAP_FILE: "UPLOAD_MAP_FILE", // upload a map file
-  GET_MAP_FILE: "GET_MAP_FILE",
   EMPTY_RAW_MAP_FILE: "EMPTY_RAW_MAP_FILE",
   SET_CSV_KEY: "SET_CSV_KEY",
   SET_CSV_LABEL: "SET_CSV_LABEL",
@@ -67,6 +70,7 @@ export const View = {
 function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
   const pathname = usePathname();
+  const router = useRouter();
 
   const [store, setStore] = useState({
     currentModal: CurrentModal.NONE,  // the currently open modal
@@ -81,10 +85,10 @@ function StoreContextProvider(props) {
     currentMapObject: null,
     mapList: [], // loaded list of maps (idNamePairs)
     currentView: View.COMMUNITY,
-    minColor: "#FFFFFF",
-    maxColor: "#FF0000",
+    minColor: null,
+    maxColor: null,
     proportional_value: [], // proportional symbol map legend data
-    proColor: "#FF0000",
+    proColor: null,
   });
 
   store.viewTypes = View;
@@ -230,11 +234,7 @@ function StoreContextProvider(props) {
           ...store,
           currentMapObject: payload.mapObject,
           mapList: payload.mapList || store.mapList,
-          currentModal: CurrentModal.NONE,
-          minColor: "#FFFFFF",
-          maxColor: "#FF0000", 
-          proportional_value: [],
-          proColor: "#FF0000",
+          currentModal: CurrentModal.NONE
 
         });
       }
@@ -319,6 +319,7 @@ function StoreContextProvider(props) {
     });
   };
 
+
   // create map using uploaded file
   store.createMap = function (title, mapType) {
     console.log("in create map");
@@ -381,6 +382,10 @@ function StoreContextProvider(props) {
       let res = await api.getMapDataById(mapDataId);
       const rawMapFile = geobuf.decode(new Pbf(res.data.data.mapData.data));
       
+      store.currentMapObject = selected;
+      store.rawMapFile = rawMapFile;
+
+
       storeReducer({
         type: StoreActionType.LOAD_MAP,
         payload: {
@@ -401,7 +406,7 @@ function StoreContextProvider(props) {
 
   // fork map
   store.forkMap = function (maptitle) {
-    let mapData = store.currentMapObject.mapData;
+    let mapData = geobuf.encode(store.rawMapFile, new Pbf());
     console.log("mapData: ", mapData, auth.user.username, maptitle, store.currentMapObject.mapType);
     asyncForkMap();
     async function asyncForkMap() {
@@ -450,6 +455,8 @@ function StoreContextProvider(props) {
     let index = list.findIndex(map => map._id == mapObject._id);
     list[index] = mapObject;
 
+    store.currentMapObject = mapObject;
+
     storeReducer({
       type: StoreActionType.CHANGE_CURRENT_MAP_OBJ,
       payload: {
@@ -478,20 +485,50 @@ function StoreContextProvider(props) {
     });
   };
 
-  store.deleteMap = function (mapId) {
+  store.deleteMap = function (mapObj) {
+    let mapId = mapObj._id;
     console.log("deleting map: ", mapId);
-    api.deleteMap(mapId).then((response) => {
-      console.log(response);
-      if (response.status === 200) {
-        api.getMapsByUser().then((response) => {
-          console.log(response.data.data);
-          storeReducer({
-            type: StoreActionType.DELETE_MAP,
-            payload: { mapList: response.data.data },
-          });
+    let mapData = mapObj.mapData;
+    let csvData = mapObj.csvData;
+
+    // delete map
+    asyncDeleteMap();
+    async function asyncDeleteMap()
+    {
+      let response = await api.deleteMap(mapId);
+      if (response.status != 200) return;
+
+      console.log("delete map success");
+  
+      // delete map data
+      response = await api.deleteMapData(mapData);
+      if (response.status != 200) return;
+
+      console.log("delete map data success");
+  
+      // delete csv data
+      if(csvData)
+      {
+        response = await api.deleteCSV(csvData);
+        if (response.status != 200) return;
+
+        console.log("delete csv data success");
+
+        response = await api.getMapsByUser();
+        storeReducer({
+          type: StoreActionType.DELETE_MAP,
+          payload: { mapList: response.data.data },
         });
       }
-    });
+      else
+      {
+        response = await api.getMapsByUser();
+        storeReducer({
+          type: StoreActionType.DELETE_MAP,
+          payload: { mapList: response.data.data },
+        });
+      }
+    }
   };
 
   store.getMapsByUser = function (callback) {
@@ -604,10 +641,10 @@ function StoreContextProvider(props) {
   };
 
   // fetches map list based on current view
-  store.getMapList = function () {
+  store.getMapList = async function () {
     if (store.isHomePage())
     {
-      api.getMapsByUser().then((response) => {
+      await api.getMapsByUser().then((response) => {
         console.log("fetched user maps", response.data.data);
   
         let currentMapObj = null;
@@ -620,6 +657,7 @@ function StoreContextProvider(props) {
           console.log("found same map", currentMapObj);
         }
   
+        store.mapList = response.data.data;
         storeReducer({
           type: StoreActionType.LOAD_MAP_LIST,
           payload: {
@@ -631,7 +669,7 @@ function StoreContextProvider(props) {
     }
     else
     {
-      api.getPublishedMaps().then((response) => {
+      await api.getPublishedMaps().then((response) => {
         console.log("fetched published maps", response.data.data);
   
         let currentMapObj = null;
@@ -641,6 +679,8 @@ function StoreContextProvider(props) {
             (map) => map._id === store.currentMapObject._id
           );
   
+        store.mapList = response.data.data;
+        
         storeReducer({
           type: StoreActionType.LOAD_MAP_LIST,
           payload: {
@@ -653,19 +693,14 @@ function StoreContextProvider(props) {
   };
 
   store.searchMapsById = async function(id) {
-    let mapObj = await store.getMapById(id);
+    const response = await api.getMapById(id);
+    const mapObj = response.data.data;
+    console.log(mapObj);
     storeReducer({
       type: StoreActionType.SET_MAP_LIST,
       payload: { mapList: [mapObj] },
     });
   }
-
-  store.getMapById = async function (id) {
-    const response = await api.getMapById(id);
-    const mapObj = response.data.data;
-    console.log(mapObj);
-    return mapObj;
-  };
 
   store.getCsvById = async function (id) {
     const response = await api.getCsvById(id);
@@ -707,27 +742,38 @@ function StoreContextProvider(props) {
     }
   };
 
+  // switches between home and community
   store.changeView = function (view) {
     if (view === store.viewTypes.HOME && !auth.loggedIn) {
       return;
     }
     console.log("changing view to", view);
+
+    if (store.currentView === view){
+      return;
+    }
     store.currentView = view;
+
+    
     storeReducer({
       type: StoreActionType.CHANGE_VIEW,
       payload: { view },
     });
+
+
+
   };
  
   store.clearCsv = function() {
     store.setParsedCsvData(null);
     store.setCsvKey(null);
     store.setCsvLabel(null);
-    store.setMinColor("#FFFFFF");
-    store.setMaxColor("#FF0000");
-    store.setProColor("#FF0000");
+    store.setMinColor(null);
+    store.setMaxColor(null);
+    store.setProColor(null);
     store.setProportionalValue([]);
   }
+  
 
   store.isCommunityPage = () => {
     return store.currentView === store.viewTypes.COMMUNITY;
@@ -736,7 +782,7 @@ function StoreContextProvider(props) {
     return store.currentView === store.viewTypes.HOME;
   };
   store.showSearchBar = () => {
-    return pathname == "/main";
+    return pathname == "/main" || pathname == "/mapcards";
   }
 
   store.setProportionalValue = function (value) {

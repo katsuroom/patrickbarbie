@@ -8,6 +8,8 @@ const auth = require("../auth");
 const path = require("path");
 const fs = require("fs");
 
+const mongoose = require('mongoose');
+
 const extractUserIdFromToken = (token) => {
   try {
     const isCustomAuth = token.length < 500;
@@ -77,17 +79,6 @@ createMap = async (req, res) => {
 deleteMap = (req, res) => {
   console.log("start delete Map");
 
-  // if (auth.verifyUser(req) === null) {
-  //   return res.status(401).json({
-  //     loggedIn: false,
-  //     user: null,
-  //     errorMessage: "Unauthorized",
-  //   });
-  // }
-
-  console.log("delete " + req.params.id);
-  console.log("req: ", req.userId);
-
   User.findOne({ _id: req.userId })
     .then((user) => {
       console.log("user found, and try to delete map");
@@ -138,6 +129,54 @@ deleteMap = (req, res) => {
       });
     });
 };
+
+deleteMapData = (req, res) => {
+  MapData.findOneAndDelete({ _id: req.params.id })
+  .then((mapData) => {
+    if (!mapData) {
+      return res.status(404).json({
+        success: false,
+        error: "Map Data not found",
+      });
+    }
+  })
+  .then(() => {
+    return res.status(200).json({
+      success: true,
+      message: "Map data deleted",
+    });
+  })
+  .catch((error) => {
+    return res.status(500).json({
+      success: false,
+      error: "Error deleting map data",
+    });
+  });
+}
+
+deleteCSV = (req, res) => {
+  CSV.findOneAndDelete({ _id: req.params.id })
+  .then((csv) => {
+    if (!csv) {
+      return res.status(404).json({
+        success: false,
+        error: "CSV not found",
+      });
+    }
+  })
+  .then(() => {
+    return res.status(200).json({
+      success: true,
+      message: "CSV deleted",
+    });
+  })
+  .catch((error) => {
+    return res.status(500).json({
+      success: false,
+      error: "Error deleting CSV",
+    });
+  });
+}
 
 updateMap = (req, res) => {
   console.log("start update Map");
@@ -319,13 +358,8 @@ getPublishedMaps = (req, res) => {
     });
 };
 
-forkMap = (req, res) => {
+forkMap = async (req, res) => {
   console.log("start create Map");
-  // var userId;
-  // const token = req.headers.authorization.split(" ")[1];
-  // userId = extractUserIdFromToken(token);
-
-  console.log("userId: " + req.userId);
 
   const body = req.body;
   if (!body) {
@@ -335,14 +369,18 @@ forkMap = (req, res) => {
     });
   }
 
-  // Clone map data
-  const mapDataId = body.mapData;
+  // Save map data
+  const mapData = new MapData({
+    mapData: Buffer.from(Object.values(body.mapData))
+  });
+
+  const savedMapData = await mapData.save();
 
   // Create the Map instance
-  const map = new Map(body);
+  // map.mapData is currently in json form, must be changed to id string later
+  let map = new Map(body);
+  map.mapData = savedMapData.id;
 
-  //   const map = new Map(body);
-  //   console.log("map: " + JSON.stringify(map));
   if (!map) {
     return res.status(403).json({ success: false, error: err });
   }
@@ -516,12 +554,16 @@ module.exports = {
   deleteMap,
   updateMap,
   getMapById,
-  getMapDataById,
-  getMapsByUser,
   getPublishedMaps,
   forkMap,
   sendMapFile,
+
+  getMapDataById,
+  deleteMapData,
+  getMapsByUser,
+
   createCSV,
   getCSVById,
   updateCSV,
+  deleteCSV
 };

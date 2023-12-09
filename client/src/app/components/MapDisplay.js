@@ -7,12 +7,10 @@ import { useState } from "react";
 
 import dynamic from "next/dynamic";
 
-const GeoJSONDisplay = dynamic(() => import('./HeatMap'));
+const Heatmap = dynamic(() => import('./HeatMap'));
 const ProportionalMap = dynamic(() => import('./ProportionalMap'));
 const TravelMap = dynamic(() => import("./TravelMaps"));
 import "leaflet/dist/leaflet.css";
-// import TravelMap from "./TravelMaps";
-
 
 
 export default function MapDisplay() {
@@ -59,7 +57,7 @@ export default function MapDisplay() {
             />
           ) : store.mapType === store.mapTypes.HEATMAP ||
             store.currentMapObject.mapType === store.mapTypes.HEATMAP ? (
-            <GeoJSONDisplay
+            <Heatmap
               file={store.rawMapFile}
               openModal={() => {
                 setDownloadModalOpen(true);
@@ -72,7 +70,7 @@ export default function MapDisplay() {
             />
           ) : store.mapType === store.mapTypes.POLITICAL_MAP ||
             store.currentMapObject.mapType === store.mapTypes.POLITICAL_MAP ? (
-            <GeoJSONDisplay
+            <Heatmap
               file={store.rawMapFile}
               openModal={() => {
                 setDownloadModalOpen(true);
@@ -86,7 +84,7 @@ export default function MapDisplay() {
           ) : store.mapType === store.mapTypes.DOT_DISTRIBUTION_MAP ||
             store.currentMapObject.mapType ===
               store.mapTypes.DOT_DISTRIBUTION_MAP ? (
-            <GeoJSONDisplay
+            <Heatmap
               file={store.rawMapFile}
               openModal={() => {
                 setDownloadModalOpen(true);

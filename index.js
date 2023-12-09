@@ -54,12 +54,20 @@ if(process.env.NODE_ENV === "production")
         res.sendFile(path.join(__dirname, "client", "out", "recovery.html"));
     });
 
+    app.get("/password-recovery", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "out", "password-recovery.html"));
+    });
+
+    app.get("/mapcards", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "out", "mapcards.html"));
+    });
+
     app.get("/main", (req, res) => {
         res.sendFile(path.join(__dirname, "client", "out", "main.html"));
     });
 
-    app.get("/password-recovery", (req, res) => {
-        res.sendFile(path.join(__dirname, "client", "out", "password-recovery.html"));
+    app.get("/edit", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "out", "edit.html"));
     });
 }
 

@@ -134,7 +134,6 @@ const getMapDataById = (id) => {
 
 const deleteMap = (mapId) => {
     console.log("in api.deleteMap");
-    console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
     let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
     return fetch(`${baseURL}/map/${mapId}`, {
         method: "DELETE",
@@ -150,7 +149,42 @@ const deleteMap = (mapId) => {
             return { status: response.status, data };
         });
     });
+};
 
+const deleteMapData = (id) => {
+  let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
+  return fetch(`${baseURL}/mapData/${id}`, {
+      method: "DELETE",
+      headers: {
+      "Content-Type": "application/json",
+      Authorization: token,
+      },
+      }).then((response) => {
+      // Parse JSON and include status in the resolved value
+      console.log(response);
+      return response.json().then((data) => {
+          console.log(data);
+          return { status: response.status, data };
+      });
+  });
+};
+
+const deleteCSV = (id) => {
+  let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
+  return fetch(`${baseURL}/csv/${id}`, {
+      method: "DELETE",
+      headers: {
+      "Content-Type": "application/json",
+      Authorization: token,
+      },
+      }).then((response) => {
+      // Parse JSON and include status in the resolved value
+      console.log(response);
+      return response.json().then((data) => {
+          console.log(data);
+          return { status: response.status, data };
+      });
+  });
 };
 
 const updateMap = (mapObject) =>{
@@ -290,6 +324,8 @@ export default {
   createMap,
   getMapsByUser,
   deleteMap,
+  deleteMapData,
+  deleteCSV,
   getMainScreenMap,
   updateMap,
   forkMap,

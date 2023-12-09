@@ -38,7 +38,7 @@ export default function TitleBar() {
       <div
         style={{ backgroundColor: "#fce8f1", height: "9vh" }}
       >
-        <Link href={auth.loggedIn ? "/main" : "/"}>
+        <Link href={auth.loggedIn ? "/mapcards" : "/"}>
           <img
             src="/patrick-barbie.png"
             height="125%"
@@ -55,7 +55,7 @@ export default function TitleBar() {
             sx={{
               position: "absolute",
               top: "1.5%",
-              left: "10vw",
+              left: "8vw",
               fontSize: "30pt",
               color:
                 store.currentView === store.viewTypes.HOME
@@ -74,7 +74,7 @@ export default function TitleBar() {
             sx={{
               position: "absolute",
               top: "1.5%",
-              left: "15vw",
+              left: "13vw",
               fontSize: "30pt",
               color:
                 store.currentView === store.viewTypes.COMMUNITY
@@ -89,7 +89,7 @@ export default function TitleBar() {
               store.getMapList();
             }}
           />
-        <Box sx={{ position: "absolute", top: "1%", left: "30%" }}>
+        <Box sx={{ position: "absolute", top: "1%", left: "23vw" }}>
           <SearchBar />
         </Box>
         </div>
