@@ -1,14 +1,13 @@
-"use client"
-
 import React, { useState, useContext } from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
+import CircularProgress from "@mui/material/CircularProgress";
 import "./MUIPublishMap.css";
 import { useRouter } from "next/navigation";
-import { TextField } from "@mui/material";
 
 import StoreContext from "@/store";
 import { CurrentModal, MapType } from "@/store";
@@ -18,8 +17,8 @@ export default function MUICreateMap() {
   const { store } = useContext(StoreContext);
 
   const [projectName, setProjectName] = useState("");
-  // const setMapType = store.setMapType
   const [mapType, setMapType] = useState(MapType.POLITICAL_MAP);
+  const [creatingMap, setCreatingMap] = useState(false);
 
   const buttonStyle = {
     mt: 1,
@@ -40,17 +39,23 @@ export default function MUICreateMap() {
   };
 
   const handleClose = () => {
-    console.log("onClose");
     store.emptyRawMapFile();
     store.closeModal();
   };
 
-  const handleCreateMap = () => {
+  const handleCreateMap = async () => {
+    setCreatingMap(true);
+  
+    // Simulate an asynchronous delay (remove this in a real-world scenario)
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  
     store.mapType = mapType;
-    store.createMap(projectName, mapType);
+    store.clearCsv();
+    await store.createMap(projectName, mapType);
     router.push("/edit");
-    console.log("mapType : " + mapType);
+    setCreatingMap(false);
   };
+  
 
   const handleInputChange = (e) => {
     setProjectName(e.target.value);
@@ -106,15 +111,17 @@ export default function MUICreateMap() {
               >
                 Cancel
               </Button>
-              <Button
-                onClick={handleCreateMap}
-                variant="contained"
-                sx={buttonStyle}
-                // disabled={mapType != MapType.POLITICAL_MAP}
-                // disabled={mapType !== MapType.POLITICAL_MAP && mapType !== MapType.HEATMAP}
-              >
-                Create
-              </Button>
+              {creatingMap ? (
+                <CircularProgress style={{ marginTop: "20px" }} size={30} />
+              ) : (
+                <Button
+                  onClick={handleCreateMap}
+                  variant="contained"
+                  sx={buttonStyle}
+                >
+                  Create
+                </Button>
+              )}
             </div>
           </div>
         </Box>

@@ -32,9 +32,7 @@ export default function MainScreen() {
     const func = async () => {
       // clear CSV fields
 
-      store.setParsedCsvData(null);
-      store.setCsvKey(null);
-      store.setCsvLabel(null);
+      store.clearCsv();
 
       if (store.currentMapObject && store.currentMapObject.csvData) {
         const csvObj = await store.getCsvById(store.currentMapObject.csvData);
