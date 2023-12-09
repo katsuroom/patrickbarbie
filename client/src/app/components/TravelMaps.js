@@ -29,15 +29,37 @@ const TravelMap = (props) => {
     const [buttonAdded, setButtonAdded] = useState(false);
     const [loadScripts, setLoadScripts] = useState(false);
 
+    // const startHere = (e) => {
+    //     if (routeControlRef.current) {
+    //         routeControlRef.current.spliceWaypoints(0, 1, e.latlng);
+    //     }
+    // };
     const startHere = (e) => {
-        if (routeControlRef.current) {
-            routeControlRef.current.spliceWaypoints(0, 1, e.latlng);
+        if (routeControlRef.current && geoJsonLayerRef.current) {
+            const bounds = geoJsonLayerRef.current.getBounds();
+            if (bounds.contains(e.latlng)) {
+                routeControlRef.current.spliceWaypoints(0, 1, e.latlng);
+            } else {
+                window.alert("Cannot set the start point outside the designated area.");
+            }
         }
     };
 
+
+    // const goHere = (e) => {
+    //     if (routeControlRef.current) {
+    //         routeControlRef.current.spliceWaypoints(routeControlRef.current.getWaypoints().length - 1, 1, e.latlng);
+    //     }
+    // };
+
     const goHere = (e) => {
-        if (routeControlRef.current) {
-            routeControlRef.current.spliceWaypoints(routeControlRef.current.getWaypoints().length - 1, 1, e.latlng);
+        if (routeControlRef.current && geoJsonLayerRef.current) {
+            const bounds = geoJsonLayerRef.current.getBounds();
+            if (bounds.contains(e.latlng)) {
+                routeControlRef.current.spliceWaypoints(routeControlRef.current.getWaypoints().length - 1, 1, e.latlng);
+            } else {
+                window.alert("Cannot set the end point outside the designated area.");
+            }
         }
     };
 
