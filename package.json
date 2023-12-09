@@ -81,6 +81,7 @@
     "leaflet.heat": "^0.2.0",
     "pbf": "^3.2.1",
     "react": "^18.2.0",
+    "react-color": "^2.19.3",
     "react-csv-reader": "^4.0.0",
     "react-papaparse": "^4.4.0",
     "react-router-dom": "^5.2.0",
