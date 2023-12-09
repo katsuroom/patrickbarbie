@@ -52,21 +52,11 @@ export default function Heatmap(props) {
   let downloadComplete = props.downloadComplete;
   const [legendVisible, setLegendVisible] = useState(true);
   const legendRef = useRef(null);
+  const [isColorInit, setIsColorInit] = useState(false);
 
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
 
-  useEffect(() => {
-    const resizeListener = () => {
-      setMapHeight(window.innerHeight / 2);
-    };
-    window.addEventListener("resize", resizeListener);
-    return () => {
-      window.removeEventListener("resize", resizeListener);
-    };
-  }, []);
-
-  useEffect(() => {
-    // const func = async () => {
+  const initColor = () => {
     if (store.currentMapObject.mapProps) {
       console.log("store.currentMapObject.mapProps is not null");
 
@@ -89,7 +79,65 @@ export default function Heatmap(props) {
     if (legendRef.current) {
       legendRef.current.remove();
     }
-    
+  };
+
+if (!isColorInit){
+  if (store.currentMapObject.mapProps) {
+    console.log("store.currentMapObject.mapProps is not null");
+
+    if (store.currentMapObject.mapProps.minColor) {
+      store.minColor = store.currentMapObject.mapProps.minColor;
+    }
+    if (store.currentMapObject.mapProps.maxColor) {
+      store.maxColor = store.currentMapObject.mapProps.maxColor;
+    }
+  } else {
+    console.log("store.currentMapObject.mapProps is null");
+    store.minColor = "#FFFFFF";
+    store.maxColor = "#FF0000";
+  }
+
+setIsColorInit(true);
+
+}
+  
+
+  useEffect(() => {
+    const resizeListener = () => {
+      setMapHeight(window.innerHeight / 2);
+    };
+    window.addEventListener("resize", resizeListener);
+    return () => {
+      window.removeEventListener("resize", resizeListener);
+    };
+  }, []);
+
+  useEffect(() => {
+    // const func = async () => {
+    // if (store.currentMapObject.mapProps) {
+    //   console.log("store.currentMapObject.mapProps is not null");
+
+    //   if (store.currentMapObject.mapProps.minColor) {
+    //     store.minColor = store.currentMapObject.mapProps.minColor;
+    //     store.setMinColor(store.currentMapObject.mapProps.minColor);
+    //   }
+    //   if (store.currentMapObject.mapProps.maxColor) {
+    //     store.maxColor = store.currentMapObject.mapProps.maxColor;
+    //     store.setMaxColor(store.currentMapObject.mapProps.maxColor);
+    //   }
+    // } else {
+    //   console.log("store.currentMapObject.mapProps is null");
+    //   store.minColor = "#FFFFFF";
+    //   store.maxColor = "#FF0000";
+    //   store.setMinColor("#FFFFFF");
+    //   store.setMaxColor("#FF0000");
+    // }
+
+    // if (legendRef.current) {
+    //   legendRef.current.remove();
+    // }
+    initColor();
+
     // await func();
     // };
   }, [store.currentMapObject]);
@@ -249,7 +297,6 @@ export default function Heatmap(props) {
 
       heatmapOverlayRef.current.addTo(mapRef.current);
       if (legendVisible) {
-
         if (legendRef.current) {
           legendRef.current.remove();
         }
@@ -277,7 +324,6 @@ export default function Heatmap(props) {
         };
 
         legend.addTo(mapRef.current);
-
 
         legendRef.current = legend;
       }

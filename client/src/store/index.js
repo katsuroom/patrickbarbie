@@ -84,8 +84,8 @@ function StoreContextProvider(props) {
     currentMapObject: null,
     mapList: [], // loaded list of maps (idNamePairs)
     currentView: View.COMMUNITY,
-    minColor: "#FFFFFF",
-    maxColor: "#FF0000"
+    minColor: null,
+    maxColor: null
   });
 
   store.viewTypes = View;
@@ -231,9 +231,7 @@ function StoreContextProvider(props) {
           ...store,
           currentMapObject: payload.mapObject,
           mapList: payload.mapList || store.mapList,
-          currentModal: CurrentModal.NONE,
-          minColor: "#FFFFFF",
-          maxColor: "#FF0000"
+          currentModal: CurrentModal.NONE
 
         });
       }
@@ -720,8 +718,8 @@ function StoreContextProvider(props) {
     store.setParsedCsvData(null);
     store.setCsvKey(null);
     store.setCsvLabel(null);
-    store.setMinColor("#FFFFFF");
-    store.setMaxColor("#FF0000");
+    store.setMinColor(null);
+    store.setMaxColor(null);
   }
   
 
