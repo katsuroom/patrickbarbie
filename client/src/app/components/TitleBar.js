@@ -44,6 +44,7 @@ export default function TitleBar() {
       borderRadius: "50%",
       padding: "2px",
       cursor: "pointer",
+      backgroundColor: "transparent"
     }
 
   return (
@@ -64,12 +65,17 @@ export default function TitleBar() {
         />
         {store.showSearchBar() ? (
           <div>
-          <HomeIcon
+          <IconButton
+            disabled={ !enableHome() }
+            onClick={() => {
+              store.changeView(store.viewTypes.HOME);
+              store.getMapList();
+            }}
             sx={{
               position: "absolute",
-              top: "1.5%",
+              top: "0.75%",
               left: "8vw",
-              fontSize: "30pt",
+              
               color:
                 store.currentView === store.viewTypes.HOME
                   ? "#f786b9" : enableHome()
@@ -77,16 +83,13 @@ export default function TitleBar() {
                   "darkgray",
               "&:hover": enableHome() ? buttonHoverStyle : {}
             }}
-            disabled={ !enableHome() }
-            onClick={() => {
-              store.changeView(store.viewTypes.HOME);
-              store.getMapList();
-            }}
-          />
-          <PeopleIcon
+          >
+            <HomeIcon sx={{fontSize: "30pt"}}/>
+          </IconButton>
+          <IconButton
             sx={{
               position: "absolute",
-              top: "1.5%",
+              top: "0.75%",
               left: "13vw",
               fontSize: "30pt",
               color:
@@ -101,7 +104,9 @@ export default function TitleBar() {
               store.changeView(store.viewTypes.COMMUNITY);
               store.getMapList();
             }}
-          />
+          >
+            <PeopleIcon sx={{fontSize: "30pt"}}/>
+          </IconButton>
         <Box sx={{ position: "absolute", top: "1%", left: "23vw" }}>
           <SearchBar />
         </Box>
@@ -132,9 +137,9 @@ export default function TitleBar() {
               <MenuItem
                 className="icon-menuItem"
                 onClick={() => {
-                  store.logoutUser();
                   handleClose();
                   auth.logoutUser();
+                  store.logoutUser();
                 }}
               >
                 Sign Out
