@@ -110,7 +110,7 @@ export default function MapCardList() {
                   primaryTypographyProps={{
                     fontFamily: "Sen",
                     fontSize: "1.25rem",
-                    fontWeight: "bold", 
+                    fontWeight: "bold",
                     // letterSpacing: "1px",
                   }}
                   className="map-list-name"
@@ -120,21 +120,32 @@ export default function MapCardList() {
                 <ListItemText
                   primaryTypographyProps={{
                     fontFamily: "Sen",
-                    fontSize: "1rem", 
+                    fontSize: "1rem",
                     // letterSpacing: "1px",
                   }}
                   className="map-list-types"
                   primary={`Map Type: ${map.mapType}`}
                 />
 
-                <ListItemText
+                { store.isCommunityPage() ? <ListItemText
                   primaryTypographyProps={{
                     fontFamily: "Sen",
-                    fontSize: "1rem", 
+                    fontSize: "1rem",
                     // letterSpacing: "1px",
                   }}
                   className="map-list-author"
                   primary={`Author: ${map.author}`}
+                /> : <></>}
+
+                <ListItemText
+                  primaryTypographyProps={{
+                    fontFamily: "Sen",
+                    fontSize: "1rem",
+                  }}
+                  className="map-list-created_time"
+                  primary={`Created At: ${new Date(
+                    map.createdAt
+                  ).toLocaleString("en-US", { timeZone: "America/New_York" })}`}
                 />
               </Stack>
             </ListItem>
