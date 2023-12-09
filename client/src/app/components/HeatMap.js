@@ -50,7 +50,8 @@ export default function Heatmap(props) {
   const markers = useRef([]);
   const { store } = useContext(StoreContext);
   let downloadComplete = props.downloadComplete;
-  const [legendVisible, setLegendVisible] = useState(false);
+  const [legendVisible, setLegendVisible] = useState(true);
+  const legendRef = useRef(null);
 
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
 
@@ -66,53 +67,32 @@ export default function Heatmap(props) {
 
   useEffect(() => {
     // const func = async () => {
-      if (store.currentMapObject.mapProps) {
-        console.log("store.currentMapObject.mapProps is not null");
+    if (store.currentMapObject.mapProps) {
+      console.log("store.currentMapObject.mapProps is not null");
 
-        if (store.currentMapObject.mapProps.minColor) {
-          store.minColor = store.currentMapObject.mapProps.minColor;
-          store.setMinColor(store.currentMapObject.mapProps.minColor);
-        }
-        if (store.currentMapObject.mapProps.maxColor) {
-          store.maxColor = store.currentMapObject.mapProps.maxColor;
-          store.setMaxColor(store.currentMapObject.mapProps.maxColor);
-        }
-      } else {
-        console.log("store.currentMapObject.mapProps is null");
-        store.minColor = "#FFFFFF";
-        store.maxColor = "#FF0000";
-        store.setMinColor("#FFFFFF");
-        store.setMaxColor("#FF0000");
+      if (store.currentMapObject.mapProps.minColor) {
+        store.minColor = store.currentMapObject.mapProps.minColor;
+        store.setMinColor(store.currentMapObject.mapProps.minColor);
       }
-      // await func();
+      if (store.currentMapObject.mapProps.maxColor) {
+        store.maxColor = store.currentMapObject.mapProps.maxColor;
+        store.setMaxColor(store.currentMapObject.mapProps.maxColor);
+      }
+    } else {
+      console.log("store.currentMapObject.mapProps is null");
+      store.minColor = "#FFFFFF";
+      store.maxColor = "#FF0000";
+      store.setMinColor("#FFFFFF");
+      store.setMaxColor("#FF0000");
+    }
+
+    if (legendRef.current) {
+      legendRef.current.remove();
+    }
+    
+    // await func();
     // };
   }, [store.currentMapObject]);
-
-
-  useEffect(() => {
-    if (legendVisible) {
-      const legend = L.control({ position: "bottomright" });
-      legend.onAdd = function () {
-        this._div = L.DomUtil.create("div", "legend");
-        // Customize your legend content here
-        this._div.innerHTML = `
-          <div style="background-color: ${store.minColor}; height: 20px;"></div>
-          <div style="background-color: ${store.maxColor}; height: 20px;"></div>
-          <div>${store.minColor}</div>
-          <div>${store.maxColor}</div>
-        `;
-        return this._div;
-      };
-      legend.addTo(mapRef.current);
-  
-      // Remove the legend after 5 seconds (customize as needed)
-      setTimeout(() => {
-        mapRef.current.removeControl(legend);
-        setLegendVisible(false);
-      }, 5000);
-    }
-  }, [legendVisible, store.minColor, store.maxColor]);
-  
 
   const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 
@@ -228,20 +208,6 @@ export default function Heatmap(props) {
         .getElementById("saveImageButton")
         .addEventListener("click", props.openModal);
       setButtonAdded(true);
-
-      const legendButton = L.control({ position: "bottomright" });
-    legendButton.onAdd = function () {
-      this._div = L.DomUtil.create("div", "legendButton");
-      this._div.innerHTML =
-        '<Button id="legendButton" data-cy="toggle-legend-button">Toggle Legend</Button>';
-      return this._div;
-    };
-    legendButton.addTo(mapRef.current);
-
-    document
-      .getElementById("legendButton")
-      .addEventListener("click", () => setLegendVisible(!legendVisible));
-      
     }
 
     if (heatmapOverlayRef.current) {
@@ -282,6 +248,39 @@ export default function Heatmap(props) {
       });
 
       heatmapOverlayRef.current.addTo(mapRef.current);
+      if (legendVisible) {
+
+        if (legendRef.current) {
+          legendRef.current.remove();
+        }
+
+        const legend = L.control({ position: "bottomright" });
+
+        legend.onAdd = function (map) {
+          const div = L.DomUtil.create("div", "info legend");
+
+          (div.innerHTML +=
+            '<div style="background-color:' +
+            store.minColor +
+            '"> Min: ' +
+            Math.min(...store.parsed_CSV_Data[store.key])),
+            +"</div> " + "<br>";
+
+          (div.innerHTML +=
+            '<div style="background-color:' +
+            store.maxColor +
+            '"> Max: ' +
+            Math.max(...store.parsed_CSV_Data[store.key])),
+            +"</div> " + "<br>";
+
+          return div;
+        };
+
+        legend.addTo(mapRef.current);
+
+
+        legendRef.current = legend;
+      }
 
       //   L.easyPrint({
       //     title: 'Save my map',
@@ -345,6 +344,7 @@ export default function Heatmap(props) {
     <div>
       <Script src="https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js"></Script>
       <Script src="https://cdn.jsdelivr.net/npm/leaflet-heatmap@1.0.0/leaflet-heatmap.js"></Script>
+
       <div
         id={"map-display"}
         style={{ height: `${mapHeight}px`, margin: "10px" }}
