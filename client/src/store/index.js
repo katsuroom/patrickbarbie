@@ -3,7 +3,6 @@
 import React, { createContext, useState, useContext } from "react";
 import AuthContext from "../auth";
 import { usePathname } from "next/navigation";
-import { useRouter } from 'next/navigation';
 
 
 import api from "./store-request-api";
@@ -21,7 +20,6 @@ export const StoreActionType = {
   CLOSE_MODAL: "CLOSE_MODAL", // close the current modal
 
   UPLOAD_MAP_FILE: "UPLOAD_MAP_FILE", // upload a map file
-  GET_MAP_FILE: "GET_MAP_FILE",
   EMPTY_RAW_MAP_FILE: "EMPTY_RAW_MAP_FILE",
   SET_CSV_KEY: "SET_CSV_KEY",
   SET_CSV_LABEL: "SET_CSV_LABEL",
@@ -39,7 +37,11 @@ export const StoreActionType = {
   CHANGE_CURRENT_MAP_OBJ: "CHANGE_CURRENT_MAP_OBJ",
   SET_MAP_LIST: "SET_MAP_LIST",
   SET_MIN_COLOR: "SET_MIN_COLOR",
-  SET_MAX_COLOR: "SET_MAX_COLOR"
+  SET_MAX_COLOR: "SET_MAX_COLOR",
+  SET_PROPORTIONAL_VALUE: "SET_PROPORTIONAL_VALUE",
+  SET_PROPORTIONAL_COLOR: "SET_PROPORTIONAL_COLOR",
+
+  LOGOUT_USER: "LOGOUT_USER",
 };
 
 export const CurrentModal = {
@@ -69,7 +71,6 @@ export const View = {
 function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
   const pathname = usePathname();
-  const router = useRouter();
 
   const [store, setStore] = useState({
     currentModal: CurrentModal.NONE,  // the currently open modal
@@ -85,7 +86,9 @@ function StoreContextProvider(props) {
     mapList: [], // loaded list of maps (idNamePairs)
     currentView: View.COMMUNITY,
     minColor: null,
-    maxColor: null
+    maxColor: null,
+    proportional_value: [], // proportional symbol map legend data
+    proColor: null,
   });
 
   store.viewTypes = View;
@@ -247,6 +250,27 @@ function StoreContextProvider(props) {
           maxColor: payload,
         });
       }
+      case StoreActionType.SET_PROPORTIONAL_VALUE: {
+        return setStore({
+          ...store,
+          proportional_value: payload,
+        });
+      }
+      case StoreActionType.SET_PROPORTIONAL_COLOR:{
+        return setStore({
+          ...store,
+          proColor: payload,
+        });
+      }
+      case StoreActionType.LOGOUT_USER: {
+        return setStore({
+          ...store,
+          rawMapFile: null,
+          currentMapObject: null,
+          mapList: [],
+          currentView: View.COMMUNITY
+        });
+      };
 
       default:
         return store;
@@ -266,6 +290,15 @@ function StoreContextProvider(props) {
 
     storeReducer({
       type: StoreActionType.SET_MAX_COLOR,
+      payload: color,
+    });
+  };
+
+  store.setProColor = function (color) {
+    console.log("setProColor", color);
+
+    storeReducer({
+      type: StoreActionType.SET_PROPORTIONAL_COLOR,
       payload: color,
     });
   };
@@ -461,20 +494,50 @@ function StoreContextProvider(props) {
     });
   };
 
-  store.deleteMap = function (mapId) {
+  store.deleteMap = function (mapObj) {
+    let mapId = mapObj._id;
     console.log("deleting map: ", mapId);
-    api.deleteMap(mapId).then((response) => {
-      console.log(response);
-      if (response.status === 200) {
-        api.getMapsByUser().then((response) => {
-          console.log(response.data.data);
-          storeReducer({
-            type: StoreActionType.DELETE_MAP,
-            payload: { mapList: response.data.data },
-          });
+    let mapData = mapObj.mapData;
+    let csvData = mapObj.csvData;
+
+    // delete map
+    asyncDeleteMap();
+    async function asyncDeleteMap()
+    {
+      let response = await api.deleteMap(mapId);
+      if (response.status != 200) return;
+
+      console.log("delete map success");
+  
+      // delete map data
+      response = await api.deleteMapData(mapData);
+      if (response.status != 200) return;
+
+      console.log("delete map data success");
+  
+      // delete csv data
+      if(csvData)
+      {
+        response = await api.deleteCSV(csvData);
+        if (response.status != 200) return;
+
+        console.log("delete csv data success");
+
+        response = await api.getMapsByUser();
+        storeReducer({
+          type: StoreActionType.DELETE_MAP,
+          payload: { mapList: response.data.data },
         });
       }
-    });
+      else
+      {
+        response = await api.getMapsByUser();
+        storeReducer({
+          type: StoreActionType.DELETE_MAP,
+          payload: { mapList: response.data.data },
+        });
+      }
+    }
   };
 
   store.getMapsByUser = function (callback) {
@@ -639,19 +702,14 @@ function StoreContextProvider(props) {
   };
 
   store.searchMapsById = async function(id) {
-    let mapObj = await store.getMapById(id);
+    const response = await api.getMapById(id);
+    const mapObj = response.data.data;
+    console.log(mapObj);
     storeReducer({
       type: StoreActionType.SET_MAP_LIST,
       payload: { mapList: [mapObj] },
     });
   }
-
-  store.getMapById = async function (id) {
-    const response = await api.getMapById(id);
-    const mapObj = response.data.data;
-    console.log(mapObj);
-    return mapObj;
-  };
 
   store.getCsvById = async function (id) {
     const response = await api.getCsvById(id);
@@ -693,6 +751,7 @@ function StoreContextProvider(props) {
     }
   };
 
+  // switches between home and community
   store.changeView = function (view) {
     if (view === store.viewTypes.HOME && !auth.loggedIn) {
       return;
@@ -703,15 +762,17 @@ function StoreContextProvider(props) {
       return;
     }
     store.currentView = view;
-
-    
     storeReducer({
       type: StoreActionType.CHANGE_VIEW,
       payload: { view },
     });
+  };
 
-
-
+  store.logoutUser = function() {
+    storeReducer({
+      type: StoreActionType.LOGOUT_USER,
+      payload: { }
+    });
   };
  
   store.clearCsv = function() {
@@ -720,6 +781,8 @@ function StoreContextProvider(props) {
     store.setCsvLabel(null);
     store.setMinColor(null);
     store.setMaxColor(null);
+    store.setProColor(null);
+    store.setProportionalValue([]);
   }
   
 
@@ -732,6 +795,13 @@ function StoreContextProvider(props) {
   store.showSearchBar = () => {
     return pathname == "/main" || pathname == "/mapcards";
   }
+
+  store.setProportionalValue = function (value) {
+    storeReducer({
+      type: StoreActionType.SET_PROPORTIONAL_VALUE,
+      payload: value,
+    });
+  };
 
   return (
     <StoreContext.Provider

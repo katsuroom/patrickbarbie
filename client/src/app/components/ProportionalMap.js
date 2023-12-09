@@ -5,6 +5,7 @@ import StoreContext from "@/store";
 import domtoimage from "dom-to-image";
 import { saveAs } from "file-saver";
 import * as turf from "@turf/turf";
+import "./proportionalMap.css";
 
 
 export default function ProportionalMap(props) {
@@ -13,6 +14,7 @@ export default function ProportionalMap(props) {
   const mapRef = useRef(null);
   const geoJsonLayerRef = useRef(null);
   const proportionalRef = useRef(null);
+  const legendRef = useRef(null);
   const markers = useRef([]);
   const workerRef = useRef(null);
   const { store } = useContext(StoreContext);
@@ -20,6 +22,19 @@ export default function ProportionalMap(props) {
   // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
 
   useEffect(() => {
+    if (store.currentMapObject.mapProps) {
+      console.log("updating");
+      if (store.currentMapObject.mapProps.proColor) {
+        store.proColor = store.currentMapObject.mapProps.proColor;
+        store.setProColor(store.currentMapObject.mapProps.proColor);
+      }
+      if(store.currentMapObject.mapProps.proportional_value){
+        console.log("store.currentMapObject.mapProps.proportional_value", store.currentMapObject.mapProps.proportional_value);
+        store.proportional_value = store.currentMapObject.mapProps.proportional_value;
+        store.setProportionalValue(store.currentMapObject.mapProps.proportional_value);
+      }
+    }
+
     const resizeListener = () => {
       setMapHeight(window.innerHeight / 2);
     };
@@ -31,15 +46,6 @@ export default function ProportionalMap(props) {
 
   const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 
-  useEffect(() => {
-    const resizeListener = () => {
-      setMapHeight(window.innerHeight / 2);
-    };
-    window.addEventListener("resize", resizeListener);
-    return () => {
-      window.removeEventListener("resize", resizeListener);
-    };
-  }, []);
 
   useEffect(() => {
     if (store.rawMapFile) setGeoJsonData(store.rawMapFile);
@@ -71,6 +77,9 @@ export default function ProportionalMap(props) {
     }
     if (proportionalRef.current) {
       mapRef.current.removeLayer(proportionalRef.current);
+    }
+    if (legendRef.current) {
+      mapRef.current.removeControl(legendRef.current);
     }
     markers.current.forEach((marker) => {
       mapRef.current.removeLayer(marker);
@@ -148,6 +157,8 @@ export default function ProportionalMap(props) {
       // console.log("store.label", store.label);
       // console.log("store.key", store.key);
       // console.log("store.parsed_CSV_Data", store.parsed_CSV_Data);
+      console.log("store.currentMapObject", store.currentMapObject);
+      console.log("store.proColor", store.proColor);
 
       //extract geojson data
 
@@ -170,6 +181,7 @@ export default function ProportionalMap(props) {
             var index = store.parsed_CSV_Data[store.label].indexOf(
               feature.properties.name
             );
+            console.log(index);
           } catch (error) {
             console.log(error);
           }
@@ -179,8 +191,7 @@ export default function ProportionalMap(props) {
           // Extract the value from parsedCSV[store.key]
           let gdp_md = store.parsed_CSV_Data[store.key][index];
           gdp_md = gdp_md === "" ? "NA" : Number(gdp_md);
-
-          // console.log("gdp_md", gdp_md);
+          console.log("gdp_md", gdp_md);
 
           // Extract only the necessary properties
           const reducedProperties = {
@@ -201,7 +212,6 @@ export default function ProportionalMap(props) {
       console.log(reducedAndCenteredGeoJSON);
 
       // add proportional circles
-
       proportionalRef.current = L.geoJson(reducedAndCenteredGeoJSON, {
         filter: function (feature) {
           if (feature.properties.name) {
@@ -212,10 +222,19 @@ export default function ProportionalMap(props) {
         pointToLayer: function (feature, latlng) {
           // console.log(feature.properties.gdp_md);
           //   console.log(latlng);
+
+          // const validGDPs = reducedAndCenteredGeoJSON.features
+          // .map((feature) => feature.properties.gdp_md)
+          // .filter((value) => !isNaN(value));
+
+          // const minGDP = Math.min(...validGDPs);
+          // const maxGDP = Math.max(...validGDPs);
+          // console.log("minGDP", minGDP);
+          // console.log("maxGDP", maxGDP);
           return L.circleMarker(latlng, {
             color: "orange",
             weight: 1,
-            fillColor: store.maxColor ? store.maxColor : "red",
+            fillColor: store.proColor ? store.proColor : "red",
             fillOpacity: 0.3,
             radius: getRadius(feature.properties.gdp_md),
           });
@@ -232,42 +251,121 @@ export default function ProportionalMap(props) {
           layer.on("mouseover", function () {
             layer.bindPopup(popup).openPopup();
             layer.setStyle({
-              fillColor: store.maxColor ? store.maxColor : "red",
+              fillColor: store.proColor ? store.proColor : "red",
               fillOpacity: 1,
             });
           });
 
           layer.on("mouseout", function () {
             layer.setStyle({
-              fillColor: store.maxColor ? store.maxColor : "red",
+              fillColor: store.proColor ? store.proColor : "red",
               fillOpacity: 0.3,
             });
             layer.bindPopup(popup).closePopup();
           });
         },
       }).addTo(mapRef.current);
+
+      // add legend
+      legendRef.current = L.control({ position: "bottomright" });
+      legendRef.current.onAdd = function (map) {
+        console.log("store.proportional_value", store.proportional_value);
+        var div = L.DomUtil.create("div", "info legend"),
+          labels = [],
+          categories = [
+            store.proportional_value[1].toFixed(2),
+            (1 / 2) *
+              (
+                store.proportional_value[0] + store.proportional_value[1]
+              ).toFixed(2),
+            store.proportional_value[0].toFixed(2),
+          ];
+
+        // console.log("store.proportional_value", store.proportional_value);
+        // console.log("store.proColor", store.proColor);
+        // for (var i = 0; i < categories.length; i++) {
+        div.innerHTML =
+          '<i class="circle1" style="background: ' +
+          store.proColor +
+          '"></i>' +
+          '<div style="text-align: center;">' +
+          categories[0] +
+          "</div>" +
+          "<br>" +
+          '<i class="circle2" style="background: ' +
+          store.proColor +
+          '"></i>' +
+          '<div style="text-align: center;">' +
+          categories[1] +
+          "</div><br>" +
+          '<i class="circle3" style="background: ' +
+          store.proColor +
+          '"></i>' +
+          '<div style="text-align: center;">' +
+          categories[2] +
+          "</div>";
+        // }
+
+        return div;
+      };
+      legendRef.current.addTo(mapRef.current);
+
+      function getRadius(area) {
+        // console.log("area", area);
+        // console.log("area === NaN", isNaN(area));
+        console.log("store.proportional value: ", store.proportional_value);
+        if (isNaN(area) || area === "NA" || area === "") {
+          return 0;
+        }
+        console.log("hereeeeeee");
+        // var radius = Math.sqrt(area / Math.PI);
+        // console.log("radius", radius);
+        // var sigmoidRadius = sigmoid(radius);
+
+        const validGDPs = reducedAndCenteredGeoJSON.features
+          .map((feature) => feature.properties.gdp_md)
+          .filter((value) => !isNaN(value));
+
+        const minGDP = Math.min(...validGDPs);
+        const maxGDP = Math.max(...validGDPs);
+
+        var proportional = [minGDP, maxGDP];
+        console.log("proportional", proportional);
+        store.proportional_value = proportional;
+        store.setProportionalValue(proportional);
+        console.log(store.proportional_value);
+
+        // Normalize the GDP value between 0 and 1
+        const normalizedGDP = (area - minGDP) / (maxGDP - minGDP);
+
+        // Map the normalized value to the range [0, 70]
+        const mappedRadius = normalizedGDP * (70 - 10) + 10;
+
+        console.log("mappedRadius", mappedRadius);
+        return mappedRadius;
+
+        // Update maxRadiusArray
+        // console.log("area", area);
+        // console.log("maxRadiusArray[1]", maxRadiusArray[1]);
+        // console.log("area > maxRadiusArray[1]", area > maxRadiusArray[1])
+        // if (area > maxRadiusArray[1]) {
+        //   setMaxRadiusArray([sigmoidRadius, area]);
+        // }
+
+        // // Update minRadiusArray
+        // if (area < minRadiusArray[1]) {
+        //   setMinRadiusArray([sigmoidRadius, area]);
+        // }
+      }
     }
   }, [
     geoJsonData,
     store.label,
     store.key,
     store.parsed_CSV_Data,
-    store.maxColor,
+    store.proColor,
   ]);
 
-  function sigmoid(x) {
-    return 1 / (1 + Math.exp(-x));
-  }
-
-  function getRadius(area) {
-    if(area === "NA"){
-      return 0;
-    }
-    var radius = Math.sqrt(area / Math.PI);
-    var sigmoidRadius = sigmoid(radius) * 40;
-    // console.log("sigmoid(radius)", sigmoidRadius);
-    return sigmoidRadius;
-  }
 
   if (!downloadComplete) {
     if (props.imageType === "JPEG") {

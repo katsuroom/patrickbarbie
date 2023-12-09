@@ -84,9 +84,6 @@ deleteMap = (req, res) => {
       console.log("user found, and try to delete map");
 
       // Assuming you want to delete the map associated with the user
-      let mapData = undefined;
-      let csvData = undefined;
-
       Map.findOneAndDelete({ _id: req.params.id })
         .then((map) => {
           if (!map) {
@@ -98,24 +95,11 @@ deleteMap = (req, res) => {
             });
           }
 
-          mapData = map.mapData;
-          csvData = map.csvData;
-
           // Remove the map from the user's maps array
           user.maps.pull({ _id: req.params.id });
 
           // Save the user after removing the map reference
           return user.save();
-        })
-        .then(() => {
-          // delete map data
-          return MapData.findOneAndDelete({_id: new mongoose.Types.ObjectId(mapData)});
-        })
-        .then(() => {
-          // delete csv if exists
-          if(csvData)
-            return CSV.findOneAndDelete({_id: new mongoose.Types.ObjectId(csvData)});
-          return null;
         })
         .then(() => {
           // Send a response after successfully deleting the map
@@ -145,6 +129,54 @@ deleteMap = (req, res) => {
       });
     });
 };
+
+deleteMapData = (req, res) => {
+  MapData.findOneAndDelete({ _id: req.params.id })
+  .then((mapData) => {
+    if (!mapData) {
+      return res.status(404).json({
+        success: false,
+        error: "Map Data not found",
+      });
+    }
+  })
+  .then(() => {
+    return res.status(200).json({
+      success: true,
+      message: "Map data deleted",
+    });
+  })
+  .catch((error) => {
+    return res.status(500).json({
+      success: false,
+      error: "Error deleting map data",
+    });
+  });
+}
+
+deleteCSV = (req, res) => {
+  CSV.findOneAndDelete({ _id: req.params.id })
+  .then((csv) => {
+    if (!csv) {
+      return res.status(404).json({
+        success: false,
+        error: "CSV not found",
+      });
+    }
+  })
+  .then(() => {
+    return res.status(200).json({
+      success: true,
+      message: "CSV deleted",
+    });
+  })
+  .catch((error) => {
+    return res.status(500).json({
+      success: false,
+      error: "Error deleting CSV",
+    });
+  });
+}
 
 updateMap = (req, res) => {
   console.log("start update Map");
@@ -522,12 +554,16 @@ module.exports = {
   deleteMap,
   updateMap,
   getMapById,
-  getMapDataById,
-  getMapsByUser,
   getPublishedMaps,
   forkMap,
   sendMapFile,
+
+  getMapDataById,
+  deleteMapData,
+  getMapsByUser,
+
   createCSV,
   getCSVById,
   updateCSV,
+  deleteCSV
 };

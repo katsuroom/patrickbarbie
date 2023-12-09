@@ -9,10 +9,12 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import StoreContext from "@/store";
+import StoreContext, { CurrentModal, View } from "@/store";
 import AuthContext from "@/auth";
 import "../font.css";
 import { useRouter } from "next/navigation";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
 
 export default function EditScreen() {
   const { store } = useContext(StoreContext);
@@ -23,17 +25,16 @@ export default function EditScreen() {
   useEffect(() => {
     const func = async () => {
       if (auth.loggedIn) {
+        console.log("change view to home");
+        console.log("auth.loggedIn", auth.loggedIn)
         await store.changeView(store.viewTypes.HOME);
       } else {
+        console.log("change view to community");
         await store.changeView(store.viewTypes.COMMUNITY);
       }
 
-      await store.getMapList();
-
-      if (!store.mapList.length) {
-        router.push("/main");
-      }
-    };
+      store.getMapList();
+    }
     func();
   }, []);
 
@@ -59,6 +60,10 @@ export default function EditScreen() {
     router.push("/main");
   };
 
+  const handleCreateMap = () => {
+    store.openModal(CurrentModal.UPLOAD_MAP);
+  };
+
   const renderMapItem = (map) => (
     <Grid item xs={12} sm={6} md={4} lg={3} key={map._id}>
       <ListItem
@@ -70,13 +75,16 @@ export default function EditScreen() {
       >
         <Stack
           direction="column"
-          spacing={1}
+          spacing={0.5}
           sx={{
             marginLeft: 1,
             paddingLeft: "16px",
+            paddingTop: "8px",
+            paddingBottom: "8px",
+            paddingRight: "16px",
             boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
             width: "100%",
-            borderRadius: "16px",
+            borderRadius: "8px",
             backgroundColor:
               store.currentMapObject && store.currentMapObject._id === map._id
                 ? "#FDF4F3"
@@ -99,34 +107,40 @@ export default function EditScreen() {
             primary={map.title}
           />
 
-          <ListItemText
-            primaryTypographyProps={{
-              fontFamily: "Sen",
-              fontSize: "1.25rem",
-            }}
-            className="map-list-types"
-            primary={`Map Type: ${map.mapType}`}
-          />
-
-          {store.isCommunityPage() ? (
+          <Box sx={{
+            display: "flex",
+            justifyContent: "space-between"
+          }}>
             <ListItemText
               primaryTypographyProps={{
                 fontFamily: "Sen",
-                fontSize: "1.25rem",
+                fontSize: "0.75rem"
               }}
-              className="map-list-author"
-              primary={`Author: ${map.author}`}
+              className="map-list-types"
+              primary={map.mapType}
             />
-          ) : (
-            <></>
-          )}
+
+            {store.isCommunityPage() ? (
+              <ListItemText
+                primaryTypographyProps={{
+                  fontFamily: "Sen",
+                  fontSize: "0.75rem",
+                  textAlign: "right",
+                  fontWeight: "bold",
+                  letterSpacing: 1,
+                }}
+                className="map-list-author"
+                primary={`${map.author}`}
+              />
+            ) : null}
+          </Box>
 
           <Divider sx={{ marginY: 1 }} />
 
           <ListItemText
             primaryTypographyProps={{
               fontFamily: "Sen",
-              fontSize: "1rem",
+              fontSize: "0.75rem",
             }}
             className="map-list-likes"
             primary={`Likes: ${map.likedUsers.length}`}
@@ -135,7 +149,7 @@ export default function EditScreen() {
           <ListItemText
             primaryTypographyProps={{
               fontFamily: "Sen",
-              fontSize: "1rem",
+              fontSize: "0.75rem",
             }}
             className="map-list-views"
             primary={`Views: ${map.views}`}
@@ -146,10 +160,10 @@ export default function EditScreen() {
           <ListItemText
             primaryTypographyProps={{
               fontFamily: "Sen",
-              fontSize: "1rem",
+              fontSize: "0.75rem",
             }}
             className="map-list-created_time"
-            primary={`Created At: ${new Date(map.createdAt).toLocaleString(
+            primary={`Created: ${new Date(map.createdAt).toLocaleString(
               "en-US",
               { timeZone: "America/New_York" }
             )}`}
@@ -158,7 +172,7 @@ export default function EditScreen() {
           <ListItemText
             primaryTypographyProps={{
               fontFamily: "Sen",
-              fontSize: "1rem",
+              fontSize: "0.75rem",
             }}
             className="map-list-last-modified"
             primary={`Last Modified: ${new Date(map.updatedAt).toLocaleString(
@@ -216,6 +230,22 @@ export default function EditScreen() {
           ])}
         </Grid>
       </List>
+      {auth.loggedIn && store.currentView == View.HOME ? (
+        <Fab
+          sx={{
+            position: "absolute",
+            bottom: 72,
+            right: 16,
+            bgcolor: "#ffabd1",
+            "&:hover": {
+              bgcolor: "#ffabd1",
+            },
+          }}
+          onClick={handleCreateMap}
+        >
+          <AddIcon />
+        </Fab>
+      ) : null}
     </>
   );
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import api from "./api";
 import { useRouter } from 'next/navigation';
 
@@ -174,7 +174,7 @@ function AuthContextProvider(props) {
         user: { username: "guest" }
       },
     });
-    router.push("/main");
+    router.push("/mapcards");
   }
 
   // logout user

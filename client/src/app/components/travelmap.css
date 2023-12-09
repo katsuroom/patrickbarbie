@@ -41,10 +41,9 @@ input:nth-child(1) {
 
 .leaflet-routing-alternatives-container {
   /* display: none; */
-
-  width: 400px;
+  max-width: 300px;
   max-height: 200px;
-  overflow-y: auto;
+  overflow-y: auto; 
 }
 
 /* #loader {
@@ -73,3 +72,34 @@ input:nth-child(1) {
     transform: rotate(360deg);
   }
 } */
+
+
+.leaflet-right {
+    float: left !important;
+}
+
+.leaflet-routing-add-waypoint {
+    height: 20px;
+    width: 20px;
+    background-image: url('/add.png'); 
+    background-size: cover; 
+    background-position: center; 
+    border: none; 
+    outline: none;
+    cursor: pointer;
+}
+
+.travel-button{
+    margin-right: 5%;
+    margin-bottom: 5%;
+}
+
+#image-capture-div
+{
+    width: 100vw;
+    height: 100wh;
+}
+
+.leaflet-routing-geocoder-result{
+    display: none;
+}

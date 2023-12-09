@@ -25,13 +25,9 @@ export default function MUIDeleteMap() {
     margin: "20px",
   };
 
-  const handleSave = () => {
+  const handleDelete = () => {
     console.log("publish map");
-    // TODO: I need pass the mapId to the backend here
-
-    // var mapId = "655a9d69bb02d728d9fbcf76";
-    var mapId = store.currentMapObject._id;
-    store.deleteMap(mapId);
+    store.deleteMap(store.currentMapObject);
     onClose();
   };
 
@@ -62,11 +58,11 @@ export default function MUIDeleteMap() {
             Are you sure you want to delete this map?
           </div>
           <div className="confirm">
-            <Button onClick={handleSave} variant="contained" sx={buttonStyle} className = "modal-button-confirm">
-              Confirm
-            </Button>
             <Button onClick={onClose} variant="contained" sx={buttonStyle} className = "modal-button">
               Cancel
+            </Button>
+            <Button onClick={handleDelete} variant="contained" sx={buttonStyle} className = "modal-button-confirm">
+              Confirm
             </Button>
           </div>
         </div>
