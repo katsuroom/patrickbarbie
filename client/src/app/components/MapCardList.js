@@ -12,8 +12,6 @@ import StoreContext, { CurrentModal, View } from "@/store";
 import AuthContext from "@/auth";
 import MUIUploadMap from "../modals/MUIUploadMap";
 import MUICreateMap from "../modals/MUICreateMap";
-const Pbf = require("pbf");
-const geobuf = require("geobuf");
 import "../font.css";
 import { Typography } from "@mui/material";
 import Stack from "@mui/material/Stack";

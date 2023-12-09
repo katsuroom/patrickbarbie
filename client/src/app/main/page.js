@@ -4,12 +4,10 @@ import MapCardList from "../components/MapCardList";
 import MapView from "../components/MapView";
 import StoreContext from "@/store";
 import React, { useContext, useEffect } from "react";
-import AuthContext from "@/auth";
 
 
 export default function MainScreen() {
   const { store } = useContext(StoreContext);
-  const { auth } = useContext(AuthContext);
 
   useEffect(() => {
     const func = async () => {

@@ -3,7 +3,6 @@
 import React, { createContext, useState, useContext } from "react";
 import AuthContext from "../auth";
 import { usePathname } from "next/navigation";
-import { useRouter } from 'next/navigation';
 
 
 import api from "./store-request-api";
@@ -41,6 +40,8 @@ export const StoreActionType = {
   SET_MAX_COLOR: "SET_MAX_COLOR",
   SET_PROPORTIONAL_VALUE: "SET_PROPORTIONAL_VALUE",
   SET_PROPORTIONAL_COLOR: "SET_PROPORTIONAL_COLOR",
+
+  LOGOUT_USER: "LOGOUT_USER",
 };
 
 export const CurrentModal = {
@@ -70,7 +71,6 @@ export const View = {
 function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
   const pathname = usePathname();
-  const router = useRouter();
 
   const [store, setStore] = useState({
     currentModal: CurrentModal.NONE,  // the currently open modal
@@ -262,6 +262,15 @@ function StoreContextProvider(props) {
           proColor: payload,
         });
       }
+      case StoreActionType.LOGOUT_USER: {
+        return setStore({
+          ...store,
+          rawMapFile: null,
+          currentMapObject: null,
+          mapList: [],
+          currentView: View.COMMUNITY
+        });
+      };
 
       default:
         return store;
@@ -753,15 +762,17 @@ function StoreContextProvider(props) {
       return;
     }
     store.currentView = view;
-
-    
     storeReducer({
       type: StoreActionType.CHANGE_VIEW,
       payload: { view },
     });
+  };
 
-
-
+  store.logoutUser = function() {
+    storeReducer({
+      type: StoreActionType.LOGOUT_USER,
+      payload: { }
+    });
   };
  
   store.clearCsv = function() {

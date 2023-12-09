@@ -9,12 +9,15 @@ import AuthContext from "@/auth";
 import StoreContext from "@/store";
 import Link from "next/link";
 
+import { useRouter } from 'next/navigation';
+
 import SearchBar from "./SearchBar";
 
 export default function TitleBar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const { auth } = useContext(AuthContext);
   const { store } = useContext(StoreContext);
+  const router = useRouter();
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -25,6 +28,16 @@ export default function TitleBar() {
   };
 
   const enableHome = () => auth.loggedIn;
+
+  const handlePatrick = () => {
+    if(auth.loggedIn)
+      router.push("/mapcards");
+    else
+    {
+      router.push("/");
+      store.logoutUser();
+    }
+  };
 
   const buttonHoverStyle = {
       border: "2px solid #f786b9",
@@ -38,17 +51,17 @@ export default function TitleBar() {
       <div
         style={{ backgroundColor: "#fce8f1", height: "9vh" }}
       >
-        <Link href={auth.loggedIn ? "/mapcards" : "/"}>
-          <img
-            src="/patrick-barbie.png"
-            height="125%"
-            style={{
-              marginTop: 5,
-              marginLeft: 10,
-              clipPath: "inset(0% 0% 27% 0%)",
-            }}
-          />
-        </Link>
+        <img
+          onClick={handlePatrick}
+          src="/patrick-barbie.png"
+          height="125%"
+          style={{
+            marginTop: 5,
+            marginLeft: 10,
+            clipPath: "inset(0% 0% 27% 0%)",
+            cursor: "pointer"
+          }}
+        />
         {store.showSearchBar() ? (
           <div>
           <HomeIcon
@@ -119,6 +132,7 @@ export default function TitleBar() {
               <MenuItem
                 className="icon-menuItem"
                 onClick={() => {
+                  store.logoutUser();
                   handleClose();
                   auth.logoutUser();
                 }}

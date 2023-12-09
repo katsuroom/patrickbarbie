@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
 loginUser = async (req, res) => {
-  console.log("loginUser");
   try {
     const { email, password } = req.body;
 
@@ -53,6 +52,7 @@ loginUser = async (req, res) => {
       user: {
         username: existingUser.username,
         email: existingUser.email,
+        numMaps: existingUser.maps.length,
       },
     });
 
@@ -77,32 +77,6 @@ registerUser = async (req, res) => {
         .json({ errorMessage: "Please enter all required fields." });
     }
     console.log("all fields provided");
-    // if (password.length < 8) {
-    //     return res
-    //         .status(400)
-    //         .json({
-    //             errorMessage: "Please enter a password of at least 8 characters."
-    //         });
-    // }
-    // console.log("password long enough");
-    // if (password !== passwordVerify) {
-    //     return res
-    //         .status(400)
-    //         .json({
-    //             errorMessage: "Please enter the same password twice."
-    //         })
-    // }
-    // console.log("password and password verify match");
-    // const existingUser = await User.findOne({ email: email });
-    // console.log("existingUser: " + existingUser);
-    // if (existingUser) {
-    //     return res
-    //         .status(400)
-    //         .json({
-    //             success: false,
-    //             errorMessage: "An account with this email address already exists."
-    //         })
-    // }
 
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);

@@ -9,7 +9,7 @@ describe('template spec', () => {
 
         cy.contains('Continue as Guest').click()
 
-        cy.url().should('include', '/main');
+        cy.url().should("include", "/mapcards");
 
         cy.wait(500);
 
