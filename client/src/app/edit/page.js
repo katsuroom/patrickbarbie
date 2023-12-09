@@ -72,7 +72,8 @@ export default function EditScreen() {
         )} */}
 
         {store.mapType === store.mapTypes.POLITICAL_MAP || store.currentMapObject?.mapType === store.mapTypes.POLITICAL_MAP ? <PPolitical /> : null}
-        {store.mapType === store.mapTypes.TRAVEL_MAP || store.currentMapObject?.mapType === store.mapTypes.TRAVEL_MAP ? <PTravelMap /> : null}
+        {/* {store.mapType === store.mapTypes.TRAVEL_MAP || store.currentMapObject?.mapType === store.mapTypes.TRAVEL_MAP ? <PTravelMap /> : null} */}
+        {store.mapType === store.mapTypes.TRAVEL_MAP || store.currentMapObject?.mapType === store.mapTypes.TRAVEL_MAP ? null : null}
         {store.mapType === store.mapTypes.HEATMAP || store.currentMapObject?.mapType === store.mapTypes.HEATMAP ? <PHeatmap /> : null}
         {store.mapType === store.mapTypes.PROPORTIONAL_SYMBOL_MAP || store.currentMapObject?.mapType === store.mapTypes.PROPORTIONAL_SYMBOL_MAP ? <PProportional /> : null}
       </div>

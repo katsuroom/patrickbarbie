@@ -4,17 +4,23 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
 
-// import endIconUrl from './img/red.png';
-// import startIconUrl from './img/blue.png';
-import StoreContext from "@/store";
+// import endIconUrl from './red.png';
+// import startIconUrl from './blue.png';
+import StoreContext, { CurrentModal } from "@/store";
 import 'leaflet-contextmenu';
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
+import 'leaflet-control-geocoder';
+import Button from "@mui/joy/Button";
+import MUISaveChanges from "../modals/MUISaveChanges";
+import MUIExit from "../modals/MUIExitModal";
+import 'leaflet-control-geocoder/dist/Control.Geocoder.css';
 
 
 const TravelMap = (props) => {
     // const [start, setStart] = useState('');
     // const [end, setEnd] = useState('');
     const mapRef = useRef(null);
+
     const routeControlRef = useRef(null);
     const [geoJsonData, setGeoJsonData] = useState(null);
     const { store } = useContext(StoreContext);
@@ -36,10 +42,10 @@ const TravelMap = (props) => {
     };
 
 
-    const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
+    const [mapHeight, setMapHeight] = useState(window.innerWidth / 3);
     useEffect(() => {
         const resizeListener = () => {
-            setMapHeight(window.innerHeight / 2);
+            setMapHeight(window.innerWidth / 3);
         };
         window.addEventListener('resize', resizeListener);
         return () => {
@@ -54,11 +60,30 @@ const TravelMap = (props) => {
     }, [store.rawMapFile]);
 
     useEffect(() => {
+        const loadScript = (src) => {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = () => resolve(script);
+                script.onerror = () => reject(new Error(`Script load error for ${src}`));
+                document.body.appendChild(script);
+            });
+        };
+
+        Promise.all([
+            loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+            loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
+        ]).then(() => {
+            setLoadScripts(true);
+        }).catch(error => console.error(error));
+    }, []);
+
+
+    useEffect(() => {
         console.log('travel map + ' + geoJsonData)
         if (!loadScripts || !geoJsonData) {
             return;
         }
-
 
         if (!mapRef.current) {
             var mapLayer = window.MQ.mapLayer();
@@ -76,20 +101,15 @@ const TravelMap = (props) => {
                     callback: goHere
                 }]
             });
-
-            L.control.layers({
-                'Map': mapLayer,
-                'Hybrid': window.MQ.hybridLayer(),
-                'Satellite': window.MQ.satelliteLayer(),
-                'Dark': window.MQ.darkLayer(),
-                'Light': window.MQ.lightLayer()
-            }).addTo(mapRef.current);
-
-
         }
 
-
-        console.log('L.routing + in mapref + ' + L.routing)
+        L.control.layers({
+            'Map': mapLayer,
+            'Hybrid': window.MQ.hybridLayer(),
+            'Satellite': window.MQ.satelliteLayer(),
+            'Dark': window.MQ.darkLayer(),
+            'Light': window.MQ.lightLayer()
+        }).addTo(mapRef.current);
 
         if (geoJsonLayerRef.current) {
             mapRef.current.removeLayer(geoJsonLayerRef.current);
@@ -151,18 +171,15 @@ const TravelMap = (props) => {
             setButtonAdded(true);
         }
 
-
-        if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
-            return;
-        }
-
-        setLoadScripts(true)
-
-        // runDirection(store.parsed_CSV_Data[store.label][0], store.parsed_CSV_Data[store.key][0]);
-
-    }, [geoJsonData, loadScripts, store.label, store.key, store.parsed_CSV_Data]);
+        // L.Routing.control ({
+        //     geocoder: L.Control.Geocoder.nominatim()
+        // }).addTo(mapRef.current)
 
 
+    }, [geoJsonData]);
+
+    const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
+    const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
     // useEffect(() => {
     //     if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
     //         return;
@@ -174,26 +191,8 @@ const TravelMap = (props) => {
     //     }
     // }, [store.label, store.key, store.parsed_CSV_Data])
 
-    useEffect(() => {
-        const loadScript = (src) => {
-            return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = src;
-                script.onload = () => resolve(script);
-                script.onerror = () => reject(new Error(`Script load error for ${src}`));
-                document.body.appendChild(script);
-            });
-        };
-
-        Promise.all([
-            loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
-            loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
-        ]).then(() => {
-            setLoadScripts(true);
-        }).catch(error => console.error(error));
-    }, []);
-
     const runDirection = async () => {
+
         // const runDirection = async (start, end) => {
         const geocode = async (address) => {
             const url = `https://www.mapquestapi.com/geocoding/v1/address?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC&location=${encodeURIComponent(address)}`;
@@ -243,9 +242,7 @@ const TravelMap = (props) => {
                     const markerIcon = i === 0 ? startIcon : endIcon;
                     return L.marker(waypoint.latLng, { icon: markerIcon });
                 },
-                show: true,
                 geocoder: L.Control.Geocoder.nominatim(),
-                autoRoute: true
             })
             // .on('routingstart', showSpinner)
             // .on('routesfound routingerror', hideSpinner)
@@ -261,6 +258,10 @@ const TravelMap = (props) => {
             //     routingControl.spliceWaypoints(routingControl.getWaypoints().length - 1, 1, e.latlng);
             // };
 
+
+            // mapRef.current.forEach((routingControl) => {
+            //     mapRef.current.removeLayer(routingControl);
+            // });
         } catch (error) {
             console.error('Error in geocoding or routing:', error);
         }
@@ -295,7 +296,16 @@ const TravelMap = (props) => {
                 </form>
             </div> */}
             <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div>
+            {/* <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div> */}
             <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div>
+            <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
+                EXIT
+            </Button>
+            <Button variant="solid" className="save" sx={{ margin: 1 }} onClick={openSaveModal}>
+                SAVE
+            </Button>
+            <MUISaveChanges />
+            <MUIExit />
         </div>
 
     );
