@@ -7,7 +7,7 @@ import PHeatmap from "../components/PHeatmap";
 import MapDisplay from "../components/MapDisplay";
 import StoreContext from "@/store";
 import PTravelMap from "../components/PTravelMap";
-import PPolitical from "../components/PPolitical";
+import PPoliticalmap from "../components/PPoliticalmap";
 import PProportional from "../components/PProportional";
 import PDotDistribution from "../components/PDotDistribution";
 
@@ -72,7 +72,7 @@ export default function EditScreen() {
           <PHeatmap />
         )} */}
 
-        {store.mapType === store.mapTypes.POLITICAL_MAP || store.currentMapObject?.mapType === store.mapTypes.POLITICAL_MAP ? <PPolitical /> : null}
+        {store.mapType === store.mapTypes.POLITICAL_MAP || store.currentMapObject?.mapType === store.mapTypes.POLITICAL_MAP ? <PPoliticalmap /> : null}
         {/* {store.mapType === store.mapTypes.TRAVEL_MAP || store.currentMapObject?.mapType === store.mapTypes.TRAVEL_MAP ? <PTravelMap /> : null} */}
         {store.mapType === store.mapTypes.TRAVEL_MAP || store.currentMapObject?.mapType === store.mapTypes.TRAVEL_MAP ? null : null}
         {store.mapType === store.mapTypes.HEATMAP || store.currentMapObject?.mapType === store.mapTypes.HEATMAP ? <PHeatmap /> : null}

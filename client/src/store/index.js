@@ -40,6 +40,8 @@ export const StoreActionType = {
   SET_MAX_COLOR: "SET_MAX_COLOR",
   SET_PROPORTIONAL_VALUE: "SET_PROPORTIONAL_VALUE",
   SET_PROPORTIONAL_COLOR: "SET_PROPORTIONAL_COLOR",
+  SET_POLITICAL_COLOR: "SET_POLITICAL_COLOR",
+
   SET_DOT_COLOR: "SET_DOT_COLOR",
 
   LOGOUT_USER: "LOGOUT_USER",
@@ -90,6 +92,7 @@ function StoreContextProvider(props) {
     maxColor: null,
     proportional_value: [], // proportional symbol map legend data
     proColor: null,
+    polColor: null,
     dotColor: null,
   });
 
@@ -264,6 +267,12 @@ function StoreContextProvider(props) {
           proColor: payload,
         });
       }
+      case StoreActionType.SET_POLITICAL_COLOR:{
+        return setStore({
+          ...store,
+          polColor: payload,
+        });
+      }
       case StoreActionType.SET_DOT_COLOR:{
         return setStore({
           ...store,
@@ -307,6 +316,15 @@ function StoreContextProvider(props) {
 
     storeReducer({
       type: StoreActionType.SET_PROPORTIONAL_COLOR,
+      payload: color,
+    });
+  };
+
+  store.setPolColor = function (color) {
+    console.log("setPolColor", color);
+
+    storeReducer({
+      type: StoreActionType.SET_POLITICAL_COLOR,
       payload: color,
     });
   };
@@ -799,6 +817,7 @@ function StoreContextProvider(props) {
     store.setMinColor(null);
     store.setMaxColor(null);
     store.setProColor(null);
+    store.setPolColor(null);
     store.setDotColor(null);
     store.setProportionalValue([]);
   }
