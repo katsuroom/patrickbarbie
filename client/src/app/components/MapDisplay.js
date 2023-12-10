@@ -7,6 +7,7 @@ import { useState } from "react";
 
 import dynamic from "next/dynamic";
 
+const PoliticalMap = dynamic(() => import('./PoliticalMap'));
 const Heatmap = dynamic(() => import('./HeatMap'));
 const ProportionalMap = dynamic(() => import('./ProportionalMap'));
 const TravelMap = dynamic(() => import("./TravelMaps"));
@@ -70,7 +71,7 @@ export default function MapDisplay() {
             />
           ) : store.mapType === store.mapTypes.POLITICAL_MAP ||
             store.currentMapObject.mapType === store.mapTypes.POLITICAL_MAP ? (
-            <Heatmap
+            <PoliticalMap
               file={store.rawMapFile}
               openModal={() => {
                 setDownloadModalOpen(true);
