@@ -6,8 +6,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
-import "../font.css"
-
 
 import AuthContext from "@/auth";
 import StoreContext from "@/store";

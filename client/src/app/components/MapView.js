@@ -3,7 +3,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
 import { IconButton, Typography, Divider, Box } from '@mui/material';
-import '../font.css';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Delete, CloudUpload, Edit, Download, Share } from '@mui/icons-material';

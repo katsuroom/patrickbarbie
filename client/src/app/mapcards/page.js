@@ -11,7 +11,6 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import StoreContext, { CurrentModal, View } from "@/store";
 import AuthContext from "@/auth";
-import "../font.css";
 import { useRouter } from "next/navigation";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";

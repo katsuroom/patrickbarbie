@@ -145,7 +145,10 @@ export default function TitleBar() {
                 Sign Out
               </MenuItem>
           ) : (
-            <MenuItem onClick={handleClose}>
+            <MenuItem onClick={() => {
+              handleClose();
+              store.logoutUser();
+            }}>
               <Link
                 href="/login"
                 color="inherit"
