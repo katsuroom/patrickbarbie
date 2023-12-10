@@ -8,38 +8,6 @@ import { saveAs } from "file-saver";
 import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
 import Script from "next/script";
 
-function normalize(value, min, max) {
-  return (value - min) / (max - min);
-}
-function interpolateColor(minColor, maxColor, minValue, maxValue, value) {
-  // Convert hex colors to RGB format
-  const hexToRgb = (hex) => hex.match(/\w\w/g).map((hex) => parseInt(hex, 16));
-
-  const minRGB = hexToRgb(minColor);
-  const maxRGB = hexToRgb(maxColor);
-  console.log(minRGB, maxRGB, value);
-
-  // Calculate the fraction between the min and max values
-  const fraction = (value - minValue) / (maxValue - minValue);
-
-  // Interpolate each RGB component
-  const interpolatedRGB = minRGB.map((component, index) =>
-    Math.round(component + fraction * (maxRGB[index] - component))
-  );
-
-  // Convert back to hex format
-  const rgbToHex = (rgb) =>
-    rgb
-      .map((value) => Math.max(0, Math.min(255, Math.round(value))))
-      .map((value) => value.toString(16).padStart(2, "0"))
-      .join("");
-
-  const interpolatedColor = `#${rgbToHex(interpolatedRGB)}`;
-
-  console.log(interpolatedColor);
-
-  return interpolatedColor;
-}
 
 export default function Politicalmap(props) {
   const [geoJsonData, setGeoJsonData] = useState(null);
@@ -113,36 +81,18 @@ setIsColorInit(true);
   }, []);
 
   useEffect(() => {
-    // const func = async () => {
-    // if (store.currentMapObject.mapProps) {
-    //   console.log("store.currentMapObject.mapProps is not null");
 
-    //   if (store.currentMapObject.mapProps.minColor) {
-    //     store.minColor = store.currentMapObject.mapProps.minColor;
-    //     store.setMinColor(store.currentMapObject.mapProps.minColor);
-    //   }
-    //   if (store.currentMapObject.mapProps.maxColor) {
-    //     store.maxColor = store.currentMapObject.mapProps.maxColor;
-    //     store.setMaxColor(store.currentMapObject.mapProps.maxColor);
-    //   }
-    // } else {
-    //   console.log("store.currentMapObject.mapProps is null");
-    //   store.minColor = "#FFFFFF";
-    //   store.maxColor = "#FF0000";
-    //   store.setMinColor("#FFFFFF");
-    //   store.setMaxColor("#FF0000");
-    // }
-
-    // if (legendRef.current) {
-    //   legendRef.current.remove();
-    // }
     initColor();
 
-    // await func();
-    // };
   }, [store.currentMapObject]);
 
   const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
+
+
+
+
+
+
 
   function geoJsonStyle(feature) {
     let fillColor;
@@ -155,14 +105,14 @@ setIsColorInit(true);
     if (!idx || idx < 0 || !store.parsed_CSV_Data) {
       fillColor = "white";
     } else {
-      fillColor = interpolateColor(
-        store.minColor,
-        store.maxColor,
-        Math.min(...store.parsed_CSV_Data[store.key]),
-        Math.max(...store.parsed_CSV_Data[store.key]),
+    //   fillColor = interpolateColor(
+    //     store.minColor,
+    //     store.maxColor,
+    //     Math.min(...store.parsed_CSV_Data[store.key]),
+    //     Math.max(...store.parsed_CSV_Data[store.key]),
 
-        store.parsed_CSV_Data[store.key][idx]
-      );
+    //     store.parsed_CSV_Data[store.key][idx]
+    //   );
     }
     return {
       stroke: true,
@@ -172,6 +122,8 @@ setIsColorInit(true);
       fillOpacity: 1,
     };
   }
+
+
 
   useEffect(() => {
     const resizeListener = () => {
@@ -296,37 +248,37 @@ setIsColorInit(true);
       });
 
       heatmapOverlayRef.current.addTo(mapRef.current);
-      if (legendVisible) {
-        if (legendRef.current) {
-          legendRef.current.remove();
-        }
+    //   if (legendVisible) {
+    //     if (legendRef.current) {
+    //       legendRef.current.remove();
+    //     }
 
-        const legend = L.control({ position: "bottomright" });
+    //     const legend = L.control({ position: "bottomright" });
 
-        legend.onAdd = function (map) {
-          const div = L.DomUtil.create("div", "info legend");
+    //     legend.onAdd = function (map) {
+    //       const div = L.DomUtil.create("div", "info legend");
 
-          (div.innerHTML +=
-            '<div style="background-color:' +
-            store.minColor +
-            '"> Min: ' +
-            Math.min(...store.parsed_CSV_Data[store.key])),
-            +"</div> " + "<br>";
+    //       (div.innerHTML +=
+    //         '<div style="background-color:' +
+    //         store.minColor +
+    //         '"> Min: ' +
+    //         Math.min(...store.parsed_CSV_Data[store.key])),
+    //         +"</div> " + "<br>";
 
-          (div.innerHTML +=
-            '<div style="background-color:' +
-            store.maxColor +
-            '"> Max: ' +
-            Math.max(...store.parsed_CSV_Data[store.key])),
-            +"</div> " + "<br>";
+    //       (div.innerHTML +=
+    //         '<div style="background-color:' +
+    //         store.maxColor +
+    //         '"> Max: ' +
+    //         Math.max(...store.parsed_CSV_Data[store.key])),
+    //         +"</div> " + "<br>";
 
-          return div;
-        };
+    //       return div;
+    //     };
 
-        legend.addTo(mapRef.current);
+    //     legend.addTo(mapRef.current);
 
-        legendRef.current = legend;
-      }
+    //     legendRef.current = legend;
+    //   }
 
       //   L.easyPrint({
       //     title: 'Save my map',

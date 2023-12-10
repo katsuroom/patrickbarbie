@@ -40,6 +40,8 @@ export const StoreActionType = {
   SET_MAX_COLOR: "SET_MAX_COLOR",
   SET_PROPORTIONAL_VALUE: "SET_PROPORTIONAL_VALUE",
   SET_PROPORTIONAL_COLOR: "SET_PROPORTIONAL_COLOR",
+  SET_POLITICAL_COLOR: "SET_POLITICAL_COLOR",
+
 
   LOGOUT_USER: "LOGOUT_USER",
 };
@@ -89,6 +91,7 @@ function StoreContextProvider(props) {
     maxColor: null,
     proportional_value: [], // proportional symbol map legend data
     proColor: null,
+    polColor: null,
   });
 
   store.viewTypes = View;
@@ -262,6 +265,12 @@ function StoreContextProvider(props) {
           proColor: payload,
         });
       }
+      case StoreActionType.SET_POLITICAL_COLOR:{
+        return setStore({
+          ...store,
+          polColor: payload,
+        });
+      }
       case StoreActionType.LOGOUT_USER: {
         return setStore({
           ...store,
@@ -302,6 +311,16 @@ function StoreContextProvider(props) {
       payload: color,
     });
   };
+
+  store.setPolColor = function (color) {
+    console.log("setPolColor", color);
+
+    storeReducer({
+      type: StoreActionType.SET_POLITICAL_COLOR,
+      payload: color,
+    });
+  };
+
   
   store.openModal = function (modal) {
     console.log("opening modal: ", modal);
@@ -782,6 +801,7 @@ function StoreContextProvider(props) {
     store.setMinColor(null);
     store.setMaxColor(null);
     store.setProColor(null);
+    store.setPolColor(null);
     store.setProportionalValue([]);
   }
   

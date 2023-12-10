@@ -81,7 +81,7 @@ export default function PPoliticalmap() {
         for (let idx in store.parsed_CSV_Data[event.target.value]) {
             console.log("gay", idx);
             tfs.push(
-               
+
                 <TextField
                     id={"tf-" + idx}
                     defaultValue={store.parsed_CSV_Data[event.target.value][idx]}
@@ -155,85 +155,33 @@ export default function PPoliticalmap() {
         store.setCsvKey(keys[1]);
     };
 
- 
+    // if (store.parsed_CSV_Data && !renderTable){
+    //   console.log("enter here")
+    //   setMenuItems(Object.keys(store.parsed_CSV_Data))
+    //   setRenderTable(true);
+    // }
     if (menuItems.length === 0 && store.parsed_CSV_Data) {
         setMenuItems(Object.keys(store.parsed_CSV_Data));
     }
 
+    // let maxPage =
+    //   store.label && store.parsed_CSV_Data && store.parsed_CSV_Data[store.label]
+    //     ? parseInt(store.parsed_CSV_Data[store.label].length / ROW_PER_PAGE)
+    //     : 0;
+
+    // console.log(store.currentMapObject);
+    // console.log(store.parsed_CSV_Data);
+    // console.log(store.label);
+    // console.log(menuItems);
 
     return (
         <div>
             <div className="propertyTitle">Property</div>
             <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
-            <div style={{ overflow: "auto", maxHeight: "45vh" }}>
-                <Table
-                    className="property-table"
-                    sx={{ "& thead th::nth-of-type(1)": { width: "40%" } }}
-                >
-                    <thead>
-                        <tr>
-                            <th>
-                                <Select
-                                    
-                                    value={store.label ? store.label : "label"}
-                                    required
-                                    onChange={handleChangeLabel}
-                                    sx={{ minWidth: "80%" }}
-                                    MenuProps={{
-                                        style: { maxHeight: "50%" },
-                                    }}
-                                >
-                                    {menuItems.map((mi) => (
-                                        <MenuItem key={mi} value={mi}>
-                                            {mi}
-                                        </MenuItem>
-                                    ))}
-                                    
-                                </Select>
-                            </th>
-                            <th>
-                                <Select
-                                    labelId="demo-simple-select-standard-label"
-                                    id="searchOn"
-                                    value={store.key ? store.key : "key"}
-                                    required
-                                    onChange={handleChangeKey}
-                                    sx={{ minWidth: "80%" }}
-                                    MenuProps={{
-                                        style: { maxHeight: "50%" },
-                                    }}
-                                >
-                                    {menuItems.map((mi) => (
-                                        <MenuItem key={mi} value={mi}>
-                                            {mi}
-                                        </MenuItem>
-                                    ))}
-                                    
-                                </Select>
-                            </th>
-                            {/* <th>Update</th> */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {store.parsed_CSV_Data &&
-                            zip(
-                                
-                                store.parsed_CSV_Data[store.label],
-                                store.parsed_CSV_Data[store.key]
-                                // textFields
-                            ).map((row) => (
-                                <tr key={row.name}>
-                                    <td>{row[0]}</td>
-                                    <td>{row[1]}</td>
-                                  
-                                </tr>
-                            ))}
-                    </tbody>
-                </Table>
-            </div>
+
             <div>
-              
-                <div>Select Min Color: </div>
+
+                {/* <div>Select Min Color: </div>
                 <CompactPicker
                     onChange={handleMinColorChange}
                     color={minHex}
@@ -246,8 +194,8 @@ export default function PPoliticalmap() {
                     onChange={handleMaxColorChange}
                     color={maxHex}
                     disableAlpha={true} // Disable alpha channel
-                />
-               
+                /> */}
+
             </div>
             <div>
                 <Button
@@ -267,9 +215,12 @@ export default function PPoliticalmap() {
                     SAVE
                 </Button>
             </div>
-           
+
             <MUISaveChanges />
             <MUIExit />
         </div>
     );
 }
+
+
+
