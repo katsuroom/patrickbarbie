@@ -18,16 +18,13 @@ describe("template spec", () => {
 
         cy.url().should("include", "/mapcards");
 
-        cy.wait(1000); 
-
-
         cy.contains(".map-list-name", "EU").click();
 
-        cy.wait(1000); 
+        cy.wait(500);
 
         cy.get('.downloadButton').click();
 
-        cy.wait(1000); 
+        cy.wait(500); 
 
         cy.get('.modal-button').contains('PNG').click();
 

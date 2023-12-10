@@ -20,13 +20,11 @@ describe("template spec", () => {
    
       cy.contains(".map-list-name", "Asia").click();
                   
-      cy.wait(1000); 
-
+      cy.wait(500);
 
       cy.get('.downloadButton').click();
 
-      cy.wait(1000); 
-
+      cy.wait(500); 
 
       cy.get('.modal-button').contains('JSON').click();
 

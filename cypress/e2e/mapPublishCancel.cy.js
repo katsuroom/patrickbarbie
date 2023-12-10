@@ -16,15 +16,12 @@ describe("template spec", () => {
       cy.get('input[type="password"]').type("Admin123@admin.com");
   
       cy.get('button[type="submit"]').click();
-
-      cy.wait(1000); 
-
   
       cy.url().should("include", "/mapcards");
    
       cy.contains(".map-list-name", "EU").click();
                   
-      cy.wait(1000); 
+      cy.wait(500);
 
       cy.get('.publishButton').click();
 

@@ -11,9 +11,6 @@ describe('template spec', () => {
 
         cy.url().should('include', "/mapcards")
 
-        cy.wait(1000); 
-
-
         cy.get('[data-testid="PeopleIcon"]').click()
 
     })

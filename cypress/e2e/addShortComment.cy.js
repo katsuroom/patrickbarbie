@@ -18,11 +18,7 @@ describe("template spec", () => {
 
         cy.url().should("include", "/mapcards");
 
-        cy.wait(1000); 
-
         cy.contains(".map-list-name", "Asia").click();
-
-        cy.wait(1000); 
 
         cy.get('input[placeholder="Add a comment..."]').type("short comment");
         cy.contains("button", "Post").click();
