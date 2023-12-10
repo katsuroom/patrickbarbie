@@ -7,11 +7,11 @@ describe('template spec', () => {
 
         cy.wait(500);
 
-        cy.contains('Continue as Guest').click()
+        cy.contains('Continue as Guest').click();
 
-        cy.url().should('include', "/mapcards")
+        cy.wait(500);
 
-        cy.get('[data-testid="PeopleIcon"]').click()
+        cy.url().should('include', "/mapcards");
 
         cy.wait(500); 
 
