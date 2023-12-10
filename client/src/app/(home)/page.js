@@ -36,7 +36,7 @@ export default function SplashScreen() {
   };
 
   return (
-    <div style={{ backgroundColor: "#fcc0db" }}>
+    <div style={{ backgroundColor: "#fcc0db", backgroundImage: "url('./background.png')", backgroundSize: "cover" }}>
       <Grid container>
         {/* Left Screen */}
         <Grid item xs={6}>
