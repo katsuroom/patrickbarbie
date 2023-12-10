@@ -10,6 +10,11 @@ export default function MainScreen() {
   const { store } = useContext(StoreContext);
 
   useEffect(() => {
+    if(store.mapList.length == 0)
+      store.getMapList();
+  }, [])
+
+  useEffect(() => {
     const func = async () => {
       // clear CSV fields
 

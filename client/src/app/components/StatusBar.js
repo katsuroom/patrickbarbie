@@ -4,8 +4,6 @@ import React, { useContext } from "react";
 import StoreContext from "../../store";
 import Typography from "@mui/material/Typography";
 
-import "../font.css";
-
 export default function StatusBar() {
   const { store } = useContext(StoreContext);
   return (
@@ -25,9 +23,9 @@ export default function StatusBar() {
       <Typography variant="h5" component="div" sx={{ fontFamily: "Sen" }}>
         {store.currentMapObject &&
           store.currentMapObject.title +
-            " ( Map ID: " +
+            " (Map ID: " +
             store.currentMapObject._id +
-            " )"}
+            ")"}
       </Typography>
     </div>
   );

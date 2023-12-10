@@ -2,8 +2,7 @@
 
 import React, { useState, useContext, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
-import { IconButton, Typography, Grid } from '@mui/material';
-import '../font.css';
+import { IconButton, Typography, Divider, Box } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Delete, CloudUpload, Edit, Download, Share } from '@mui/icons-material';
@@ -16,8 +15,9 @@ import MapDisplay from './MapDisplay';
 import MUIDeleteMap from '../modals/MUIDeleteMap';
 import MUIForkMap from '../modals/MUIForkMap';
 import MUIPublishMap from '../modals/MUIPublishMap';
+import MUIExportImage from '../modals/MUIExportMap';
 
-export default function MapView({ fileSelected, projectName, mapType }) {
+export default function MapView() {
     const { store } = useContext(StoreContext);
     const { auth } = useContext(AuthContext);
     const router = useRouter();
@@ -62,11 +62,7 @@ export default function MapView({ fileSelected, projectName, mapType }) {
     }
 
     function handleDownloadClick() {
-        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(store.rawMapFile));
-        let downloadAnchor = document.getElementById("download-anchor");
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `${store.currentMapObject.title || "map"}.json`);
-        downloadAnchor.click();
+      store.openModal(CurrentModal.EXPORT_MAP);
     }
 
     function handleForkClick() {
@@ -92,27 +88,29 @@ export default function MapView({ fileSelected, projectName, mapType }) {
             flexWrap: "wrap",
           }}
         >
-          <Grid container spacing={2}>
-            <Grid item xs={5} style={{ display: "flex", alignItems: "center" }}>
+          <Typography
+            sx={{ fontFamily: "Sen", color: "black", fontWeight: "bold", letterSpacing: "1px"}}
+          >
+            {store.currentMapObject?.author}
+          </Typography>
+          <Box
+            style={{
+              marginLeft: "auto", 
+              marginRight: 0,
+              display: "flex",
+            }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <IconButton disabled={true}>
+                <VisibilityIcon sx={{color: "black"}}/>
+              </IconButton>
               <Typography
-                sx={{ fontFamily: "Sen", color: "black", fontWeight: "bold", letterSpacing: "1px"}}
-              >
-                {store.currentMapObject?.author}
-              </Typography>
-            </Grid>
-            <Grid item xs={1} style={{ display: "flex", alignItems: "center" }}>
-              <VisibilityIcon />
-              <Typography
-                sx={{ fontFamily: "Sen", color: "black", marginLeft: 1 }}
+                sx={{ fontFamily: "Sen", color: "black"}}
               >
                 {store.currentMapObject?.views}
               </Typography>
-            </Grid>
-            <Grid
-              item
-              xs={3.4}
-              style={{ display: "flex", alignItems: "center" }}
-            >
+            </div>
+            <Divider orientation="vertical" flexItem sx={{padding: 1, borderColor:"#f786b9", borderRightWidth:2}}/>
+            <div style={{ display: "flex", alignItems: "center" }}>
               <IconButton
                 className="likeButton"
                 onClick={handleLikeClick}
@@ -121,64 +119,55 @@ export default function MapView({ fileSelected, projectName, mapType }) {
                 <FavoriteIcon sx={{color: store.currentMapObject?.likedUsers.includes(auth.user?.username) ? "red" : "dark-gray"}}/>
               </IconButton>
               <Typography
-                sx={{ fontFamily: "Sen", color: "black", marginLeft: 1 }}
+                sx={{ fontFamily: "Sen", color: "black"}}
               >
                 {store.currentMapObject?.likedUsers.length}
               </Typography>
-            </Grid>
-            <Grid item xs={0.5}>
-              <IconButton
-                className="deleteButton"
-                onClick={handleDeleteClick}
-                disabled={
-                  !auth.loggedIn ||
-                  !store.currentMapObject ||
-                  auth.user.username !== store.currentMapObject.author
-                }
-              >
-                <Delete />
-              </IconButton>
-            </Grid>
-            <Grid item xs={0.5}>
-              <IconButton
-                className="publishButton"
-                disabled={store.currentMapObject?.isPublished}
-                onClick={handlePublishClick}
-              >
-                <CloudUpload />
-              </IconButton>
-            </Grid>
-            <Grid item xs={0.5}>
-              <IconButton
-                className="editButton"
-                onClick={handleEditClick}
-                disabled={
-                  !auth.loggedIn ||
-                  !store.currentMapObject ||
-                  auth.user.username !== store.currentMapObject.author
-                }
-              >
-                <Edit />
-              </IconButton>
-            </Grid>
-            <Grid item xs={0.5}>
-              <IconButton
-                className="downloadButton"
-                onClick={handleDownloadClick}
-              >
-                <Download />
-              </IconButton>
-            </Grid>
-            <Grid item xs={0.5}>
-              <IconButton
+            </div>
+            <Divider orientation="vertical" flexItem sx={{padding: 1, borderColor:"#f786b9", borderRightWidth:2}}/>
+            <IconButton
+              className="deleteButton"
+              onClick={handleDeleteClick}
+              disabled={
+                !auth.loggedIn ||
+                !store.currentMapObject ||
+                auth.user.username !== store.currentMapObject.author
+              }
+            >
+              <Delete />
+            </IconButton>
+            <IconButton
+              className="publishButton"
+              disabled={store.currentMapObject?.isPublished}
+              onClick={handlePublishClick}
+            >
+              <CloudUpload />
+            </IconButton>
+            <IconButton
+              className="editButton"
+              onClick={handleEditClick}
+              disabled={
+                !auth.loggedIn ||
+                !store.currentMapObject ||
+                auth.user.username !== store.currentMapObject.author
+              }
+            >
+              <Edit />
+            </IconButton>
+            <IconButton
+              className="downloadButton"
+              onClick={handleDownloadClick}
+            >
+              <Download />
+            </IconButton>
+            <IconButton
                 className="forkButton"
                 onClick={handleForkClick}
                 disabled={!auth.loggedIn}
               >
-                <Share />
-              </IconButton>
-            </Grid>
-          </Grid>
+              <Share />
+            </IconButton>
+          </Box>
         </div>
         <div style={{ backgroundColor: "#FDF4F3", padding: 10, margin: 10 }}>
           <CommentSection initialComments={initialComments} />
@@ -186,6 +175,7 @@ export default function MapView({ fileSelected, projectName, mapType }) {
         <MUIDeleteMap />
         <MUIForkMap />
         <MUIPublishMap />
+        <MUIExportImage />
       </div>
     );
 

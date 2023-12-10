@@ -10,7 +10,6 @@ import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import StoreContext, { CurrentModal, View } from "@/store";
 import AuthContext from "@/auth";
-import "../font.css";
 import { Typography } from "@mui/material";
 import Stack from "@mui/material/Stack";
 

@@ -6,8 +6,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
-import "../font.css"
-
 
 import AuthContext from "@/auth";
 import StoreContext from "@/store";
@@ -38,7 +36,7 @@ export default function SplashScreen() {
   };
 
   return (
-    <div style={{ backgroundColor: "#fcc0db" }}>
+    <div style={{ backgroundColor: "#fcc0db", backgroundImage: "url('./background.png')", backgroundSize: "cover" }}>
       <Grid container>
         {/* Left Screen */}
         <Grid item xs={6}>
@@ -53,9 +51,9 @@ export default function SplashScreen() {
 
           <Box
             display="flex"
-            alignItems="flex-end"
+            alignItems="center"
             justifyContent="center"
-
+            
           >
             <Typography variant="h5" component="div" sx={{ fontFamily: 'Sen' }}>
               Create Edit and Share Maps!

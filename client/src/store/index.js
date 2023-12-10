@@ -5,7 +5,7 @@ import AuthContext from "../auth";
 import { usePathname } from "next/navigation";
 
 
-import api from "./store-request-api";
+import api from "./api";
 
 const geobuf = require("geobuf");
 const Pbf = require("pbf");
@@ -23,7 +23,6 @@ export const StoreActionType = {
   EMPTY_RAW_MAP_FILE: "EMPTY_RAW_MAP_FILE",
   SET_CSV_KEY: "SET_CSV_KEY",
   SET_CSV_LABEL: "SET_CSV_LABEL",
-  SET_MAP_TYPE: "SET_MAP_TYPE",
   SET_RAW_MAP_FILE: "SET_RAW_MAP_FILE",
   LOAD_MAP_LIST: "LOAD_MAP_LIST",
 
@@ -40,6 +39,9 @@ export const StoreActionType = {
   SET_MAX_COLOR: "SET_MAX_COLOR",
   SET_PROPORTIONAL_VALUE: "SET_PROPORTIONAL_VALUE",
   SET_PROPORTIONAL_COLOR: "SET_PROPORTIONAL_COLOR",
+  SET_POLITICAL_COLOR: "SET_POLITICAL_COLOR",
+
+  SET_DOT_COLOR: "SET_DOT_COLOR",
 
   LOGOUT_USER: "LOGOUT_USER",
 };
@@ -53,6 +55,7 @@ export const CurrentModal = {
   DELETE_MAP: "DELETE_MAP",
   EXIT_EDIT: "EXIT_EDIT",
   SAVE_EDIT: "SAVE_EDIT",
+  EXPORT_MAP: "EXPORT_MAP"
 };
 
 export const MapType = {
@@ -81,7 +84,6 @@ function StoreContextProvider(props) {
     StartKey: null, // csv key [column name] for map displaying
     EndKey: null, // csv key [column name] for map displaying
     parsed_CSV_Data: null,
-    mapType: null,
     currentMapObject: null,
     mapList: [], // loaded list of maps (idNamePairs)
     currentView: View.COMMUNITY,
@@ -89,11 +91,12 @@ function StoreContextProvider(props) {
     maxColor: null,
     proportional_value: [], // proportional symbol map legend data
     proColor: null,
+    polColor: null,
+    dotColor: null,
   });
 
   store.viewTypes = View;
   store.currentModalTypes = CurrentModal;
-  store.mapTypes = MapType;
 
   const storeReducer = (action) => {
     const { type, payload } = action;
@@ -147,13 +150,6 @@ function StoreContextProvider(props) {
         return setStore({
           ...store,
           label: payload.label,
-        });
-      }
-
-      case StoreActionType.SET_MAP_TYPE: {
-        return setStore({
-          ...store,
-          mapType: payload.mapType,
         });
       }
 
@@ -262,6 +258,18 @@ function StoreContextProvider(props) {
           proColor: payload,
         });
       }
+      case StoreActionType.SET_POLITICAL_COLOR:{
+        return setStore({
+          ...store,
+          polColor: payload,
+        });
+      }
+      case StoreActionType.SET_DOT_COLOR:{
+        return setStore({
+          ...store,
+          dotColor: payload,
+        });
+      }
       case StoreActionType.LOGOUT_USER: {
         return setStore({
           ...store,
@@ -299,6 +307,24 @@ function StoreContextProvider(props) {
 
     storeReducer({
       type: StoreActionType.SET_PROPORTIONAL_COLOR,
+      payload: color,
+    });
+  };
+
+  store.setPolColor = function (color) {
+    console.log("setPolColor", color);
+
+    storeReducer({
+      type: StoreActionType.SET_POLITICAL_COLOR,
+      payload: color,
+    });
+  };
+
+  store.setDotColor = function (color) {
+    console.log("setDotColor", color);
+
+    storeReducer({
+      type: StoreActionType.SET_DOT_COLOR,
       payload: color,
     });
   };
@@ -355,20 +381,7 @@ function StoreContextProvider(props) {
     }
   };
 
-  // DELETE ONCE MAP CARD LIST IS FIXED
-  store.getMapFile = async function (fileName) {
-    console.log("getMapFile: ", fileName);
-    const file = await api.getMainScreenMap(fileName);
-    console.log(file.data);
-    // const blob = await response.blob();
-    // const file = new File([blob], fileName);
-
-    storeReducer({
-      type: StoreActionType.SET_RAW_MAP_FILE,
-      payload: { file: file.data },
-    });
-  };
-
+  // loads map data when the map card is clicked
   store.loadMapFile = function (mapId) {
     const selected = store.mapList.find((map) => map._id === mapId);
     console.log("selected: ", selected);
@@ -390,17 +403,13 @@ function StoreContextProvider(props) {
     {
       let res = await api.getMapDataById(mapDataId);
       const rawMapFile = geobuf.decode(new Pbf(res.data.data.mapData.data));
-      
-      store.currentMapObject = selected;
-      store.rawMapFile = rawMapFile;
-
 
       storeReducer({
         type: StoreActionType.LOAD_MAP,
         payload: {
           mapList: store.mapList,
           currentMapObject: selected,
-          rawMapFile: rawMapFile,
+          rawMapFile: rawMapFile
         }
       });
     }
@@ -642,13 +651,6 @@ function StoreContextProvider(props) {
     store.parsed_CSV_Data = data;
   };
 
-  store.setMapType = function (mapType) {
-    storeReducer({
-      type: StoreActionType.SET_MAP_TYPE,
-      payload: { mapType },
-    });
-  };
-
   // fetches map list based on current view
   store.getMapList = async function () {
     if (store.isHomePage())
@@ -782,6 +784,8 @@ function StoreContextProvider(props) {
     store.setMinColor(null);
     store.setMaxColor(null);
     store.setProColor(null);
+    store.setPolColor(null);
+    store.setDotColor(null);
     store.setProportionalValue([]);
   }
   

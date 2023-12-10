@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -58,10 +58,10 @@ export default function MUIDeleteMap() {
             Are you sure you want to delete this map?
           </div>
           <div className="confirm">
-            <Button onClick={onClose} variant="contained" sx={buttonStyle} className = "modal-button">
+            <Button onClick={onClose} variant="contained" sx={buttonStyle} className="modal-button">
               Cancel
             </Button>
-            <Button onClick={handleDelete} variant="contained" sx={buttonStyle} className = "modal-button-confirm">
+            <Button onClick={handleDelete} variant="contained" sx={buttonStyle} className="modal-button-confirm">
               Confirm
             </Button>
           </div>

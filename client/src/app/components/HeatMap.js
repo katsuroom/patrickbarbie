@@ -2,10 +2,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import L from "leaflet";
 import "leaflet-easyprint";
 import "leaflet/dist/leaflet.css";
-import StoreContext from "@/store";
-import domtoimage from "dom-to-image";
-import { saveAs } from "file-saver";
-import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
+import StoreContext, {MapType} from "@/store";
 import Script from "next/script";
 
 function normalize(value, min, max) {
@@ -41,20 +38,16 @@ function interpolateColor(minColor, maxColor, minValue, maxValue, value) {
   return interpolatedColor;
 }
 
-export default function Heatmap(props) {
+export default function Heatmap() {
   const [geoJsonData, setGeoJsonData] = useState(null);
-  const [buttonAdded, setButtonAdded] = useState(false);
   const mapRef = useRef(null);
   const geoJsonLayerRef = useRef(null);
   const heatmapOverlayRef = useRef(null);
   const markers = useRef([]);
   const { store } = useContext(StoreContext);
-  let downloadComplete = props.downloadComplete;
   const [legendVisible, setLegendVisible] = useState(true);
   const legendRef = useRef(null);
   const [isColorInit, setIsColorInit] = useState(false);
-
-  // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
 
   const initColor = () => {
     if (store.currentMapObject.mapProps) {
@@ -242,22 +235,6 @@ setIsColorInit(true);
       }
     }
 
-    if (!buttonAdded) {
-      const saveImageButton = L.control({ position: "bottomleft" });
-      saveImageButton.onAdd = function () {
-        this._div = L.DomUtil.create("div", "saveImageButton");
-        this._div.innerHTML =
-          '<Button id="saveImageButton" data-cy="save-image-button">Save Image</Button>';
-        return this._div;
-      };
-      saveImageButton.addTo(mapRef.current);
-
-      document
-        .getElementById("saveImageButton")
-        .addEventListener("click", props.openModal);
-      setButtonAdded(true);
-    }
-
     if (heatmapOverlayRef.current) {
       mapRef.current.removeLayer(heatmapOverlayRef.current);
     }
@@ -266,11 +243,7 @@ setIsColorInit(true);
       return;
     }
 
-    if (
-      store.mapType === store.mapTypes.HEATMAP ||
-      (store.currentMapObject &&
-        store.currentMapObject.mapType === store.mapTypes.HEATMAP)
-    ) {
+    if (store.currentMapObject?.mapType === MapType.HEATMAP) {
       heatmapOverlayRef.current = L.geoJSON(geoJsonData, {
         style: geoJsonStyle,
         onEachFeature: (feature, layer) => {
@@ -345,46 +318,6 @@ setIsColorInit(true);
     store.minColor,
     store.maxColor,
   ]);
-
-  if (!downloadComplete) {
-    if (props.imageType === "JPEG") {
-      domtoimage
-        .toJpeg(document.getElementById("map-display"), {
-          width: 1400,
-          height: 600,
-          style: {
-            transform: "scale(2)",
-            transformOrigin: "top left",
-            width: "50%",
-            height: "50%",
-          },
-        })
-        .then(function (dataUrl) {
-          saveAs(dataUrl, "map.jpeg");
-        });
-      downloadComplete = true;
-      props.completeDownloadCB();
-    } else if (props.imageType === "PNG") {
-      domtoimage
-        .toBlob(document.getElementById("map-display"), {
-          width: 1400,
-          height: 600,
-          style: {
-            transform: "scale(2)",
-            transformOrigin: "top left",
-            width: "50%",
-            height: "50%",
-          },
-        })
-        .then(function (blob) {
-          saveAs(blob, "map.png");
-        });
-      downloadComplete = true;
-      props.completeDownloadCB();
-    }
-  } else {
-    console.log("download already completed!!!");
-  }
 
   return (
     <div>
