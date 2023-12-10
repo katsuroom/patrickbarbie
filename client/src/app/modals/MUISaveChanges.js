@@ -52,6 +52,15 @@ export default function MUISaveChanges() {
 
     }
 
+    if(store.currentMapObject.mapType === store.mapTypes.DOT_DISTRIBUTION_MAP){
+      console.log("save map props dot distribution");
+      if (!store.currentMapObject.mapProps) {
+        store.currentMapObject.mapProps = {};
+      }
+      store.currentMapObject.mapProps.dotColor = store.dotColor;
+      console.log("store.currentMapObject", store.currentMapObject);
+    }
+
     if (store.currentMapObject.mapType === store.mapTypes.HEATMAP) {
       console.log("save map props heat map");
 
