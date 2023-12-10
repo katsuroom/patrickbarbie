@@ -22,14 +22,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
 
 
+import EditContext from "@/edit";
 
 export default function PPoliticalmap() {
     const { store } = useContext(StoreContext);
-
+    const { edit } = useContext(EditContext);
 
     const [selectedAttribute, setSelectedAttribute] = useState('');
     const [attributeColorMapping, setAttributeColorMapping] = useState({});
-
 
 
     const [properties, setProperties] = React.useState([]);
