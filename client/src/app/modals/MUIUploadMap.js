@@ -1,3 +1,6 @@
+"use client"
+
+
 import React, { useContext, useRef, useState } from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
