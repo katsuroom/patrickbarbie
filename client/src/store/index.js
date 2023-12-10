@@ -5,7 +5,7 @@ import AuthContext from "../auth";
 import { usePathname } from "next/navigation";
 
 
-import api from "./store-request-api";
+import api from "./api";
 
 const geobuf = require("geobuf");
 const Pbf = require("pbf");

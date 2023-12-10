@@ -53,9 +53,9 @@ export default function SplashScreen() {
 
           <Box
             display="flex"
-            alignItems="flex-end"
+            alignItems="center"
             justifyContent="center"
-
+            
           >
             <Typography variant="h5" component="div" sx={{ fontFamily: 'Sen' }}>
               Create Edit and Share Maps!
