@@ -5,7 +5,7 @@ import AuthContext from "../auth";
 import { usePathname } from "next/navigation";
 
 
-import api from "./store-request-api";
+import api from "./api";
 
 const geobuf = require("geobuf");
 const Pbf = require("pbf");
@@ -42,6 +42,7 @@ export const StoreActionType = {
   SET_PROPORTIONAL_COLOR: "SET_PROPORTIONAL_COLOR",
   SET_POLITICAL_COLOR: "SET_POLITICAL_COLOR",
 
+  SET_DOT_COLOR: "SET_DOT_COLOR",
 
   LOGOUT_USER: "LOGOUT_USER",
 };
@@ -92,6 +93,7 @@ function StoreContextProvider(props) {
     proportional_value: [], // proportional symbol map legend data
     proColor: null,
     polColor: null,
+    dotColor: null,
   });
 
   store.viewTypes = View;
@@ -271,6 +273,12 @@ function StoreContextProvider(props) {
           polColor: payload,
         });
       }
+      case StoreActionType.SET_DOT_COLOR:{
+        return setStore({
+          ...store,
+          dotColor: payload,
+        });
+      }
       case StoreActionType.LOGOUT_USER: {
         return setStore({
           ...store,
@@ -321,6 +329,14 @@ function StoreContextProvider(props) {
     });
   };
 
+  store.setDotColor = function (color) {
+    console.log("setDotColor", color);
+
+    storeReducer({
+      type: StoreActionType.SET_DOT_COLOR,
+      payload: color,
+    });
+  };
   
   store.openModal = function (modal) {
     console.log("opening modal: ", modal);
@@ -802,6 +818,7 @@ function StoreContextProvider(props) {
     store.setMaxColor(null);
     store.setProColor(null);
     store.setPolColor(null);
+    store.setDotColor(null);
     store.setProportionalValue([]);
   }
   
