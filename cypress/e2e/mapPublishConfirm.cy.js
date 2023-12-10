@@ -17,7 +17,7 @@ describe("template spec", () => {
 
     cy.get('button[type="submit"]').click();
 
-    cy.url().should("include", "/main");
+    cy.url().should("include", "/mapcards");
 
     cy.wait(500);
 

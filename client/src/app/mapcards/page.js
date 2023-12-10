@@ -9,10 +9,12 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import StoreContext from "@/store";
+import StoreContext, { CurrentModal, View } from "@/store";
 import AuthContext from "@/auth";
 import "../font.css";
 import { useRouter } from "next/navigation";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
 
 export default function EditScreen() {
   const { store } = useContext(StoreContext);
@@ -56,6 +58,10 @@ export default function EditScreen() {
   const handleMapClick = (mapId) => {
     store.loadMapFile(mapId);
     router.push("/main");
+  };
+
+  const handleCreateMap = () => {
+    store.openModal(CurrentModal.UPLOAD_MAP);
   };
 
   const renderMapItem = (map) => (
@@ -224,6 +230,22 @@ export default function EditScreen() {
           ])}
         </Grid>
       </List>
+      {auth.loggedIn && store.currentView == View.HOME ? (
+        <Fab
+          sx={{
+            position: "absolute",
+            bottom: 72,
+            right: 16,
+            bgcolor: "#ffabd1",
+            "&:hover": {
+              bgcolor: "#ffabd1",
+            },
+          }}
+          onClick={handleCreateMap}
+        >
+          <AddIcon />
+        </Fab>
+      ) : null}
     </>
   );
 }

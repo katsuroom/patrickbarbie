@@ -9,12 +9,15 @@ import AuthContext from "@/auth";
 import StoreContext from "@/store";
 import Link from "next/link";
 
+import { useRouter } from 'next/navigation';
+
 import SearchBar from "./SearchBar";
 
 export default function TitleBar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const { auth } = useContext(AuthContext);
   const { store } = useContext(StoreContext);
+  const router = useRouter();
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -26,11 +29,22 @@ export default function TitleBar() {
 
   const enableHome = () => auth.loggedIn;
 
+  const handlePatrick = () => {
+    if(auth.loggedIn)
+      router.push("/mapcards");
+    else
+    {
+      router.push("/");
+      store.logoutUser();
+    }
+  };
+
   const buttonHoverStyle = {
       border: "2px solid #f786b9",
       borderRadius: "50%",
       padding: "2px",
       cursor: "pointer",
+      backgroundColor: "transparent"
     }
 
   return (
@@ -38,25 +52,30 @@ export default function TitleBar() {
       <div
         style={{ backgroundColor: "#fce8f1", height: "9vh" }}
       >
-        <Link href={auth.loggedIn ? "/mapcards" : "/"}>
-          <img
-            src="/patrick-barbie.png"
-            height="125%"
-            style={{
-              marginTop: 5,
-              marginLeft: 10,
-              clipPath: "inset(0% 0% 27% 0%)",
-            }}
-          />
-        </Link>
+        <img
+          onClick={handlePatrick}
+          src="/patrick-barbie.png"
+          height="125%"
+          style={{
+            marginTop: 5,
+            marginLeft: 10,
+            clipPath: "inset(0% 0% 27% 0%)",
+            cursor: "pointer"
+          }}
+        />
         {store.showSearchBar() ? (
           <div>
-          <HomeIcon
+          <IconButton
+            disabled={ !enableHome() }
+            onClick={() => {
+              store.changeView(store.viewTypes.HOME);
+              store.getMapList();
+            }}
             sx={{
               position: "absolute",
-              top: "1.5%",
+              top: "0.75%",
               left: "8vw",
-              fontSize: "30pt",
+              
               color:
                 store.currentView === store.viewTypes.HOME
                   ? "#f786b9" : enableHome()
@@ -64,16 +83,13 @@ export default function TitleBar() {
                   "darkgray",
               "&:hover": enableHome() ? buttonHoverStyle : {}
             }}
-            disabled={ !enableHome() }
-            onClick={() => {
-              store.changeView(store.viewTypes.HOME);
-              store.getMapList();
-            }}
-          />
-          <PeopleIcon
+          >
+            <HomeIcon sx={{fontSize: "30pt"}}/>
+          </IconButton>
+          <IconButton
             sx={{
               position: "absolute",
-              top: "1.5%",
+              top: "0.75%",
               left: "13vw",
               fontSize: "30pt",
               color:
@@ -88,7 +104,9 @@ export default function TitleBar() {
               store.changeView(store.viewTypes.COMMUNITY);
               store.getMapList();
             }}
-          />
+          >
+            <PeopleIcon sx={{fontSize: "30pt"}}/>
+          </IconButton>
         <Box sx={{ position: "absolute", top: "1%", left: "23vw" }}>
           <SearchBar />
         </Box>
@@ -121,6 +139,7 @@ export default function TitleBar() {
                 onClick={() => {
                   handleClose();
                   auth.logoutUser();
+                  store.logoutUser();
                 }}
               >
                 Sign Out
