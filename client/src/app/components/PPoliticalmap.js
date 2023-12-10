@@ -3,6 +3,7 @@
 import * as React from "react";
 import Table from "@mui/joy/Table";
 import Button from "@mui/joy/Button";
+import Box from "@mui/joy/Box";
 import Add from "@mui/icons-material/Add";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
@@ -12,14 +13,68 @@ import { useHistory } from "react-router-dom";
 import CsvFileReader from "./CsvFileReader";
 import MUISaveChanges from "../modals/MUISaveChanges";
 import MUIExit from "../modals/MUIExitModal";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import StoreContext, { CurrentModal } from "@/store";
 import { CompactPicker } from "react-color";
+import Paper from "@mui/material/Paper";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Typography from "@mui/material/Typography";
 
 
 
 export default function PPoliticalmap() {
     const { store } = useContext(StoreContext);
+
+
+    const [selectedAttribute, setSelectedAttribute] = useState('');
+    const [attributeColorMapping, setAttributeColorMapping] = useState({});
+
+
+
+    const [properties, setProperties] = React.useState([]);
+    const [newPropertyName, setNewPropertyName] = React.useState('');
+    const [newPropertyColor, setNewPropertyColor] = React.useState('#fff');
+
+    // Function to handle adding a new category-color mapping
+    const handleAddProperty = () => {
+        // Check if the category already exists to prevent duplicates
+        if (!properties.some(property => property.category === newPropertyName)) {
+            const newMappings = [...properties, { category: newPropertyName, color: newPropertyColor }];
+            setProperties(newMappings);
+            // Assuming onMappingsChange is a prop function to update the parent state
+            onMappingsChange(newMappings);
+            setNewPropertyName('');
+            setNewPropertyColor('#fff');
+        }
+    };
+
+    const handleDeleteProperty = (propertyName) => {
+        setProperties(properties.filter(property => property.name !== propertyName));
+    };
+
+    // When a new attribute is selected, reset the color mapping
+    useEffect(() => {
+        if (selectedAttribute) {
+            const uniqueValues = new Set(store.parsed_CSV_Data[selectedAttribute]);
+            const newMapping = {};
+            uniqueValues.forEach(value => {
+                newMapping[value] = '#ffffff'; // Default color
+            });
+            setAttributeColorMapping(newMapping);
+        }
+    }, [selectedAttribute, store.parsed_CSV_Data]);
+
+    // Function to handle color change for each attribute value
+    const handleColorChange = (value, color) => {
+        const updatedMapping = { ...attributeColorMapping, [value]: color.hex };
+        setAttributeColorMapping(updatedMapping);
+        if (onMappingsChange) {
+            onMappingsChange(updatedMapping);
+        }
+    };
+
+
 
     const [menuItems, setMenuItems] = React.useState([]);
 
@@ -174,29 +229,147 @@ export default function PPoliticalmap() {
     // console.log(store.label);
     // console.log(menuItems);
 
+
     return (
         <div>
             <div className="propertyTitle">Property</div>
             <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
 
-            <div>
 
-                {/* <div>Select Min Color: </div>
-                <CompactPicker
-                    onChange={handleMinColorChange}
-                    color={minHex}
-                    disableAlpha={true} // Disable alpha channel
-                />
-               
-                <div style={{ paddingTop: "1%" }}>Select Max Color: </div>
+            <div style={{ overflow: "auto", maxHeight: "45vh" }}>
+                <Table
+                    className="property-table"
+                    sx={{ "& thead th::nth-of-type(1)": { width: "40%" } }}
+                >
+                    <thead>
+                        <tr>
+                            <th>
+                                <Select
 
-                <CompactPicker
-                    onChange={handleMaxColorChange}
-                    color={maxHex}
-                    disableAlpha={true} // Disable alpha channel
-                /> */}
+                                    value={store.label ? store.label : "label"}
+                                    required
+                                    onChange={handleChangeLabel}
+                                    sx={{ minWidth: "80%" }}
+                                    MenuProps={{
+                                        style: { maxHeight: "50%" },
+                                    }}
+                                >
+                                    {menuItems.map((mi) => (
+                                        <MenuItem key={mi} value={mi}>
+                                            {mi}
+                                        </MenuItem>
+                                    ))}
 
+                                </Select>
+                            </th>
+                            <th>
+                                <Select
+                                    labelId="demo-simple-select-standard-label"
+                                    id="searchOn"
+                                    value={store.key ? store.key : "key"}
+                                    required
+                                    onChange={handleChangeKey}
+                                    sx={{ minWidth: "80%" }}
+                                    MenuProps={{
+                                        style: { maxHeight: "50%" },
+                                    }}
+                                >
+                                    {menuItems.map((mi) => (
+                                        <MenuItem key={mi} value={mi}>
+                                            {mi}
+                                        </MenuItem>
+                                    ))}
+
+                                </Select>
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {store.parsed_CSV_Data &&
+                            zip(
+
+                                store.parsed_CSV_Data[store.label],
+                                store.parsed_CSV_Data[store.key]
+
+                            ).map((row) => (
+                                <tr key={row.name}>
+                                    <td>{row[0]}</td>
+                                    <td>{row[1]}</td>
+
+                                </tr>
+                            ))}
+                    </tbody>
+                </Table>
             </div>
+
+
+
+
+
+            {/* Form for adding new region-color mappings */}
+            {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, margin: 2 }}>
+                <TextField
+                    label="Region Name"
+                    value={newPropertyName}
+                    onChange={(e) => setNewPropertyName(e.target.value)}
+                    variant="outlined"
+                    size="small"
+                    sx={{ flexGrow: 1 }}
+                />
+                <CompactPicker
+                    color={newPropertyColor}
+                    onChange={(color) => setNewPropertyColor(color.hex)}
+                />
+                <Button variant="contained" color="primary" onClick={handleAddProperty}>
+                    Add Mapping
+                </Button>
+            </Box> */}
+
+            {/* List of region-color mappings */}
+            {/* {properties.map((property, index) => (
+                <Paper key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2, padding: 1, marginY: 1 }}>
+                    <Typography sx={{ marginLeft: 2, flexShrink: 0 }}>
+                        {property.name}
+                    </Typography>
+                    <CompactPicker
+                        color={property.color}
+                        onChange={(color) => handleColorChange(color, index)}
+                    />
+                    <IconButton onClick={() => handleDeleteProperty(property.name)} color="error" sx={{ marginLeft: 'auto' }}>
+                        <DeleteIcon />
+                    </IconButton>
+                </Paper>
+            ))} */}
+
+
+
+            <div>
+                {/* Dropdown to select an attribute */}
+                <Select value={selectedAttribute} onChange={e => setSelectedAttribute(e.target.value)}>
+                    {store.parsed_CSV_Data && Object.keys(store.parsed_CSV_Data).length > 0 ?
+                        Object.keys(store.parsed_CSV_Data).map(key => (
+                            <MenuItem key={key} value={key}>{key}</MenuItem>
+                        )) : null
+                    }
+                </Select>
+
+                {/* Color pickers for each unique value of the selected attribute */}
+                {Object.entries(attributeColorMapping).map(([value, color]) => (
+                    <div key={value}>
+                        {value}
+                        <CompactPicker color={color} onChange={color => handleColorChange(value, color)} />
+                    </div>
+                ))}
+            </div>
+
+
+
+
+
+
+
+
             <div>
                 <Button
                     variant="solid"
