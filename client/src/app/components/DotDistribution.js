@@ -2,21 +2,17 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import StoreContext from "@/store";
-import domtoimage from "dom-to-image";
-import { saveAs } from "file-saver";
 import * as turf from "@turf/turf";
 import "./proportionalMap.css";
 
 
-export default function DotDistribution(props){
+export default function DotDistribution(){
     const [geoJsonData, setGeoJsonData] = useState(null);
-    const [buttonAdded, setButtonAdded] = useState(false);
     const mapRef = useRef(null);
     const geoJsonLayerRef = useRef(null);
     const dotDistributionRef = useRef(null);
     const markers = useRef([]);
     const { store } = useContext(StoreContext);
-    let downloadComplete = props.downloadComplete;
 
     useEffect(() => {
       if (store.currentMapObject.mapProps) {
@@ -121,22 +117,6 @@ export default function DotDistribution(props){
         }
       }
 
-      if (!buttonAdded) {
-        const saveImageButton = L.control({ position: "bottomleft" });
-        saveImageButton.onAdd = function () {
-          this._div = L.DomUtil.create("div", "saveImageButton");
-          this._div.innerHTML =
-            '<Button id="saveImageButton" >Save Image</Button>';
-          return this._div;
-        };
-        saveImageButton.addTo(mapRef.current);
-
-        document
-          .getElementById("saveImageButton")
-          .addEventListener("click", props.openModal);
-        setButtonAdded(true);
-      }
-
       if (!(geoJsonData && store.label && store.parsed_CSV_Data)) {
         console.log("not all data is ready");
         return;
@@ -224,46 +204,6 @@ export default function DotDistribution(props){
 
       }
     }, [geoJsonData, store.label, store.key, store.parsed_CSV_Data, store.dotColor]);
-
-    if (!downloadComplete) {
-      if (props.imageType === "JPEG") {
-        domtoimage
-          .toJpeg(document.getElementById("map-display"), {
-            width: 1400,
-            height: 600,
-            style: {
-              transform: "scale(2)",
-              transformOrigin: "top left",
-              width: "50%",
-              height: "50%",
-            },
-          })
-          .then(function (dataUrl) {
-            saveAs(dataUrl, "map.jpeg");
-          });
-        downloadComplete = true;
-        props.completeDownloadCB();
-      } else if (props.imageType === "PNG") {
-        domtoimage
-          .toBlob(document.getElementById("map-display"), {
-            width: 1400,
-            height: 600,
-            style: {
-              transform: "scale(2)",
-              transformOrigin: "top left",
-              width: "50%",
-              height: "50%",
-            },
-          })
-          .then(function (blob) {
-            saveAs(blob, "map.png");
-          });
-        downloadComplete = true;
-        props.completeDownloadCB();
-      }
-    } else {
-      console.log("download already completed!!!");
-    }
 
     return (
       <div>

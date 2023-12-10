@@ -26,6 +26,10 @@ describe("template spec", () => {
 
         cy.wait(500); 
 
+        cy.get('.downloadButton').click();
+
+        cy.wait(500); 
+
         cy.get('.modal-button').contains('PNG').click();
 
     });

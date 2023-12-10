@@ -46,7 +46,6 @@ export default function MUICreateMap() {
   };
 
   const handleCreateMap = () => {
-    store.mapType = mapType;
     store.createMap(projectName, mapType);
     router.push("/edit");
     console.log("mapType : " + mapType);
@@ -110,8 +109,6 @@ export default function MUICreateMap() {
                 onClick={handleCreateMap}
                 variant="contained"
                 sx={buttonStyle}
-                // disabled={mapType != MapType.POLITICAL_MAP}
-                // disabled={mapType !== MapType.POLITICAL_MAP && mapType !== MapType.HEATMAP}
               >
                 Create
               </Button>

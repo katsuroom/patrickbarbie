@@ -15,8 +15,9 @@ import MapDisplay from './MapDisplay';
 import MUIDeleteMap from '../modals/MUIDeleteMap';
 import MUIForkMap from '../modals/MUIForkMap';
 import MUIPublishMap from '../modals/MUIPublishMap';
+import MUIExportImage from '../modals/MUIExportMap';
 
-export default function MapView({ fileSelected, projectName, mapType }) {
+export default function MapView() {
     const { store } = useContext(StoreContext);
     const { auth } = useContext(AuthContext);
     const router = useRouter();
@@ -61,11 +62,7 @@ export default function MapView({ fileSelected, projectName, mapType }) {
     }
 
     function handleDownloadClick() {
-        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(store.rawMapFile));
-        let downloadAnchor = document.getElementById("download-anchor");
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `${store.currentMapObject.title || "map"}.json`);
-        downloadAnchor.click();
+      store.openModal(CurrentModal.EXPORT_MAP);
     }
 
     function handleForkClick() {
@@ -178,6 +175,7 @@ export default function MapView({ fileSelected, projectName, mapType }) {
         <MUIDeleteMap />
         <MUIForkMap />
         <MUIPublishMap />
+        <MUIExportImage />
       </div>
     );
 

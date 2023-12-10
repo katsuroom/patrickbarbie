@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import "./MUIPublishMap.css";
 
-import StoreContext, { CurrentModal } from "@/store";
+import StoreContext, { CurrentModal, MapType } from "@/store";
 
 export default function MUISaveChanges() {
   const { store } = useContext(StoreContext);
@@ -30,48 +30,50 @@ export default function MUISaveChanges() {
 
   const handleSave = () => {
     console.log("saving map");
-    console.log(store.currentMapObject);
     store.saveCSV();
 
-    console.log("mapTypes:", store.currentMapObject);
-    console.log("mapTypes:", store.currentMapObject.mapType === store.mapTypes.HEATMAP);
+    // initialize mapProps to empty object if null
+    if (!store.currentMapObject.mapProps)
+      store.currentMapObject.mapProps = {};
 
-    if (
-      store.currentMapObject.mapType === store.mapTypes.PROPORTIONAL_SYMBOL_MAP
-    ){
-      console.log("save map props proportional");
-      if (!store.currentMapObject.mapProps) {
-        store.currentMapObject.mapProps = {};
-      }
-      store.currentMapObject.mapProps.proColor = store.proColor;
-      store.currentMapObject.mapProps.proportional_value = store.proportional_value;
-
-      console.log("store.currentMapObject", store.currentMapObject);
-
-      store.updateMap(store.currentMapObject);
-
+    // currently only handles 3/5 map types
+    switch(store.currentMapObject.mapType)
+    {
+      case MapType.PROPORTIONAL_SYMBOL_MAP:
+        {
+          console.log("save map props proportional");
+          store.currentMapObject.mapProps.proColor = store.proColor;
+          store.currentMapObject.mapProps.proportional_value = store.proportional_value;
+        }
+        break;
+      case MapType.DOT_DISTRIBUTION_MAP:
+        {
+          console.log("save map props dot distribution");
+          store.currentMapObject.mapProps.dotColor = store.dotColor;
+        }
+        break;
+      case MapType.HEATMAP:
+        {
+          console.log("save map props heat map");
+          store.currentMapObject.mapProps.minColor = store.minColor;
+          store.currentMapObject.mapProps.maxColor = store.maxColor;
+        }
+        break;
+      case MapType.POLITICAL_MAP:
+        {
+          alert("Saving Political Map has not yet been implemented.");
+        }
+        break;
+      case MapType.TRAVEL_MAP:
+        {
+          alert("Saving Political Map has not yet been implemented.");
+        }
+        break;
+      default:
+        break;
     }
 
-    if(store.currentMapObject.mapType === store.mapTypes.DOT_DISTRIBUTION_MAP){
-      console.log("save map props dot distribution");
-      if (!store.currentMapObject.mapProps) {
-        store.currentMapObject.mapProps = {};
-      }
-      store.currentMapObject.mapProps.dotColor = store.dotColor;
-      console.log("store.currentMapObject", store.currentMapObject);
-    }
-
-    if (store.currentMapObject.mapType === store.mapTypes.HEATMAP) {
-      console.log("save map props heat map");
-
-      if (!store.currentMapObject.mapProps) {
-        store.currentMapObject.mapProps = {};
-      }
-      store.currentMapObject.mapProps.minColor = store.minColor;
-      store.currentMapObject.mapProps.maxColor = store.maxColor;
-
-      store.updateMap(store.currentMapObject);
-    }
+    store.updateMap(store.currentMapObject);
     
     console.log("Map Saved!");
     store.closeModal();

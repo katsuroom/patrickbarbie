@@ -22,7 +22,7 @@ describe("template spec", () => {
 
         cy.wait(500); 
 
-        cy.get('button[id="saveImageButton"]').trigger("click"); 
+        cy.get('.downloadButton').click();
 
         cy.wait(500); 
 

@@ -24,6 +24,10 @@ describe("template spec", () => {
 
       cy.get('.downloadButton').click();
 
+      cy.wait(500); 
+
+      cy.get('.modal-button').contains('JSON').click();
+
     });
   });
   

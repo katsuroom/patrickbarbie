@@ -23,7 +23,6 @@ export const StoreActionType = {
   EMPTY_RAW_MAP_FILE: "EMPTY_RAW_MAP_FILE",
   SET_CSV_KEY: "SET_CSV_KEY",
   SET_CSV_LABEL: "SET_CSV_LABEL",
-  SET_MAP_TYPE: "SET_MAP_TYPE",
   SET_RAW_MAP_FILE: "SET_RAW_MAP_FILE",
   LOAD_MAP_LIST: "LOAD_MAP_LIST",
 
@@ -56,6 +55,7 @@ export const CurrentModal = {
   DELETE_MAP: "DELETE_MAP",
   EXIT_EDIT: "EXIT_EDIT",
   SAVE_EDIT: "SAVE_EDIT",
+  EXPORT_MAP: "EXPORT_MAP"
 };
 
 export const MapType = {
@@ -84,7 +84,6 @@ function StoreContextProvider(props) {
     StartKey: null, // csv key [column name] for map displaying
     EndKey: null, // csv key [column name] for map displaying
     parsed_CSV_Data: null,
-    mapType: null,
     currentMapObject: null,
     mapList: [], // loaded list of maps (idNamePairs)
     currentView: View.COMMUNITY,
@@ -98,7 +97,6 @@ function StoreContextProvider(props) {
 
   store.viewTypes = View;
   store.currentModalTypes = CurrentModal;
-  store.mapTypes = MapType;
 
   const storeReducer = (action) => {
     const { type, payload } = action;
@@ -152,13 +150,6 @@ function StoreContextProvider(props) {
         return setStore({
           ...store,
           label: payload.label,
-        });
-      }
-
-      case StoreActionType.SET_MAP_TYPE: {
-        return setStore({
-          ...store,
-          mapType: payload.mapType,
         });
       }
 
@@ -390,20 +381,7 @@ function StoreContextProvider(props) {
     }
   };
 
-  // DELETE ONCE MAP CARD LIST IS FIXED
-  store.getMapFile = async function (fileName) {
-    console.log("getMapFile: ", fileName);
-    const file = await api.getMainScreenMap(fileName);
-    console.log(file.data);
-    // const blob = await response.blob();
-    // const file = new File([blob], fileName);
-
-    storeReducer({
-      type: StoreActionType.SET_RAW_MAP_FILE,
-      payload: { file: file.data },
-    });
-  };
-
+  // loads map data when the map card is clicked
   store.loadMapFile = function (mapId) {
     const selected = store.mapList.find((map) => map._id === mapId);
     console.log("selected: ", selected);
@@ -425,17 +403,13 @@ function StoreContextProvider(props) {
     {
       let res = await api.getMapDataById(mapDataId);
       const rawMapFile = geobuf.decode(new Pbf(res.data.data.mapData.data));
-      
-      store.currentMapObject = selected;
-      store.rawMapFile = rawMapFile;
-
 
       storeReducer({
         type: StoreActionType.LOAD_MAP,
         payload: {
           mapList: store.mapList,
           currentMapObject: selected,
-          rawMapFile: rawMapFile,
+          rawMapFile: rawMapFile
         }
       });
     }
@@ -675,13 +649,6 @@ function StoreContextProvider(props) {
   // setParsedCsvDataWithoutRendering
   store.setParsedCsvDataWOR = function (data) {
     store.parsed_CSV_Data = data;
-  };
-
-  store.setMapType = function (mapType) {
-    storeReducer({
-      type: StoreActionType.SET_MAP_TYPE,
-      payload: { mapType },
-    });
   };
 
   // fetches map list based on current view
