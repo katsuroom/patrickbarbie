@@ -9,6 +9,7 @@ import StoreContext from "@/store";
 import PTravelMap from "../components/PTravelMap";
 import PPolitical from "../components/PPolitical";
 import PProportional from "../components/PProportional";
+import PDotDistribution from "../components/PDotDistribution";
 
 export default function EditScreen() {
   const { store } = useContext(StoreContext);
@@ -76,6 +77,8 @@ export default function EditScreen() {
         {store.mapType === store.mapTypes.TRAVEL_MAP || store.currentMapObject?.mapType === store.mapTypes.TRAVEL_MAP ? null : null}
         {store.mapType === store.mapTypes.HEATMAP || store.currentMapObject?.mapType === store.mapTypes.HEATMAP ? <PHeatmap /> : null}
         {store.mapType === store.mapTypes.PROPORTIONAL_SYMBOL_MAP || store.currentMapObject?.mapType === store.mapTypes.PROPORTIONAL_SYMBOL_MAP ? <PProportional /> : null}
+        {store.mapType === store.mapTypes.DOT_DISTRIBUTION_MAP || store.currentMapObject?.mapType === store.mapTypes.DOT_DISTRIBUTION_MAP ? <PDotDistribution /> : null}
+
       </div>
     </div>
   );

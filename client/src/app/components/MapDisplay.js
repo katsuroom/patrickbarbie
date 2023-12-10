@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 const Heatmap = dynamic(() => import('./HeatMap'));
 const ProportionalMap = dynamic(() => import('./ProportionalMap'));
 const TravelMap = dynamic(() => import("./TravelMaps"));
+const DotDistribution = dynamic(() => import("./DotDistribution"));
 import "leaflet/dist/leaflet.css";
 
 
@@ -84,7 +85,7 @@ export default function MapDisplay() {
           ) : store.mapType === store.mapTypes.DOT_DISTRIBUTION_MAP ||
             store.currentMapObject.mapType ===
               store.mapTypes.DOT_DISTRIBUTION_MAP ? (
-            <Heatmap
+            <DotDistribution
               file={store.rawMapFile}
               openModal={() => {
                 setDownloadModalOpen(true);
