@@ -3,6 +3,7 @@ import L from "leaflet";
 import "leaflet-easyprint";
 import "leaflet/dist/leaflet.css";
 import StoreContext from "@/store";
+import { MapType } from "@/store";
 import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
 import Script from "next/script";
 
@@ -91,18 +92,18 @@ export default function Politicalmap(props) {
 
     // function geoJsonStyle(feature) {
     //     let fillColor = "white"; // Default color
-    
+
     //     // Make sure categoryColorMappings is defined and is an array
     //     if (Array.isArray(props.categoryColorMappings)) {
     //         // Assume store.parsed_CSV_Data maps countries to categories
     //         const countryCategory = store.parsed_CSV_Data && store.parsed_CSV_Data.find(data => data.country === feature.properties.name)?.category;
     //         const categoryMapping = props.categoryColorMappings.find(m => m.category === countryCategory);
-    
+
     //         if (categoryMapping) {
     //             fillColor = categoryMapping.color; // Set color based on category
     //         }
     //     }
-    
+
     //     return {
     //         stroke: true,
     //         color: "black",
@@ -111,17 +112,17 @@ export default function Politicalmap(props) {
     //         fillOpacity: 1,
     //     };
     // }
-    
+
 
 
     function geoJsonStyle(feature) {
         let fillColor = 'white'; // Default color
-    
+
         if (props.attributeColorMapping && selectedAttribute) {
             const featureValue = feature.properties[selectedAttribute];
             fillColor = props.attributeColorMapping[featureValue] || 'white';
         }
-    
+
         return {
             stroke: true,
             color: 'black',
@@ -130,7 +131,7 @@ export default function Politicalmap(props) {
             fillOpacity: 1,
         };
     }
-    
+
 
 
 
@@ -213,11 +214,7 @@ export default function Politicalmap(props) {
             return;
         }
 
-        if (
-            store.mapType === store.mapTypes.POLITICAL_MAP ||
-            (store.currentMapObject &&
-                store.currentMapObject.mapType === store.mapTypes.HEATMAP)
-        ) {
+        if (store.currentMapObject?.mapType === MapType.HEATMAP) {
             heatmapOverlayRef.current = L.geoJSON(geoJsonData, {
                 style: geoJsonStyle,
                 onEachFeature: (feature, layer) => {
