@@ -13,11 +13,13 @@ describe('template spec', () => {
 
         cy.get('[data-testid="PeopleIcon"]').click()
 
-        cy.wait(500); 
+        cy.wait(1000); 
+ 
 
         cy.contains(".map-list-name", "SA").click();
 
-        cy.wait(500); 
+        cy.wait(1000); 
+
 
         cy.get('.downloadButton').click();
 

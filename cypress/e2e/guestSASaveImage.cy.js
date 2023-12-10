@@ -9,11 +9,13 @@ describe('template spec', () => {
 
         cy.contains('Continue as Guest').click();
 
-        cy.wait(500);
+        cy.wait(1000); 
+
 
         cy.url().should('include', "/mapcards");
 
-        cy.wait(500); 
+        cy.wait(1000); 
+ 
 
         cy.contains(".map-list-name", "SA").click();
 

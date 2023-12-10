@@ -16,17 +16,17 @@ describe("template spec", () => {
 
         cy.get('button[type="submit"]').click();
 
-        cy.wait(500); 
+        cy.wait(1000); 
 
         cy.url().should("include", "/mapcards");
 
         cy.contains(".map-list-name", "Asia").click();
 
-        cy.wait(500); 
+        cy.wait(1000); 
 
         cy.get('.downloadButton').click();
 
-        cy.wait(500); 
+        cy.wait(1000); 
 
         cy.get('.modal-button').contains('JPEG').click();
 

@@ -16,9 +16,17 @@ describe("template spec", () => {
 
     cy.get('button[type="submit"]').click();
 
+    cy.wait(1000); 
+
+
     cy.url().should("include", "/mapcards");
+
+    cy.wait(1000); 
+
  
     cy.contains(".map-list-name", "Asia").click();
+
+    
                 
     cy.get(".likeButton").click();
     

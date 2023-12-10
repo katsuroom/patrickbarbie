@@ -27,11 +27,11 @@ describe("template spec", () => {
 
         cy.contains(".map-list-name", "EU").click();
 
-        cy.wait(500);
+        cy.wait(1000); 
 
         cy.get('.editButton').click();
 
-        cy.wait(500);
+        cy.wait(1000); 
 
         cy.contains("SAVE").click();
 
