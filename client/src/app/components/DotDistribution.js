@@ -19,6 +19,13 @@ export default function DotDistribution(props){
     let downloadComplete = props.downloadComplete;
 
     useEffect(() => {
+      if (store.currentMapObject.mapProps) {
+        console.log("updating");
+        if (store.currentMapObject.mapProps.dotColor) {
+          store.dotColor = store.currentMapObject.mapProps.dotColor;
+          store.setDotColor(store.currentMapObject.mapProps.dotColor);
+        }
+      }
       const resizeListener = () => {
         setMapHeight(window.innerHeight / 2);
       };
@@ -180,7 +187,7 @@ export default function DotDistribution(props){
             
             const marker = L.circleMarker(coordinateArray, {
               radius: 5,
-              fillColor: "black",
+              fillColor: store.dotColor ? store.dotColor : "black",
               weight: 1,
               opacity: 1,
               fillOpacity: 0.8,
@@ -216,7 +223,7 @@ export default function DotDistribution(props){
 
 
       }
-    }, [geoJsonData, store.label, store.key, store.parsed_CSV_Data]);
+    }, [geoJsonData, store.label, store.key, store.parsed_CSV_Data, store.dotColor]);
 
     if (!downloadComplete) {
       if (props.imageType === "JPEG") {

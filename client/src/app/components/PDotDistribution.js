@@ -3,12 +3,10 @@
 import * as React from "react";
 import Table from "@mui/joy/Table";
 import Button from "@mui/joy/Button";
-import Add from "@mui/icons-material/Add";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import "./property.css";
-import { useHistory } from "react-router-dom";
 import CsvFileReader from "./CsvFileReader";
 import MUISaveChanges from "../modals/MUISaveChanges";
 import MUIExit from "../modals/MUIExitModal";
@@ -36,21 +34,14 @@ export default function PDotDistribution() {
   const { store } = useContext(StoreContext);
 
   const [menuItems, setMenuItems] = React.useState([]);
-  // const [renderTable, setRenderTable] = React.useState(false);
-  // const [page, setPage] = React.useState(0);
+
   const [textFields, setTextFields] = React.useState([]);
 
-  const [MinHex, setMinHex] = React.useState(store.minColor);
-  const [MaxHex, setMaxHex] = React.useState(store.proColor);
-
-  const handleMinColorChange = (event) => {
-    setMinHex(event.hex);
-    store.setMinColor(event.hex);
-  };
+  const [MaxHex, setMaxHex] = React.useState(store.dotColor);
 
   const handleMaxColorChange = (event) => {
     setMaxHex(event.hex);
-    store.setProColor(event.hex);
+    store.setDotColor(event.hex);
   };
 
   useEffect(() => {

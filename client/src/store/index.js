@@ -41,6 +41,7 @@ export const StoreActionType = {
   SET_MAX_COLOR: "SET_MAX_COLOR",
   SET_PROPORTIONAL_VALUE: "SET_PROPORTIONAL_VALUE",
   SET_PROPORTIONAL_COLOR: "SET_PROPORTIONAL_COLOR",
+  SET_DOT_COLOR: "SET_DOT_COLOR",
 };
 
 export const CurrentModal = {
@@ -89,6 +90,7 @@ function StoreContextProvider(props) {
     maxColor: null,
     proportional_value: [], // proportional symbol map legend data
     proColor: null,
+    dotColor: null,
   });
 
   store.viewTypes = View;
@@ -262,6 +264,12 @@ function StoreContextProvider(props) {
           proColor: payload,
         });
       }
+      case StoreActionType.SET_DOT_COLOR:{
+        return setStore({
+          ...store,
+          dotColor: payload,
+        });
+      }
 
       default:
         return store;
@@ -290,6 +298,15 @@ function StoreContextProvider(props) {
 
     storeReducer({
       type: StoreActionType.SET_PROPORTIONAL_COLOR,
+      payload: color,
+    });
+  };
+
+  store.setDotColor = function (color) {
+    console.log("setDotColor", color);
+
+    storeReducer({
+      type: StoreActionType.SET_DOT_COLOR,
       payload: color,
     });
   };
@@ -771,6 +788,7 @@ function StoreContextProvider(props) {
     store.setMinColor(null);
     store.setMaxColor(null);
     store.setProColor(null);
+    store.setDotColor(null);
     store.setProportionalValue([]);
   }
   
