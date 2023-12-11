@@ -8,8 +8,6 @@ import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import "./property.css";
 import CsvFileReader from "./CsvFileReader";
-import MUISaveChanges from "../modals/MUISaveChanges";
-import MUIExit from "../modals/MUIExitModal";
 import { useContext, useEffect } from "react";
 import StoreContext, { CurrentModal } from "@/store";
 
@@ -26,9 +24,6 @@ import Compact from "@uiw/react-color-compact";
 // import { useContext, useEffect } from "react";
 // import StoreContext from "../store";
 // import CsvFileReader from "./CsvFileReader";
-
-// import MUISaveChanges from "./Model/MUISaveChanges";
-// import MUIExitModal from "./Model/MUIExitModal";
 
 export default function PDotDistribution() {
   const { store } = useContext(StoreContext);
@@ -336,8 +331,6 @@ export default function PDotDistribution() {
       >
         Next
       </Button> */}
-      <MUISaveChanges />
-      <MUIExit />
     </div>
   );
 }

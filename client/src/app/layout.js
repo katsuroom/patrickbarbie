@@ -7,6 +7,8 @@ import TitleBar from './components/TitleBar';
 import StatusBar from './components/StatusBar';
 import MUIUploadMap from './modals/MUIUploadMap';
 import MUICreateMap from './modals/MUICreateMap';
+import MUISaveChanges from "./modals/MUISaveChanges";
+import MUIExit from "./modals/MUIExitModal";
 import Script from 'next/script';
 import "./app.css";
 
@@ -31,6 +33,8 @@ export default function RootLayout({ children }) {
               <StatusBar />
               <MUIUploadMap />
               <MUICreateMap />
+              <MUISaveChanges />
+              <MUIExit />
               <Script src="https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js"></Script>
             </body>
           </EditContextProvider>

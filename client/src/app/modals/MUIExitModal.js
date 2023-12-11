@@ -40,6 +40,7 @@ export default function MUIExit() {
   const handleDiscard = () => {
     console.log("Map Discarded!");
     store.clearCsv();
+    store.closeModal();
     router.push("/main");
   };
 

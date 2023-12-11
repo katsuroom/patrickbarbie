@@ -11,8 +11,6 @@ import 'leaflet-contextmenu';
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 import 'leaflet-control-geocoder';
 import Button from "@mui/joy/Button";
-import MUISaveChanges from "../modals/MUISaveChanges";
-import MUIExit from "../modals/MUIExitModal";
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css';
 
 
@@ -22,12 +20,17 @@ const TravelMap = (props) => {
     const mapRef = useRef(null);
 
     const routeControlRef = useRef(null);
-    const [geoJsonData, setGeoJsonData] = useState(null);
     const { store } = useContext(StoreContext);
     const geoJsonLayerRef = useRef(null);
     const markers = useRef([]);
-    const [buttonAdded, setButtonAdded] = useState(false);
     const [loadScripts, setLoadScripts] = useState(false);
+
+    const mapLayerRef = useRef(null);
+    const hybridLayerRef = useRef(null);
+    const satelliteLayerRef = useRef(null);
+    const darkLayerRef = useRef(null);
+    const lightLayerRef = useRef(null);
+    const settingLayerRef = useRef(null);
 
     const startHere = (e) => {
         if (routeControlRef.current) {
@@ -39,6 +42,16 @@ const TravelMap = (props) => {
         if (routeControlRef.current) {
             routeControlRef.current.spliceWaypoints(routeControlRef.current.getWaypoints().length - 1, 1, e.latlng);
         }
+    };
+
+    const loadScript = (src) => {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = () => resolve(script);
+            script.onerror = () => reject(new Error(`Script load error for ${src}`));
+            document.body.appendChild(script);
+        });
     };
 
 
@@ -55,33 +68,26 @@ const TravelMap = (props) => {
 
 
     useEffect(() => {
-        if (store.rawMapFile)
-            setGeoJsonData(store.rawMapFile);
+        if (store.rawMapFile) {
+            if (!loadScripts) {
+                Promise.all([
+                    loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+                    loadScript("./mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
+                ]).then(() => {
+                    setLoadScripts(true);
+                }).catch(error => console.error(error));
+            }
+            else {
+                refreshMap();
+            }
+        }
     }, [store.rawMapFile]);
 
-    useEffect(() => {
-        const loadScript = (src) => {
-            return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = src;
-                script.onload = () => resolve(script);
-                script.onerror = () => reject(new Error(`Script load error for ${src}`));
-                document.body.appendChild(script);
-            });
-        };
 
-        Promise.all([
-            loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
-            loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
-        ]).then(() => {
-            setLoadScripts(true);
-        }).catch(error => console.error(error));
-    }, []);
+    const refreshMap = () => {
 
-
-    useEffect(() => {
-        console.log('travel map + ' + geoJsonData)
-        if (!loadScripts || !geoJsonData) {
+        console.log('travel map + ' + store.rawMapFile)
+        if (!loadScripts || !store.rawMapFile) {
             return;
         }
 
@@ -102,14 +108,27 @@ const TravelMap = (props) => {
                 }]
             });
         }
+        if (mapLayerRef.current) mapRef.current.removeLayer(mapLayerRef.current);
+        if (hybridLayerRef.current) mapRef.current.removeLayer(hybridLayerRef.current);
+        if (satelliteLayerRef.current) mapRef.current.removeLayer(satelliteLayerRef.current);
+        if (darkLayerRef.current) mapRef.current.removeLayer(darkLayerRef.current);
+        if (lightLayerRef.current) mapRef.current.removeLayer(lightLayerRef.current);
+        if (settingLayerRef.current) mapRef.current.removeLayer(settingLayerRef.current);
 
-        L.control.layers({
-            'Map': mapLayer,
-            'Hybrid': window.MQ.hybridLayer(),
-            'Satellite': window.MQ.satelliteLayer(),
-            'Dark': window.MQ.darkLayer(),
-            'Light': window.MQ.lightLayer()
-        }).addTo(mapRef.current);
+        mapLayerRef.current = window.MQ.mapLayer();
+        hybridLayerRef.current = window.MQ.hybridLayer();
+        satelliteLayerRef.current = window.MQ.satelliteLayer();
+        darkLayerRef.current = window.MQ.darkLayer();
+        lightLayerRef.current = window.MQ.lightLayer();
+
+        settingLayerRef.current = L.control.layers({
+            'Map': mapLayerRef.current,
+            'Hybrid': hybridLayerRef.current,
+            'Satellite': satelliteLayerRef.current,
+            'Dark': darkLayerRef.current,
+            'Light': lightLayerRef.current
+        });
+        settingLayerRef.current.addTo(mapRef.current);
 
         if (geoJsonLayerRef.current) {
             mapRef.current.removeLayer(geoJsonLayerRef.current);
@@ -119,8 +138,8 @@ const TravelMap = (props) => {
         });
         markers.current = [];
 
-        if (geoJsonData) {
-            geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
+        if (store.rawMapFile) {
+            geoJsonLayerRef.current = L.geoJSON(store.rawMapFile, {
                 onEachFeature: (feature, layer) => {
 
                     // check if label_y and label_x exist, since they don't exist for KML
@@ -154,29 +173,16 @@ const TravelMap = (props) => {
                 console.log("geoJsonLayerRef.current is undefined or empty");
             }
         }
-        runDirection()
-        if (!buttonAdded) {
-            const saveImageButton = L.control({ position: "bottomleft" });
-            saveImageButton.onAdd = function () {
-                this._div = L.DomUtil.create("div", "saveImageButton");
-                this._div.innerHTML =
-                    '<Button id="saveImageButton" >Save Image</Button>';
-                return this._div;
-            };
-            saveImageButton.addTo(mapRef.current);
-
-            document
-                .getElementById("saveImageButton")
-                .addEventListener("click", props.openModal);
-            setButtonAdded(true);
-        }
+        runDirection();
 
         // L.Routing.control ({
         //     geocoder: L.Control.Geocoder.nominatim()
         // }).addTo(mapRef.current)
+    }
 
-
-    }, [geoJsonData]);
+    useEffect(() => {
+        refreshMap();
+    }, [loadScripts]);
 
     const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
     const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
@@ -240,9 +246,9 @@ const TravelMap = (props) => {
                 },
                 geocoder: L.Control.Geocoder.nominatim(),
             })
-            // .on('routingstart', showSpinner)
-            // .on('routesfound routingerror', hideSpinner)
-            .addTo(mapRef.current);
+                // .on('routingstart', showSpinner)
+                // .on('routesfound routingerror', hideSpinner)
+                .addTo(mapRef.current);
 
             routeControlRef.current = routingControl;
 
@@ -274,14 +280,6 @@ const TravelMap = (props) => {
 
     return (
         <div>
-            {/* <div id='map' style={{ height: '100vh', width: '100%' }}></div> */}
-            {/* <div className="formBlock">
-                <form id="form" onSubmit={submitForm}>
-                    <input type="text" value={start} onChange={e => setStart(e.target.value)} className="input" id="start" placeholder="Choose starting point" />
-                    <input type="text" value={end} onChange={e => setEnd(e.target.value)} className="input" id="destination" placeholder="Choose destination point" />
-                    <button style={{ display: 'none' }} type="submit">Get Directions</button>
-                </form>
-            </div> */}
             <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div>
             {/* <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div> */}
             <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div>
@@ -291,8 +289,6 @@ const TravelMap = (props) => {
             <Button variant="solid" className="save" sx={{ margin: 1 }} onClick={openSaveModal}>
                 SAVE
             </Button>
-            <MUISaveChanges />
-            <MUIExit />
         </div>
 
     );

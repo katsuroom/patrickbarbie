@@ -103,3 +103,12 @@ input:nth-child(1) {
 .leaflet-routing-geocoder-result{
     display: none;
 }
+
+.exit{
+  float: right;
+  background-color: #FC9ABD;
+}
+.save{
+  float: right;
+  background-color: #FC9ABD;
+}
