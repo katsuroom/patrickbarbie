@@ -42,7 +42,7 @@ export default function MUISaveChanges() {
     store.closeModal();
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     console.log("saving map");
     store.saveCSV();
 
@@ -88,7 +88,7 @@ export default function MUISaveChanges() {
 
     let map = document.getElementsByClassName("leaflet-map-pane")[0];
     let dim = document.getElementById("map-display");
-    domtoimage
+    await domtoimage
       .toPng(map, {
         width: dim.offsetWidth * 2,
         height: dim.offsetHeight * 2,
