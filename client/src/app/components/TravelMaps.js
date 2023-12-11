@@ -11,8 +11,6 @@ import 'leaflet-contextmenu';
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 import 'leaflet-control-geocoder';
 import Button from "@mui/joy/Button";
-import MUISaveChanges from "../modals/MUISaveChanges";
-import MUIExit from "../modals/MUIExitModal";
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css';
 
 
@@ -26,7 +24,6 @@ const TravelMap = (props) => {
     const { store } = useContext(StoreContext);
     const geoJsonLayerRef = useRef(null);
     const markers = useRef([]);
-    const [buttonAdded, setButtonAdded] = useState(false);
     const [loadScripts, setLoadScripts] = useState(false);
 
     const startHere = (e) => {
@@ -39,6 +36,16 @@ const TravelMap = (props) => {
         if (routeControlRef.current) {
             routeControlRef.current.spliceWaypoints(routeControlRef.current.getWaypoints().length - 1, 1, e.latlng);
         }
+    };
+
+    const loadScript = (src) => {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = () => resolve(script);
+            script.onerror = () => reject(new Error(`Script load error for ${src}`));
+            document.body.appendChild(script);
+        });
     };
 
 
@@ -56,30 +63,28 @@ const TravelMap = (props) => {
 
     useEffect(() => {
         if (store.rawMapFile)
+        {
             setGeoJsonData(store.rawMapFile);
+
+            if(!loadScripts)
+            {
+                Promise.all([
+                    loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+                    loadScript("./mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
+                ]).then(() => {
+                    setLoadScripts(true);
+                }).catch(error => console.error(error));
+            }
+            else
+            {
+                refreshMap();
+            }
+        }
     }, [store.rawMapFile]);
 
-    useEffect(() => {
-        const loadScript = (src) => {
-            return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = src;
-                script.onload = () => resolve(script);
-                script.onerror = () => reject(new Error(`Script load error for ${src}`));
-                document.body.appendChild(script);
-            });
-        };
 
-        Promise.all([
-            loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
-            loadScript("https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
-        ]).then(() => {
-            setLoadScripts(true);
-        }).catch(error => console.error(error));
-    }, []);
+    const refreshMap = () => {
 
-
-    useEffect(() => {
         console.log('travel map + ' + geoJsonData)
         if (!loadScripts || !geoJsonData) {
             return;
@@ -154,29 +159,16 @@ const TravelMap = (props) => {
                 console.log("geoJsonLayerRef.current is undefined or empty");
             }
         }
-        runDirection()
-        if (!buttonAdded) {
-            const saveImageButton = L.control({ position: "bottomleft" });
-            saveImageButton.onAdd = function () {
-                this._div = L.DomUtil.create("div", "saveImageButton");
-                this._div.innerHTML =
-                    '<Button id="saveImageButton" >Save Image</Button>';
-                return this._div;
-            };
-            saveImageButton.addTo(mapRef.current);
-
-            document
-                .getElementById("saveImageButton")
-                .addEventListener("click", props.openModal);
-            setButtonAdded(true);
-        }
+        runDirection();
 
         // L.Routing.control ({
         //     geocoder: L.Control.Geocoder.nominatim()
         // }).addTo(mapRef.current)
+    }
 
-
-    }, [geoJsonData]);
+    useEffect(() => {
+        refreshMap();
+    }, [loadScripts]);
 
     const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
     const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
@@ -274,14 +266,6 @@ const TravelMap = (props) => {
 
     return (
         <div>
-            {/* <div id='map' style={{ height: '100vh', width: '100%' }}></div> */}
-            {/* <div className="formBlock">
-                <form id="form" onSubmit={submitForm}>
-                    <input type="text" value={start} onChange={e => setStart(e.target.value)} className="input" id="start" placeholder="Choose starting point" />
-                    <input type="text" value={end} onChange={e => setEnd(e.target.value)} className="input" id="destination" placeholder="Choose destination point" />
-                    <button style={{ display: 'none' }} type="submit">Get Directions</button>
-                </form>
-            </div> */}
             <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div>
             {/* <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div> */}
             <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div>
@@ -291,8 +275,6 @@ const TravelMap = (props) => {
             <Button variant="solid" className="save" sx={{ margin: 1 }} onClick={openSaveModal}>
                 SAVE
             </Button>
-            <MUISaveChanges />
-            <MUIExit />
         </div>
 
     );
