@@ -10,8 +10,6 @@ import TextField from "@mui/material/TextField";
 import "./property.css";
 import { useHistory } from "react-router-dom";
 import CsvFileReader from "./CsvFileReader";
-import MUISaveChanges from "../modals/MUISaveChanges";
-import MUIExit from "../modals/MUIExitModal";
 import { useContext, useEffect } from "react";
 import StoreContext, { CurrentModal } from "@/store";
 import { CompactPicker } from "react-color";
@@ -29,9 +27,6 @@ import Compact from "@uiw/react-color-compact";
 // import { useContext, useEffect } from "react";
 // import StoreContext from "../store";
 // import CsvFileReader from "./CsvFileReader";
-
-// import MUISaveChanges from "./Model/MUISaveChanges";
-// import MUIExitModal from "./Model/MUIExitModal";
 
 export default function PHeatmap() {
   const { store } = useContext(StoreContext);
@@ -375,8 +370,6 @@ export default function PHeatmap() {
       >
         Next
       </Button> */}
-      <MUISaveChanges />
-      <MUIExit />
     </div>
   );
 }
