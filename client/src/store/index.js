@@ -408,9 +408,10 @@ function StoreContextProvider(props) {
     if(!selected)
       return;
 
-    if (!store.currentMapObject || selected._id != store.currentMapObject._id)
+    // update view count only if new map, and is published
+    if((!store.currentMapObject || selected._id != store.currentMapObject._id) && selected.isPublished)
     {
-      selected.views = selected.views + 1;
+      selected.views++;
       store.updateViews(selected);
     }
 
