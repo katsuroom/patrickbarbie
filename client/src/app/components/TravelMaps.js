@@ -192,7 +192,7 @@ const TravelMap = (props) => {
 
     useEffect(() => {
         store.waypoints = []
-        if (store.currentMapObject.mapProps?.waypoints){
+        if (store.currentMapObject.mapProps?.waypoints) {
             console.log("store.currentMapObject.mapProps" + store.currentMapObject.mapProps.waypoints)
             store.setWaypoints(store.currentMapObject.mapProps.waypoints)
             runDirection();
@@ -241,12 +241,12 @@ const TravelMap = (props) => {
 
             const routingControl = L.Routing.control({
                 waypoints: store.waypoints,
-                routeWhileDragging: true,
                 createMarker: function (i, waypoint, n) {
                     const markerIcon = i === 0 ? startIcon : (i > 0 && i < n - 1) ? inBetweenIcon : endIcon;
-                    return L.marker(waypoint.latLng, { draggable: true, icon: markerIcon });
+                    return L.marker(waypoint.latLng, { icon: markerIcon });
                 },
-                // geocoder: L.Control.Geocoder.nominatim(),
+                routeWhileDragging: false,
+                addWaypoints: false,
             });
 
             routingControl.on('waypointschanged', function (e) {
@@ -259,9 +259,9 @@ const TravelMap = (props) => {
 
             // Add the routing control to the map
             routingControl.addTo(mapRef.current);
-                // .on('routingstart', showSpinner)
-                // .on('routesfound routingerror', hideSpinner)
-                // .addTo(mapRef.current);
+            // .on('routingstart', showSpinner)
+            // .on('routesfound routingerror', hideSpinner)
+            // .addTo(mapRef.current);
 
             routeControlRef.current = routingControl;
 
