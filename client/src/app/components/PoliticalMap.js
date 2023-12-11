@@ -174,22 +174,20 @@ export default function Politicalmap(props) {
 
 
     function geoJsonStyle(feature) {
-        // feature is undefined?? how to fix
-        let fillColor = 'white'; // Default color for features without a matching language
+        let fillColor = 'white';
+        
+        if (store.parsed_CSV_Data && store.categoryColorMappings && store.selectedAttribute) {
+            const countryIndex = store.parsed_CSV_Data.Country.indexOf(feature.properties.name);
+
+            if (countryIndex !== -1) {
+                const language = store.parsed_CSV_Data.Language[countryIndex];
+                console.log("language is: " + language)
+                console.log(store.categoryColorMappings)
     
-        // Access the categoryColorMappings and selectedAttribute from the store
-        const categoryColorMappings = store.categoryColorMappings;
-        console.log(categoryColorMappings)
-        const selectedAttribute = store.selectedAttribute; // 'language' in your scenario
-        console.log("selectedAttribute is: " + selectedAttribute)
-    
-        // Iterate through each key in categoryColorMappings
-        for (const language in categoryColorMappings) {
-            console.log("language is: " + language)
-            console.log(feature.properties[selectedAttribute])
-            if (feature.properties[selectedAttribute] === language) {
-                fillColor = categoryColorMappings[language];
-                break; // Stop iterating once a match is found
+                if (language && store.categoryColorMappings.hasOwnProperty(language)) {
+                    fillColor = store.categoryColorMappings[language];
+                    console.log(fillColor)
+                }
             }
         }
     
@@ -201,7 +199,7 @@ export default function Politicalmap(props) {
             fillOpacity: 1,
         };
     }
-
+    
 
 
 
@@ -247,6 +245,8 @@ export default function Politicalmap(props) {
         });
         markers.current = [];
 
+
+
         if (geoJsonData) {
             geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
                 onEachFeature: (feature, layer) => {
@@ -281,6 +281,16 @@ export default function Politicalmap(props) {
                 console.log("geoJsonLayerRef.current is undefined or empty");
             }
         }
+
+
+
+
+
+
+
+
+
+
         
 
         if (heatmapOverlayRef.current) {
