@@ -149,8 +149,8 @@ setIsColorInit(true);
       fillColor = "white";
     } else {
       fillColor = interpolateColor(
-        store.minColor,
-        store.maxColor,
+        store.minColor || store.currentMapObject.mapProps?.minColor || "#FFFFFF",
+        store.maxColor || store.currentMapObject.mapProps?.maxColor || "#FF0000",
         Math.min(...store.parsed_CSV_Data[store.key]),
         Math.max(...store.parsed_CSV_Data[store.key]),
 
@@ -281,14 +281,14 @@ setIsColorInit(true);
 
           (div.innerHTML +=
             '<div style="background-color:' +
-            store.minColor +
+            store.minColor || store.currentMapObject.mapProps?.minColor || "#FFFFFF", +
             '"> Min: ' +
             Math.min(...store.parsed_CSV_Data[store.key])),
             +"</div> " + "<br>";
 
           (div.innerHTML +=
             '<div style="background-color:' +
-            store.maxColor +
+            store.maxColor || store.currentMapObject.mapProps?.maxColor || "#FFFFFF", +
             '"> Max: ' +
             Math.max(...store.parsed_CSV_Data[store.key])),
             +"</div> " + "<br>";

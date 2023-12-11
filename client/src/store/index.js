@@ -359,7 +359,11 @@ function StoreContextProvider(props) {
     console.log("in create map");
 
     let file = store.uploadedFile;
-    var data = geobuf.encode(file, new Pbf());
+    // var data = geobuf.encode(file, new Pbf());
+    var data = JSON.stringify(file)
+    console.log(data);
+
+
 
     asyncCreateMap();
     async function asyncCreateMap() {
@@ -395,13 +399,22 @@ function StoreContextProvider(props) {
     }
 
     // load raw map file
-    let mapDataId = selected.mapData;
+    // let mapDataId = selected.mapData;
     
     asyncGetMapData();
     async function asyncGetMapData()
     {
-      let res = await api.getMapDataById(mapDataId);
-      const rawMapFile = geobuf.decode(new Pbf(res.data.data.mapData.data));
+      let res = await api.getMapDataById(mapId);
+      // const rawMapFile = geobuf.decode(new Pbf(res.data.data));
+      // const rawMapFile = geobuf.decode(res.data.data);
+
+
+      console.log(res);
+      const rawMapFile = JSON.parse(res.data.data);
+
+
+
+
 
       storeReducer({
         type: StoreActionType.LOAD_MAP,
@@ -423,7 +436,8 @@ function StoreContextProvider(props) {
 
   // fork map
   store.forkMap = function (maptitle) {
-    let mapData = geobuf.encode(store.rawMapFile, new Pbf());
+    // let mapData = geobuf.encode(store.rawMapFile, new Pbf());
+    let mapData = JSON.stringify(store.rawMapFile);
     console.log("mapData: ", mapData, auth.user.username, maptitle, store.currentMapObject.mapType);
     asyncForkMap();
     async function asyncForkMap() {
@@ -436,15 +450,15 @@ function StoreContextProvider(props) {
         csvData = (await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData)).data.csvData._id;
       }
 
-      let response = await api.forkMap(
+      let mapObj = await api.forkMap(
         mapData,
         csvData ? csvData : undefined,
         auth.user.username,
         maptitle,
-        store.currentMapObject.mapType
+        store.currentMapObject.mapType,
+        store.currentMapObject.mapProps
       );
 
-      let mapObj = response.data.mapData;
 
       // refresh user maps
       api.getMapsByUser().then((response) => {
@@ -505,7 +519,7 @@ function StoreContextProvider(props) {
   store.deleteMap = function (mapObj) {
     let mapId = mapObj._id;
     console.log("deleting map: ", mapId);
-    let mapData = mapObj.mapData;
+    // let mapData = mapObj.mapData;
     let csvData = mapObj.csvData;
 
     // delete map
@@ -518,7 +532,7 @@ function StoreContextProvider(props) {
       console.log("delete map success");
   
       // delete map data
-      response = await api.deleteMapData(mapData);
+      response = await api.deleteMapData(mapId);
       if (response.status != 200) return;
 
       console.log("delete map data success");

@@ -1,14 +1,14 @@
 const Map = require("../models/map_model");
 const User = require("../models/user_model");
 const CSV = require("../models/csv_model");
-const MapData = require("../models/mapdata_model");
+const Chunk = require("../models/mapdata_model");
 
 const jwt = require("jsonwebtoken");
 const auth = require("../auth");
 const path = require("path");
 const fs = require("fs");
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const extractUserIdFromToken = (token) => {
   try {
@@ -31,49 +31,82 @@ const extractUserIdFromToken = (token) => {
 };
 
 createMap = async (req, res) => {
-  const body = req.body;
-  if (!body) {
-    return res.status(400).json({
+  try {
+    const body = req.body;
+    if (!body) {
+      return res.status(400).json({
+        success: false,
+        error: "You must provide a map",
+      });
+    }
+
+    // Create the Map instance
+    const map = new Map({
+      title: body.title,
+      author: body.author,
+      mapType: body.mapType,
+    });
+
+    User.findOne({ _id: req.userId })
+      .then((user) => {
+        console.log("user found: " + JSON.stringify(user));
+        user.maps.push(map);
+        return user.save();
+      })
+      .then(() => map.save())
+      .catch((error) => {
+        return res.status(400).json({
+          error,
+          message: "Map not created!",
+        });
+      });
+
+    // Save map data
+
+    const chunkSize = 15 * 1024 * 1024;
+    const mapDataBuffer = body.mapData;
+    const totalChunks = Math.ceil(
+      mapDataBuffer.length / chunkSize
+    );
+    console.log("totalChunks", totalChunks);
+
+    // const chunks = [];
+
+    // Iterate through the buffer and create chunks
+
+
+    for (let i = 0; i < totalChunks; i++) {
+      console.log("creating chunk #", i);
+      const start = i * chunkSize;
+      const end = Math.min((i + 1) * chunkSize, mapDataBuffer.length);
+      const chunk = mapDataBuffer.slice(start, end);
+
+
+
+      const mapData = new Chunk({
+        n: i,
+        mapDataID: map._id,
+        totalChunks,
+        data: chunk
+      });
+
+      await mapData.save().catch((error) => {
+        console.error('Error saving MapData:', error);
+      });;
+    }
+
+    return res.status(201).json({
+      success: true,
+      mapData: map,
+      message: "Map created!",
+    });
+  } catch (error) {
+    console.error("Error creating map:", error);
+    return res.status(500).json({
       success: false,
-      error: "You must provide a map",
+      error: "Error creating map",
     });
   }
-
-  // Save map data
-  const mapData = new MapData({
-    mapData: Buffer.from(Object.values(body.mapData))
-  });
-
-  const savedMapData = await mapData.save();
-
-  // Create the Map instance
-  const map = new Map({
-    title: body.title,
-    author: body.author,
-    mapData: savedMapData.id,
-    mapType: body.mapType,
-  });
-
-  User.findOne({ _id: req.userId })
-    .then((user) => {
-      console.log("user found: " + JSON.stringify(user));
-      user.maps.push(map);
-      return user.save();
-    })
-    .then(() => map.save())
-    .then(() => {
-      return res.status(201).json({
-        success: true,
-        mapData: map,
-        message: "Map created!",
-      });
-    })
-    .catch((error) => {
-      return res.status(400).json({
-        error,
-        message: "Map not created!",
-      });
-    });
 };
 
 deleteMap = (req, res) => {
@@ -131,52 +164,50 @@ deleteMap = (req, res) => {
 };
 
 deleteMapData = (req, res) => {
-  MapData.findOneAndDelete({ _id: req.params.id })
-  .then((mapData) => {
-    if (!mapData) {
-      return res.status(404).json({
-        success: false,
-        error: "Map Data not found",
+  Chunk.deleteMany({ mapDataID: req.params.id })
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({
+          success: false,
+          error: "Map Data not found",
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        message: "Map data deleted",
       });
-    }
-  })
-  .then(() => {
-    return res.status(200).json({
-      success: true,
-      message: "Map data deleted",
+    })
+    .catch((error) => {
+      return res.status(500).json({
+        success: false,
+        error: "Error deleting map data",
+      });
     });
-  })
-  .catch((error) => {
-    return res.status(500).json({
-      success: false,
-      error: "Error deleting map data",
-    });
-  });
-}
+};
 
 deleteCSV = (req, res) => {
   CSV.findOneAndDelete({ _id: req.params.id })
-  .then((csv) => {
-    if (!csv) {
-      return res.status(404).json({
-        success: false,
-        error: "CSV not found",
+    .then((csv) => {
+      if (!csv) {
+        return res.status(404).json({
+          success: false,
+          error: "CSV not found",
+        });
+      }
+    })
+    .then(() => {
+      return res.status(200).json({
+        success: true,
+        message: "CSV deleted",
       });
-    }
-  })
-  .then(() => {
-    return res.status(200).json({
-      success: true,
-      message: "CSV deleted",
+    })
+    .catch((error) => {
+      return res.status(500).json({
+        success: false,
+        error: "Error deleting CSV",
+      });
     });
-  })
-  .catch((error) => {
-    return res.status(500).json({
-      success: false,
-      error: "Error deleting CSV",
-    });
-  });
-}
+};
 
 updateMap = (req, res) => {
   console.log("start update Map");
@@ -212,7 +243,7 @@ updateMap = (req, res) => {
       // console.log("map found: " + JSON.stringify(map));
 
       for (const [key, value] of Object.entries(body)) {
-        if(!["__v", "createdAt", "updatedAt", "_id"].includes(key))
+        if (!["__v", "createdAt", "updatedAt", "_id"].includes(key))
           map[key] = value;
       }
 
@@ -265,19 +296,21 @@ getMapById = (req, res) => {
 };
 
 getMapDataById = (req, res) => {
-  const mapDataId = req.params.id;
+  const mapDataID = req.params.id;
 
-  MapData.findById(mapDataId)
-    .then((mapData) => {
-      if (!mapData) {
+  Chunk.find({ mapDataID })
+    .sort({ n: 1 })
+    .then((mapDataChunks) => {
+      if (mapDataChunks.length === 0) {
         return res.status(404).json({
           success: false,
           error: "Map data not found",
         });
       }
+
       return res.status(200).json({
         success: true,
-        data: mapData,
+        data: mapDataChunks.map((chunk) => chunk.data).join(''),
         message: "Map data found",
       });
     })
@@ -288,7 +321,7 @@ getMapDataById = (req, res) => {
         error: "Error getting map data",
       });
     });
-}
+};
 
 getMapsByUser = (req, res) => {
   console.log("start get Maps");
@@ -370,8 +403,8 @@ forkMap = async (req, res) => {
   }
 
   // Save map data
-  const mapData = new MapData({
-    mapData: Buffer.from(Object.values(body.mapData))
+  const mapData = new Chunk({
+    mapData: Buffer.from(Object.values(body.mapData)),
   });
 
   const savedMapData = await mapData.save();
@@ -453,7 +486,6 @@ createCSV = async (req, res) => {
       error: error,
     });
   }
-  
 };
 
 getCSVById = (req, res) => {
@@ -565,5 +597,5 @@ module.exports = {
   createCSV,
   getCSVById,
   updateCSV,
-  deleteCSV
+  deleteCSV,
 };

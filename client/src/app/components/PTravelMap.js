@@ -10,8 +10,6 @@ import TextField from "@mui/material/TextField";
 import "./property.css";
 import { useHistory } from "react-router-dom";
 import CsvFileReader from "./CsvFileReader";
-import MUISaveChanges from "../modals/MUISaveChanges";
-import MUIExit from "../modals/MUIExitModal";
 import { useContext, useEffect } from "react";
 import StoreContext, {CurrentModal} from "@/store";
 
@@ -247,8 +245,6 @@ export default function PTravelMap() {
       <Button variant="solid" className="save" sx={{ margin: 1 }} onClick={openSaveModal}>
         SAVE
       </Button>
-      <MUISaveChanges />
-      <MUIExit />
     </div>
   );
 }
