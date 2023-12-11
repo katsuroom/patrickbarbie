@@ -16,6 +16,11 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 
 export default function EditScreen() {
+
+
+  if (typeof window == "undefined"){
+    return (<></>)
+  }
   const { store } = useContext(StoreContext);
   const [tabValue, setTabValue] = useState("general");
 

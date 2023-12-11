@@ -7,6 +7,11 @@ import React, { useContext, useEffect } from "react";
 
 
 export default function MainScreen() {
+
+  if (typeof window == "undefined"){
+    return (<></>)
+  }
+  
   const { store } = useContext(StoreContext);
 
   useEffect(() => {
