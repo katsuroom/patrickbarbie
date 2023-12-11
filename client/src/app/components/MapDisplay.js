@@ -10,6 +10,7 @@ const ProportionalMap = dynamic(() => import('./ProportionalMap'));
 const TravelMap = dynamic(() => import("./TravelMaps"));
 const DotDistribution = dynamic(() => import("./DotDistribution"));
 import "leaflet/dist/leaflet.css";
+import PTravelMap from "./PTravelMap";
 
 
 export default function MapDisplay() {
@@ -30,7 +31,7 @@ export default function MapDisplay() {
           : store.currentMapObject.mapType === MapType.HEATMAP ? <Heatmap />
           : store.currentMapObject.mapType === MapType.POLITICAL_MAP ? <PoliticalMap />
           : store.currentMapObject.mapType === MapType.DOT_DISTRIBUTION_MAP ? <DotDistribution />
-          : store.currentMapObject.mapType === MapType.TRAVEL_MAP ? <TravelMap />
+                : store.currentMapObject.mapType === MapType.TRAVEL_MAP ? (store.enableEditing() ? <PTravelMap /> : <TravelMap />) 
           : null
         ) : null}
     </div>

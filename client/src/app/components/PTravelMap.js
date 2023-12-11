@@ -298,9 +298,10 @@ const PTravelMap = (props) => {
   };
 
   return (
-    <div>
-      <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div>
-      {/* <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div> */}
+    <div style={{
+      width: "99vw" }}>
+      {/* <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div> */}
+      <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div>
       <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div>
       <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
         EXIT
