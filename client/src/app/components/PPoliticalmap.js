@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 import Table from "@mui/joy/Table";
 import Button from "@mui/joy/Button";
 import Box from "@mui/joy/Box";
@@ -25,7 +25,7 @@ import Typography from "@mui/material/Typography";
 import EditContext from "@/edit";
 
 export default function PPoliticalmap() {
-    const { store } = useContext(StoreContext);
+    const { store, categoryColorMappings } = useContext(StoreContext);
     const { edit } = useContext(EditContext);
 
     const [selectedAttribute, setSelectedAttribute] = useState('');
@@ -49,6 +49,10 @@ export default function PPoliticalmap() {
         }
     };
 
+    const updateMapColors = () => {
+        store.updateCategoryColorMappings(attributeColorMapping);
+    };
+
     const handleDeleteProperty = (propertyName) => {
         setProperties(properties.filter(property => property.name !== propertyName));
     };
@@ -69,9 +73,7 @@ export default function PPoliticalmap() {
     const handleColorChange = (value, color) => {
         const updatedMapping = { ...attributeColorMapping, [value]: color.hex };
         setAttributeColorMapping(updatedMapping);
-        if (onMappingsChange) {
-            onMappingsChange(updatedMapping);
-        }
+        store.updateCategoryColorMappings(updatedMapping);
     };
 
 
@@ -356,11 +358,14 @@ export default function PPoliticalmap() {
 
                 {/* Color pickers for each unique value of the selected attribute */}
                 {Object.entries(attributeColorMapping).map(([value, color]) => (
-                    <div key={value}>
+                    <div key={value} style={{ display: 'flex', alignItems: 'center' }}>
                         {value}
                         <CompactPicker color={color} onChange={color => handleColorChange(value, color)} />
+                        <Button onClick={updateMapColors} variant="contained">Update</Button>
                     </div>
                 ))}
+
+
             </div>
 
 

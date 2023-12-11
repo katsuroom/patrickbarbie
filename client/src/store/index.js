@@ -75,6 +75,11 @@ function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
   const pathname = usePathname();
 
+
+  const [categoryColorMappings, setCategoryColorMappings] = useState([]);
+
+
+
   const [store, setStore] = useState({
     currentModal: CurrentModal.NONE,  // the currently open modal
     uploadedFile: null,
@@ -252,19 +257,19 @@ function StoreContextProvider(props) {
           proportional_value: payload,
         });
       }
-      case StoreActionType.SET_PROPORTIONAL_COLOR:{
+      case StoreActionType.SET_PROPORTIONAL_COLOR: {
         return setStore({
           ...store,
           proColor: payload,
         });
       }
-      case StoreActionType.SET_POLITICAL_COLOR:{
+      case StoreActionType.SET_POLITICAL_COLOR: {
         return setStore({
           ...store,
           polColor: payload,
         });
       }
-      case StoreActionType.SET_DOT_COLOR:{
+      case StoreActionType.SET_DOT_COLOR: {
         return setStore({
           ...store,
           dotColor: payload,
@@ -283,6 +288,10 @@ function StoreContextProvider(props) {
       default:
         return store;
     }
+  };
+
+  store.updateCategoryColorMappings = function (mappings) {
+    setCategoryColorMappings(mappings);
   };
 
   store.setMinColor = function (color) {
@@ -328,7 +337,7 @@ function StoreContextProvider(props) {
       payload: color,
     });
   };
-  
+
   store.openModal = function (modal) {
     console.log("opening modal: ", modal);
     storeReducer({
@@ -386,21 +395,19 @@ function StoreContextProvider(props) {
     const selected = store.mapList.find((map) => map._id === mapId);
     console.log("selected: ", selected);
 
-    if(!selected)
+    if (!selected)
       return;
 
-    if (!store.currentMapObject || selected._id != store.currentMapObject._id)
-    {
+    if (!store.currentMapObject || selected._id != store.currentMapObject._id) {
       selected.views = selected.views + 1;
       store.updateViews(selected);
     }
 
     // load raw map file
     let mapDataId = selected.mapData;
-    
+
     asyncGetMapData();
-    async function asyncGetMapData()
-    {
+    async function asyncGetMapData() {
       let res = await api.getMapDataById(mapDataId);
       const rawMapFile = geobuf.decode(new Pbf(res.data.data.mapData.data));
 
@@ -431,8 +438,7 @@ function StoreContextProvider(props) {
 
       // copy csv data
       let csvData = null;
-      if(store.currentMapObject.csvData)
-      {
+      if (store.currentMapObject.csvData) {
         const csvObj = (await api.getCsvById(store.currentMapObject.csvData)).data.data;
         csvData = (await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData)).data.csvData._id;
       }
@@ -511,22 +517,20 @@ function StoreContextProvider(props) {
 
     // delete map
     asyncDeleteMap();
-    async function asyncDeleteMap()
-    {
+    async function asyncDeleteMap() {
       let response = await api.deleteMap(mapId);
       if (response.status != 200) return;
 
       console.log("delete map success");
-  
+
       // delete map data
       response = await api.deleteMapData(mapData);
       if (response.status != 200) return;
 
       console.log("delete map data success");
-  
+
       // delete csv data
-      if(csvData)
-      {
+      if (csvData) {
         response = await api.deleteCSV(csvData);
         if (response.status != 200) return;
 
@@ -538,8 +542,7 @@ function StoreContextProvider(props) {
           payload: { mapList: response.data.data },
         });
       }
-      else
-      {
+      else {
         response = await api.getMapsByUser();
         storeReducer({
           type: StoreActionType.DELETE_MAP,
@@ -590,7 +593,7 @@ function StoreContextProvider(props) {
     store.setCsvKeyWithoutRerendering(StartKey);
 
     if (StartKey !== undefined) {
-      store.StartKey = StartKey; 
+      store.StartKey = StartKey;
       console.log(store.StartKey);
       storeReducer({
         type: StoreActionType.SET_CSV_KEY,
@@ -653,13 +656,12 @@ function StoreContextProvider(props) {
 
   // fetches map list based on current view
   store.getMapList = async function () {
-    if (store.isHomePage())
-    {
+    if (store.isHomePage()) {
       await api.getMapsByUser().then((response) => {
         console.log("fetched user maps", response.data.data);
-  
+
         let currentMapObj = null;
-  
+
         if (store.currentMapObject) {
           console.log("refreshing same map");
           currentMapObj = response.data.data.find(
@@ -667,7 +669,7 @@ function StoreContextProvider(props) {
           );
           console.log("found same map", currentMapObj);
         }
-  
+
         store.mapList = response.data.data;
         storeReducer({
           type: StoreActionType.LOAD_MAP_LIST,
@@ -678,20 +680,19 @@ function StoreContextProvider(props) {
         });
       });
     }
-    else
-    {
+    else {
       await api.getPublishedMaps().then((response) => {
         console.log("fetched published maps", response.data.data);
-  
+
         let currentMapObj = null;
-  
+
         if (store.currentMapObject)
           currentMapObj = response.data.data.find(
             (map) => map._id === store.currentMapObject._id
           );
-  
+
         store.mapList = response.data.data;
-        
+
         storeReducer({
           type: StoreActionType.LOAD_MAP_LIST,
           payload: {
@@ -703,7 +704,7 @@ function StoreContextProvider(props) {
     }
   };
 
-  store.searchMapsById = async function(id) {
+  store.searchMapsById = async function (id) {
     const response = await api.getMapById(id);
     const mapObj = response.data.data;
     console.log(mapObj);
@@ -760,7 +761,7 @@ function StoreContextProvider(props) {
     }
     console.log("changing view to", view);
 
-    if (store.currentView === view){
+    if (store.currentView === view) {
       return;
     }
     store.currentView = view;
@@ -770,14 +771,14 @@ function StoreContextProvider(props) {
     });
   };
 
-  store.logoutUser = function() {
+  store.logoutUser = function () {
     storeReducer({
       type: StoreActionType.LOGOUT_USER,
-      payload: { }
+      payload: {}
     });
   };
- 
-  store.clearCsv = function() {
+
+  store.clearCsv = function () {
     store.setParsedCsvData(null);
     store.setCsvKey(null);
     store.setCsvLabel(null);
@@ -788,7 +789,7 @@ function StoreContextProvider(props) {
     store.setDotColor(null);
     store.setProportionalValue([]);
   }
-  
+
 
   store.isCommunityPage = () => {
     return store.currentView === store.viewTypes.COMMUNITY;
@@ -811,6 +812,7 @@ function StoreContextProvider(props) {
     <StoreContext.Provider
       value={{
         store,
+        categoryColorMappings,
       }}
     >
       {props.children}

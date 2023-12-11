@@ -19,6 +19,8 @@ export default function Politicalmap(props) {
     const legendRef = useRef(null);
     const [isColorInit, setIsColorInit] = useState(false);
 
+    const { categoryColorMappings } = useContext(StoreContext);
+
     const initColor = () => {
         if (store.currentMapObject.mapProps) {
             console.log("store.currentMapObject.mapProps is not null");
