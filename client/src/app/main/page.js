@@ -40,7 +40,6 @@ export default function MainScreen() {
 
 
   return (
-    typeof window == "undefined" ? <></> : 
     <div>
       <div>
         <MapCardList />

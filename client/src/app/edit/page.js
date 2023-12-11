@@ -4,13 +4,16 @@ import React, { useContext, useState } from "react";
 import MapEditorToolbar from "../components/MapEditorToolBar";
 import PHeatmap from "../components/PHeatmap";
 
-import MapDisplay from "../components/MapDisplay";
-import StoreContext, {MapType} from "@/store";
-import PTravelMap from "../components/PTravelMap";
-import PPoliticalmap from "../components/PPoliticalmap";
-import PProportional from "../components/PProportional";
-import PDotDistribution from "../components/PDotDistribution";
-import GeneralProperty from "../components/GeneralProperty";
+// Import components using dynamic import
+const MapEditorToolbar = lazy(() => import("../components/MapEditorToolBar"));
+const PHeatmap = lazy(() => import("../components/PHeatmap"));
+const MapDisplay = lazy(() => import("../components/MapDisplay"));
+const PTravelMap = lazy(() => import("../components/PTravelMap"));
+const PPoliticalmap = lazy(() => import("../components/PPoliticalmap"));
+const PProportional = lazy(() => import("../components/PProportional"));
+const PDotDistribution = lazy(() => import("../components/PDotDistribution"));
+const GeneralProperty = lazy(() => import("../components/GeneralProperty"));
+
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -68,7 +71,6 @@ export default function EditScreen() {
   };
 
   return (
-    typeof window == "undefined" ? <></> : 
     <div>
       <div style={toolbarStyle}>
         <MapEditorToolbar />
