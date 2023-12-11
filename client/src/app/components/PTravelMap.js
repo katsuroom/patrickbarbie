@@ -34,20 +34,55 @@ const PTravelMap = (props) => {
 
 
 
+  // const startHere = (e) => {
+  //   if (routeControlRef.current) {
+  //     routeControlRef.current.spliceWaypoints(0, 1, e.latlng);
+  //     console.log('routeControlRef.current.getWaypoints' + routeControlRef.current.getWaypoints().map(wp => wp.latLng))
+  //     console.log('routeControlRef.current.Waypoints' + routeControlRef.current.Waypoints)
+  //   }
+  // };
+
+  // const goHere = (e) => {
+  //   if (routeControlRef.current) {
+  //     routeControlRef.current.spliceWaypoints(routeControlRef.current.getWaypoints().length - 1, 1, e.latlng);
+  //     // store.setWaypoints(routeControlRef.current.getWaypoints());
+  //   }
+  // };
+
   const startHere = (e) => {
-    if (routeControlRef.current) {
-      routeControlRef.current.spliceWaypoints(0, 1, e.latlng);
-      console.log('routeControlRef.current.getWaypoints' + routeControlRef.current.getWaypoints().map(wp => wp.latLng))
-      console.log('routeControlRef.current.Waypoints' + routeControlRef.current.Waypoints)
+    if (geoJsonLayerRef.current) {
+      const bounds = geoJsonLayerRef.current.getBounds();
+      if (bounds.contains(e.latlng)) {
+        if (routeControlRef.current) {
+          try {
+            routeControlRef.current.spliceWaypoints(0, 1, e.latlng);
+          } catch (error) {
+            window.alert("Error: Unable to set the start location. Please try a different location.");
+          }
+        }
+      } else {
+        window.alert("Selected start location is outside the GeoJSON data range.");
+      }
     }
   };
 
   const goHere = (e) => {
-    if (routeControlRef.current) {
-      routeControlRef.current.spliceWaypoints(routeControlRef.current.getWaypoints().length - 1, 1, e.latlng);
-      // store.setWaypoints(routeControlRef.current.getWaypoints());
+    if (geoJsonLayerRef.current) {
+      const bounds = geoJsonLayerRef.current.getBounds();
+      if (bounds.contains(e.latlng)) {
+        if (routeControlRef.current) {
+          try {
+            routeControlRef.current.spliceWaypoints(routeControlRef.current.getWaypoints().length - 1, 1, e.latlng);
+          } catch (error) {
+            window.alert("Error: Unable to set the destination location. Please try a different location.");
+          }
+        }
+      } else {
+        window.alert("Selected destination location is outside the GeoJSON data range.");
+      }
     }
   };
+
 
   const loadScript = (src) => {
     return new Promise((resolve, reject) => {
