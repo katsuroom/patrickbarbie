@@ -10,6 +10,7 @@ import PTravelMap from "../components/PTravelMap";
 import PPoliticalmap from "../components/PPoliticalmap";
 import PProportional from "../components/PProportional";
 import PDotDistribution from "../components/PDotDistribution";
+import GeneralProperty from "../components/generalProperty";
 
 export default function EditScreen() {
   const { store } = useContext(StoreContext);
@@ -41,7 +42,7 @@ export default function EditScreen() {
       propertyPanel = <PHeatmap />;
       break;
     case MapType.DOT_DISTRIBUTION_MAP:
-      propertyPanel = <PDotDistribution />;
+      propertyPanel = <GeneralProperty />;
       break;
     case MapType.PROPORTIONAL_SYMBOL_MAP:
       propertyPanel = <PProportional />;
