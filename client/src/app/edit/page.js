@@ -24,7 +24,7 @@ export default function EditScreen() {
   if (typeof window == "undefined"){
     return (<></>)
   }
-  
+
   const [tabValue, setTabValue] = useState("general");
 
   const panelStyle = {
@@ -71,6 +71,7 @@ export default function EditScreen() {
   };
 
   return (
+    typeof window == "undefined" ? <></> : 
     <div>
       <div style={toolbarStyle}>
         <MapEditorToolbar />

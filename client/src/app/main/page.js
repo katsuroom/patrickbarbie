@@ -36,12 +36,11 @@ export default function MainScreen() {
     func();
   }, [store.currentMapObject]);
 
-  if (typeof window == "undefined"){
-    return (<></>)
-  }
+  
 
 
   return (
+    typeof window == "undefined" ? <></> : 
     <div>
       <div>
         <MapCardList />
