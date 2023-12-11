@@ -30,6 +30,7 @@ const TravelMap = (props) => {
     const satelliteLayerRef = useRef(null);
     const darkLayerRef = useRef(null);
     const lightLayerRef = useRef(null);
+    const settingLayerRef = useRef(null);
 
     const startHere = (e) => {
         if (routeControlRef.current) {
@@ -67,10 +68,8 @@ const TravelMap = (props) => {
 
 
     useEffect(() => {
-        if (store.rawMapFile)
-        {
-            if(!loadScripts)
-            {
+        if (store.rawMapFile) {
+            if (!loadScripts) {
                 Promise.all([
                     loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
                     loadScript("./mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
@@ -78,8 +77,7 @@ const TravelMap = (props) => {
                     setLoadScripts(true);
                 }).catch(error => console.error(error));
             }
-            else
-            {
+            else {
                 refreshMap();
             }
         }
@@ -115,6 +113,7 @@ const TravelMap = (props) => {
         if (satelliteLayerRef.current) mapRef.current.removeLayer(satelliteLayerRef.current);
         if (darkLayerRef.current) mapRef.current.removeLayer(darkLayerRef.current);
         if (lightLayerRef.current) mapRef.current.removeLayer(lightLayerRef.current);
+        if (settingLayerRef.current) mapRef.current.removeLayer(settingLayerRef.current);
 
         mapLayerRef.current = window.MQ.mapLayer();
         hybridLayerRef.current = window.MQ.hybridLayer();
@@ -122,13 +121,14 @@ const TravelMap = (props) => {
         darkLayerRef.current = window.MQ.darkLayer();
         lightLayerRef.current = window.MQ.lightLayer();
 
-    L.control.layers({
-        'Map': mapLayerRef.current,
-        'Hybrid': hybridLayerRef.current,
-        'Satellite': satelliteLayerRef.current,
-        'Dark': darkLayerRef.current,
-        'Light': lightLayerRef.current
-    }).addTo(mapRef.current);
+        settingLayerRef.current = L.control.layers({
+            'Map': mapLayerRef.current,
+            'Hybrid': hybridLayerRef.current,
+            'Satellite': satelliteLayerRef.current,
+            'Dark': darkLayerRef.current,
+            'Light': lightLayerRef.current
+        });
+        settingLayerRef.current.addTo(mapRef.current);
 
         if (geoJsonLayerRef.current) {
             mapRef.current.removeLayer(geoJsonLayerRef.current);
@@ -246,9 +246,9 @@ const TravelMap = (props) => {
                 },
                 geocoder: L.Control.Geocoder.nominatim(),
             })
-            // .on('routingstart', showSpinner)
-            // .on('routesfound routingerror', hideSpinner)
-            .addTo(mapRef.current);
+                // .on('routingstart', showSpinner)
+                // .on('routesfound routingerror', hideSpinner)
+                .addTo(mapRef.current);
 
             routeControlRef.current = routingControl;
 
