@@ -3,7 +3,10 @@ const Schema = mongoose.Schema;
 
 const MapDataSchema = new Schema(
     {
-        mapData: {type: Buffer, required: true}
+        n: {type: Number, required: true},
+        totalChunks: {type: Number, required: true},
+        mapDataID: {type: String, required: true},
+        data: {type: String, required: true}
     },
     { timestamps: true },
 )

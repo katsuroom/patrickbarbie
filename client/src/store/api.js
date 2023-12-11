@@ -53,7 +53,7 @@ return fetch(`${baseURL}/forkmap/`, {
   },
   body: JSON.stringify({
     title: mapName,
-    mapData: mapData,
+    // mapData: mapData,
     author: username,
     mapType: mapType,
     csvData: csvData
