@@ -80,7 +80,7 @@ createMap = async (req, res) => {
       const start = i * chunkSize;
       const end = Math.min((i + 1) * chunkSize, mapDataBuffer.length);
       const chunk = mapDataBuffer.slice(start, end);
-      // console.log(chunk)
+
 
 
       const mapData = new Chunk({

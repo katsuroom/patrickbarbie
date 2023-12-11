@@ -16,17 +16,15 @@ import { useContext, useEffect } from "react";
 import StoreContext, { CurrentModal } from "@/store";
 import { CompactPicker } from "react-color";
 
-
-
 // import Table from '@mui/joy/Table';
 // import Button from '@mui/joy/Button';
 // import Add from '@mui/icons-material/Add';
 // import MenuItem from '@mui/material/MenuItem';
 // import Select from '@mui/material/Select';
 // import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import Compact from '@uiw/react-color-compact';
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Compact from "@uiw/react-color-compact";
 // import './property.css'
 // import { useContext, useEffect } from "react";
 // import StoreContext from "../store";
@@ -34,7 +32,6 @@ import Compact from '@uiw/react-color-compact';
 
 // import MUISaveChanges from "./Model/MUISaveChanges";
 // import MUIExitModal from "./Model/MUIExitModal";
-
 
 export default function PHeatmap() {
   const { store } = useContext(StoreContext);
@@ -44,21 +41,23 @@ export default function PHeatmap() {
   // const [page, setPage] = React.useState(0);
   const [textFields, setTextFields] = React.useState([]);
 
-  const [minHex, setMinHex] = React.useState(store.minColor);
-  const [maxHex, setMaxHex] = React.useState(store.maxColor);
+  const [minHex, setMinHex] = React.useState(store.minColor || "#FFFFFF");
+  const [maxHex, setMaxHex] = React.useState(store.maxColor || "#FF0000");
 
   const handleMinColorChange = (event) => {
-    const color = event.hex;
-    setMinHex(color);
-    store.setMinColor(color);
-
+    const color = event?.hex;
+    if (color) {
+      setMinHex(color);
+      store.setMinColor(color);
+    }
   };
 
   const handleMaxColorChange = (event) => {
-    const color = event.hex;
-    setMaxHex(color);
-    store.setMaxColor(color);
-
+    const color = event?.hex;
+    if (color) {
+      setMaxHex(color);
+      store.setMaxColor(color);
+    }
   };
 
   useEffect(() => {
@@ -292,7 +291,7 @@ export default function PHeatmap() {
         </Table>
       </div>
       <div>
-      {/* <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
+        {/* <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
         <InputLabel id="min-color-label">Min</InputLabel>
         <Select
           labelId="min-color-label"
@@ -303,17 +302,17 @@ export default function PHeatmap() {
           onChange={(event) => setMinHex(event.target.value)}
         >
           <MenuItem value={minHex}> */}
-          <div>Select Min Color: </div>
-            <CompactPicker
-              onChange={handleMinColorChange}
-              color={minHex}
-              disableAlpha={true} // Disable alpha channel
-            />
-          {/* </MenuItem>
+        <div>Select Min Color: </div>
+        <CompactPicker
+          onChange={handleMinColorChange}
+          color={minHex}
+          disableAlpha={true} // Disable alpha channel
+        />
+        {/* </MenuItem>
         </Select>
       </FormControl> */}
 
-      {/* <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
+        {/* <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
         <InputLabel id="max-color-label">Max</InputLabel>
         <Select
           labelId="max-color-label"
@@ -324,34 +323,34 @@ export default function PHeatmap() {
           onChange={(event) => setMaxHex(event.target.value)}
         >
           <MenuItem value={maxHex}> */}
-          <div style={{paddingTop: "1%"}}>Select Max Color: </div>
+        <div style={{ paddingTop: "1%" }}>Select Max Color: </div>
 
-            <CompactPicker
-              onChange={handleMaxColorChange}
-              color={maxHex}
-              disableAlpha={true} // Disable alpha channel
-            />
-          {/* </MenuItem>
+        <CompactPicker
+          onChange={handleMaxColorChange}
+          color={maxHex}
+          disableAlpha={true} // Disable alpha channel
+        />
+        {/* </MenuItem>
         </Select>
       </FormControl> */}
       </div>
       <div>
-      <Button
-        variant="solid"
-        className="exit"
-        sx={{ margin: 1 }}
-        onClick={openExitModal}
-      >
-        EXIT
-      </Button>
-      <Button
-        variant="solid"
-        className="save"
-        sx={{ margin: 1 }}
-        onClick={openSaveModal}
-      >
-        SAVE
-      </Button>
+        <Button
+          variant="solid"
+          className="exit"
+          sx={{ margin: 1 }}
+          onClick={openExitModal}
+        >
+          EXIT
+        </Button>
+        <Button
+          variant="solid"
+          className="save"
+          sx={{ margin: 1 }}
+          onClick={openSaveModal}
+        >
+          SAVE
+        </Button>
       </div>
       {/* <Button
         variant="solid"
