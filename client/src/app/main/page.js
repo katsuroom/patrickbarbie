@@ -8,10 +8,8 @@ import React, { useContext, useEffect } from "react";
 
 export default function MainScreen() {
 
-  if (typeof window == "undefined"){
-    return (<></>)
-  }
-  
+ 
+
   const { store } = useContext(StoreContext);
 
   useEffect(() => {
@@ -37,6 +35,10 @@ export default function MainScreen() {
     };
     func();
   }, [store.currentMapObject]);
+
+  if (typeof window == "undefined"){
+    return (<></>)
+  }
 
 
   return (

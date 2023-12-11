@@ -18,10 +18,13 @@ import Tab from "@mui/material/Tab";
 export default function EditScreen() {
 
 
+
+  const { store } = useContext(StoreContext);
+
   if (typeof window == "undefined"){
     return (<></>)
   }
-  const { store } = useContext(StoreContext);
+  
   const [tabValue, setTabValue] = useState("general");
 
   const panelStyle = {
