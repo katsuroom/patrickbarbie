@@ -118,8 +118,8 @@ export default function PProportional() {
   };
 
   const openSaveModal = () => {
-    console.log(store.currentMapObject);
-    store.openModal(CurrentModal.SAVE_EDIT);}
+    store.openModal(CurrentModal.SAVE_EDIT);
+  }
 
   const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
@@ -193,7 +193,6 @@ export default function PProportional() {
 
   return (
     <div>
-      <div className="propertyTitle">Property</div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
       <div style={{ overflow: "auto", maxHeight: "45vh" }}>
         <Table
