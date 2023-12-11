@@ -74,7 +74,7 @@ export default function EditScreen() {
         {propertyPanel}
       </div> */}
 
-      <div style={panelStyle}>
+      {!MapType.TRAVEL_MAP && <div style={panelStyle}>
         <div className="propertyTitle">Property</div>
         <Tabs
           value={tabValue}
@@ -86,7 +86,7 @@ export default function EditScreen() {
         </Tabs>
         {tabValue === "general" && <GeneralProperty />}
         {tabValue === "specific" && propertyPanel}
-      </div>
+      </div>}
     </div>
   );
 }

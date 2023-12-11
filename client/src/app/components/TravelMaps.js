@@ -102,15 +102,15 @@ const TravelMap = (props) => {
                 layers: [mapLayer],
                 center: [40.731701, -73.993411],
                 zoom: 12,
-                contextmenu: true,
-                contextmenuWidth: 140,
-                contextmenuItems: [{
-                    text: 'Start from here',
-                    callback: startHere
-                }, {
-                    text: 'Go to here',
-                    callback: goHere
-                }]
+                // contextmenu: true,
+                // contextmenuWidth: 140,
+                // contextmenuItems: [{
+                //     text: 'Start from here',
+                //     callback: startHere
+                // }, {
+                //     text: 'Go to here',
+                //     callback: goHere
+                // }]
             });
         }
         if (mapLayerRef.current) mapRef.current.removeLayer(mapLayerRef.current);
@@ -199,8 +199,8 @@ const TravelMap = (props) => {
         }
     }, [store.currentMapObject]);
 
-    const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
-    const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
+    // const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
+    // const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
     const runDirection = async () => {
 
@@ -235,7 +235,6 @@ const TravelMap = (props) => {
                 iconAnchor: [12, 41]
             });
 
-
             if (routeControlRef.current) {
                 mapRef.current.removeControl(routeControlRef.current);
             }
@@ -247,17 +246,12 @@ const TravelMap = (props) => {
                     const markerIcon = i === 0 ? startIcon : (i > 0 && i < n - 1) ? inBetweenIcon : endIcon;
                     return L.marker(waypoint.latLng, { draggable: true, icon: markerIcon });
                 },
-                geocoder: L.Control.Geocoder.nominatim(),
+                // geocoder: L.Control.Geocoder.nominatim(),
             });
 
-            // Listen for the waypointsUpdated event
             routingControl.on('waypointschanged', function (e) {
-                // Access the updated waypoints using e.waypoints
                 const updatedWaypoints = e.waypoints;
                 console.log('Waypoints Updated:', updatedWaypoints);
-
-                // Call your custom function here
-
                 store.setWaypoints(updatedWaypoints.map(p => {
                     return p.latLng
                 }));
@@ -301,13 +295,13 @@ const TravelMap = (props) => {
         <div>
             <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div>
             {/* <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div> */}
-            <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div>
-            <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
+            {/* <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div> */}
+            {/* <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
                 EXIT
             </Button>
             <Button variant="solid" className="save" sx={{ margin: 1 }} onClick={openSaveModal}>
                 SAVE
-            </Button>
+            </Button> */}
         </div>
 
     );
