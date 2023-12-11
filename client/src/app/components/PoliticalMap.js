@@ -216,7 +216,7 @@ export default function Politicalmap(props) {
             return;
         }
 
-        if (store.currentMapObject?.mapType === MapType.HEATMAP) {
+        if (store.currentMapObject?.mapType === MapType.POLITICAL_MAP) {
             heatmapOverlayRef.current = L.geoJSON(geoJsonData, {
                 style: geoJsonStyle,
                 onEachFeature: (feature, layer) => {
