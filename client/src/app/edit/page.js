@@ -21,9 +21,6 @@ export default function EditScreen() {
 
   const { store } = useContext(StoreContext);
 
-  if (typeof window == "undefined"){
-    return (<></>)
-  }
 
   const [tabValue, setTabValue] = useState("general");
 
