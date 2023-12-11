@@ -113,14 +113,15 @@ const TravelMap = (props) => {
         if (satelliteLayerRef.current) mapRef.current.removeLayer(satelliteLayerRef.current);
         if (darkLayerRef.current) mapRef.current.removeLayer(darkLayerRef.current);
         if (lightLayerRef.current) mapRef.current.removeLayer(lightLayerRef.current);
-        if (settingLayerRef.current) mapRef.current.removeLayer(settingLayerRef.current);
 
         mapLayerRef.current = window.MQ.mapLayer();
         hybridLayerRef.current = window.MQ.hybridLayer();
         satelliteLayerRef.current = window.MQ.satelliteLayer();
         darkLayerRef.current = window.MQ.darkLayer();
         lightLayerRef.current = window.MQ.lightLayer();
-
+        if (settingLayerRef.current) {
+            mapRef.current.removeControl(settingLayerRef.current);
+        }
         settingLayerRef.current = L.control.layers({
             'Map': mapLayerRef.current,
             'Hybrid': hybridLayerRef.current,
@@ -220,10 +221,11 @@ const TravelMap = (props) => {
                 iconAnchor: [12, 41]
             });
 
-            // if (routeControlRef.current) {
-            //     mapRef.current.removeControl(routeControlRef.current);
-            // }
 
+            if (routeControlRef.current) {
+                mapRef.current.removeControl(routeControlRef.current);
+            }
+            
             const routingControl = L.Routing.control({
                 waypoints: [
                     // L.latLng(12.972442, 77.580643),
