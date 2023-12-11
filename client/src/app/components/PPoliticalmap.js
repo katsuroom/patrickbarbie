@@ -42,7 +42,6 @@ export default function PPoliticalmap() {
         if (!properties.some(property => property.category === newPropertyName)) {
             const newMappings = [...properties, { category: newPropertyName, color: newPropertyColor }];
             setProperties(newMappings);
-            // Assuming onMappingsChange is a prop function to update the parent state
             onMappingsChange(newMappings);
             setNewPropertyName('');
             setNewPropertyColor('#fff');
@@ -50,6 +49,7 @@ export default function PPoliticalmap() {
     };
 
     const updateMapColors = () => {
+        console.log("Updating map colors: ", attributeColorMapping);
         store.updateCategoryColorMappings(attributeColorMapping);
     };
 
@@ -59,6 +59,7 @@ export default function PPoliticalmap() {
 
     // When a new attribute is selected, reset the color mapping
     useEffect(() => {
+        console.log("Selected Attribute: ", selectedAttribute);
         if (selectedAttribute) {
             const uniqueValues = new Set(store.parsed_CSV_Data[selectedAttribute]);
             const newMapping = {};
@@ -71,6 +72,7 @@ export default function PPoliticalmap() {
 
     // Function to handle color change for each attribute value
     const handleColorChange = (value, color) => {
+        console.log("Color Change: ", value, color.hex);
         const updatedMapping = { ...attributeColorMapping, [value]: color.hex };
         setAttributeColorMapping(updatedMapping);
         store.updateCategoryColorMappings(updatedMapping);
