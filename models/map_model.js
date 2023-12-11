@@ -37,7 +37,9 @@ const MapSchema = new Schema(
     csvData: { type: String, required: false },
     comments: [{type: Comments}],
     mapType: { type: String, required: true },
-    mapProps: {type: Object, required: false}
+    mapProps: {type: Object, required: false},
+    imageBuffer: {type: Buffer, required: false},
+
   },
   { timestamps: true }
 );
