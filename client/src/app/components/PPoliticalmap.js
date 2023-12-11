@@ -28,7 +28,7 @@ export default function PPoliticalmap() {
     const { store, categoryColorMappings } = useContext(StoreContext);
     const { edit } = useContext(EditContext);
 
-    const [selectedAttribute, setSelectedAttribute] = useState('');
+    const { selectedAttribute, setSelectedAttribute } = useContext(StoreContext);
     const [attributeColorMapping, setAttributeColorMapping] = useState({});
 
 
@@ -49,7 +49,7 @@ export default function PPoliticalmap() {
     };
 
     const updateMapColors = () => {
-        console.log("Updating map colors: ", attributeColorMapping);
+        // console.log("Updating map colors: ", attributeColorMapping);
         store.updateCategoryColorMappings(attributeColorMapping);
     };
 
@@ -59,20 +59,17 @@ export default function PPoliticalmap() {
 
     // When a new attribute is selected, reset the color mapping
     useEffect(() => {
-        console.log("Selected Attribute: ", selectedAttribute);
-        if (selectedAttribute) {
-            const uniqueValues = new Set(store.parsed_CSV_Data[selectedAttribute]);
+        if (store.selectedAttribute) {
+            const uniqueValues = new Set(store.parsed_CSV_Data[store.selectedAttribute]);
             const newMapping = {};
             uniqueValues.forEach(value => {
-                newMapping[value] = '#ffffff'; // Default color
+                newMapping[value] = '#ffffff';
             });
             setAttributeColorMapping(newMapping);
         }
-    }, [selectedAttribute, store.parsed_CSV_Data]);
+    }, [store.selectedAttribute, store.parsed_CSV_Data]);
 
-    // Function to handle color change for each attribute value
     const handleColorChange = (value, color) => {
-        console.log("Color Change: ", value, color.hex);
         const updatedMapping = { ...attributeColorMapping, [value]: color.hex };
         setAttributeColorMapping(updatedMapping);
         store.updateCategoryColorMappings(updatedMapping);
@@ -308,49 +305,9 @@ export default function PPoliticalmap() {
             </div>
 
 
-
-
-
-            {/* Form for adding new region-color mappings */}
-            {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, margin: 2 }}>
-                <TextField
-                    label="Region Name"
-                    value={newPropertyName}
-                    onChange={(e) => setNewPropertyName(e.target.value)}
-                    variant="outlined"
-                    size="small"
-                    sx={{ flexGrow: 1 }}
-                />
-                <CompactPicker
-                    color={newPropertyColor}
-                    onChange={(color) => setNewPropertyColor(color.hex)}
-                />
-                <Button variant="contained" color="primary" onClick={handleAddProperty}>
-                    Add Mapping
-                </Button>
-            </Box> */}
-
-            {/* List of region-color mappings */}
-            {/* {properties.map((property, index) => (
-                <Paper key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2, padding: 1, marginY: 1 }}>
-                    <Typography sx={{ marginLeft: 2, flexShrink: 0 }}>
-                        {property.name}
-                    </Typography>
-                    <CompactPicker
-                        color={property.color}
-                        onChange={(color) => handleColorChange(color, index)}
-                    />
-                    <IconButton onClick={() => handleDeleteProperty(property.name)} color="error" sx={{ marginLeft: 'auto' }}>
-                        <DeleteIcon />
-                    </IconButton>
-                </Paper>
-            ))} */}
-
-
-
             <div>
                 {/* Dropdown to select an attribute */}
-                <Select value={selectedAttribute} onChange={e => setSelectedAttribute(e.target.value)}>
+                <Select value={store.selectedAttribute} onChange={e => store.updateSelectedAttribute(e.target.value)}>
                     {store.parsed_CSV_Data && Object.keys(store.parsed_CSV_Data).length > 0 ?
                         Object.keys(store.parsed_CSV_Data).map(key => (
                             <MenuItem key={key} value={key}>{key}</MenuItem>
@@ -359,20 +316,26 @@ export default function PPoliticalmap() {
                 </Select>
 
                 {/* Color pickers for each unique value of the selected attribute */}
-                {Object.entries(attributeColorMapping).map(([value, color]) => (
+                {/* {Object.entries(attributeColorMapping).map(([value, color]) => (
                     <div key={value} style={{ display: 'flex', alignItems: 'center' }}>
                         {value}
                         <CompactPicker color={color} onChange={color => handleColorChange(value, color)} />
                         <Button onClick={updateMapColors} variant="contained">Update</Button>
                     </div>
-                ))}
+                ))} */}
+
+                <div>
+                    {Object.entries(attributeColorMapping).map(([value, color]) => (
+                        <div key={value} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '10px' }}>
+                            <div style={{ marginBottom: '5px' }}>{value}</div>
+                            <CompactPicker color={color} onChange={color => handleColorChange(value, color)} style={{ marginBottom: '5px' }} />
+                            <Button onClick={updateMapColors} variant="contained">Update</Button>
+                        </div>
+                    ))}
+                </div>
 
 
             </div>
-
-
-
-
 
 
 

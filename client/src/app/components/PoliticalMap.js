@@ -19,7 +19,10 @@ export default function Politicalmap(props) {
     const legendRef = useRef(null);
     const [isColorInit, setIsColorInit] = useState(false);
 
+
     const { categoryColorMappings } = useContext(StoreContext);
+    const { selectedAttribute, setSelectedAttribute } = useContext(StoreContext);
+
 
     const initColor = () => {
         if (store.currentMapObject.mapProps) {
@@ -116,15 +119,50 @@ export default function Politicalmap(props) {
     // }
 
 
+    // function geoJsonStyle(feature) {
+    //     let fillColor = 'white';
+
+    //     console.log("HERE IN POLITICALMAP.s")
+    //     console.log(store.categoryColorMappings)
+    
+    //     const selectedAttribute = store.selectedAttribute;
+
+    //     console.log("selectedAttribute is: " + selectedAttribute)
+    
+    //     if (selectedAttribute && store.categoryColorMappings && Object.keys(store.categoryColorMappings).length > 0) {
+
+    //         const featureValue = feature.properties[selectedAttribute];
+    
+    //         if (featureValue !== undefined && store.categoryColorMappings.hasOwnProperty(featureValue)) {
+    //             fillColor = store.categoryColorMappings[featureValue];
+    //         }
+    //     }
+    
+    //     return {
+    //         stroke: true,
+    //         color: 'black',
+    //         weight: 1,
+    //         fillColor,
+    //         fillOpacity: 1,
+    //     };
+    // }
 
     function geoJsonStyle(feature) {
-        let fillColor = 'white'; // Default color
-
-        if (props.attributeColorMapping && selectedAttribute) {
+        let fillColor = 'white';
+    
+        const selectedAttribute = store.selectedAttribute;
+        console.log("selectedAttribute is: " + selectedAttribute)
+        const categoryColorMappings = store.categoryColorMappings;
+        console.log(categoryColorMappings)
+    
+        if (selectedAttribute && categoryColorMappings) {
             const featureValue = feature.properties[selectedAttribute];
-            fillColor = props.attributeColorMapping[featureValue] || 'white';
-        }
 
+            if (featureValue && categoryColorMappings.hasOwnProperty(featureValue)) {
+                fillColor = categoryColorMappings[featureValue];
+            }
+        }
+    
         return {
             stroke: true,
             color: 'black',
@@ -133,10 +171,6 @@ export default function Politicalmap(props) {
             fillOpacity: 1,
         };
     }
-
-
-
-
 
 
     useEffect(() => {
@@ -152,6 +186,14 @@ export default function Politicalmap(props) {
     useEffect(() => {
         if (store.rawMapFile) setGeoJsonData(store.rawMapFile);
     }, [store.rawMapFile]);
+
+    useEffect(() => {
+        // Check if the GeoJSON layer exists
+        if (geoJsonLayerRef.current) {
+            // Update the style of the GeoJSON layer
+            geoJsonLayerRef.current.setStyle(geoJsonStyle);
+        }
+    }, [store.selectedAttribute, store.categoryColorMappings]);
 
     useEffect(() => {
         if (!geoJsonData) {
@@ -207,6 +249,7 @@ export default function Politicalmap(props) {
                 console.log("geoJsonLayerRef.current is undefined or empty");
             }
         }
+        
 
         if (heatmapOverlayRef.current) {
             mapRef.current.removeLayer(heatmapOverlayRef.current);
@@ -283,7 +326,9 @@ export default function Politicalmap(props) {
             //     hideControlContainer: true
             // }).addTo(mapRef.current);
         }
-    }, [
+    }, 
+    
+    [
         geoJsonData,
         store.label,
         store.key,

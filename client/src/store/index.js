@@ -44,6 +44,8 @@ export const StoreActionType = {
   SET_DOT_COLOR: "SET_DOT_COLOR",
 
   LOGOUT_USER: "LOGOUT_USER",
+  SET_CATEGORY_COLOR_MAPPINGS: "SET_CATEGORY_COLOR_MAPPINGS",
+  SET_SELECTED_ATTRIBUTE: "SET_SELECTED_ATTRIBUTE",
 };
 
 export const CurrentModal = {
@@ -76,10 +78,6 @@ function StoreContextProvider(props) {
   const pathname = usePathname();
 
 
-  const [categoryColorMappings, setCategoryColorMappings] = useState([]);
-
-
-
   const [store, setStore] = useState({
     currentModal: CurrentModal.NONE,  // the currently open modal
     uploadedFile: null,
@@ -98,6 +96,8 @@ function StoreContextProvider(props) {
     proColor: null,
     polColor: null,
     dotColor: null,
+    categoryColorMappings: [],
+    seletecAttribute: null,
   });
 
   store.viewTypes = View;
@@ -118,6 +118,21 @@ function StoreContextProvider(props) {
           currentModal: CurrentModal.NONE,
         });
       }
+
+      case StoreActionType.SET_CATEGORY_COLOR_MAPPINGS: {
+        return setStore({
+          ...store,
+          categoryColorMappings: payload,
+        });
+      }
+
+      case StoreActionType.SET_SELECTED_ATTRIBUTE: {
+        return setStore({
+          ...store,
+          selectedAttribute: payload,
+        });
+      }
+
       case StoreActionType.UPLOAD_MAP_FILE: {
         console.log(payload.file);
         return setStore({
@@ -290,8 +305,18 @@ function StoreContextProvider(props) {
     }
   };
 
-  store.updateCategoryColorMappings = function (mappings) {
-    setCategoryColorMappings(mappings);
+  store.updateCategoryColorMappings = function (categoryColorMappings) {
+    storeReducer({
+      type: StoreActionType.SET_CATEGORY_COLOR_MAPPINGS,
+      payload: categoryColorMappings,
+    });
+  };
+
+  store.updateSelectedAttribute = function (selectedAttribute) {
+    storeReducer({
+      type: StoreActionType.SET_SELECTED_ATTRIBUTE,
+      payload: selectedAttribute,
+    });
   };
 
   store.setMinColor = function (color) {
@@ -811,8 +836,7 @@ function StoreContextProvider(props) {
   return (
     <StoreContext.Provider
       value={{
-        store,
-        categoryColorMappings,
+        store
       }}
     >
       {props.children}
