@@ -43,40 +43,51 @@ const createMap = (mapData, username, mapName, mapType) => {
     });
 };
 
-const forkMap = async (mapData, csvData, username, mapName, mapType) => {
-  let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
-return fetch(`${baseURL}/forkmap/`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: token,
-  },
-  body: JSON.stringify({
-    title: mapName,
-    // mapData: mapData,
-    author: username,
-    mapType: mapType,
-    csvData: csvData
-  }),
-})
-  .then((response) => {
-    if (!response.ok) {
-      // If the response status is not OK, reject the promise with an error
-      throw new Error(`Failed to create map. Status: ${response.status}`);
-    }
-    // Parse JSON and include status in the resolved value
-    return response.json();
-  })
-  .then((data) => {
-    console.log(data);
-    return { status: 200, data }; // Assuming 200 for success, modify as needed
-  })
-  .catch((error) => {
-    // Handle fetch errors (e.g., network issues)
-    console.error("Error creating map:", error);
-    // Return a rejected promise with the error
-    return Promise.reject(error);
-  });
+const forkMap = async (mapData, csvData, username, mapName, mapType, mapProps) => {
+  let createRes = await createMap(mapData, username, mapName, mapType);
+  let mapObj = createRes.data.mapData;
+  mapObj.csvData = csvData;
+  mapObj.mapProps = mapProps;
+  let updateRes = await updateMap(mapObj);
+  return mapObj;
+
+
+  
+
+
+//   let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
+// return fetch(`${baseURL}/forkmap/`, {
+//   method: "POST",
+//   headers: {
+//     "Content-Type": "application/json",
+//     Authorization: token,
+//   },
+//   body: JSON.stringify({
+//     title: mapName,
+//     mapData: mapData,
+//     author: username,
+//     mapType: mapType,
+//     csvData: csvData
+//   }),
+// })
+//   .then((response) => {
+//     if (!response.ok) {
+//       // If the response status is not OK, reject the promise with an error
+//       throw new Error(`Failed to create map. Status: ${response.status}`);
+//     }
+//     // Parse JSON and include status in the resolved value
+//     return response.json();
+//   })
+//   .then((data) => {
+//     console.log(data);
+//     return { status: 200, data }; // Assuming 200 for success, modify as needed
+//   })
+//   .catch((error) => {
+//     // Handle fetch errors (e.g., network issues)
+//     console.error("Error creating map:", error);
+//     // Return a rejected promise with the error
+//     return Promise.reject(error);
+//   });
 }
 
 const getMapsByUser = () => {

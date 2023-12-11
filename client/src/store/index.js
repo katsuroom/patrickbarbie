@@ -437,7 +437,8 @@ function StoreContextProvider(props) {
 
   // fork map
   store.forkMap = function (maptitle) {
-    let mapData = geobuf.encode(store.rawMapFile, new Pbf());
+    // let mapData = geobuf.encode(store.rawMapFile, new Pbf());
+    let mapData = JSON.stringify(store.rawMapFile);
     console.log("mapData: ", mapData, auth.user.username, maptitle, store.currentMapObject.mapType);
     asyncForkMap();
     async function asyncForkMap() {
@@ -450,15 +451,15 @@ function StoreContextProvider(props) {
         csvData = (await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData)).data.csvData._id;
       }
 
-      let response = await api.forkMap(
+      let mapObj = await api.forkMap(
         mapData,
         csvData ? csvData : undefined,
         auth.user.username,
         maptitle,
-        store.currentMapObject.mapType
+        store.currentMapObject.mapType,
+        store.currentMapObject.mapProps
       );
 
-      let mapObj = response.data.mapData;
 
       // refresh user maps
       api.getMapsByUser().then((response) => {
