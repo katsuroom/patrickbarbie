@@ -185,7 +185,6 @@ export default function PDotDistribution() {
 
   return (
     <div>
-      <div className="propertyTitle">Property</div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
       <div style={{ overflow: "auto", maxHeight: "45vh" }}>
         <Table
