@@ -247,7 +247,8 @@ export default function ProportionalMap() {
       }).addTo(mapRef.current);
 
       // add legend
-      legendRef.current = L.control({ position: "bottomright" });
+      if (store.proportional_value !== null && store.proColor !== null){
+        legendRef.current = L.control({ position: "bottomright" });
       legendRef.current.onAdd = function (map) {
         console.log("store.proportional_value", store.proportional_value);
         var div = L.DomUtil.create("div", "info legend"),
@@ -289,6 +290,7 @@ export default function ProportionalMap() {
         return div;
       };
       legendRef.current.addTo(mapRef.current);
+    }
 
       function getRadius(area) {
         // console.log("area", area);

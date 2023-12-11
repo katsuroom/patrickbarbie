@@ -230,7 +230,6 @@ export default function PPoliticalmap() {
 
     return (
         <div>
-            <div className="propertyTitle">Property</div>
             <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
 
 
