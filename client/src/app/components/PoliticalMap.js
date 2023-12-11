@@ -147,19 +147,49 @@ export default function Politicalmap(props) {
     //     };
     // }
 
-    function geoJsonStyle(feature) {
-        let fillColor = 'white';
+    // function geoJsonStyle(feature) {
+    //     let fillColor = 'white';
     
-        const selectedAttribute = store.selectedAttribute;
-        console.log("selectedAttribute is: " + selectedAttribute)
+    //     const selectedAttribute = store.selectedAttribute;
+    //     console.log("selectedAttribute is: " + selectedAttribute)
+    //     const categoryColorMappings = store.categoryColorMappings;
+    //     console.log(categoryColorMappings)
+    
+    //     if (selectedAttribute && categoryColorMappings) {
+    //         const featureValue = feature.properties[selectedAttribute];
+
+    //         if (featureValue && categoryColorMappings.hasOwnProperty(featureValue)) {
+    //             fillColor = categoryColorMappings[featureValue];
+    //         }
+    //     }
+    
+    //     return {
+    //         stroke: true,
+    //         color: 'black',
+    //         weight: 1,
+    //         fillColor,
+    //         fillOpacity: 1,
+    //     };
+    // }
+
+
+    function geoJsonStyle(feature) {
+        // feature is undefined?? how to fix
+        let fillColor = 'white'; // Default color for features without a matching language
+    
+        // Access the categoryColorMappings and selectedAttribute from the store
         const categoryColorMappings = store.categoryColorMappings;
         console.log(categoryColorMappings)
+        const selectedAttribute = store.selectedAttribute; // 'language' in your scenario
+        console.log("selectedAttribute is: " + selectedAttribute)
     
-        if (selectedAttribute && categoryColorMappings) {
-            const featureValue = feature.properties[selectedAttribute];
-
-            if (featureValue && categoryColorMappings.hasOwnProperty(featureValue)) {
-                fillColor = categoryColorMappings[featureValue];
+        // Iterate through each key in categoryColorMappings
+        for (const language in categoryColorMappings) {
+            console.log("language is: " + language)
+            console.log(feature.properties[selectedAttribute])
+            if (feature.properties[selectedAttribute] === language) {
+                fillColor = categoryColorMappings[language];
+                break; // Stop iterating once a match is found
             }
         }
     
@@ -167,10 +197,12 @@ export default function Politicalmap(props) {
             stroke: true,
             color: 'black',
             weight: 1,
-            fillColor,
+            fillColor, // The fillColor will be set based on the matching language
             fillOpacity: 1,
         };
     }
+
+
 
 
     useEffect(() => {
