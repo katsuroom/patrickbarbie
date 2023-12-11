@@ -3,14 +3,20 @@
 import React, { useContext, useState } from "react";
 import MapEditorToolbar from "../components/MapEditorToolBar";
 import PHeatmap from "../components/PHeatmap";
+import dynamic from "next/dynamic";
 
 import MapDisplay from "../components/MapDisplay";
 import StoreContext, {MapType} from "@/store";
-import PTravelMap from "../components/PTravelMap";
-import PPoliticalmap from "../components/PPoliticalmap";
-import PProportional from "../components/PProportional";
-import PDotDistribution from "../components/PDotDistribution";
-import GeneralProperty from "../components/GeneralProperty";
+const PTravelMap = dynamic(() => import("../components/PTravelMap"));
+const PPoliticalmap = dynamic(() => import("../components/PPoliticalmap"));
+const PProportional = dynamic(() => import("../components/PProportional"));
+const PDotDistribution = dynamic(() => import("../components/PDotDistribution"));
+const GeneralProperty = dynamic(() => import("../components/GeneralProperty"));
+// import PTravelMap from "../components/PTravelMap";
+// import PPoliticalmap from "../components/PPoliticalmap";
+// import PProportional from "../components/PProportional";
+// import PDotDistribution from "../components/PDotDistribution";
+// import GeneralProperty from "../components/GeneralProperty";
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";

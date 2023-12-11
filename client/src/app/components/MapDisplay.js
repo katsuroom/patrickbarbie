@@ -10,7 +10,9 @@ const ProportionalMap = dynamic(() => import('./ProportionalMap'));
 const TravelMap = dynamic(() => import("./TravelMaps"));
 const DotDistribution = dynamic(() => import("./DotDistribution"));
 import "leaflet/dist/leaflet.css";
-import PTravelMap from "./PTravelMap";
+// import PTravelMap from "./PTravelMap";
+const PTravelMap = dynamic(() => import("./PTravelMap"));
+
 
 
 export default function MapDisplay() {
