@@ -4,13 +4,10 @@ import React, { createContext, useState, useContext } from "react";
 import AuthContext from "../auth";
 import { usePathname } from "next/navigation";
 
-
 import api from "./api";
 
 const geobuf = require("geobuf");
 const Pbf = require("pbf");
-
-
 
 const StoreContext = createContext();
 
@@ -55,7 +52,7 @@ export const CurrentModal = {
   DELETE_MAP: "DELETE_MAP",
   EXIT_EDIT: "EXIT_EDIT",
   SAVE_EDIT: "SAVE_EDIT",
-  EXPORT_MAP: "EXPORT_MAP"
+  EXPORT_MAP: "EXPORT_MAP",
 };
 
 export const MapType = {
@@ -76,7 +73,7 @@ function StoreContextProvider(props) {
   const pathname = usePathname();
 
   const [store, setStore] = useState({
-    currentModal: CurrentModal.NONE,  // the currently open modal
+    currentModal: CurrentModal.NONE, // the currently open modal
     uploadedFile: null,
     rawMapFile: null,
     label: null,
@@ -93,7 +90,7 @@ function StoreContextProvider(props) {
     proColor: null,
     polColor: null,
     dotColor: null,
-    waypoints:[],
+    waypoints: [],
   });
 
   store.viewTypes = View;
@@ -184,7 +181,7 @@ function StoreContextProvider(props) {
           ...store,
           mapList: payload.mapList,
           currentMapObject: payload.currentMapObject,
-          rawMapFile: payload.rawMapFile
+          rawMapFile: payload.rawMapFile,
         });
       }
 
@@ -195,7 +192,7 @@ function StoreContextProvider(props) {
           currentMapObject: payload.currentMapObject,
           rawMapFile: store.uploadedFile,
           uploadedFile: null,
-          currentModal: CurrentModal.NONE
+          currentModal: CurrentModal.NONE,
         });
       }
 
@@ -231,8 +228,7 @@ function StoreContextProvider(props) {
           ...store,
           currentMapObject: payload.mapObject,
           mapList: payload.mapList || store.mapList,
-          currentModal: CurrentModal.NONE
-
+          currentModal: CurrentModal.NONE,
         });
       }
       case StoreActionType.SET_MIN_COLOR: {
@@ -259,19 +255,19 @@ function StoreContextProvider(props) {
           proportional_value: payload,
         });
       }
-      case StoreActionType.SET_PROPORTIONAL_COLOR:{
+      case StoreActionType.SET_PROPORTIONAL_COLOR: {
         return setStore({
           ...store,
           proColor: payload,
         });
       }
-      case StoreActionType.SET_POLITICAL_COLOR:{
+      case StoreActionType.SET_POLITICAL_COLOR: {
         return setStore({
           ...store,
           polColor: payload,
         });
       }
-      case StoreActionType.SET_DOT_COLOR:{
+      case StoreActionType.SET_DOT_COLOR: {
         return setStore({
           ...store,
           dotColor: payload,
@@ -283,9 +279,9 @@ function StoreContextProvider(props) {
           rawMapFile: null,
           currentMapObject: null,
           mapList: [],
-          currentView: View.COMMUNITY
+          currentView: View.COMMUNITY,
         });
-      };
+      }
 
       default:
         return store;
@@ -343,7 +339,7 @@ function StoreContextProvider(props) {
       payload: color,
     });
   };
-  
+
   store.openModal = function (modal) {
     console.log("opening modal: ", modal);
     storeReducer({
@@ -369,21 +365,23 @@ function StoreContextProvider(props) {
     });
   };
 
-
   // create map using uploaded file
   store.createMap = function (title, mapType) {
     console.log("in create map");
 
     let file = store.uploadedFile;
     // var data = geobuf.encode(file, new Pbf());
-    var data = JSON.stringify(file)
+    var data = JSON.stringify(file);
     console.log(data);
-
-
 
     asyncCreateMap();
     async function asyncCreateMap() {
-      let response = await api.createMap(data, auth.user.username, title, mapType);
+      let response = await api.createMap(
+        data,
+        auth.user.username,
+        title,
+        mapType
+      );
       let mapObj = response.data.mapData;
 
       // refresh user maps
@@ -393,8 +391,8 @@ function StoreContextProvider(props) {
           type: StoreActionType.CREATE_MAP,
           payload: {
             mapList: response.data.data,
-            currentMapObject: mapObj
-          }
+            currentMapObject: mapObj,
+          },
         });
       });
     }
@@ -402,44 +400,41 @@ function StoreContextProvider(props) {
 
   // loads map data when the map card is clicked
   store.loadMapFile = function (mapId) {
-    const selected = store.mapList.find((map) => map._id === mapId);
+    const selected = store.mapList.find(
+      (map) => map._id === mapId || map._id.toString() == mapId
+    );
     console.log("selected: ", selected);
 
-    if(!selected)
-      return;
+    if (!selected) return;
 
     // update view count only if new map, and is published
-    if((!store.currentMapObject || selected._id != store.currentMapObject._id) && selected.isPublished)
-    {
+    if (
+      (!store.currentMapObject || selected._id != store.currentMapObject._id) &&
+      selected.isPublished
+    ) {
       selected.views++;
       store.updateViews(selected);
     }
 
     // load raw map file
     // let mapDataId = selected.mapData;
-    
+
     asyncGetMapData();
-    async function asyncGetMapData()
-    {
+    async function asyncGetMapData() {
       let res = await api.getMapDataById(mapId);
       // const rawMapFile = geobuf.decode(new Pbf(res.data.data));
       // const rawMapFile = geobuf.decode(res.data.data);
 
-
       console.log(res);
       const rawMapFile = JSON.parse(res.data.data);
-
-
-
-
 
       storeReducer({
         type: StoreActionType.LOAD_MAP,
         payload: {
           mapList: store.mapList,
           currentMapObject: selected,
-          rawMapFile: rawMapFile
-        }
+          rawMapFile: rawMapFile,
+        },
       });
     }
   };
@@ -455,16 +450,23 @@ function StoreContextProvider(props) {
   store.forkMap = function (maptitle) {
     // let mapData = geobuf.encode(store.rawMapFile, new Pbf());
     let mapData = JSON.stringify(store.rawMapFile);
-    console.log("mapData: ", mapData, auth.user.username, maptitle, store.currentMapObject.mapType);
+    console.log(
+      "mapData: ",
+      mapData,
+      auth.user.username,
+      maptitle,
+      store.currentMapObject.mapType
+    );
     asyncForkMap();
     async function asyncForkMap() {
-
       // copy csv data
       let csvData = null;
-      if(store.currentMapObject.csvData)
-      {
-        const csvObj = (await api.getCsvById(store.currentMapObject.csvData)).data.data;
-        csvData = (await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData)).data.csvData._id;
+      if (store.currentMapObject.csvData) {
+        const csvObj = (await api.getCsvById(store.currentMapObject.csvData))
+          .data.data;
+        csvData = (
+          await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData)
+        ).data.csvData._id;
       }
 
       let mapObj = await api.forkMap(
@@ -476,7 +478,6 @@ function StoreContextProvider(props) {
         store.currentMapObject.mapProps
       );
 
-
       // refresh user maps
       api.getMapsByUser().then((response) => {
         console.log("fetched user maps", response.data.data);
@@ -485,7 +486,7 @@ function StoreContextProvider(props) {
           payload: {
             mapList: response.data.data,
             currentMapObject: mapObj,
-          }
+          },
         });
       });
     }
@@ -500,7 +501,7 @@ function StoreContextProvider(props) {
 
     // replace the map in maplist
     let list = store.mapList;
-    let index = list.findIndex(map => map._id == mapObject._id);
+    let index = list.findIndex((map) => map._id == mapObject._id);
     list[index] = mapObject;
 
     store.currentMapObject = mapObject;
@@ -509,8 +510,8 @@ function StoreContextProvider(props) {
       type: StoreActionType.CHANGE_CURRENT_MAP_OBJ,
       payload: {
         mapObject,
-        mapList: list
-      }
+        mapList: list,
+      },
     });
   };
 
@@ -541,22 +542,20 @@ function StoreContextProvider(props) {
 
     // delete map
     asyncDeleteMap();
-    async function asyncDeleteMap()
-    {
+    async function asyncDeleteMap() {
       let response = await api.deleteMap(mapId);
       if (response.status != 200) return;
 
       console.log("delete map success");
-  
+
       // delete map data
       response = await api.deleteMapData(mapId);
       if (response.status != 200) return;
 
       console.log("delete map data success");
-  
+
       // delete csv data
-      if(csvData)
-      {
+      if (csvData) {
         response = await api.deleteCSV(csvData);
         if (response.status != 200) return;
 
@@ -567,9 +566,7 @@ function StoreContextProvider(props) {
           type: StoreActionType.DELETE_MAP,
           payload: { mapList: response.data.data },
         });
-      }
-      else
-      {
+      } else {
         response = await api.getMapsByUser();
         storeReducer({
           type: StoreActionType.DELETE_MAP,
@@ -620,7 +617,7 @@ function StoreContextProvider(props) {
     store.setCsvKeyWithoutRerendering(StartKey);
 
     if (StartKey !== undefined) {
-      store.StartKey = StartKey; 
+      store.StartKey = StartKey;
       console.log(store.StartKey);
       storeReducer({
         type: StoreActionType.SET_CSV_KEY,
@@ -683,57 +680,62 @@ function StoreContextProvider(props) {
 
   // fetches map list based on current view
   store.getMapList = async function () {
-    if (store.isHomePage())
-    {
-      await api.getMapsByUser().then((response) => {
-        console.log("fetched user maps", response.data.data);
-  
-        let currentMapObj = null;
-  
-        if (store.currentMapObject) {
-          console.log("refreshing same map");
-          currentMapObj = response.data.data.find(
-            (map) => map._id === store.currentMapObject._id
-          );
-          console.log("found same map", currentMapObj);
-        }
-  
-        store.mapList = response.data.data;
-        storeReducer({
-          type: StoreActionType.LOAD_MAP_LIST,
-          payload: {
-            mapList: response.data.data,
-            currentMapObj: currentMapObj,
-          },
-        });
-      });
-    }
-    else
-    {
-      await api.getPublishedMaps().then((response) => {
-        console.log("fetched published maps", response.data.data);
-  
-        let currentMapObj = null;
-  
-        if (store.currentMapObject)
-          currentMapObj = response.data.data.find(
-            (map) => map._id === store.currentMapObject._id
-          );
-  
-        store.mapList = response.data.data;
-        
-        storeReducer({
-          type: StoreActionType.LOAD_MAP_LIST,
-          payload: {
-            mapList: response.data.data,
-            currentMapObj: currentMapObj,
-          },
-        });
-      });
+    if (store.isHomePage()) {
+      store.getMapListHome();
+    } else {
+      store.getMapListCommunity();
     }
   };
 
-  store.searchMapsById = async function(id) {
+  store.getMapListHome = async function () {
+    await api.getMapsByUser().then((response) => {
+      console.log("fetched user maps", response.data.data);
+
+      let currentMapObj = null;
+
+      if (store.currentMapObject) {
+        console.log("refreshing same map");
+        currentMapObj = response.data.data.find(
+          (map) => map._id === store.currentMapObject._id
+        );
+        console.log("found same map", currentMapObj);
+      }
+
+      store.mapList = response.data.data;
+      storeReducer({
+        type: StoreActionType.LOAD_MAP_LIST,
+        payload: {
+          mapList: response.data.data,
+          currentMapObj: currentMapObj,
+        },
+      });
+    });
+  };
+
+  store.getMapListCommunity = async function () {
+    await api.getPublishedMaps().then((response) => {
+      console.log("fetched published maps", response.data.data);
+
+      let currentMapObj = null;
+
+      if (store.currentMapObject)
+        currentMapObj = response.data.data.find(
+          (map) => map._id === store.currentMapObject._id
+        );
+
+      store.mapList = response.data.data;
+
+      storeReducer({
+        type: StoreActionType.LOAD_MAP_LIST,
+        payload: {
+          mapList: response.data.data,
+          currentMapObj: currentMapObj,
+        },
+      });
+    });
+  };
+
+  store.searchMapsById = async function (id) {
     const response = await api.getMapById(id);
     const mapObj = response.data.data;
     console.log(mapObj);
@@ -741,7 +743,7 @@ function StoreContextProvider(props) {
       type: StoreActionType.SET_MAP_LIST,
       payload: { mapList: [mapObj] },
     });
-  }
+  };
 
   store.getCsvById = async function (id) {
     const response = await api.getCsvById(id);
@@ -790,7 +792,7 @@ function StoreContextProvider(props) {
     }
     console.log("changing view to", view);
 
-    if (store.currentView === view){
+    if (store.currentView === view) {
       return;
     }
     store.currentView = view;
@@ -800,14 +802,14 @@ function StoreContextProvider(props) {
     });
   };
 
-  store.logoutUser = function() {
+  store.logoutUser = function () {
     storeReducer({
       type: StoreActionType.LOGOUT_USER,
-      payload: { }
+      payload: {},
     });
   };
- 
-  store.clearCsv = function() {
+
+  store.clearCsv = function () {
     store.setParsedCsvData(null);
     store.setCsvKey(null);
     store.setCsvLabel(null);
@@ -817,8 +819,7 @@ function StoreContextProvider(props) {
     store.setPolColor(null);
     store.setDotColor(null);
     store.setProportionalValue([]);
-  }
-  
+  };
 
   store.isCommunityPage = () => {
     return store.currentView === store.viewTypes.COMMUNITY;
@@ -828,10 +829,10 @@ function StoreContextProvider(props) {
   };
   store.showSearchBar = () => {
     return pathname == "/main" || pathname == "/mapcards";
-  }
+  };
   store.enableEditing = () => {
-    return pathname == "/edit" ;
-  }
+    return pathname == "/edit";
+  };
 
   store.setProportionalValue = function (value) {
     storeReducer({

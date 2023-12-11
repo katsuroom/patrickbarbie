@@ -58,7 +58,7 @@ export default function MapView() {
     }
 
     function handleEditClick() {
-        router.push("/edit");
+        router.push(`/edit?mapId=${store.currentMapObject._id}`);
     }
 
     function handleDownloadClick() {

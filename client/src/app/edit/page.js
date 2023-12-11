@@ -1,17 +1,21 @@
-"use client"
+"use client";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import MapEditorToolbar from "../components/MapEditorToolBar";
 import PHeatmap from "../components/PHeatmap";
 import dynamic from "next/dynamic";
 
 import MapDisplay from "../components/MapDisplay";
-import StoreContext, {MapType} from "@/store";
+import StoreContext, { MapType } from "@/store";
 const PTravelMap = dynamic(() => import("../components/PTravelMap"));
 const PPoliticalmap = dynamic(() => import("../components/PPoliticalmap"));
 const PProportional = dynamic(() => import("../components/PProportional"));
-const PDotDistribution = dynamic(() => import("../components/PDotDistribution"));
+const PDotDistribution = dynamic(() =>
+  import("../components/PDotDistribution")
+);
 const GeneralProperty = dynamic(() => import("../components/GeneralProperty"));
+
+// import { ObjectId } from 'mongodb';
 // import PTravelMap from "../components/PTravelMap";
 // import PPoliticalmap from "../components/PPoliticalmap";
 // import PProportional from "../components/PProportional";
@@ -25,12 +29,28 @@ export default function EditScreen() {
   const { store } = useContext(StoreContext);
   const [tabValue, setTabValue] = useState("general");
 
+  useEffect(() => {
+    const f = async () => {
+      if (!store.currentMapObject) {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        let mapId = urlParams.get("mapId");
+        await store.getMapListHome();
+        await store.loadMapFile(mapId);
+        console.log(mapId);
+      }
+    };
+
+    f();
+
+  }, []);
+
   const panelStyle = {
     width: "30%",
     position: "absolute",
     top: "10%",
     right: "5%",
-    maxHeight: "10vh"
+    maxHeight: "10vh",
   };
 
   const toolbarStyle = {
@@ -43,8 +63,7 @@ export default function EditScreen() {
 
   let propertyPanel = null;
 
-  switch(store.currentMapObject?.mapType)
-  {
+  switch (store.currentMapObject?.mapType) {
     case MapType.POLITICAL_MAP:
       propertyPanel = <PPoliticalmap />;
       break;
@@ -58,8 +77,8 @@ export default function EditScreen() {
       propertyPanel = <PProportional />;
       break;
     case MapType.TRAVEL_MAP:
-      propertyPanel = <PTravelMap />;   // PTravel
-      break
+      propertyPanel = <PTravelMap />; // PTravel
+      break;
     default:
       break;
   }
@@ -80,19 +99,21 @@ export default function EditScreen() {
         {propertyPanel}
       </div> */}
 
-      {store.currentMapObject?.mapType !== MapType.TRAVEL_MAP && <div style={panelStyle}>
-        <div className="propertyTitle">Property</div>
-        <Tabs
-          value={tabValue}
-          onChange={handleChangeTab}
-          aria-label="basic tabs example"
-        >
-          <Tab label="General" value="general" />
-          <Tab label="Specific" value="specific" />
-        </Tabs>
-        {tabValue === "general" && <GeneralProperty />}
-        {tabValue === "specific" && propertyPanel}
-      </div>}
+      {store.currentMapObject?.mapType !== MapType.TRAVEL_MAP && (
+        <div style={panelStyle}>
+          <div className="propertyTitle">Property</div>
+          <Tabs
+            value={tabValue}
+            onChange={handleChangeTab}
+            aria-label="basic tabs example"
+          >
+            <Tab label="General" value="general" />
+            <Tab label="Specific" value="specific" />
+          </Tabs>
+          {tabValue === "general" && <GeneralProperty />}
+          {tabValue === "specific" && propertyPanel}
+        </div>
+      )}
     </div>
   );
 }
