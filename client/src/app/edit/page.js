@@ -47,7 +47,7 @@ export default function EditScreen() {
       propertyPanel = <PProportional />;
       break;
     case MapType.TRAVEL_MAP:
-      propertyPanel = null;   // PTravel
+      propertyPanel = <PTravelMap />;   // PTravel
       break
     default:
       break;

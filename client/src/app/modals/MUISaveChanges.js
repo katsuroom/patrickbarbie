@@ -66,7 +66,7 @@ export default function MUISaveChanges() {
         break;
       case MapType.TRAVEL_MAP:
         {
-          alert("Saving Political Map has not yet been implemented.");
+          store.currentMapObject.mapProps.waypoints = store.waypoints;
         }
         break;
       default:

@@ -40,7 +40,7 @@ export const StoreActionType = {
   SET_PROPORTIONAL_VALUE: "SET_PROPORTIONAL_VALUE",
   SET_PROPORTIONAL_COLOR: "SET_PROPORTIONAL_COLOR",
   SET_POLITICAL_COLOR: "SET_POLITICAL_COLOR",
-
+  SET_WAYPOINTS: "SET_WAYPOINTS",
   SET_DOT_COLOR: "SET_DOT_COLOR",
 
   LOGOUT_USER: "LOGOUT_USER",
@@ -93,6 +93,7 @@ function StoreContextProvider(props) {
     proColor: null,
     polColor: null,
     dotColor: null,
+    waypoints:[],
   });
 
   store.viewTypes = View;
@@ -246,6 +247,12 @@ function StoreContextProvider(props) {
           maxColor: payload,
         });
       }
+      case StoreActionType.SET_WAYPOINTS: {
+        return setStore({
+          ...store,
+          waypoints: payload,
+        });
+      }
       case StoreActionType.SET_PROPORTIONAL_VALUE: {
         return setStore({
           ...store,
@@ -299,6 +306,14 @@ function StoreContextProvider(props) {
     storeReducer({
       type: StoreActionType.SET_MAX_COLOR,
       payload: color,
+    });
+  };
+  store.setWaypoints = function (waypoints) {
+    console.log("setWaypoints", waypoints);
+    store.waypoints = waypoints;
+    storeReducer({
+      type: StoreActionType.SET_WAYPOINTS,
+      payload: waypoints,
     });
   };
 
@@ -812,6 +827,9 @@ function StoreContextProvider(props) {
   };
   store.showSearchBar = () => {
     return pathname == "/main" || pathname == "/mapcards";
+  }
+  store.enableEditing = () => {
+    return pathname == "/edit" ;
   }
 
   store.setProportionalValue = function (value) {
