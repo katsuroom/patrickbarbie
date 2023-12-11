@@ -20,11 +20,16 @@ const TravelMap = (props) => {
     const mapRef = useRef(null);
 
     const routeControlRef = useRef(null);
-    const [geoJsonData, setGeoJsonData] = useState(null);
     const { store } = useContext(StoreContext);
     const geoJsonLayerRef = useRef(null);
     const markers = useRef([]);
     const [loadScripts, setLoadScripts] = useState(false);
+
+    const mapLayerRef = useRef(null);
+    const hybridLayerRef = useRef(null);
+    const satelliteLayerRef = useRef(null);
+    const darkLayerRef = useRef(null);
+    const lightLayerRef = useRef(null);
 
     const startHere = (e) => {
         if (routeControlRef.current) {
@@ -64,8 +69,6 @@ const TravelMap = (props) => {
     useEffect(() => {
         if (store.rawMapFile)
         {
-            setGeoJsonData(store.rawMapFile);
-
             if(!loadScripts)
             {
                 Promise.all([
@@ -85,8 +88,8 @@ const TravelMap = (props) => {
 
     const refreshMap = () => {
 
-        console.log('travel map + ' + geoJsonData)
-        if (!loadScripts || !geoJsonData) {
+        console.log('travel map + ' + store.rawMapFile)
+        if (!loadScripts || !store.rawMapFile) {
             return;
         }
 
@@ -107,14 +110,25 @@ const TravelMap = (props) => {
                 }]
             });
         }
+        if (mapLayerRef.current) mapRef.current.removeLayer(mapLayerRef.current);
+        if (hybridLayerRef.current) mapRef.current.removeLayer(hybridLayerRef.current);
+        if (satelliteLayerRef.current) mapRef.current.removeLayer(satelliteLayerRef.current);
+        if (darkLayerRef.current) mapRef.current.removeLayer(darkLayerRef.current);
+        if (lightLayerRef.current) mapRef.current.removeLayer(lightLayerRef.current);
 
-        L.control.layers({
-            'Map': mapLayer,
-            'Hybrid': window.MQ.hybridLayer(),
-            'Satellite': window.MQ.satelliteLayer(),
-            'Dark': window.MQ.darkLayer(),
-            'Light': window.MQ.lightLayer()
-        }).addTo(mapRef.current);
+        mapLayerRef.current = window.MQ.mapLayer();
+        hybridLayerRef.current = window.MQ.hybridLayer();
+        satelliteLayerRef.current = window.MQ.satelliteLayer();
+        darkLayerRef.current = window.MQ.darkLayer();
+        lightLayerRef.current = window.MQ.lightLayer();
+
+    L.control.layers({
+        'Map': mapLayerRef.current,
+        'Hybrid': hybridLayerRef.current,
+        'Satellite': satelliteLayerRef.current,
+        'Dark': darkLayerRef.current,
+        'Light': lightLayerRef.current
+    }).addTo(mapRef.current);
 
         if (geoJsonLayerRef.current) {
             mapRef.current.removeLayer(geoJsonLayerRef.current);
@@ -124,8 +138,8 @@ const TravelMap = (props) => {
         });
         markers.current = [];
 
-        if (geoJsonData) {
-            geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
+        if (store.rawMapFile) {
+            geoJsonLayerRef.current = L.geoJSON(store.rawMapFile, {
                 onEachFeature: (feature, layer) => {
 
                     // check if label_y and label_x exist, since they don't exist for KML
