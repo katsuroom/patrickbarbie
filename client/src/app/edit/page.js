@@ -80,7 +80,7 @@ export default function EditScreen() {
         {propertyPanel}
       </div> */}
 
-      {store.currentMapObject.mapType !== MapType.TRAVEL_MAP && <div style={panelStyle}>
+      {store.currentMapObject?.mapType !== MapType.TRAVEL_MAP && <div style={panelStyle}>
         <div className="propertyTitle">Property</div>
         <Tabs
           value={tabValue}
