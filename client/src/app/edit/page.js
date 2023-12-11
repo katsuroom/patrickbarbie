@@ -10,7 +10,7 @@ import PTravelMap from "../components/PTravelMap";
 import PPoliticalmap from "../components/PPoliticalmap";
 import PProportional from "../components/PProportional";
 import PDotDistribution from "../components/PDotDistribution";
-import GeneralProperty from "../components/generalProperty";
+import GeneralProperty from "../components/GeneralProperty";
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
