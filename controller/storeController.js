@@ -164,7 +164,7 @@ deleteMap = (req, res) => {
 };
 
 deleteMapData = (req, res) => {
-  Chunk.findOneAndDelete({ mapDataID: req.params.id })
+  Chunk.deleteMany({ mapDataID: req.params.id })
     .then((result) => {
       if (!result) {
         return res.status(404).json({
