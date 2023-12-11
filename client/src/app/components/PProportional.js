@@ -123,8 +123,8 @@ export default function PProportional() {
   };
 
   const openSaveModal = () => {
-    console.log(store.currentMapObject);
-    store.openModal(CurrentModal.SAVE_EDIT);}
+    store.openModal(CurrentModal.SAVE_EDIT);
+  }
 
   const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 

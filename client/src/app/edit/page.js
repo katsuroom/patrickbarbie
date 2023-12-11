@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import MapEditorToolbar from "../components/MapEditorToolBar";
 import PHeatmap from "../components/PHeatmap";
 
@@ -12,8 +12,12 @@ import PProportional from "../components/PProportional";
 import PDotDistribution from "../components/PDotDistribution";
 import GeneralProperty from "../components/generalProperty";
 
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+
 export default function EditScreen() {
   const { store } = useContext(StoreContext);
+  const [tabValue, setTabValue] = useState("general");
 
   const panelStyle = {
     width: "30%",
@@ -42,7 +46,7 @@ export default function EditScreen() {
       propertyPanel = <PHeatmap />;
       break;
     case MapType.DOT_DISTRIBUTION_MAP:
-      propertyPanel = <GeneralProperty />;
+      propertyPanel = <PDotDistribution />;
       break;
     case MapType.PROPORTIONAL_SYMBOL_MAP:
       propertyPanel = <PProportional />;
@@ -54,6 +58,10 @@ export default function EditScreen() {
       break;
   }
 
+  const handleChangeTab = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
   return (
     <div>
       <div style={toolbarStyle}>
@@ -62,8 +70,22 @@ export default function EditScreen() {
       <div style={{ width: "65vw" }}>
         <MapDisplay />
       </div>
-      <div style={panelStyle}>
+      {/* <div style={panelStyle}>
         {propertyPanel}
+      </div> */}
+
+      <div style={panelStyle}>
+        <div className="propertyTitle">Property</div>
+        <Tabs
+          value={tabValue}
+          onChange={handleChangeTab}
+          aria-label="basic tabs example"
+        >
+          <Tab label="General" value="general" />
+          <Tab label="Specific" value="specific" />
+        </Tabs>
+        {tabValue === "general" && <GeneralProperty />}
+        {tabValue === "specific" && propertyPanel}
       </div>
     </div>
   );
