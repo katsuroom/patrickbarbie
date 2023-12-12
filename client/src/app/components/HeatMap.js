@@ -164,7 +164,7 @@ export default function Heatmap() {
       color: "black",
       weight: 1,
       fillColor,
-      fillOpacity: 1,
+      fillOpacity: 0.5,
     };
   }
 
@@ -192,8 +192,16 @@ export default function Heatmap() {
     }
 
     if (!mapRef.current) {
+      var basemap_options = {
+        attribution:
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+        // subdomains: "abcd",
+        basemap_options,
+        maxZoom: 19,
+      };
+
       mapRef.current = L.map("map-display").setView([0, 0], 2);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+      L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png").addTo(
         mapRef.current
       );
     }
@@ -210,20 +218,23 @@ export default function Heatmap() {
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
         onEachFeature: (feature, layer) => {
           // check if label_y and label_x exist, since they don't exist for KML
-          if (feature.properties.label_y && feature.properties.label_x) {
-            const label = L.marker(
-              [feature.properties.label_y, feature.properties.label_x],
-              {
-                icon: L.divIcon({
-                  className: "countryLabel",
-                  html: feature.properties.name,
-                  iconSize: [1000, 0],
-                  iconAnchor: [0, 0],
-                }),
-              }
-            ).addTo(mapRef.current);
-            markers.current.push(label);
-          }
+
+
+
+          // if (feature.properties.label_y && feature.properties.label_x) {
+          //   const label = L.marker(
+          //     [feature.properties.label_y, feature.properties.label_x],
+          //     {
+          //       icon: L.divIcon({
+          //         className: "countryLabel",
+          //         html: feature.properties.name,
+          //         iconSize: [1000, 0],
+          //         iconAnchor: [0, 0],
+          //       }),
+          //     }
+          //   ).addTo(mapRef.current);
+          //   markers.current.push(label);
+          // }
         },
       });
 
@@ -276,36 +287,45 @@ export default function Heatmap() {
 
       heatmapOverlayRef.current.addTo(mapRef.current);
       if (legendVisible) {
+        console.log("adding legend");
+      
         if (legendRef.current) {
           legendRef.current.remove();
         }
-
+      
         const legend = L.control({ position: "bottomright" });
-
+      
         legend.onAdd = function (map) {
           const div = L.DomUtil.create("div", "info legend");
-
-          ((div.innerHTML +=
-            '<div style="background-color:' + store.minColor ||
-            store.currentMapObject.mapProps?.minColor ||
-            "#FFFFFF"),
-          +'"> Min: ' + Math.min(...store.parsed_CSV_Data[store.key])),
-            +"</div> " + "<br>";
-
-          ((div.innerHTML +=
-            '<div style="background-color:' + store.maxColor ||
-            store.currentMapObject.mapProps?.maxColor ||
-            "#FFFFFF"),
-          +'"> Max: ' + Math.max(...store.parsed_CSV_Data[store.key])),
-            +"</div> " + "<br>";
-
+      
+          div.innerHTML +=
+            '<div style="background-color:' +
+            (store.minColor ||
+              store.currentMapObject.mapProps?.minColor ||
+              "#FFFFFF") +
+            '"> Min: ' +
+            Math.min(...store.parsed_CSV_Data[store.key]) +
+            "</div> " +
+            "<br>";
+      
+          div.innerHTML +=
+            '<div style="background-color:' +
+            (store.maxColor ||
+              store.currentMapObject.mapProps?.maxColor ||
+              "#FFFFFF") +
+            '"> Max: ' +
+            Math.max(...store.parsed_CSV_Data[store.key]) +
+            "</div> " +
+            "<br>";
+      
           return div;
         };
-
+      
         legend.addTo(mapRef.current);
-
+      
         legendRef.current = legend;
       }
+      
 
       //   L.easyPrint({
       //     title: 'Save my map',
