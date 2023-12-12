@@ -34,6 +34,7 @@ export default function EditScreen() {
 
   useEffect(() => {
     const f = async () => {
+      console.log("refreshing edit")
       if (!store.currentMapObject) {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
@@ -52,7 +53,7 @@ export default function EditScreen() {
 
   useEffect(() => {
     const func = async () => {
-
+      console.log("refreshing edit")
       if (store.currentMapObject && store.currentMapObject.csvData) {
         const csvObj = await store.getCsvById(store.currentMapObject.csvData);
 

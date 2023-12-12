@@ -17,7 +17,7 @@ export default function MUIUploadMap() {
   const { store } = useContext(StoreContext);
   const workerRef = useRef(null);
   const [uploading, setUploading] = useState(false);
-  const [uploadStatus, setUploadStatus] = useState("");
+  // const [uploadStatus, setUploadStatus] = useState("");
 
   const buttonStyle = {
     mt: 1,
@@ -55,7 +55,7 @@ export default function MUIUploadMap() {
   const handleFile = async (file) => {
     if (file) {
       setUploading(true);
-      setUploadStatus("Uploading...");
+      // setUploadStatus("Uploading...");
 
       let geojson = null;
       let ext = file.name.split(".").pop();
@@ -66,21 +66,21 @@ export default function MUIUploadMap() {
             const jsonDataString = await readFile(file);
             geojson = await parseJsonData(jsonDataString);
             store.uploadMapFile(geojson);
-            setUploadStatus("Upload complete.");
+            // setUploadStatus("Upload complete.");
             break;
           }
           case "zip": {
             const data = await readFileAsArrayBuffer(file);
             geojson = await parseShpData(data);
             store.uploadMapFile(geojson);
-            setUploadStatus("Upload complete.");
+            // setUploadStatus("Upload complete.");
             break;
           }
           case "kml": {
             const kmlData = await readFile(file);
             geojson = await parseKmlData(kmlData);
             store.uploadMapFile(geojson);
-            setUploadStatus("Upload complete.");
+            // setUploadStatus("Upload complete.");
             break;
           }
           default:
@@ -88,7 +88,7 @@ export default function MUIUploadMap() {
         }
       } catch (error) {
         console.error("Error processing file:", error);
-        setUploadStatus("Error uploading file.");
+        // setUploadStatus("Error uploading file.");
       } finally {
         setUploading(false);
       }
@@ -106,7 +106,7 @@ export default function MUIUploadMap() {
       reader.onprogress = (event) => {
         if (event.lengthComputable) {
           const percentage = Math.round((event.loaded / event.total) * 100);
-          setUploadStatus(`Reading file: ${percentage}%`);
+          // setUploadStatus(`Reading file: ${percentage}%`);
         }
       };
 
@@ -211,7 +211,7 @@ export default function MUIUploadMap() {
                 <CircularProgress />
               ) : (
                 <div>
-                  {uploadStatus && <p>{uploadStatus}</p>}
+                  {/* {uploadStatus && <p>{uploadStatus}</p>} */}
                   <Button
                     onClick={onClose}
                     variant="contained"
