@@ -65,15 +65,12 @@ createMap = async (req, res) => {
 
     const chunkSize = 15 * 1024 * 1024;
     const mapDataBuffer = body.mapData;
-    const totalChunks = Math.ceil(
-      mapDataBuffer.length / chunkSize
-    );
+    const totalChunks = Math.ceil(mapDataBuffer.length / chunkSize);
     console.log("totalChunks", totalChunks);
 
     // const chunks = [];
 
     // Iterate through the buffer and create chunks
-
 
     for (let i = 0; i < totalChunks; i++) {
       console.log("creating chunk #", i);
@@ -81,18 +78,16 @@ createMap = async (req, res) => {
       const end = Math.min((i + 1) * chunkSize, mapDataBuffer.length);
       const chunk = mapDataBuffer.slice(start, end);
 
-
-
       const mapData = new Chunk({
         n: i,
         mapDataID: map._id,
         totalChunks,
-        data: chunk
+        data: chunk,
       });
 
       await mapData.save().catch((error) => {
-        console.error('Error saving MapData:', error);
-      });;
+        console.error("Error saving MapData:", error);
+      });
     }
 
     return res.status(201).json({
@@ -310,7 +305,7 @@ getMapDataById = (req, res) => {
 
       return res.status(200).json({
         success: true,
-        data: mapDataChunks.map((chunk) => chunk.data).join(''),
+        data: mapDataChunks.map((chunk) => chunk.data).join(""),
         message: "Map data found",
       });
     })
@@ -581,12 +576,80 @@ sendMapFile = async (req, res) => {
   }
 };
 
+searchMaps = async (req, res) => {
+  console.log("searchMaps");
+
+  let { searchText, searchBy } = req.params;
+  searchText = searchText.toLowerCase();
+
+  console.log(searchText);
+
+  const SearchBy = {
+    ALL: "All",
+    MAP_ID: "Map ID",
+    MAP_NAME: "Map Name",
+    USER_NAME: "User Name",
+  };
+
+  Map.find({ isPublished: true })
+    .then((publishedMaps) => {
+      // console.log(publishedMaps)
+      // console.log(publishedMaps.filter(map => map._id == searchText))
+
+      let maps = publishedMaps;
+
+      switch (searchBy) {
+        case SearchBy.MAP_ID:
+          maps = publishedMaps.filter((map) =>
+            map._id.toString().includes(searchText)
+          );
+          break;
+
+        case SearchBy.USER_NAME:
+          maps = publishedMaps.filter((map) =>
+            map.author.toLowerCase().includes(searchText)
+          );
+          break;
+
+        case SearchBy.MAP_NAME:
+          maps = publishedMaps.filter((map) =>
+            map.title.toLowerCase().includes(searchText)
+          );
+          break;
+
+        case SearchBy.ALL:
+          maps = publishedMaps.filter((map) =>
+            JSON.stringify(map).toLowerCase().includes(searchText)
+          );
+          break;
+
+        default:
+          break;
+      }
+
+      console.log(maps.length);
+      return res.status(200).json({
+        success: true,
+        data: maps,
+        message: "searched maps retrieved successfully",
+      });
+    })
+    .catch((error) => {
+      console.log("Error searchMaps: " + error);
+      return res.status(500).json({
+        success: false,
+        error: "Error searchMaps",
+      });
+    });
+};
+
 module.exports = {
   createMap,
   deleteMap,
   updateMap,
   getMapById,
   getPublishedMaps,
+  searchMaps,
   forkMap,
   sendMapFile,
 

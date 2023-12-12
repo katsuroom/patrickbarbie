@@ -61,7 +61,7 @@ export default function MapCardList() {
         component="nav"
         aria-label="map folders"
         sx={{
-          maxHeight: "80vh",
+          maxHeight: "73vh",
           overflow: "auto",
           "&::-webkit-scrollbar": {
             width: "10px",

@@ -153,7 +153,6 @@ setIsColorInit(true);
         store.maxColor || store.currentMapObject.mapProps?.maxColor || "#FF0000",
         Math.min(...store.parsed_CSV_Data[store.key]),
         Math.max(...store.parsed_CSV_Data[store.key]),
-
         store.parsed_CSV_Data[store.key][idx]
       );
     }

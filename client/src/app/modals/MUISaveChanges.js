@@ -5,8 +5,22 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import "./MUIPublishMap.css";
+import domtoimage from "dom-to-image";
 
 import StoreContext, { CurrentModal, MapType } from "@/store";
+
+
+const imgSettings = {
+  // width: 1400,
+  // height: 600,
+  style: {
+    transform: "scale(2)",
+    transformOrigin: "topleft",
+    width: 1400,
+    height: 600,
+  },
+};
+
 
 export default function MUISaveChanges() {
   const { store } = useContext(StoreContext);
@@ -28,22 +42,21 @@ export default function MUISaveChanges() {
     store.closeModal();
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     console.log("saving map");
     store.saveCSV();
 
     // initialize mapProps to empty object if null
-    if (!store.currentMapObject.mapProps)
-      store.currentMapObject.mapProps = {};
+    if (!store.currentMapObject.mapProps) store.currentMapObject.mapProps = {};
 
-    // currently only handles 3/5 map types
-    switch(store.currentMapObject.mapType)
-    {
+    // currently only handles 4/5 map types
+    switch (store.currentMapObject.mapType) {
       case MapType.PROPORTIONAL_SYMBOL_MAP:
         {
           console.log("save map props proportional");
           store.currentMapObject.mapProps.proColor = store.proColor;
-          store.currentMapObject.mapProps.proportional_value = store.proportional_value;
+          store.currentMapObject.mapProps.proportional_value =
+            store.proportional_value;
         }
         break;
       case MapType.DOT_DISTRIBUTION_MAP:
@@ -66,15 +79,35 @@ export default function MUISaveChanges() {
         break;
       case MapType.TRAVEL_MAP:
         {
-          alert("Saving Political Map has not yet been implemented.");
+          store.currentMapObject.mapProps.waypoints = store.waypoints;
         }
         break;
       default:
         break;
     }
 
+    let map = document.getElementsByClassName("leaflet-map-pane")[0];
+    let dim = document.getElementById("map-display");
+    await domtoimage
+      .toPng(map, {
+        width: dim.offsetWidth * 2,
+        height: dim.offsetHeight * 2,
+        ...imgSettings,
+      })
+      .then(function (dataUrl) {
+        const base64Data = dataUrl.replace(/^data:image\/png;base64,/, "");
+        const imageBuffer = Buffer.from(base64Data, "base64");
+
+        console.log("imageBuffer", imageBuffer);
+        store.currentMapObject.imageBuffer = imageBuffer;
+
+      })
+      .catch(function (error) {
+        console.error("Error capturing image:", error);
+      });
+
     store.updateMap(store.currentMapObject);
-    
+
     console.log("Map Saved!");
     store.closeModal();
   };
@@ -100,10 +133,20 @@ export default function MUISaveChanges() {
         <div className="alertContainer">
           <div className="alert">Do you want to save your changes?</div>
           <div className="confirm">
-            <Button onClick={handleClose} variant="contained" sx={buttonStyle} className="modal-button-save-cancel">
+            <Button
+              onClick={handleClose}
+              variant="contained"
+              sx={buttonStyle}
+              className="modal-button-save-cancel"
+            >
               Cancel
             </Button>
-            <Button onClick={handleSave} variant="contained" sx={buttonStyle} className="modal-button-save-save">
+            <Button
+              onClick={handleSave}
+              variant="contained"
+              sx={buttonStyle}
+              className="modal-button-save-save"
+            >
               Save
             </Button>
           </div>

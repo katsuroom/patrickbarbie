@@ -32,15 +32,20 @@ const TravelMap = (props) => {
     const lightLayerRef = useRef(null);
     const settingLayerRef = useRef(null);
 
+
+
     const startHere = (e) => {
         if (routeControlRef.current) {
             routeControlRef.current.spliceWaypoints(0, 1, e.latlng);
+            console.log('routeControlRef.current.getWaypoints' + routeControlRef.current.getWaypoints().map(wp => wp.latLng))
+            console.log('routeControlRef.current.Waypoints' + routeControlRef.current.Waypoints)
         }
     };
 
     const goHere = (e) => {
         if (routeControlRef.current) {
             routeControlRef.current.spliceWaypoints(routeControlRef.current.getWaypoints().length - 1, 1, e.latlng);
+            // store.setWaypoints(routeControlRef.current.getWaypoints());
         }
     };
 
@@ -97,15 +102,15 @@ const TravelMap = (props) => {
                 layers: [mapLayer],
                 center: [40.731701, -73.993411],
                 zoom: 12,
-                contextmenu: true,
-                contextmenuWidth: 140,
-                contextmenuItems: [{
-                    text: 'Start from here',
-                    callback: startHere
-                }, {
-                    text: 'Go to here',
-                    callback: goHere
-                }]
+                // contextmenu: true,
+                // contextmenuWidth: 140,
+                // contextmenuItems: [{
+                //     text: 'Start from here',
+                //     callback: startHere
+                // }, {
+                //     text: 'Go to here',
+                //     callback: goHere
+                // }]
             });
         }
         if (mapLayerRef.current) mapRef.current.removeLayer(mapLayerRef.current);
@@ -185,8 +190,17 @@ const TravelMap = (props) => {
         refreshMap();
     }, [loadScripts]);
 
-    const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
-    const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
+    useEffect(() => {
+        store.waypoints = []
+        if (store.currentMapObject.mapProps?.waypoints) {
+            console.log("store.currentMapObject.mapProps" + store.currentMapObject.mapProps.waypoints)
+            store.setWaypoints(store.currentMapObject.mapProps.waypoints)
+            runDirection();
+        }
+    }, [store.currentMapObject]);
+
+    // const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
+    // const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
     const runDirection = async () => {
 
@@ -221,36 +235,33 @@ const TravelMap = (props) => {
                 iconAnchor: [12, 41]
             });
 
-
             if (routeControlRef.current) {
                 mapRef.current.removeControl(routeControlRef.current);
             }
-            
+
             const routingControl = L.Routing.control({
-                waypoints: [
-                    // L.latLng(12.972442, 77.580643),
-                    // L.latLng(31.104605, 77.173424)
-                    // L.latLng(startPoint.lat, startPoint.lng),
-                    // L.latLng(endPoint.lat, endPoint.lng)
-                ],
-                routeWhileDragging: true,
-                // showAlternatives: true,
-                // altLineOptions: {
-                //     styles: [
-                //         {color: "black", opacity: 0.15, weight: 9},
-                //         {color: "white", opacity: 0.8, weight: 9},
-                //     ]
-                // },
+                waypoints: store.waypoints,
                 createMarker: function (i, waypoint, n) {
-                    // const markerIcon = i === 0 ? startIcon : endIcon;
                     const markerIcon = i === 0 ? startIcon : (i > 0 && i < n - 1) ? inBetweenIcon : endIcon;
-                    return L.marker(waypoint.latLng, { draggable: true, icon: markerIcon });
+                    return L.marker(waypoint.latLng, { icon: markerIcon });
                 },
-                geocoder: L.Control.Geocoder.nominatim(),
-            })
-                // .on('routingstart', showSpinner)
-                // .on('routesfound routingerror', hideSpinner)
-                .addTo(mapRef.current);
+                routeWhileDragging: false,
+                addWaypoints: false,
+            });
+
+            routingControl.on('waypointschanged', function (e) {
+                const updatedWaypoints = e.waypoints;
+                console.log('Waypoints Updated:', updatedWaypoints);
+                store.setWaypoints(updatedWaypoints.map(p => {
+                    return p.latLng
+                }));
+            });
+
+            // Add the routing control to the map
+            routingControl.addTo(mapRef.current);
+            // .on('routingstart', showSpinner)
+            // .on('routesfound routingerror', hideSpinner)
+            // .addTo(mapRef.current);
 
             routeControlRef.current = routingControl;
 
@@ -284,13 +295,13 @@ const TravelMap = (props) => {
         <div>
             <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div>
             {/* <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div> */}
-            <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div>
-            <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
+            {/* <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div> */}
+            {/* <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
                 EXIT
             </Button>
             <Button variant="solid" className="save" sx={{ margin: 1 }} onClick={openSaveModal}>
                 SAVE
-            </Button>
+            </Button> */}
         </div>
 
     );
