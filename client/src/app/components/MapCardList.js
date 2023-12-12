@@ -16,6 +16,7 @@ import Stack from "@mui/material/Stack";
 export default function MapCardList() {
   const { store } = useContext(StoreContext);
   const { auth } = useContext(AuthContext);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleMapClick = (mapId) => {
     store.loadMapFile(mapId);
@@ -61,7 +62,7 @@ export default function MapCardList() {
         component="nav"
         aria-label="map folders"
         sx={{
-          maxHeight: "80vh",
+          maxHeight: "73vh",
           overflow: "auto",
           "&::-webkit-scrollbar": {
             width: "10px",
@@ -93,10 +94,10 @@ export default function MapCardList() {
                   paddingRight: "8px",
                   boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                   width: "90%",
-                  
+
                   backgroundColor:
                     store.currentMapObject &&
-                    store.currentMapObject._id === map._id
+                      store.currentMapObject._id === map._id
                       ? "#FDF4F3"
                       : "pink",
                   transition: "background-color 0.3s ease", // Add a smooth transition for background color change
@@ -129,7 +130,7 @@ export default function MapCardList() {
                     primary={map.mapType}
                   />
 
-                  { store.isCommunityPage() ? <ListItemText
+                  {store.isCommunityPage() ? <ListItemText
                     primaryTypographyProps={{
                       fontFamily: "Sen",
                       fontSize: "0.75rem",
@@ -167,11 +168,15 @@ export default function MapCardList() {
             "&:hover": {
               bgcolor: "#ffabd1",
             },
+            ...(isHovered ? { transform: 'scale(1.8)', transition: 'transform 0.3s ease' } : {})
           }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
           onClick={handleCreateMap}
         >
           <AddIcon />
         </Fab>
+
       ) : null}
     </Box>
   );

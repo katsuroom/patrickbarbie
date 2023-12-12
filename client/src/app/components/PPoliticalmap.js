@@ -11,8 +11,6 @@ import TextField from "@mui/material/TextField";
 import "./property.css";
 import { useHistory } from "react-router-dom";
 import CsvFileReader from "./CsvFileReader";
-import MUISaveChanges from "../modals/MUISaveChanges";
-import MUIExit from "../modals/MUIExitModal";
 import { useContext, useEffect, useState } from "react";
 import StoreContext, { CurrentModal } from "@/store";
 import { CompactPicker } from "react-color";
@@ -227,7 +225,6 @@ export default function PPoliticalmap() {
 
     return (
         <div>
-            <div className="propertyTitle">Property</div>
             <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
 
 
@@ -338,9 +335,6 @@ export default function PPoliticalmap() {
                     SAVE
                 </Button>
             </div>
-
-            <MUISaveChanges />
-            <MUIExit />
         </div>
     );
 }

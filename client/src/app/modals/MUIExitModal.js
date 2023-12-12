@@ -34,12 +34,14 @@ export default function MUIExit() {
     store.saveCSV();
     console.log("Map Saved!");
     store.clearCsv();
+    store.closeModal();
     router.push("/main");
   };
 
   const handleDiscard = () => {
     console.log("Map Discarded!");
     store.clearCsv();
+    store.closeModal();
     router.push("/main");
   };
 

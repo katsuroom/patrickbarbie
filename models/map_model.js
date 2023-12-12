@@ -33,11 +33,13 @@ const MapSchema = new Schema(
     views: { type: Number, required: true, default: 0 },
     likedUsers: { type: Array, required: true, default: [] },
     isPublished: { type: Boolean, required: true, default: false },
-    mapData: { type: String, required: true },
+    // mapData: { type: String, required: true },
     csvData: { type: String, required: false },
     comments: [{type: Comments}],
     mapType: { type: String, required: true },
-    mapProps: {type: Object, required: false}
+    mapProps: {type: Object, required: false},
+    imageBuffer: {type: Buffer, required: false},
+
   },
   { timestamps: true }
 );

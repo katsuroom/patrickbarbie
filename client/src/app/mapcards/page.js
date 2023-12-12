@@ -25,7 +25,7 @@ export default function EditScreen() {
     const func = async () => {
       if (auth.loggedIn) {
         console.log("change view to home");
-        console.log("auth.loggedIn", auth.loggedIn)
+        console.log("auth.loggedIn", auth.loggedIn);
         await store.changeView(store.viewTypes.HOME);
       } else {
         console.log("change view to community");
@@ -33,7 +33,7 @@ export default function EditScreen() {
       }
 
       store.getMapList();
-    }
+    };
     func();
   }, []);
 
@@ -64,11 +64,11 @@ export default function EditScreen() {
   };
 
   const renderMapItem = (map) => (
-    <Grid item xs={12} sm={6} md={4} lg={3} key={map._id}>
+    <Grid item xs={12} sm={6} md={6} lg={6} key={map._id}>
       <ListItem
-        onClick={() => handleMapClick(map._id)}
+        onClick={() => handleMapClick(map._id)} 
         sx={{
-          padding: 0.5,
+          padding: 2,
           cursor: "pointer",
         }}
       >
@@ -106,14 +106,16 @@ export default function EditScreen() {
             primary={map.title}
           />
 
-          <Box sx={{
-            display: "flex",
-            justifyContent: "space-between"
-          }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
             <ListItemText
               primaryTypographyProps={{
                 fontFamily: "Sen",
-                fontSize: "0.75rem"
+                fontSize: "0.75rem",
               }}
               className="map-list-types"
               primary={map.mapType}
@@ -133,6 +135,16 @@ export default function EditScreen() {
               />
             ) : null}
           </Box>
+
+          <Divider sx={{ marginY: 1 }} />
+
+          {/* Image Preview */}
+          
+            <img
+            src={map.imageBuffer ? `data:image/png;base64,${Buffer.from(map.imageBuffer).toString('base64')}` : "./empty_world.png"}
+              alt="Map Preview"
+              style={{width: 600, height: 250}}
+            />
 
           <Divider sx={{ marginY: 1 }} />
 

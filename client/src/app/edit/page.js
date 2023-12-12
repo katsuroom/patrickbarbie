@@ -1,25 +1,99 @@
-"use client"
+"use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import MapEditorToolbar from "../components/MapEditorToolBar";
 import PHeatmap from "../components/PHeatmap";
+import dynamic from "next/dynamic";
 
 import MapDisplay from "../components/MapDisplay";
-import StoreContext, {MapType} from "@/store";
-import PTravelMap from "../components/PTravelMap";
-import PPoliticalmap from "../components/PPoliticalmap";
-import PProportional from "../components/PProportional";
-import PDotDistribution from "../components/PDotDistribution";
+import StoreContext, { MapType } from "@/store";
+const PTravelMap = dynamic(() => import("../components/PTravelMap"));
+const PPoliticalmap = dynamic(() => import("../components/PPoliticalmap"));
+const PProportional = dynamic(() => import("../components/PProportional"));
+const PDotDistribution = dynamic(() =>
+  import("../components/PDotDistribution")
+);
+const GeneralProperty = dynamic(() => import("../components/GeneralProperty"));
+
+// import { ObjectId } from 'mongodb';
+// import PTravelMap from "../components/PTravelMap";
+// import PPoliticalmap from "../components/PPoliticalmap";
+// import PProportional from "../components/PProportional";
+// import PDotDistribution from "../components/PDotDistribution";
+// import GeneralProperty from "../components/GeneralProperty";
+
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 
 export default function EditScreen() {
   const { store } = useContext(StoreContext);
+  const [tabValue, setTabValue] = useState("general");
+  const [readyToRender, setReadyToRender] = useState(
+    !!(store.rawMapFile)
+  );
+
+  useEffect(() => {
+    const f = async () => {
+      if (!store.currentMapObject) {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        let mapId = urlParams.get("mapId");
+        await store.getMapListHome();
+        await store.loadMapFile(mapId);
+        
+        setReadyToRender(true);
+
+      }
+    };
+    if (!readyToRender){
+      f();
+    }
+  }, []);
+
+  useEffect(() => {
+    const func = async () => {
+
+      if (store.currentMapObject && store.currentMapObject.csvData) {
+        const csvObj = await store.getCsvById(store.currentMapObject.csvData);
+
+        console.log(csvObj);
+
+        store.setParsedCsvData(csvObj.csvData);
+        store.setCsvKey(csvObj.key);
+        store.setCsvLabel(csvObj.label);
+      }
+    };
+    func();
+  }, [store.currentMapObject]);
+
+  // useEffect(() => {
+  //   const f = async () => {
+  //       console.log(store.currentMapObject)
+  //       if (store.currentMapObject && store.currentMapObject.csvData) {
+  //         const csvObj = await store.getCsvById(store.currentMapObject.csvData);
+
+  //         console.log(csvObj);
+
+  //         await store.setParsedCsvData(csvObj.csvData);
+  //         await store.setCsvKey(csvObj.key);
+  //         await store.setCsvLabel(csvObj.label);
+
+          
+
+  //       }
+  //     }
+
+  //   if (!readyToRender){
+  //     f();
+  //   }
+  // }, [store.currentMapObject]);
 
   const panelStyle = {
     width: "30%",
     position: "absolute",
     top: "10%",
     right: "5%",
-    maxHeight: "10vh"
+    maxHeight: "10vh",
   };
 
   const toolbarStyle = {
@@ -32,8 +106,7 @@ export default function EditScreen() {
 
   let propertyPanel = null;
 
-  switch(store.currentMapObject?.mapType)
-  {
+  switch (store.currentMapObject?.mapType) {
     case MapType.POLITICAL_MAP:
       propertyPanel = <PPoliticalmap />;
       break;
@@ -47,13 +120,17 @@ export default function EditScreen() {
       propertyPanel = <PProportional />;
       break;
     case MapType.TRAVEL_MAP:
-      propertyPanel = null;   // PTravel
-      break
+      propertyPanel = <PTravelMap />; // PTravel
+      break;
     default:
       break;
   }
 
-  return (
+  const handleChangeTab = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
+  return readyToRender && store.currentMapObject? (
     <div>
       <div style={toolbarStyle}>
         <MapEditorToolbar />
@@ -61,9 +138,27 @@ export default function EditScreen() {
       <div style={{ width: "65vw" }}>
         <MapDisplay />
       </div>
-      <div style={panelStyle}>
+      {/* <div style={panelStyle}>
         {propertyPanel}
-      </div>
+      </div> */}
+
+      {store.currentMapObject?.mapType !== MapType.TRAVEL_MAP && (
+        <div style={panelStyle}>
+          <div className="propertyTitle">Property</div>
+          <Tabs
+            value={tabValue}
+            onChange={handleChangeTab}
+            aria-label="basic tabs example"
+          >
+            <Tab label="General" value="general" />
+            <Tab label="Specific" value="specific" />
+          </Tabs>
+          {tabValue === "general" && <GeneralProperty />}
+          {tabValue === "specific" && propertyPanel}
+        </div>
+      )}
     </div>
+  ) : (
+    <></>
   );
 }

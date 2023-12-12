@@ -2,13 +2,11 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import StoreContext from "@/store";
-import domtoimage from "dom-to-image";
-import { saveAs } from "file-saver";
 import * as turf from "@turf/turf";
 import "./proportionalMap.css";
 
 
-export default function ProportionalMap(props) {
+export default function ProportionalMap() {
   const [geoJsonData, setGeoJsonData] = useState(null);
   const [buttonAdded, setButtonAdded] = useState(false);
   const mapRef = useRef(null);
@@ -18,8 +16,6 @@ export default function ProportionalMap(props) {
   const markers = useRef([]);
   const workerRef = useRef(null);
   const { store } = useContext(StoreContext);
-  let downloadComplete = props.downloadComplete;
-  // const [downloadComplete, setDownloadComplete] = useState(props.downloadComplete);
 
   useEffect(() => {
     if (store.currentMapObject.mapProps) {
@@ -132,22 +128,6 @@ export default function ProportionalMap(props) {
       } else {
         console.log("geoJsonLayerRef.current is undefined or empty");
       }
-    }
-
-    if (!buttonAdded) {
-      const saveImageButton = L.control({ position: "bottomleft" });
-      saveImageButton.onAdd = function () {
-        this._div = L.DomUtil.create("div", "saveImageButton");
-        this._div.innerHTML =
-          '<Button id="saveImageButton" >Save Image</Button>';
-        return this._div;
-      };
-      saveImageButton.addTo(mapRef.current);
-
-      document
-        .getElementById("saveImageButton")
-        .addEventListener("click", props.openModal);
-      setButtonAdded(true);
     }
 
     if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
@@ -267,7 +247,8 @@ export default function ProportionalMap(props) {
       }).addTo(mapRef.current);
 
       // add legend
-      legendRef.current = L.control({ position: "bottomright" });
+      if (store.proportional_value !== null && store.proColor !== null){
+        legendRef.current = L.control({ position: "bottomright" });
       legendRef.current.onAdd = function (map) {
         console.log("store.proportional_value", store.proportional_value);
         var div = L.DomUtil.create("div", "info legend"),
@@ -309,6 +290,7 @@ export default function ProportionalMap(props) {
         return div;
       };
       legendRef.current.addTo(mapRef.current);
+    }
 
       function getRadius(area) {
         // console.log("area", area);
@@ -365,47 +347,6 @@ export default function ProportionalMap(props) {
     store.parsed_CSV_Data,
     store.proColor,
   ]);
-
-
-  if (!downloadComplete) {
-    if (props.imageType === "JPEG") {
-      domtoimage
-        .toJpeg(document.getElementById("map-display"), {
-          width: 1400,
-          height: 600,
-          style: {
-            transform: "scale(2)",
-            transformOrigin: "top left",
-            width: "50%",
-            height: "50%",
-          },
-        })
-        .then(function (dataUrl) {
-          saveAs(dataUrl, "map.jpeg");
-        });
-      downloadComplete = true;
-      props.completeDownloadCB();
-    } else if (props.imageType === "PNG") {
-      domtoimage
-        .toBlob(document.getElementById("map-display"), {
-          width: 1400,
-          height: 600,
-          style: {
-            transform: "scale(2)",
-            transformOrigin: "top left",
-            width: "50%",
-            height: "50%",
-          },
-        })
-        .then(function (blob) {
-          saveAs(blob, "map.png");
-        });
-      downloadComplete = true;
-      props.completeDownloadCB();
-    }
-  } else {
-    console.log("download already completed!!!");
-  }
 
   return (
     <div>

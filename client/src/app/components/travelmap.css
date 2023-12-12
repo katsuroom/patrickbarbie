@@ -44,6 +44,7 @@ input:nth-child(1) {
   max-width: 300px;
   max-height: 200px;
   overflow-y: auto; 
+  background-color: rgba(255, 255, 255, 0.60);
 }
 
 /* #loader {
@@ -102,4 +103,13 @@ input:nth-child(1) {
 
 .leaflet-routing-geocoder-result{
     display: none;
+}
+
+.exit{
+  float: right;
+  background-color: #FC9ABD;
+}
+.save{
+  float: right;
+  background-color: #FC9ABD;
 }

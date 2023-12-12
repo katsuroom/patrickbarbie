@@ -10,8 +10,6 @@ import TextField from "@mui/material/TextField";
 import "./property.css";
 import { useHistory } from "react-router-dom";
 import CsvFileReader from "./CsvFileReader";
-import MUISaveChanges from "../modals/MUISaveChanges";
-import MUIExit from "../modals/MUIExitModal";
 import { useContext, useEffect } from "react";
 import StoreContext, { CurrentModal } from "@/store";
 
@@ -28,9 +26,6 @@ import Compact from "@uiw/react-color-compact";
 // import { useContext, useEffect } from "react";
 // import StoreContext from "../store";
 // import CsvFileReader from "./CsvFileReader";
-
-// import MUISaveChanges from "./Model/MUISaveChanges";
-// import MUIExitModal from "./Model/MUIExitModal";
 
 export default function PProportional() {
   const { store } = useContext(StoreContext);
@@ -123,8 +118,8 @@ export default function PProportional() {
   };
 
   const openSaveModal = () => {
-    console.log(store.currentMapObject);
-    store.openModal(CurrentModal.SAVE_EDIT);}
+    store.openModal(CurrentModal.SAVE_EDIT);
+  }
 
   const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
@@ -198,7 +193,6 @@ export default function PProportional() {
 
   return (
     <div>
-      <div className="propertyTitle">Property</div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
       <div style={{ overflow: "auto", maxHeight: "45vh" }}>
         <Table
@@ -342,8 +336,6 @@ export default function PProportional() {
       >
         Next
       </Button> */}
-      <MUISaveChanges />
-      <MUIExit />
     </div>
   );
 }
