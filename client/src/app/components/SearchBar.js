@@ -65,7 +65,6 @@ export default function SelectVariants() {
           by => {
             return <MenuItem value={by} key={by}>{by}</MenuItem>
           }
-
         )}
         {/* <MenuItem value={"All"}>All</MenuItem>
         <MenuItem value={"Map ID"}>Map ID</MenuItem>
