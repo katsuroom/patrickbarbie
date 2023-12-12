@@ -39,6 +39,8 @@ export default function PHeatmap() {
   const [minHex, setMinHex] = React.useState(store.minColor || "#FFFFFF");
   const [maxHex, setMaxHex] = React.useState(store.maxColor || "#FF0000");
 
+  const [textFieldChanges, setTextFieldChanges] = React.useState({});
+
   const handleMinColorChange = (event) => {
     const color = event?.hex;
     if (color) {
@@ -55,25 +57,25 @@ export default function PHeatmap() {
     }
   };
 
-  useEffect(() => {
-    let tfs = [];
-    if (store.parsed_CSV_Data) {
-      for (let idx in store.parsed_CSV_Data[store.key]) {
-        tfs.push(
-          <TextField
-            id={"tf-" + idx}
-            defaultValue={store.parsed_CSV_Data[store.key][idx]}
-            variant="standard"
-            sx={{ m: 1, minWidth: 120 }}
-            onChange={(e) =>
-              (store.parsed_CSV_Data[store.key][idx] = e.target.value)
-            }
-          />
-        );
-      }
-    }
-    setTextFields(tfs);
-  }, [store.parsed_CSV_Data, store.key, store.label]);
+  // useEffect(() => {
+  //   let tfs = [];
+  //   if (store.parsed_CSV_Data) {
+  //     for (let idx in store.parsed_CSV_Data[store.key]) {
+  //       tfs.push(
+  //         <TextField
+  //           id={"tf-" + idx}
+  //           defaultValue={store.parsed_CSV_Data[store.key][idx]}
+  //           variant="standard"
+  //           sx={{ m: 1, minWidth: 120 }}
+  //           onChange={(e) =>
+  //             (store.parsed_CSV_Data[store.key][idx] = e.target.value)
+  //           }
+  //         />
+  //       );
+  //     }
+  //   }
+  //   setTextFields(tfs);
+  // }, [store.parsed_CSV_Data, store.key, store.label]);
 
   // console.log(store.key);
   // console.log(store.label);
@@ -94,27 +96,27 @@ export default function PHeatmap() {
   }
 
   const handleChangeKey = (event) => {
-    let tfs = [];
-    for (let idx in store.parsed_CSV_Data[event.target.value]) {
-      console.log("gay", idx);
-      tfs.push(
-        // <input
-        //   id={"search-" + idx}
-        //   defaultValue={store.parsed_CSV_Data[store.key][idx]}
-        //   style={{margin: "8px", width: "100px", height:"30px"}}
-        // />
-        <TextField
-          id={"tf-" + idx}
-          defaultValue={store.parsed_CSV_Data[event.target.value][idx]}
-          variant="standard"
-          sx={{ m: 1, minWidth: 120 }}
-          onChange={(e) =>
-            (store.parsed_CSV_Data[event.target.value][idx] = e.target.value)
-          }
-        />
-      );
-    }
-    setTextFields(tfs);
+    // let tfs = [];
+    // for (let idx in store.parsed_CSV_Data[event.target.value]) {
+    //   console.log("gay", idx);
+    //   tfs.push(
+    //     // <input
+    //     //   id={"search-" + idx}
+    //     //   defaultValue={store.parsed_CSV_Data[store.key][idx]}
+    //     //   style={{margin: "8px", width: "100px", height:"30px"}}
+    //     // />
+    //     <TextField
+    //       id={"tf-" + idx}
+    //       defaultValue={store.parsed_CSV_Data[event.target.value][idx]}
+    //       variant="standard"
+    //       sx={{ m: 1, minWidth: 120 }}
+    //       onChange={(e) =>
+    //         (store.parsed_CSV_Data[event.target.value][idx] = e.target.value)
+    //       }
+    //     />
+    //   );
+    // }
+    // setTextFields(tfs);
     store.setCsvKey(event.target.value);
   };
 
@@ -253,7 +255,7 @@ export default function PHeatmap() {
                   </MenuItem> */}
                 </Select>
               </th>
-              {/* <th>Update</th> */}
+              <th>Update</th>
             </tr>
           </thead>
           <tbody>
@@ -267,18 +269,22 @@ export default function PHeatmap() {
                 store.parsed_CSV_Data[store.label],
                 store.parsed_CSV_Data[store.key]
                 // textFields
-              ).map((row) => (
+              ).map((row, idx) => (
                 <tr key={row.name}>
                   <td>{row[0]}</td>
                   <td>{row[1]}</td>
-                  {/* <td>
+                  <td>
                     <TextField
                       id="search"
-                      defaultValue={row.calories}
                       variant="standard"
                       sx={{ m: 1, minWidth: 120 }}
+                      onChange={(e) =>
+                        textFieldChanges[idx] = e.target.value
+                        // (store.parsed_CSV_Data[store.key][idx] = e.target.value)
+                      }
+                      onKeyDown={() => {store.parsed_CSV_Data[store.key][idx] = textFieldChanges[idx]}}
                     />
-                  </td> */}
+                  </td>
                 </tr>
               ))}
           </tbody>
