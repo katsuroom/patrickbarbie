@@ -55,143 +55,142 @@ const TravelMap = (props) => {
     }
   };
 
-  const loadScript = (src) => {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement("script");
-      script.src = src;
-      script.onload = () => resolve(script);
-      script.onerror = () => reject(new Error(`Script load error for ${src}`));
-      document.body.appendChild(script);
-    });
-  };
-
-  const [mapHeight, setMapHeight] = useState(window.innerWidth / 3);
-  useEffect(() => {
-    const resizeListener = () => {
-      setMapHeight(window.innerWidth / 3);
+    const loadScript = (src) => {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = () => resolve(script);
+            script.onerror = () => reject(new Error(`Script load error for ${src}`));
+            document.body.appendChild(script);
+        });
     };
-    window.addEventListener("resize", resizeListener);
-    return () => {
-      window.removeEventListener("resize", resizeListener);
-    };
-  }, []);
 
-  useEffect(() => {
-    if (store.rawMapFile) {
-      if (!loadScripts) {
-        Promise.all([
-          loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
-          loadScript("./mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
-        ])
-          .then(() => {
-            setLoadScripts(true);
-          })
-          .catch((error) => console.error(error));
-      } else {
-        refreshMap();
-      }
-    }
-  }, [store.rawMapFile]);
 
-  const refreshMap = () => {
-    console.log("travel map + " + store.rawMapFile);
-    if (!loadScripts || !store.rawMapFile) {
-      return;
-    }
+    const [mapHeight, setMapHeight] = useState(window.innerWidth / 3);
+    useEffect(() => {
+        const resizeListener = () => {
+            setMapHeight(window.innerWidth / 3);
+        };
+        window.addEventListener('resize', resizeListener);
+        return () => {
+            window.removeEventListener('resize', resizeListener);
+        };
+    }, []);
 
-    if (!mapRef.current) {
-      var mapLayer = window.MQ.mapLayer();
-      mapRef.current = L.map("map-display", {
-        layers: [mapLayer],
-        center: [40.731701, -73.993411],
-        zoom: 12,
-        // contextmenu: true,
-        // contextmenuWidth: 140,
-        // contextmenuItems: [{
-        //     text: 'Start from here',
-        //     callback: startHere
-        // }, {
-        //     text: 'Go to here',
-        //     callback: goHere
-        // }]
-      });
-    }
-    if (mapLayerRef.current) mapRef.current.removeLayer(mapLayerRef.current);
-    if (hybridLayerRef.current)
-      mapRef.current.removeLayer(hybridLayerRef.current);
-    if (satelliteLayerRef.current)
-      mapRef.current.removeLayer(satelliteLayerRef.current);
-    if (darkLayerRef.current) mapRef.current.removeLayer(darkLayerRef.current);
-    if (lightLayerRef.current)
-      mapRef.current.removeLayer(lightLayerRef.current);
 
-    if (window.MQ) {
-      mapLayerRef.current = window.MQ.mapLayer();
-      hybridLayerRef.current = window.MQ.hybridLayer();
-      satelliteLayerRef.current = window.MQ.satelliteLayer();
-      darkLayerRef.current = window.MQ.darkLayer();
-      lightLayerRef.current = window.MQ.lightLayer();
-      if (settingLayerRef.current) {
-        mapRef.current.removeControl(settingLayerRef.current);
-      }
-      settingLayerRef.current = L.control.layers({
-        Map: mapLayerRef.current,
-        Hybrid: hybridLayerRef.current,
-        Satellite: satelliteLayerRef.current,
-        Dark: darkLayerRef.current,
-        Light: lightLayerRef.current,
-      });
-      settingLayerRef.current.addTo(mapRef.current);
-    }
-
-    if (geoJsonLayerRef.current) {
-      mapRef.current.removeLayer(geoJsonLayerRef.current);
-    }
-    markers.current.forEach((marker) => {
-      mapRef.current.removeLayer(marker);
-    });
-    markers.current = [];
-
-    if (store.rawMapFile) {
-      geoJsonLayerRef.current = L.geoJSON(store.rawMapFile, {
-        onEachFeature: (feature, layer) => {
-          // check if label_y and label_x exist, since they don't exist for KML
-          if (feature.properties.label_y && feature.properties.label_x) {
-            const label = L.marker(
-              [feature.properties.label_y, feature.properties.label_x],
-              {
-                icon: L.divIcon({
-                  className: "countryLabel",
-                  html: feature.properties.name,
-                  iconSize: [1000, 0],
-                  iconAnchor: [0, 0],
-                }),
-              }
-            ).addTo(mapRef.current);
-            markers.current.push(label);
-          }
-        },
-      });
-
-      geoJsonLayerRef.current.addTo(mapRef.current);
-
-      if (geoJsonLayerRef.current) {
-        const bounds = geoJsonLayerRef.current.getBounds();
-        if (bounds.isValid()) {
-          mapRef.current.fitBounds(bounds);
-        } else {
-          console.log("bounds are not valid");
+    useEffect(() => {
+        if (store.rawMapFile) {
+            if (!loadScripts) {
+                Promise.all([
+                    loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+                    loadScript("./mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC")
+                ]).then(() => {
+                    setLoadScripts(true);
+                }).catch(error => console.error(error));
+            }
+            else {
+                refreshMap();
+            }
         }
-      } else {
-        console.log("geoJsonLayerRef.current is undefined or empty");
-      }
-    }
-    runDirection();
+    }, [store.rawMapFile]);
 
-    // L.Routing.control ({
-    //     geocoder: L.Control.Geocoder.nominatim()
-    // }).addTo(mapRef.current)
-  };
+
+    const refreshMap = () => {
+
+        console.log('travel map + ' + store.rawMapFile)
+        if (!loadScripts || !store.rawMapFile) {
+            return;
+        }
+
+        if (!mapRef.current) {
+            var mapLayer = window.MQ.mapLayer();
+            mapRef.current = L.map('map-display', {
+                layers: [mapLayer],
+                center: [40.731701, -73.993411],
+                zoom: 12,
+                // contextmenu: true,
+                // contextmenuWidth: 140,
+                // contextmenuItems: [{
+                //     text: 'Start from here',
+                //     callback: startHere
+                // }, {
+                //     text: 'Go to here',
+                //     callback: goHere
+                // }]
+            });
+        }
+        if (mapLayerRef.current) mapRef.current.removeLayer(mapLayerRef.current);
+        if (hybridLayerRef.current) mapRef.current.removeLayer(hybridLayerRef.current);
+        if (satelliteLayerRef.current) mapRef.current.removeLayer(satelliteLayerRef.current);
+        if (darkLayerRef.current) mapRef.current.removeLayer(darkLayerRef.current);
+        if (lightLayerRef.current) mapRef.current.removeLayer(lightLayerRef.current);
+
+        mapLayerRef.current = window.MQ.mapLayer();
+        hybridLayerRef.current = window.MQ.hybridLayer();
+        satelliteLayerRef.current = window.MQ.satelliteLayer();
+        darkLayerRef.current = window.MQ.darkLayer();
+        lightLayerRef.current = window.MQ.lightLayer();
+        if (settingLayerRef.current) {
+            mapRef.current.removeControl(settingLayerRef.current);
+        }
+        settingLayerRef.current = L.control.layers({
+            'Map': mapLayerRef.current,
+            'Hybrid': hybridLayerRef.current,
+            'Satellite': satelliteLayerRef.current,
+            'Dark': darkLayerRef.current,
+            'Light': lightLayerRef.current
+        });
+        settingLayerRef.current.addTo(mapRef.current);
+
+        if (geoJsonLayerRef.current) {
+            mapRef.current.removeLayer(geoJsonLayerRef.current);
+        }
+        markers.current.forEach((marker) => {
+            mapRef.current.removeLayer(marker);
+        });
+        markers.current = [];
+
+        if (store.rawMapFile) {
+            geoJsonLayerRef.current = L.geoJSON(store.rawMapFile, {
+                onEachFeature: (feature, layer) => {
+
+                    // check if label_y and label_x exist, since they don't exist for KML
+                    if (feature.properties.label_y && feature.properties.label_x) {
+                        const label = L.marker(
+                            [feature.properties.label_y, feature.properties.label_x],
+                            {
+                                icon: L.divIcon({
+                                    className: "countryLabel",
+                                    // html: feature.properties.name,
+                                    iconSize: [1000, 0],
+                                    iconAnchor: [0, 0],
+                                }),
+                            }
+                        ).addTo(mapRef.current);
+                        markers.current.push(label);
+                    }
+                },
+            });
+
+            geoJsonLayerRef.current.addTo(mapRef.current);
+
+            if (geoJsonLayerRef.current) {
+                const bounds = geoJsonLayerRef.current.getBounds();
+                if (bounds.isValid()) {
+                    mapRef.current.fitBounds(bounds);
+                } else {
+                    console.log("bounds are not valid");
+                }
+            } else {
+                console.log("geoJsonLayerRef.current is undefined or empty");
+            }
+        }
+        runDirection();
+
+        // L.Routing.control ({
+        //     geocoder: L.Control.Geocoder.nominatim()
+        // }).addTo(mapRef.current)
+    }
 
   useEffect(() => {
     refreshMap();

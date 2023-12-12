@@ -41,6 +41,8 @@ export const StoreActionType = {
   SET_DOT_COLOR: "SET_DOT_COLOR",
 
   LOGOUT_USER: "LOGOUT_USER",
+  SET_CATEGORY_COLOR_MAPPINGS: "SET_CATEGORY_COLOR_MAPPINGS",
+  SET_SELECTED_ATTRIBUTE: "SET_SELECTED_ATTRIBUTE",
 };
 
 export const CurrentModal = {
@@ -79,6 +81,7 @@ function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
   const pathname = usePathname();
 
+
   const [store, setStore] = useState({
     currentModal: CurrentModal.NONE, // the currently open modal
     uploadedFile: null,
@@ -97,6 +100,8 @@ function StoreContextProvider(props) {
     proColor: null,
     polColor: null,
     dotColor: null,
+    categoryColorMappings: [],
+    selectedAttribute: null,
     waypoints: [],
   });
 
@@ -119,6 +124,21 @@ function StoreContextProvider(props) {
           currentModal: CurrentModal.NONE,
         });
       }
+
+      case StoreActionType.SET_CATEGORY_COLOR_MAPPINGS: {
+        return setStore({
+          ...store,
+          categoryColorMappings: payload,
+        });
+      }
+
+      case StoreActionType.SET_SELECTED_ATTRIBUTE: {
+        return setStore({
+          ...store,
+          selectedAttribute: payload,
+        });
+      }
+
       case StoreActionType.UPLOAD_MAP_FILE: {
         console.log(payload.file);
         return setStore({
@@ -294,6 +314,20 @@ function StoreContextProvider(props) {
       default:
         return store;
     }
+  };
+
+  store.updateCategoryColorMappings = function (categoryColorMappings) {
+    storeReducer({
+      type: StoreActionType.SET_CATEGORY_COLOR_MAPPINGS,
+      payload: categoryColorMappings,
+    });
+  };
+
+  store.updateSelectedAttribute = function (selectedAttribute) {
+    storeReducer({
+      type: StoreActionType.SET_SELECTED_ATTRIBUTE,
+      payload: selectedAttribute,
+    });
   };
 
   store.setMinColor = function (color) {
@@ -860,10 +894,24 @@ function StoreContextProvider(props) {
     });
   }
 
+  store.updateMapData = async function (){
+    console.log("updating map data");
+    let newRawMapFile = JSON.stringify(store.rawMapFile);
+    console.log(newRawMapFile);
+    console.log(store.currentMapObject._id);
+    let response = await api.updateMapData(newRawMapFile, store.currentMapObject._id);
+    console.log(response);
+    if (response.status != 201){
+      alert("Failed to update map data");
+      return;
+    }
+
+  }
+
   return (
     <StoreContext.Provider
       value={{
-        store,
+        store
       }}
     >
       {props.children}
