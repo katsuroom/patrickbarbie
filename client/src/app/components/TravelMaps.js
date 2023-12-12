@@ -155,7 +155,7 @@ const TravelMap = (props) => {
                             {
                                 icon: L.divIcon({
                                     className: "countryLabel",
-                                    html: feature.properties.name,
+                                    // html: feature.properties.name,
                                     iconSize: [1000, 0],
                                     iconAnchor: [0, 0],
                                 }),
