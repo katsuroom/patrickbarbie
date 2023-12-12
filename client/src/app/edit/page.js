@@ -28,6 +28,9 @@ import Tab from "@mui/material/Tab";
 export default function EditScreen() {
   const { store } = useContext(StoreContext);
   const [tabValue, setTabValue] = useState("general");
+  const [readyToRender, setReadyToRender] = useState(
+    !!(store.rawMapFile)
+  );
 
   useEffect(() => {
     const f = async () => {
@@ -37,13 +40,53 @@ export default function EditScreen() {
         let mapId = urlParams.get("mapId");
         await store.getMapListHome();
         await store.loadMapFile(mapId);
-        console.log(mapId);
+        
+        setReadyToRender(true);
+
       }
     };
-
-    f();
-
+    if (!readyToRender){
+      f();
+    }
   }, []);
+
+  useEffect(() => {
+    const func = async () => {
+
+      if (store.currentMapObject && store.currentMapObject.csvData) {
+        const csvObj = await store.getCsvById(store.currentMapObject.csvData);
+
+        console.log(csvObj);
+
+        store.setParsedCsvData(csvObj.csvData);
+        store.setCsvKey(csvObj.key);
+        store.setCsvLabel(csvObj.label);
+      }
+    };
+    func();
+  }, [store.currentMapObject]);
+
+  // useEffect(() => {
+  //   const f = async () => {
+  //       console.log(store.currentMapObject)
+  //       if (store.currentMapObject && store.currentMapObject.csvData) {
+  //         const csvObj = await store.getCsvById(store.currentMapObject.csvData);
+
+  //         console.log(csvObj);
+
+  //         await store.setParsedCsvData(csvObj.csvData);
+  //         await store.setCsvKey(csvObj.key);
+  //         await store.setCsvLabel(csvObj.label);
+
+          
+
+  //       }
+  //     }
+
+  //   if (!readyToRender){
+  //     f();
+  //   }
+  // }, [store.currentMapObject]);
 
   const panelStyle = {
     width: "30%",
@@ -87,7 +130,7 @@ export default function EditScreen() {
     setTabValue(newValue);
   };
 
-  return (
+  return readyToRender && store.currentMapObject? (
     <div>
       <div style={toolbarStyle}>
         <MapEditorToolbar />
@@ -115,5 +158,7 @@ export default function EditScreen() {
         </div>
       )}
     </div>
+  ) : (
+    <></>
   );
 }

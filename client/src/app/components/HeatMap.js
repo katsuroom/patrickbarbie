@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import L from "leaflet";
 import "leaflet-easyprint";
 import "leaflet/dist/leaflet.css";
-import StoreContext, {MapType} from "@/store";
+import StoreContext, { MapType } from "@/store";
 import Script from "next/script";
 
 function normalize(value, min, max) {
@@ -74,26 +74,28 @@ export default function Heatmap() {
     }
   };
 
-if (!isColorInit){
-  if (store.currentMapObject.mapProps) {
-    console.log("store.currentMapObject.mapProps is not null");
+  if (!isColorInit && store.currentMapObject) {
 
-    if (store.currentMapObject.mapProps.minColor) {
-      store.minColor = store.currentMapObject.mapProps.minColor;
+    console.log("color initialized!")
+    if (store.currentMapObject.mapProps) {
+      console.log("store.currentMapObject.mapProps is not null");
+
+      if (store.currentMapObject.mapProps.minColor) {
+        store.minColor = store.currentMapObject.mapProps.minColor;
+        store.setMinColor(store.currentMapObject.mapProps.minColor);
+      }
+      if (store.currentMapObject.mapProps.maxColor) {
+        store.maxColor = store.currentMapObject.mapProps.maxColor;
+        store.setMaxColor(store.currentMapObject.mapProps.maxColor);
+      }
+    } else {
+      console.log("store.currentMapObject.mapProps is null");
+      store.minColor = "#FFFFFF";
+      store.maxColor = "#FF0000";
     }
-    if (store.currentMapObject.mapProps.maxColor) {
-      store.maxColor = store.currentMapObject.mapProps.maxColor;
-    }
-  } else {
-    console.log("store.currentMapObject.mapProps is null");
-    store.minColor = "#FFFFFF";
-    store.maxColor = "#FF0000";
+
+    setIsColorInit(true);
   }
-
-setIsColorInit(true);
-
-}
-  
 
   useEffect(() => {
     const resizeListener = () => {
@@ -105,35 +107,32 @@ setIsColorInit(true);
     };
   }, []);
 
-  useEffect(() => {
-    // const func = async () => {
-    // if (store.currentMapObject.mapProps) {
-    //   console.log("store.currentMapObject.mapProps is not null");
-
-    //   if (store.currentMapObject.mapProps.minColor) {
-    //     store.minColor = store.currentMapObject.mapProps.minColor;
-    //     store.setMinColor(store.currentMapObject.mapProps.minColor);
-    //   }
-    //   if (store.currentMapObject.mapProps.maxColor) {
-    //     store.maxColor = store.currentMapObject.mapProps.maxColor;
-    //     store.setMaxColor(store.currentMapObject.mapProps.maxColor);
-    //   }
-    // } else {
-    //   console.log("store.currentMapObject.mapProps is null");
-    //   store.minColor = "#FFFFFF";
-    //   store.maxColor = "#FF0000";
-    //   store.setMinColor("#FFFFFF");
-    //   store.setMaxColor("#FF0000");
-    // }
-
-    // if (legendRef.current) {
-    //   legendRef.current.remove();
-    // }
-    initColor();
-
-    // await func();
-    // };
-  }, [store.currentMapObject]);
+  // useEffect(() => {
+  //   // const func = async () => {
+  //   // if (store.currentMapObject.mapProps) {
+  //   //   console.log("store.currentMapObject.mapProps is not null");
+  //   //   if (store.currentMapObject.mapProps.minColor) {
+  //   //     store.minColor = store.currentMapObject.mapProps.minColor;
+  //   //     store.setMinColor(store.currentMapObject.mapProps.minColor);
+  //   //   }
+  //   //   if (store.currentMapObject.mapProps.maxColor) {
+  //   //     store.maxColor = store.currentMapObject.mapProps.maxColor;
+  //   //     store.setMaxColor(store.currentMapObject.mapProps.maxColor);
+  //   //   }
+  //   // } else {
+  //   //   console.log("store.currentMapObject.mapProps is null");
+  //   //   store.minColor = "#FFFFFF";
+  //   //   store.maxColor = "#FF0000";
+  //   //   store.setMinColor("#FFFFFF");
+  //   //   store.setMaxColor("#FF0000");
+  //   // }
+  //   // if (legendRef.current) {
+  //   //   legendRef.current.remove();
+  //   // }
+  //   // initColor();
+  //   // await func();
+  //   // };
+  // }, [store.currentMapObject]);
 
   const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 
@@ -149,8 +148,12 @@ setIsColorInit(true);
       fillColor = "white";
     } else {
       fillColor = interpolateColor(
-        store.minColor || store.currentMapObject.mapProps?.minColor || "#FFFFFF",
-        store.maxColor || store.currentMapObject.mapProps?.maxColor || "#FF0000",
+        store.minColor ||
+          store.currentMapObject.mapProps?.minColor ||
+          "#FFFFFF",
+        store.maxColor ||
+          store.currentMapObject.mapProps?.maxColor ||
+          "#FF0000",
         Math.min(...store.parsed_CSV_Data[store.key]),
         Math.max(...store.parsed_CSV_Data[store.key]),
         store.parsed_CSV_Data[store.key][idx]
@@ -176,7 +179,11 @@ setIsColorInit(true);
   }, []);
 
   useEffect(() => {
-    if (store.rawMapFile) setGeoJsonData(store.rawMapFile);
+    if (store.rawMapFile) {
+      setGeoJsonData(store.rawMapFile);
+    }
+
+    initColor();
   }, [store.rawMapFile]);
 
   useEffect(() => {
@@ -278,18 +285,18 @@ setIsColorInit(true);
         legend.onAdd = function (map) {
           const div = L.DomUtil.create("div", "info legend");
 
-          (div.innerHTML +=
-            '<div style="background-color:' +
-            store.minColor || store.currentMapObject.mapProps?.minColor || "#FFFFFF", +
-            '"> Min: ' +
-            Math.min(...store.parsed_CSV_Data[store.key])),
+          ((div.innerHTML +=
+            '<div style="background-color:' + store.minColor ||
+            store.currentMapObject.mapProps?.minColor ||
+            "#FFFFFF"),
+          +'"> Min: ' + Math.min(...store.parsed_CSV_Data[store.key])),
             +"</div> " + "<br>";
 
-          (div.innerHTML +=
-            '<div style="background-color:' +
-            store.maxColor || store.currentMapObject.mapProps?.maxColor || "#FFFFFF", +
-            '"> Max: ' +
-            Math.max(...store.parsed_CSV_Data[store.key])),
+          ((div.innerHTML +=
+            '<div style="background-color:' + store.maxColor ||
+            store.currentMapObject.mapProps?.maxColor ||
+            "#FFFFFF"),
+          +'"> Max: ' + Math.max(...store.parsed_CSV_Data[store.key])),
             +"</div> " + "<br>";
 
           return div;
