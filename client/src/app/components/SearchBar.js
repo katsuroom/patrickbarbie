@@ -63,7 +63,7 @@ export default function SelectVariants() {
 
         {Object.values(store.searchBy).map(
           by => {
-            return <MenuItem value={by}>{by}</MenuItem>
+            return <MenuItem value={by} key={by}>{by}</MenuItem>
           }
 
         )}
