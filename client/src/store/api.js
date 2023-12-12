@@ -351,6 +351,26 @@ const searchMaps = async (searchText, searchBy) => {
   }
 };
 
+const updateMapData = (mapData, id) =>{
+  console.log("in api.updateMapData");
+  let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
+  return fetch(`${baseURL}/mapData/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+    body: JSON.stringify({
+      mapData: mapData,
+    }),
+  }).then((response) => {
+    // Parse JSON and include status in the resolved value
+    return response.json().then((data) => {
+      return { status: response.status, data };
+    });
+  });
+}
+
 export default {
   createMap,
   getMapsByUser,
@@ -359,6 +379,7 @@ export default {
   deleteCSV,
   getMainScreenMap,
   updateMap,
+  updateMapData,
   forkMap,
   createCSV,
   getMapById,
