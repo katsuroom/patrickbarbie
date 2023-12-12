@@ -366,7 +366,7 @@ function StoreContextProvider(props) {
   };
 
   // create map using uploaded file
-  store.createMap = function (title, mapType) {
+  store.createMap = async function (title, mapType) {
     console.log("in create map");
 
     let file = store.uploadedFile;
@@ -374,7 +374,7 @@ function StoreContextProvider(props) {
     var data = JSON.stringify(file);
     console.log(data);
 
-    asyncCreateMap();
+    await asyncCreateMap();
     async function asyncCreateMap() {
       let response = await api.createMap(
         data,
