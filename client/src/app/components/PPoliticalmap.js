@@ -211,11 +211,6 @@ export default function PPoliticalmap() {
         store.setCsvKey(keys[1]);
     };
 
-    // if (store.parsed_CSV_Data && !renderTable){
-    //   console.log("enter here")
-    //   setMenuItems(Object.keys(store.parsed_CSV_Data))
-    //   setRenderTable(true);
-    // }
     if (menuItems.length === 0 && store.parsed_CSV_Data) {
         setMenuItems(Object.keys(store.parsed_CSV_Data));
     }
@@ -306,7 +301,6 @@ export default function PPoliticalmap() {
 
 
             <div>
-                {/* Dropdown to select an attribute */}
                 <Select value={store.selectedAttribute} onChange={e => store.updateSelectedAttribute(e.target.value)}>
                     {store.parsed_CSV_Data && Object.keys(store.parsed_CSV_Data).length > 0 ?
                         Object.keys(store.parsed_CSV_Data).map(key => (
@@ -315,29 +309,16 @@ export default function PPoliticalmap() {
                     }
                 </Select>
 
-                {/* Color pickers for each unique value of the selected attribute */}
-                {/* {Object.entries(attributeColorMapping).map(([value, color]) => (
-                    <div key={value} style={{ display: 'flex', alignItems: 'center' }}>
-                        {value}
-                        <CompactPicker color={color} onChange={color => handleColorChange(value, color)} />
-                        <Button onClick={updateMapColors} variant="contained">Update</Button>
-                    </div>
-                ))} */}
-
                 <div>
                     {Object.entries(attributeColorMapping).map(([value, color]) => (
                         <div key={value} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '10px' }}>
                             <div style={{ marginBottom: '5px' }}>{value}</div>
                             <CompactPicker color={color} onChange={color => handleColorChange(value, color)} style={{ marginBottom: '5px' }} />
-                            <Button onClick={updateMapColors} variant="contained">Update</Button>
+                            {/* <Button onClick={updateMapColors} variant="contained">Update</Button> */}
                         </div>
                     ))}
                 </div>
-
-
             </div>
-
-
 
 
             <div>

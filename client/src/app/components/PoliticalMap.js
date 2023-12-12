@@ -24,9 +24,9 @@ export default function Politicalmap(props) {
     const { selectedAttribute, setSelectedAttribute } = useContext(StoreContext);
 
 
+
     const initColor = () => {
         if (store.currentMapObject.mapProps) {
-            console.log("store.currentMapObject.mapProps is not null");
 
             if (store.currentMapObject.mapProps.minColor) {
                 store.minColor = store.currentMapObject.mapProps.minColor;
@@ -88,53 +88,19 @@ export default function Politicalmap(props) {
 
     const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 
-
-
-
-
-
-
-
-    // function geoJsonStyle(feature) {
-    //     let fillColor = "white"; // Default color
-
-    //     // Make sure categoryColorMappings is defined and is an array
-    //     if (Array.isArray(props.categoryColorMappings)) {
-    //         // Assume store.parsed_CSV_Data maps countries to categories
-    //         const countryCategory = store.parsed_CSV_Data && store.parsed_CSV_Data.find(data => data.country === feature.properties.name)?.category;
-    //         const categoryMapping = props.categoryColorMappings.find(m => m.category === countryCategory);
-
-    //         if (categoryMapping) {
-    //             fillColor = categoryMapping.color; // Set color based on category
-    //         }
-    //     }
-
-    //     return {
-    //         stroke: true,
-    //         color: "black",
-    //         weight: 1,
-    //         fillColor,
-    //         fillOpacity: 1,
-    //     };
-    // }
-
-
     // function geoJsonStyle(feature) {
     //     let fillColor = 'white';
 
-    //     console.log("HERE IN POLITICALMAP.s")
-    //     console.log(store.categoryColorMappings)
+    //     if (store.parsed_CSV_Data && store.categoryColorMappings && store.selectedAttribute) {
+    //         const countryIndex = store.parsed_CSV_Data.Country.indexOf(feature.properties.name);
 
-    //     const selectedAttribute = store.selectedAttribute;
+    //         if (countryIndex !== -1) {
+    //             const language = store.parsed_CSV_Data.Language[countryIndex];
 
-    //     console.log("selectedAttribute is: " + selectedAttribute)
-
-    //     if (selectedAttribute && store.categoryColorMappings && Object.keys(store.categoryColorMappings).length > 0) {
-
-    //         const featureValue = feature.properties[selectedAttribute];
-
-    //         if (featureValue !== undefined && store.categoryColorMappings.hasOwnProperty(featureValue)) {
-    //             fillColor = store.categoryColorMappings[featureValue];
+    //             if (language && store.categoryColorMappings.hasOwnProperty(language)) {
+    //                 fillColor = store.categoryColorMappings[language];
+    //                 console.log(fillColor)
+    //             }
     //         }
     //     }
 
@@ -142,24 +108,27 @@ export default function Politicalmap(props) {
     //         stroke: true,
     //         color: 'black',
     //         weight: 1,
-    //         fillColor,
+    //         fillColor, // The fillColor will be set based on the matching language
     //         fillOpacity: 1,
     //     };
     // }
 
+
+
     // function geoJsonStyle(feature) {
     //     let fillColor = 'white';
+        
+    //     if (store.parsed_CSV_Data && store.categoryColorMappings && store.selectedAttribute) {
+    //         const attributeIndex = store.parsed_CSV_Data[store.selectedAttribute].indexOf(feature.properties.name);
 
-    //     const selectedAttribute = store.selectedAttribute;
-    //     console.log("selectedAttribute is: " + selectedAttribute)
-    //     const categoryColorMappings = store.categoryColorMappings;
-    //     console.log(categoryColorMappings)
-
-    //     if (selectedAttribute && categoryColorMappings) {
-    //         const featureValue = feature.properties[selectedAttribute];
-
-    //         if (featureValue && categoryColorMappings.hasOwnProperty(featureValue)) {
-    //             fillColor = categoryColorMappings[featureValue];
+    //         console.log(store.selectedAttribute)
+            
+    //         if (attributeIndex !== -1) {
+    //             const attributeValue = store.parsed_CSV_Data[store.selectedAttribute][attributeIndex];
+                
+    //             if (attributeValue && store.categoryColorMappings.hasOwnProperty(attributeValue)) {
+    //                 fillColor = store.categoryColorMappings[attributeValue];
+    //             }
     //         }
     //     }
 
@@ -167,40 +136,36 @@ export default function Politicalmap(props) {
     //         stroke: true,
     //         color: 'black',
     //         weight: 1,
-    //         fillColor,
+    //         fillColor, // fillColor is set based on the selected attribute value
     //         fillOpacity: 1,
     //     };
     // }
-
 
     function geoJsonStyle(feature) {
         let fillColor = 'white';
-
+        
         if (store.parsed_CSV_Data && store.categoryColorMappings && store.selectedAttribute) {
+            // Find the index of the country in the Country array
             const countryIndex = store.parsed_CSV_Data.Country.indexOf(feature.properties.name);
-
+    
             if (countryIndex !== -1) {
-                const language = store.parsed_CSV_Data.Language[countryIndex];
-                console.log("language is: " + language)
-                console.log(store.categoryColorMappings)
-
-                if (language && store.categoryColorMappings.hasOwnProperty(language)) {
-                    fillColor = store.categoryColorMappings[language];
-                    console.log(fillColor)
+                // Use the country index to find the corresponding value in the selected attribute array
+                const attributeValue = store.parsed_CSV_Data[store.selectedAttribute][countryIndex];
+                
+                if (attributeValue && store.categoryColorMappings.hasOwnProperty(attributeValue)) {
+                    fillColor = store.categoryColorMappings[attributeValue];
                 }
             }
         }
-
+    
         return {
             stroke: true,
             color: 'black',
             weight: 1,
-            fillColor, // The fillColor will be set based on the matching language
+            fillColor, // fillColor is set based on the selected attribute value
             fillOpacity: 1,
         };
     }
-
-
 
 
     useEffect(() => {
@@ -218,118 +183,12 @@ export default function Politicalmap(props) {
     }, [store.rawMapFile]);
 
     useEffect(() => {
-        // Check if the GeoJSON layer exists
         if (geoJsonLayerRef.current) {
-            // Update the style of the GeoJSON layer
             geoJsonLayerRef.current.setStyle(geoJsonStyle);
         }
     }, [store.selectedAttribute, store.categoryColorMappings]);
 
     useEffect(() => {
-
-
-        // if (!geoJsonData) {
-        //     return;
-        // }
-
-        // if (!mapRef.current) {
-        //     mapRef.current = L.map("map-display").setView([0, 0], 2);
-        //     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
-        //         mapRef.current
-        //     );
-        // }
-
-        // if (geoJsonLayerRef.current) {
-        //     mapRef.current.removeLayer(geoJsonLayerRef.current);
-        // }
-        // markers.current.forEach((marker) => {
-        //     mapRef.current.removeLayer(marker);
-        // });
-        // markers.current = [];
-
-
-
-        // if (geoJsonData) {
-        //     geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
-        //         onEachFeature: (feature, layer) => {
-        //             // check if label_y and label_x exist, since they don't exist for KML
-        //             if (feature.properties.label_y && feature.properties.label_x) {
-        //                 const label = L.marker(
-        //                     [feature.properties.label_y, feature.properties.label_x],
-        //                     {
-        //                         icon: L.divIcon({
-        //                             className: "countryLabel",
-        //                             html: feature.properties.name,
-        //                             iconSize: [1000, 0],
-        //                             iconAnchor: [0, 0],
-        //                         }),
-        //                     }
-        //                 ).addTo(mapRef.current);
-        //                 markers.current.push(label);
-        //             }
-        //         },
-        //     });
-
-        //     geoJsonLayerRef.current.addTo(mapRef.current);
-
-        //     if (geoJsonLayerRef.current) {
-        //         const bounds = geoJsonLayerRef.current.getBounds();
-        //         if (bounds.isValid()) {
-        //             mapRef.current.fitBounds(bounds);
-        //         } else {
-        //             console.log("bounds are not valid");
-        //         }
-        //     } else {
-        //         console.log("geoJsonLayerRef.current is undefined or empty");
-        //     }
-        // }
-
-
-
-
-
-        // if (!geoJsonData) {
-        //     return; // No data to render on the map
-        // }
-
-        // // Remove existing layers and markers
-        // if (geoJsonLayerRef.current) {
-        //     mapRef.current.removeLayer(geoJsonLayerRef.current);
-        // }
-        // markers.current.forEach(marker => {
-        //     mapRef.current.removeLayer(marker);
-        // });
-        // markers.current = [];
-
-        // // Create a new GeoJSON layer with the updated style
-        // geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
-        //     style: geoJsonStyle, // Apply the updated styling function
-        //     onEachFeature: (feature, layer) => {
-        //         if (feature.properties.label_y && feature.properties.label_x) {
-        //             const label = L.marker(
-        //                 [feature.properties.label_y, feature.properties.label_x],
-        //                 {
-        //                     icon: L.divIcon({
-        //                         className: "countryLabel",
-        //                         html: feature.properties.name,
-        //                         iconSize: [1000, 0],
-        //                         iconAnchor: [0, 0],
-        //                     }),
-        //                 }
-        //             ).addTo(mapRef.current);
-        //             markers.current.push(label);
-        //         }
-        //     },
-        // }).addTo(mapRef.current);
-
-        // // Fit the map bounds to the new layer
-        // if (geoJsonLayerRef.current) {
-        //     const bounds = geoJsonLayerRef.current.getBounds();
-        //     if (bounds.isValid()) {
-        //         mapRef.current.fitBounds(bounds);
-        //     }
-        // }
-
 
 
         if (!geoJsonData) {
@@ -472,8 +331,8 @@ export default function Politicalmap(props) {
             store.parsed_CSV_Data,
             store.minColor,
             store.maxColor,
-            store.selectedAttribute, 
-            store.categoryColorMappings, 
+            store.selectedAttribute,
+            store.categoryColorMappings,
         ]);
 
     return (

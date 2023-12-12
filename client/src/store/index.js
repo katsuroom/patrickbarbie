@@ -97,7 +97,7 @@ function StoreContextProvider(props) {
     polColor: null,
     dotColor: null,
     categoryColorMappings: [],
-    seletecAttribute: null,
+    selectedAttribute: null,
   });
 
   store.viewTypes = View;
