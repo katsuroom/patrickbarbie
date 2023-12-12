@@ -746,8 +746,11 @@ function StoreContextProvider(props) {
   store.searchMaps = async function (searchText, searchBy) {
 
     const res = await api.searchMaps(searchText, searchBy);
+    if (store.isHomePage()){
+      store.changeView(store.viewTypes.COMMUNITY);
+    }
     const maps = res.data.data;
-    
+
     storeReducer({
       type: StoreActionType.SET_MAP_LIST,
       payload: { mapList: maps },
