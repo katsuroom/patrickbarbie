@@ -68,6 +68,13 @@ export const View = {
   HOME: "Home",
 };
 
+const SearchBy = {
+  ALL: "All",
+  MAP_ID: "Map ID",
+  MAP_NAME: "Map Name",
+  USER_NAME: "User Name"
+}
+
 function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
   const pathname = usePathname();
@@ -95,6 +102,7 @@ function StoreContextProvider(props) {
 
   store.viewTypes = View;
   store.currentModalTypes = CurrentModal;
+  store.searchBy = SearchBy;
 
   const storeReducer = (action) => {
     const { type, payload } = action;
@@ -735,14 +743,20 @@ function StoreContextProvider(props) {
     });
   };
 
-  store.searchMapsById = async function (id) {
-    const response = await api.getMapById(id);
-    const mapObj = response.data.data;
-    console.log(mapObj);
-    storeReducer({
-      type: StoreActionType.SET_MAP_LIST,
-      payload: { mapList: [mapObj] },
-    });
+  store.searchMaps = async function (searchText, searchBy) {
+
+    const res = await api.searchMaps(searchText, searchBy);
+    const maps = res.data.data;
+    console.log(maps);
+
+
+    // const response = await api.getMapById(id);
+    // const mapObj = response.data.data;
+    // console.log(mapObj);
+    // storeReducer({
+    //   type: StoreActionType.SET_MAP_LIST,
+    //   payload: { mapList: [mapObj] },
+    // });
   };
 
   store.getCsvById = async function (id) {

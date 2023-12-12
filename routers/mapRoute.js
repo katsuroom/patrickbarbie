@@ -11,6 +11,8 @@ router.put('/map/:id',auth, MapController.updateMap);
 router.get('/maps', auth, MapController.getMapsByUser);
 router.get('/map/:id', MapController.getMapById);
 router.get('/published-maps', MapController.getPublishedMaps);
+router.get('/search-maps/:searchText/:searchBy', MapController.searchMaps);
+
 
 router.get('/mapData/:id', MapController.getMapDataById);
 router.delete('/mapData/:id', MapController.deleteMapData);
