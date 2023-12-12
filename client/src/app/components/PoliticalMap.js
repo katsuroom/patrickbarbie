@@ -88,81 +88,26 @@ export default function Politicalmap(props) {
 
     const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 
-    // function geoJsonStyle(feature) {
-    //     let fillColor = 'white';
-
-    //     if (store.parsed_CSV_Data && store.categoryColorMappings && store.selectedAttribute) {
-    //         const countryIndex = store.parsed_CSV_Data.Country.indexOf(feature.properties.name);
-
-    //         if (countryIndex !== -1) {
-    //             const language = store.parsed_CSV_Data.Language[countryIndex];
-
-    //             if (language && store.categoryColorMappings.hasOwnProperty(language)) {
-    //                 fillColor = store.categoryColorMappings[language];
-    //                 console.log(fillColor)
-    //             }
-    //         }
-    //     }
-
-    //     return {
-    //         stroke: true,
-    //         color: 'black',
-    //         weight: 1,
-    //         fillColor, // The fillColor will be set based on the matching language
-    //         fillOpacity: 1,
-    //     };
-    // }
-
-
-
-    // function geoJsonStyle(feature) {
-    //     let fillColor = 'white';
-        
-    //     if (store.parsed_CSV_Data && store.categoryColorMappings && store.selectedAttribute) {
-    //         const attributeIndex = store.parsed_CSV_Data[store.selectedAttribute].indexOf(feature.properties.name);
-
-    //         console.log(store.selectedAttribute)
-            
-    //         if (attributeIndex !== -1) {
-    //             const attributeValue = store.parsed_CSV_Data[store.selectedAttribute][attributeIndex];
-                
-    //             if (attributeValue && store.categoryColorMappings.hasOwnProperty(attributeValue)) {
-    //                 fillColor = store.categoryColorMappings[attributeValue];
-    //             }
-    //         }
-    //     }
-
-    //     return {
-    //         stroke: true,
-    //         color: 'black',
-    //         weight: 1,
-    //         fillColor, // fillColor is set based on the selected attribute value
-    //         fillOpacity: 1,
-    //     };
-    // }
-
     function geoJsonStyle(feature) {
         let fillColor = 'white';
-        
+
         if (store.parsed_CSV_Data && store.categoryColorMappings && store.selectedAttribute) {
-            // Find the index of the country in the Country array
             const countryIndex = store.parsed_CSV_Data.Country.indexOf(feature.properties.name);
-    
+
             if (countryIndex !== -1) {
-                // Use the country index to find the corresponding value in the selected attribute array
                 const attributeValue = store.parsed_CSV_Data[store.selectedAttribute][countryIndex];
-                
+
                 if (attributeValue && store.categoryColorMappings.hasOwnProperty(attributeValue)) {
                     fillColor = store.categoryColorMappings[attributeValue];
                 }
             }
         }
-    
+
         return {
             stroke: true,
             color: 'black',
             weight: 1,
-            fillColor, // fillColor is set based on the selected attribute value
+            fillColor,
             fillOpacity: 1,
         };
     }
@@ -281,39 +226,39 @@ export default function Politicalmap(props) {
             });
 
             heatmapOverlayRef.current.addTo(mapRef.current);
-            //   if (legendVisible) {
+            // if (legendVisible) {
             //     if (legendRef.current) {
-            //       legendRef.current.remove();
+            //         legendRef.current.remove();
             //     }
 
             //     const legend = L.control({ position: "bottomright" });
 
             //     legend.onAdd = function (map) {
-            //       const div = L.DomUtil.create("div", "info legend");
+            //         const div = L.DomUtil.create("div", "info legend");
 
-            //       (div.innerHTML +=
-            //         '<div style="background-color:' +
-            //         store.minColor +
-            //         '"> Min: ' +
-            //         Math.min(...store.parsed_CSV_Data[store.key])),
-            //         +"</div> " + "<br>";
+            //         (div.innerHTML +=
+            //             '<div style="background-color:' +
+            //             store.minColor +
+            //             '"> Min: ' +
+            //             Math.min(...store.parsed_CSV_Data[store.key])),
+            //             +"</div> " + "<br>";
 
-            //       (div.innerHTML +=
-            //         '<div style="background-color:' +
-            //         store.maxColor +
-            //         '"> Max: ' +
-            //         Math.max(...store.parsed_CSV_Data[store.key])),
-            //         +"</div> " + "<br>";
+            //         (div.innerHTML +=
+            //             '<div style="background-color:' +
+            //             store.maxColor +
+            //             '"> Max: ' +
+            //             Math.max(...store.parsed_CSV_Data[store.key])),
+            //             +"</div> " + "<br>";
 
-            //       return div;
+            //         return div;
             //     };
 
             //     legend.addTo(mapRef.current);
 
             //     legendRef.current = legend;
-            //   }
+            // }
 
-            //   L.easyPrint({
+            // L.easyPrint({
             //     title: 'Save my map',
             //     position: 'topleft',
             //     sizeModes: ['Current', 'A4Landscape', 'A4Portrait'],

@@ -48,14 +48,13 @@ export default function PPoliticalmap() {
         }
     };
 
-    const updateMapColors = () => {
-        // console.log("Updating map colors: ", attributeColorMapping);
-        store.updateCategoryColorMappings(attributeColorMapping);
-    };
+    // const updateMapColors = () => {
+    //     store.updateCategoryColorMappings(attributeColorMapping);
+    // };
 
-    const handleDeleteProperty = (propertyName) => {
-        setProperties(properties.filter(property => property.name !== propertyName));
-    };
+    // const handleDeleteProperty = (propertyName) => {
+    //     setProperties(properties.filter(property => property.name !== propertyName));
+    // };
 
     // When a new attribute is selected, reset the color mapping
     useEffect(() => {
