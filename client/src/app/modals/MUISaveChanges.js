@@ -108,6 +108,9 @@ export default function MUISaveChanges() {
 
     store.updateMap(store.currentMapObject);
 
+    //update map data
+    store.updateMapData();
+
     console.log("Map Saved!");
     store.closeModal();
   };
