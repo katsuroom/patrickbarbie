@@ -37,25 +37,49 @@ export default function GeneralProperty() {
 
     const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
-    const setLabelValue = (value, index) => {
+
+    const handleEnterPress = (index, value) => {
         console.log(index);
         console.log(value);
+
+        // Get the current data type
+        const currentDataType =
+          typeof store.rawMapFile.features[index].properties[selectedKey];
+        console.log(`Current data type: ${currentDataType}`);
+
+        // Clone the rawMapFile object to avoid modifying the original directly
+        const newRawMapFile = JSON.parse(JSON.stringify(store.rawMapFile));
+
+        // Update the property in the cloned object
+        newRawMapFile.features[index].properties[selectedKey] =
+          convertToProperType(value, currentDataType);
+
+        console.log(newRawMapFile);
+
+        store.rawMapFile = newRawMapFile;
+        store.setRawMapFile(newRawMapFile);
+        console.log(store.rawMapFile);
+        console.log(store.currentMapObject);
+        
     }
+
+    const convertToProperType = (value, dataType) => {
+      switch (dataType) {
+        case "number":
+          return parseFloat(value);
+        case "boolean":
+          return value.toLowerCase() === "true";
+        // Add more cases as needed
+        default:
+          return value;
+      }
+    };
 
     if(menuItems.length === 0 && store.rawMapFile){
         setMenuItems(Object.keys(store.rawMapFile.features[0].properties));
     }
 
-    // if (store.rawMapFile && selectedLabel && selectedKey) {
-    //   store.rawMapFile.features.forEach((element) => {
-    //     console.log(element.properties);
-    //     console.log("label:", selectedLabel);
-    //     console.log("key:", selectedKey);
-    //     console.log("llabel:", element.properties[selectedLabel]);
-
-    //   });
-    // }
-
+   
 
     console.log(menuItems);
 
@@ -126,7 +150,11 @@ export default function GeneralProperty() {
                       </td>
                       <td>
                         <TextField
-                          onChange={(e) => setLabelValue(e.target.value, index)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleEnterPress(index, e.target.value);
+                            }
+                          }}
                           variant="standard"
                         />
                       </td>

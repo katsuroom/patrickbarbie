@@ -853,6 +853,13 @@ function StoreContextProvider(props) {
     });
   };
 
+  store.setRawMapFile = function (object){
+    storeReducer({
+      type: StoreActionType.SET_RAW_MAP_FILE,
+      payload: { file: object },
+    });
+  }
+
   return (
     <StoreContext.Provider
       value={{
