@@ -597,7 +597,6 @@ searchMaps = async (req, res) => {
       // console.log(publishedMaps.filter(map => map._id == searchText))
 
       let maps = publishedMaps;
-      
 
       switch (searchBy) {
         case SearchBy.MAP_ID:
@@ -619,11 +618,8 @@ searchMaps = async (req, res) => {
           break;
 
         case SearchBy.ALL:
-          maps = publishedMaps.filter(
-            (map) =>
-              map._id.toString().includes(searchText) ||
-              map.author.toLowerCase().includes(searchText) ||
-              map.title.toLowerCase().includes(searchText)
+          maps = publishedMaps.filter((map) =>
+            JSON.stringify(map).toLowerCase().includes(searchText)
           );
           break;
 
@@ -631,6 +627,7 @@ searchMaps = async (req, res) => {
           break;
       }
 
+      console.log(maps.length);
       return res.status(200).json({
         success: true,
         data: maps,

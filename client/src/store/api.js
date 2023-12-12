@@ -330,6 +330,8 @@ const getPublishedMaps = () => {
 };
 
 const searchMaps = async (searchText, searchBy) => {
+
+  // if search text is empty, then return all published maps
   if (!searchText.length) {
     return getPublishedMaps();
   } else {

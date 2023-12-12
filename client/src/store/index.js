@@ -747,16 +747,11 @@ function StoreContextProvider(props) {
 
     const res = await api.searchMaps(searchText, searchBy);
     const maps = res.data.data;
-    console.log(maps);
-
-
-    // const response = await api.getMapById(id);
-    // const mapObj = response.data.data;
-    // console.log(mapObj);
-    // storeReducer({
-    //   type: StoreActionType.SET_MAP_LIST,
-    //   payload: { mapList: [mapObj] },
-    // });
+    
+    storeReducer({
+      type: StoreActionType.SET_MAP_LIST,
+      payload: { mapList: maps },
+    });
   };
 
   store.getCsvById = async function (id) {
