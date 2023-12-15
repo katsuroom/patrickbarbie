@@ -56,18 +56,20 @@ export default function PPoliticalmap() {
 
     // When a new attribute is selected, reset the color mapping
     useEffect(() => {
-        if (store.selectedAttribute) {
+        if (store.selectedAttribute && store.parsed_CSV_Data && store.parsed_CSV_Data[store.selectedAttribute]) {
             const uniqueValues = new Set(store.parsed_CSV_Data[store.selectedAttribute]);
             const newMapping = {};
             uniqueValues.forEach(value => {
                 newMapping[value] = '#ffffff';
             });
             setAttributeColorMapping(newMapping);
+            store.updateCategoryColorMappings(newMapping);
         }
     }, [store.selectedAttribute, store.parsed_CSV_Data]);
 
+
     const handleColorChange = (value, color) => {
-        const updatedMapping = { ...attributeColorMapping, [value]: color.hex };
+        const updatedMapping = { ...store.categoryColorMappings, [value]: color.hex };
         setAttributeColorMapping(updatedMapping);
         store.updateCategoryColorMappings(updatedMapping);
     };

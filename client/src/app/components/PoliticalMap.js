@@ -19,56 +19,37 @@ export default function Politicalmap(props) {
     const legendRef = useRef(null);
     const [isColorInit, setIsColorInit] = useState(false);
 
-
     const { categoryColorMappings } = useContext(StoreContext);
     const { selectedAttribute, setSelectedAttribute } = useContext(StoreContext);
 
 
-
     const initColor = () => {
-        if (store.currentMapObject.mapProps) {
-
-            if (store.currentMapObject.mapProps.minColor) {
-                store.minColor = store.currentMapObject.mapProps.minColor;
-                store.setMinColor(store.currentMapObject.mapProps.minColor);
-            }
-            if (store.currentMapObject.mapProps.maxColor) {
-                store.maxColor = store.currentMapObject.mapProps.maxColor;
-                store.setMaxColor(store.currentMapObject.mapProps.maxColor);
-            }
+        // Initialize minColor and maxColor
+        store.minColor = store.currentMapObject.mapProps?.minColor || "#FFFFFF";
+        store.maxColor = store.currentMapObject.mapProps?.maxColor || "#FF0000";
+        store.setMinColor(store.minColor);
+        store.setMaxColor(store.maxColor);
+    
+        // Initialize categoryColorMappings
+        if (store.currentMapObject.mapProps?.categoryColorMappings) {
+            store.categoryColorMappings = store.currentMapObject.mapProps.categoryColorMappings;
         } else {
-            console.log("store.currentMapObject.mapProps is null");
-            store.minColor = "#FFFFFF";
-            store.maxColor = "#FF0000";
-            store.setMinColor("#FFFFFF");
-            store.setMaxColor("#FF0000");
+            // Default to white for all categories if not provided
+            store.categoryColorMappings = {};
+            Object.keys(store.parsed_CSV_Data || {}).forEach(attr => {
+                store.categoryColorMappings[attr] = '#FFFFFF';
+            });
         }
-
+        store.updateCategoryColorMappings(store.categoryColorMappings);
+    
+        // Initialize selectedAttribute
+        store.selectedAttribute = store.currentMapObject.mapProps?.selectedAttribute || Object.keys(store.parsed_CSV_Data || {})[0] || 'none';
+        store.updateSelectedAttribute(store.selectedAttribute);
+    
         if (legendRef.current) {
             legendRef.current.remove();
         }
     };
-
-    if (!isColorInit) {
-        if (store.currentMapObject.mapProps) {
-            console.log("store.currentMapObject.mapProps is not null");
-
-            if (store.currentMapObject.mapProps.minColor) {
-                store.minColor = store.currentMapObject.mapProps.minColor;
-            }
-            if (store.currentMapObject.mapProps.maxColor) {
-                store.maxColor = store.currentMapObject.mapProps.maxColor;
-            }
-        } else {
-            console.log("store.currentMapObject.mapProps is null");
-            store.minColor = "#FFFFFF";
-            store.maxColor = "#FF0000";
-        }
-
-        setIsColorInit(true);
-
-    }
-
 
     useEffect(() => {
         const resizeListener = () => {
@@ -81,10 +62,19 @@ export default function Politicalmap(props) {
     }, []);
 
     useEffect(() => {
-
         initColor();
+    }, [store.currentMapObject, store.parsed_CSV_Data]);
 
-    }, [store.currentMapObject]);
+    useEffect(() => {
+        if (store.selectedAttribute && store.parsed_CSV_Data && store.parsed_CSV_Data[store.selectedAttribute]) {
+            const uniqueValues = new Set(store.parsed_CSV_Data[store.selectedAttribute]);
+            const newMapping = {};
+            uniqueValues.forEach(value => {
+                newMapping[value] = '#ffffff';
+            });
+            store.updateCategoryColorMappings(newMapping);
+        }
+    }, [store.selectedAttribute, store.parsed_CSV_Data]);
 
     const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 
