@@ -32,6 +32,8 @@ const TravelMap = (props) => {
     const lightLayerRef = useRef(null);
     const settingLayerRef = useRef(null);
 
+    let spinner = true;
+
     const showSpinner = ()=>{
         if(spinner){
             document.getElementById('loader').style.display = "block";
