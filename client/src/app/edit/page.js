@@ -28,31 +28,53 @@ import Tab from "@mui/material/Tab";
 export default function EditScreen() {
   const { store } = useContext(StoreContext);
   const [tabValue, setTabValue] = useState("general");
-  const [readyToRender, setReadyToRender] = useState(
-    !!(store.rawMapFile)
-  );
+  const [readyToRender, setReadyToRender] = useState(!!store.rawMapFile);
+
+  const [loadScripts, setLoadScripts] = useState(false);
+
+  const loadScript = (src) => {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => resolve(script);
+      script.onerror = () => reject(new Error(`Script load error for ${src}`));
+      document.body.appendChild(script);
+    });
+  };
+
+  if (!loadScripts) {
+    Promise.all([
+      loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+      loadScript("./mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+    ])
+      .then(() => {
+        setLoadScripts(true);
+        store.setRawMapFile(store.rawMapFile);
+      })
+      .catch((error) => console.error(error));
+  }
 
   useEffect(() => {
     const f = async () => {
+      console.log("refreshing edit");
       if (!store.currentMapObject) {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         let mapId = urlParams.get("mapId");
         await store.getMapListHome();
         await store.loadMapFile(mapId);
-        
-        setReadyToRender(true);
 
+        setReadyToRender(true);
       }
     };
-    if (!readyToRender){
+    if (!readyToRender) {
       f();
     }
   }, []);
 
   useEffect(() => {
     const func = async () => {
-
+      console.log("refreshing edit");
       if (store.currentMapObject && store.currentMapObject.csvData) {
         const csvObj = await store.getCsvById(store.currentMapObject.csvData);
 
@@ -77,8 +99,6 @@ export default function EditScreen() {
   //         await store.setParsedCsvData(csvObj.csvData);
   //         await store.setCsvKey(csvObj.key);
   //         await store.setCsvLabel(csvObj.label);
-
-          
 
   //       }
   //     }
@@ -130,7 +150,7 @@ export default function EditScreen() {
     setTabValue(newValue);
   };
 
-  return readyToRender && store.currentMapObject? (
+  return readyToRender && store.currentMapObject ? (
     <div>
       <div style={toolbarStyle}>
         <MapEditorToolbar />

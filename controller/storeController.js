@@ -63,7 +63,7 @@ createMap = async (req, res) => {
 
     // Save map data
 
-    const chunkSize = 15 * 1024 * 1024;
+    const chunkSize = 1 * 1024 * 1024;
     const mapDataBuffer = body.mapData;
     const totalChunks = Math.ceil(mapDataBuffer.length / chunkSize);
     console.log("totalChunks", totalChunks);
@@ -643,6 +643,70 @@ searchMaps = async (req, res) => {
     });
 };
 
+updateMapData = async (req, res) =>{
+
+  try{
+    Chunk.deleteMany({ mapDataID: req.params.id })
+      .then((result) => {
+        if (!result) {
+          return res.status(404).json({
+            success: false,
+            error: "Map Data not found",
+          });
+        }
+      })
+      .catch((error) => {
+        return res.status(500).json({
+          success: false,
+          error: "Error deleting map data",
+        });
+      });
+
+    // create new map data
+    const body = req.body;
+
+    // Save map data
+
+    const chunkSize = 1 * 1024 * 1024;
+    const mapDataBuffer = body.mapData;
+    const totalChunks = Math.ceil(mapDataBuffer.length / chunkSize);
+    console.log("totalChunks", totalChunks);
+
+    // const chunks = [];
+
+    // Iterate through the buffer and create chunks
+
+    for (let i = 0; i < totalChunks; i++) {
+      console.log("creating chunk #", i);
+      const start = i * chunkSize;
+      const end = Math.min((i + 1) * chunkSize, mapDataBuffer.length);
+      const chunk = mapDataBuffer.slice(start, end);
+
+      const mapData = new Chunk({
+        n: i,
+        mapDataID: req.params.id,
+        totalChunks,
+        data: chunk,
+      });
+
+      await mapData.save().catch((error) => {
+        console.error("Error saving MapData:", error);
+      });
+    }
+
+    return res.status(201).json({
+      success: true,
+      message: "Map updated!",
+    });
+  }catch(error){
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      error: "Error updating map data",
+    });
+  }
+}
+
 module.exports = {
   createMap,
   deleteMap,
@@ -655,6 +719,7 @@ module.exports = {
 
   getMapDataById,
   deleteMapData,
+  updateMapData,
   getMapsByUser,
 
   createCSV,

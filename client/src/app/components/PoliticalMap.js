@@ -19,9 +19,14 @@ export default function Politicalmap(props) {
     const legendRef = useRef(null);
     const [isColorInit, setIsColorInit] = useState(false);
 
+
+    const { categoryColorMappings } = useContext(StoreContext);
+    const { selectedAttribute, setSelectedAttribute } = useContext(StoreContext);
+
+
+
     const initColor = () => {
         if (store.currentMapObject.mapProps) {
-            console.log("store.currentMapObject.mapProps is not null");
 
             if (store.currentMapObject.mapProps.minColor) {
                 store.minColor = store.currentMapObject.mapProps.minColor;
@@ -83,44 +88,19 @@ export default function Politicalmap(props) {
 
     const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 
-
-
-
-
-
-
-
-    // function geoJsonStyle(feature) {
-    //     let fillColor = "white"; // Default color
-
-    //     // Make sure categoryColorMappings is defined and is an array
-    //     if (Array.isArray(props.categoryColorMappings)) {
-    //         // Assume store.parsed_CSV_Data maps countries to categories
-    //         const countryCategory = store.parsed_CSV_Data && store.parsed_CSV_Data.find(data => data.country === feature.properties.name)?.category;
-    //         const categoryMapping = props.categoryColorMappings.find(m => m.category === countryCategory);
-
-    //         if (categoryMapping) {
-    //             fillColor = categoryMapping.color; // Set color based on category
-    //         }
-    //     }
-
-    //     return {
-    //         stroke: true,
-    //         color: "black",
-    //         weight: 1,
-    //         fillColor,
-    //         fillOpacity: 1,
-    //     };
-    // }
-
-
-
     function geoJsonStyle(feature) {
-        let fillColor = 'white'; // Default color
+        let fillColor = 'white';
 
-        if (props.attributeColorMapping && selectedAttribute) {
-            const featureValue = feature.properties[selectedAttribute];
-            fillColor = props.attributeColorMapping[featureValue] || 'white';
+        if (store.parsed_CSV_Data && store.categoryColorMappings && store.selectedAttribute) {
+            const countryIndex = store.parsed_CSV_Data.Country.indexOf(feature.properties.name);
+
+            if (countryIndex !== -1) {
+                const attributeValue = store.parsed_CSV_Data[store.selectedAttribute][countryIndex];
+
+                if (attributeValue && store.categoryColorMappings.hasOwnProperty(attributeValue)) {
+                    fillColor = store.categoryColorMappings[attributeValue];
+                }
+            }
         }
 
         return {
@@ -131,10 +111,6 @@ export default function Politicalmap(props) {
             fillOpacity: 1,
         };
     }
-
-
-
-
 
 
     useEffect(() => {
@@ -152,6 +128,14 @@ export default function Politicalmap(props) {
     }, [store.rawMapFile]);
 
     useEffect(() => {
+        if (geoJsonLayerRef.current) {
+            geoJsonLayerRef.current.setStyle(geoJsonStyle);
+        }
+    }, [store.selectedAttribute, store.categoryColorMappings]);
+
+    useEffect(() => {
+
+
         if (!geoJsonData) {
             return;
         }
@@ -206,6 +190,8 @@ export default function Politicalmap(props) {
             }
         }
 
+
+
         if (heatmapOverlayRef.current) {
             mapRef.current.removeLayer(heatmapOverlayRef.current);
         }
@@ -214,7 +200,7 @@ export default function Politicalmap(props) {
             return;
         }
 
-        if (store.currentMapObject?.mapType === MapType.HEATMAP) {
+        if (store.currentMapObject?.mapType === MapType.POLITICAL_MAP) {
             heatmapOverlayRef.current = L.geoJSON(geoJsonData, {
                 style: geoJsonStyle,
                 onEachFeature: (feature, layer) => {
@@ -240,39 +226,39 @@ export default function Politicalmap(props) {
             });
 
             heatmapOverlayRef.current.addTo(mapRef.current);
-            //   if (legendVisible) {
+            // if (legendVisible) {
             //     if (legendRef.current) {
-            //       legendRef.current.remove();
+            //         legendRef.current.remove();
             //     }
 
             //     const legend = L.control({ position: "bottomright" });
 
             //     legend.onAdd = function (map) {
-            //       const div = L.DomUtil.create("div", "info legend");
+            //         const div = L.DomUtil.create("div", "info legend");
 
-            //       (div.innerHTML +=
-            //         '<div style="background-color:' +
-            //         store.minColor +
-            //         '"> Min: ' +
-            //         Math.min(...store.parsed_CSV_Data[store.key])),
-            //         +"</div> " + "<br>";
+            //         (div.innerHTML +=
+            //             '<div style="background-color:' +
+            //             store.minColor +
+            //             '"> Min: ' +
+            //             Math.min(...store.parsed_CSV_Data[store.key])),
+            //             +"</div> " + "<br>";
 
-            //       (div.innerHTML +=
-            //         '<div style="background-color:' +
-            //         store.maxColor +
-            //         '"> Max: ' +
-            //         Math.max(...store.parsed_CSV_Data[store.key])),
-            //         +"</div> " + "<br>";
+            //         (div.innerHTML +=
+            //             '<div style="background-color:' +
+            //             store.maxColor +
+            //             '"> Max: ' +
+            //             Math.max(...store.parsed_CSV_Data[store.key])),
+            //             +"</div> " + "<br>";
 
-            //       return div;
+            //         return div;
             //     };
 
             //     legend.addTo(mapRef.current);
 
             //     legendRef.current = legend;
-            //   }
+            // }
 
-            //   L.easyPrint({
+            // L.easyPrint({
             //     title: 'Save my map',
             //     position: 'topleft',
             //     sizeModes: ['Current', 'A4Landscape', 'A4Portrait'],
@@ -281,14 +267,18 @@ export default function Politicalmap(props) {
             //     hideControlContainer: true
             // }).addTo(mapRef.current);
         }
-    }, [
-        geoJsonData,
-        store.label,
-        store.key,
-        store.parsed_CSV_Data,
-        store.minColor,
-        store.maxColor,
-    ]);
+    },
+
+        [
+            geoJsonData,
+            store.label,
+            store.key,
+            store.parsed_CSV_Data,
+            store.minColor,
+            store.maxColor,
+            store.selectedAttribute,
+            store.categoryColorMappings,
+        ]);
 
     return (
         <div>

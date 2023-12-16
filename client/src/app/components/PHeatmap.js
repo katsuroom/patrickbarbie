@@ -255,7 +255,7 @@ export default function PHeatmap() {
                   </MenuItem> */}
                 </Select>
               </th>
-              <th>Update</th>
+              {/* <th>Update</th> */}
             </tr>
           </thead>
           <tbody>
@@ -270,13 +270,14 @@ export default function PHeatmap() {
                 store.parsed_CSV_Data[store.key]
                 // textFields
               ).map((row, idx) => (
-                <tr key={row.name}>
-                  <td>{row[0]}</td>
-                  <td>{row[1]}</td>
-                  <td>
+                <tr key={row[idx] + "tr" + idx}>
+                  <td key={row[idx] + "td1" + idx}>{row[0]}</td>
+                  <td key={row[idx] + "td2" + idx}>{row[1]}</td>
+                  {/* <td>
                     <TextField
                       id="search"
                       variant="standard"
+                      key={row[idx] + "td3" + idx}
                       sx={{ m: 1, minWidth: 120 }}
                       onChange={(e) =>
                         textFieldChanges[idx] = e.target.value
@@ -284,7 +285,7 @@ export default function PHeatmap() {
                       }
                       onKeyDown={() => {store.parsed_CSV_Data[store.key][idx] = textFieldChanges[idx]}}
                     />
-                  </td>
+                  </td> */}
                 </tr>
               ))}
           </tbody>
