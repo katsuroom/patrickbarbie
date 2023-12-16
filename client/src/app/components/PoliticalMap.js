@@ -22,8 +22,6 @@ export default function Politicalmap(props) {
     const { categoryColorMappings } = useContext(StoreContext);
     const { selectedAttribute, setSelectedAttribute } = useContext(StoreContext);
 
-
-
     const [defaultLayerAdded, setDefaultLayerAdded] = useState(false);
 
     const mapLayerRef = useRef(null);
@@ -37,7 +35,6 @@ export default function Politicalmap(props) {
 
 
     const initColor = () => {
-        // Initialize minColor and maxColor
         store.minColor = store.currentMapObject.mapProps?.minColor || "#FFFFFF";
         store.maxColor = store.currentMapObject.mapProps?.maxColor || "#FF0000";
         store.setMinColor(store.minColor);
@@ -312,46 +309,39 @@ export default function Politicalmap(props) {
             });
 
             heatmapOverlayRef.current.addTo(mapRef.current);
-            // if (legendVisible) {
-            //     if (legendRef.current) {
-            //         legendRef.current.remove();
-            //     }
 
-            //     const legend = L.control({ position: "bottomright" });
+            if (legendVisible) {
+                console.log("adding legend");
+            
+                if (legendRef.current) {
+                    legendRef.current.remove();
+                }
+            
+                const legend = L.control({ position: "bottomleft" });
+            
+                legend.onAdd = function (map) {
+                    const div = L.DomUtil.create("div", "info legend");
+                    div.style.maxHeight = '300px'; // Increase maximum height
+                    div.style.overflowY = 'scroll'; // Force scrollbar to always show
 
-            //     legend.onAdd = function (map) {
-            //         const div = L.DomUtil.create("div", "info legend");
+                    // loop through our density intervals and generate a label with a colored square for each interval
+                    for (let attribute in store.categoryColorMappings) {
+                        div.innerHTML +=
+                            '<div style="background-color:' +
+                            store.categoryColorMappings[attribute] +
+                            '; height: 10px; font-size: 10px; margin: 2px 0;"> ' + // Reduce height, font size, and margin
+                            attribute +
+                            "</div>";
+                    }
 
-            //         (div.innerHTML +=
-            //             '<div style="background-color:' +
-            //             store.minColor +
-            //             '"> Min: ' +
-            //             Math.min(...store.parsed_CSV_Data[store.key])),
-            //             +"</div> " + "<br>";
-
-            //         (div.innerHTML +=
-            //             '<div style="background-color:' +
-            //             store.maxColor +
-            //             '"> Max: ' +
-            //             Math.max(...store.parsed_CSV_Data[store.key])),
-            //             +"</div> " + "<br>";
-
-            //         return div;
-            //     };
-
-            //     legend.addTo(mapRef.current);
-
-            //     legendRef.current = legend;
-            // }
-
-            // L.easyPrint({
-            //     title: 'Save my map',
-            //     position: 'topleft',
-            //     sizeModes: ['Current', 'A4Landscape', 'A4Portrait'],
-            //     filename: 'myMap',
-            //     exportOnly: true,
-            //     hideControlContainer: true
-            // }).addTo(mapRef.current);
+                    return div;
+                };
+            
+                legend.addTo(mapRef.current);
+            
+                legendRef.current = legend;
+            }
+            
         }
     },
 
