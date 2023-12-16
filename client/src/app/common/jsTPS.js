@@ -25,25 +25,27 @@ export class jsTPS_Transaction {
   export default class jsTPS {
     constructor() {
       // THE TRANSACTION STACK
-      this.transactions = [];
-  
+      this.redoTransactions = [];
+      this.undoTransactions = [];
+
       // THE TOTAL NUMBER OF TRANSACTIONS ON THE STACK,
       // INCLUDING THOSE THAT MAY HAVE ALREADY BEEN UNDONE
-      this.numTransactions = 0;
-  
+      this.numRedoTransactions = 0;
+      this.numUndoTransactions = 0;
+
       // THE INDEX OF THE MOST RECENT TRANSACTION, NOTE THAT
       // THIS MAY BE IN THE MIDDLE OF THE TRANSACTION STACK
       // IF SOME TRANSACTIONS ON THE STACK HAVE BEEN UNDONE
       // AND STILL COULD BE REDONE.
       this.mostRecentTransaction = -1;
-  
+
       // THESE STATE VARIABLES ARE TURNED ON AND OFF WHILE
       // TRANSACTIONS ARE DOING THEIR WORK SO AS TO HELP
       // MANAGE CONCURRENT UPDATES
       this.performingDo = false;
       this.performingUndo = false;
     }
-  
+
     /**
      * isPerformingDo
      *
@@ -53,7 +55,7 @@ export class jsTPS_Transaction {
     isPerformingDo() {
       return this.performingDo;
     }
-  
+
     /**
      * isPerformingUndo
      *
@@ -63,16 +65,13 @@ export class jsTPS_Transaction {
     isPerformingUndo() {
       return this.performingUndo;
     }
-  
+
     /**
      * getSize
      *
      * Accessor method for getting the number of transactions on the stack.
      */
-    getSize() {
-      return this.transactions.length;
-    }
-  
+
     /**
      * getRedoSize
      *
@@ -80,9 +79,9 @@ export class jsTPS_Transaction {
      * that can possibly be redone.
      */
     getRedoSize() {
-      return this.getSize() - this.mostRecentTransaction - 1;
+      return this.redoTransactions.length;
     }
-  
+
     /**
      * getUndoSize
      *
@@ -90,9 +89,10 @@ export class jsTPS_Transaction {
      * that can possible be undone.
      */
     getUndoSize() {
-      return this.mostRecentTransaction + 1;
+      return this.undoTransactions.length;
     }
-  
+
+
     /**
      * hasTransactionToRedo
      *
@@ -100,9 +100,9 @@ export class jsTPS_Transaction {
      * there are transactions on the stack that can be redone.
      */
     hasTransactionToRedo() {
-      return this.mostRecentTransaction + 1 < this.numTransactions;
+      return this.redoTransactions.length > 0;
     }
-  
+
     /**
      * hasTransactionToUndo
      *
@@ -110,9 +110,9 @@ export class jsTPS_Transaction {
      * there are transactions on the stack that can be undone.
      */
     hasTransactionToUndo() {
-      return this.mostRecentTransaction >= 0;
+      return this.undoTransactions.length > 0;
     }
-  
+
     /**
      * addTransaction
      *
@@ -138,14 +138,14 @@ export class jsTPS_Transaction {
       } else {
         this.numTransactions++;
       }
-  
+
       // ADD THE TRANSACTION
       this.transactions[this.mostRecentTransaction + 1] = transaction;
-  
+
       // AND EXECUTE IT
       this.doTransaction();
     }
-  
+
     /**
      * doTransaction
      *
@@ -162,7 +162,7 @@ export class jsTPS_Transaction {
         this.performingDo = false;
       }
     }
-  
+
     /**
      * This function gets the most recently executed transaction on the
      * TPS stack and undoes it, moving the TPS counter accordingly.
@@ -176,7 +176,7 @@ export class jsTPS_Transaction {
         this.performingUndo = false;
       }
     }
-  
+
     /**
      * clearAllTransactions
      *
@@ -185,13 +185,13 @@ export class jsTPS_Transaction {
     clearAllTransactions() {
       // REMOVE ALL THE TRANSACTIONS
       this.transactions = [];
-  
+
       // MAKE SURE TO RESET THE LOCATION OF THE
       // TOP OF THE TPS STACK TOO
       this.mostRecentTransaction = -1;
       this.numTransactions = 0;
     }
-  
+
     /**
      * toString
      *
