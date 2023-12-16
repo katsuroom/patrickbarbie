@@ -29,23 +29,44 @@ export default function Politicalmap(props) {
         store.maxColor = store.currentMapObject.mapProps?.maxColor || "#FF0000";
         store.setMinColor(store.minColor);
         store.setMaxColor(store.maxColor);
-    
+
+        // // Initialize categoryColorMappings
+        // if (store.currentMapObject.mapProps?.categoryColorMappings) {
+        //     store.categoryColorMappings = store.currentMapObject.mapProps.categoryColorMappings;
+        // } else {
+        //     // Default to white for all categories if not provided
+        //     store.categoryColorMappings = {};
+        //     Object.keys(store.parsed_CSV_Data || {}).forEach(attr => {
+        //         store.categoryColorMappings[attr] = '#FFFFFF';
+        //     });
+        // }
+        // store.updateCategoryColorMappings(store.categoryColorMappings);
+
+        // // Initialize selectedAttribute
+        // store.selectedAttribute = store.currentMapObject.mapProps?.selectedAttribute || Object.keys(store.parsed_CSV_Data 3|| {})[0] || 'none';
+        // store.updateSelectedAttribute(store.selectedAttribute);
         // Initialize categoryColorMappings
-        if (store.currentMapObject.mapProps?.categoryColorMappings) {
-            store.categoryColorMappings = store.currentMapObject.mapProps.categoryColorMappings;
-        } else {
-            // Default to white for all categories if not provided
-            store.categoryColorMappings = {};
+        if (!store.currentMapObject.mapProps?.categoryColorMappings) {
+            console.log("no categoryColorMappings");
+            const defaultMappings = {};
             Object.keys(store.parsed_CSV_Data || {}).forEach(attr => {
-                store.categoryColorMappings[attr] = '#FFFFFF';
+                defaultMappings[attr] = '#FFFFFF'; // Set each category to white
             });
+            store.categoryColorMappings = defaultMappings;
+        } else {
+            console.log("categoryColorMappings");
+            store.categoryColorMappings = store.currentMapObject.mapProps.categoryColorMappings;
         }
         store.updateCategoryColorMappings(store.categoryColorMappings);
-    
+
         // Initialize selectedAttribute
-        store.selectedAttribute = store.currentMapObject.mapProps?.selectedAttribute || Object.keys(store.parsed_CSV_Data || {})[0] || 'none';
+        if (!store.currentMapObject.mapProps?.selectedAttribute && store.parsed_CSV_Data) {
+            store.selectedAttribute = Object.keys(store.parsed_CSV_Data)[0] || 'none';
+        } else {
+            store.selectedAttribute = store.currentMapObject.mapProps?.selectedAttribute || 'none';
+        }
         store.updateSelectedAttribute(store.selectedAttribute);
-    
+
         if (legendRef.current) {
             legendRef.current.remove();
         }
