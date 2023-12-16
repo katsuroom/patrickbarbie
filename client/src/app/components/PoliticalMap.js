@@ -30,34 +30,24 @@ export default function Politicalmap(props) {
         store.setMinColor(store.minColor);
         store.setMaxColor(store.maxColor);
 
-        // // Initialize categoryColorMappings
-        // if (store.currentMapObject.mapProps?.categoryColorMappings) {
-        //     store.categoryColorMappings = store.currentMapObject.mapProps.categoryColorMappings;
-        // } else {
-        //     // Default to white for all categories if not provided
-        //     store.categoryColorMappings = {};
-        //     Object.keys(store.parsed_CSV_Data || {}).forEach(attr => {
-        //         store.categoryColorMappings[attr] = '#FFFFFF';
-        //     });
-        // }
-        // store.updateCategoryColorMappings(store.categoryColorMappings);
+        if (!store.currentMapObject.mapProps) {
+            store.currentMapObject.mapProps = {};
+          }
 
-        // // Initialize selectedAttribute
-        // store.selectedAttribute = store.currentMapObject.mapProps?.selectedAttribute || Object.keys(store.parsed_CSV_Data 3|| {})[0] || 'none';
-        // store.updateSelectedAttribute(store.selectedAttribute);
-        // Initialize categoryColorMappings
         if (!store.currentMapObject.mapProps?.categoryColorMappings) {
             console.log("no categoryColorMappings");
             const defaultMappings = {};
             Object.keys(store.parsed_CSV_Data || {}).forEach(attr => {
-                defaultMappings[attr] = '#FFFFFF'; // Set each category to white
+                defaultMappings[attr] = '#FFFFFF';
             });
             store.categoryColorMappings = defaultMappings;
         } else {
-            console.log("categoryColorMappings");
+            console.log("yes categoryColorMappings");
             store.categoryColorMappings = store.currentMapObject.mapProps.categoryColorMappings;
         }
         store.updateCategoryColorMappings(store.categoryColorMappings);
+        store.currentMapObject.mapProps.categoryColorMappings = store.categoryColorMappings;
+
 
         // Initialize selectedAttribute
         if (!store.currentMapObject.mapProps?.selectedAttribute && store.parsed_CSV_Data) {
@@ -66,6 +56,7 @@ export default function Politicalmap(props) {
             store.selectedAttribute = store.currentMapObject.mapProps?.selectedAttribute || 'none';
         }
         store.updateSelectedAttribute(store.selectedAttribute);
+        store.currentMapObject.mapProps.selectedAttribute = store.selectedAttribute;
 
         if (legendRef.current) {
             legendRef.current.remove();
@@ -86,28 +77,32 @@ export default function Politicalmap(props) {
         initColor();
     }, [store.currentMapObject, store.parsed_CSV_Data]);
 
-    useEffect(() => {
-        if (store.selectedAttribute && store.parsed_CSV_Data && store.parsed_CSV_Data[store.selectedAttribute]) {
-            const uniqueValues = new Set(store.parsed_CSV_Data[store.selectedAttribute]);
-            const newMapping = {};
-            uniqueValues.forEach(value => {
-                newMapping[value] = '#ffffff';
-            });
-            store.updateCategoryColorMappings(newMapping);
-        }
-    }, [store.selectedAttribute, store.parsed_CSV_Data]);
+    // useEffect(() => {
+    //     console.log("in polticalmap.js")
+    //     if (store.selectedAttribute && store.parsed_CSV_Data && store.parsed_CSV_Data[store.selectedAttribute]) {
+    //         const uniqueValues = new Set(store.parsed_CSV_Data[store.selectedAttribute]);
+    //         const newMapping = {};
+    //         uniqueValues.forEach(value => {
+    //             newMapping[value] = '#ffffff';
+    //         });
+    //         store.updateCategoryColorMappings(newMapping);
+    //         store.currentMapObject.mapProps.categoryColorMappings = store.categoryColorMappings;
+    //         // store.currentMapObject.mapProps.selectedAttribute = store.selectedAttribute;
+            
+    //     }
+    // }, [store.selectedAttribute, store.parsed_CSV_Data]);
 
     const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 
     function geoJsonStyle(feature) {
         let fillColor = 'white';
 
-        if (store.parsed_CSV_Data && store.categoryColorMappings && store.selectedAttribute) {
+        if (store.parsed_CSV_Data && store.selectedAttribute && store.parsed_CSV_Data[store.selectedAttribute]) {
             const countryIndex = store.parsed_CSV_Data.Country.indexOf(feature.properties.name);
-
+        
             if (countryIndex !== -1) {
                 const attributeValue = store.parsed_CSV_Data[store.selectedAttribute][countryIndex];
-
+        
                 if (attributeValue && store.categoryColorMappings.hasOwnProperty(attributeValue)) {
                     fillColor = store.categoryColorMappings[attributeValue];
                 }

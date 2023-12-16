@@ -46,40 +46,52 @@ export default function PPoliticalmap() {
         }
     };
 
-    // const updateMapColors = () => {
-    //     store.updateCategoryColorMappings(attributeColorMapping);
-    // };
 
-    // const handleDeleteProperty = (propertyName) => {
-    //     setProperties(properties.filter(property => property.name !== propertyName));
-    // };
+    // useEffect(() => {
+    //     if (store.selectedAttribute && store.parsed_CSV_Data && store.parsed_CSV_Data[store.selectedAttribute]) {
+    //         const uniqueValues = new Set(store.parsed_CSV_Data[store.selectedAttribute]);
+    //         const newMapping = {};
+    //         uniqueValues.forEach(value => {
+    //             newMapping[value] = '#ffffff';
+    //         });
+    //         // setAttributeColorMapping(newMapping);
+    //         store.updateSelectedAttribute(store.selectedAttribute);
+    //         store.updateCategoryColorMappings(newMapping);
+    //         store.currentMapObject.mapProps.categoryColorMappings = store.categoryColorMappings;
+    //         store.currentMapObject.mapProps.selectedAttribute = store.selectedAttribute;
+    //     }
+    // }, [store.selectedAttribute, store.parsed_CSV_Data]);
 
     useEffect(() => {
         if (store.selectedAttribute && store.parsed_CSV_Data && store.parsed_CSV_Data[store.selectedAttribute]) {
             const uniqueValues = new Set(store.parsed_CSV_Data[store.selectedAttribute]);
-            const newMapping = {};
-            uniqueValues.forEach(value => {
-                newMapping[value] = '#ffffff';
-            });
-            // setAttributeColorMapping(newMapping);
+            let newMapping = {};
+
+            // If the selectedAttribute has changed, set all unique values to #ffffff
+            if (store.currentMapObject.mapProps.selectedAttribute !== store.selectedAttribute) {
+                uniqueValues.forEach(value => {
+                    newMapping[value] = '#ffffff';
+                });
+            } else {
+                // If the selectedAttribute has not changed, keep the old color mappings
+                newMapping = { ...store.categoryColorMappings };
+            }
+
             store.updateSelectedAttribute(store.selectedAttribute);
             store.updateCategoryColorMappings(newMapping);
+            store.currentMapObject.mapProps.categoryColorMappings = store.categoryColorMappings;
+            store.currentMapObject.mapProps.selectedAttribute = store.selectedAttribute;
         }
     }, [store.selectedAttribute, store.parsed_CSV_Data]);
 
-
-    // const handleColorChange = (value, color) => {
-    //     const updatedMapping = { ...store.categoryColorMappings, [value]: color.hex };
-    //     // setAttributeColorMapping(updatedMapping);
-    //     store.updateCategoryColorMappings(updatedMapping);
-    // };
+    ;
 
     const handleColorChange = (value, color) => {
         const updatedMappings = { ...store.categoryColorMappings, [value]: color.hex };
-        console.log(updatedMappings);
         store.updateCategoryColorMappings(updatedMappings);
+        store.currentMapObject.mapProps.categoryColorMappings = updatedMappings;
     };
-    
+
 
     const [menuItems, setMenuItems] = React.useState([]);
 
