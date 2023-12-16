@@ -32,22 +32,14 @@ const TravelMap = (props) => {
     const lightLayerRef = useRef(null);
     const settingLayerRef = useRef(null);
 
-
-
-    const startHere = (e) => {
-        if (routeControlRef.current) {
-            routeControlRef.current.spliceWaypoints(0, 1, e.latlng);
-            console.log('routeControlRef.current.getWaypoints' + routeControlRef.current.getWaypoints().map(wp => wp.latLng))
-            console.log('routeControlRef.current.Waypoints' + routeControlRef.current.Waypoints)
+    const showSpinner = ()=>{
+        if(spinner){
+            document.getElementById('loader').style.display = "block";
         }
-    };
-
-    const goHere = (e) => {
-        if (routeControlRef.current) {
-            routeControlRef.current.spliceWaypoints(routeControlRef.current.getWaypoints().length - 1, 1, e.latlng);
-            // store.setWaypoints(routeControlRef.current.getWaypoints());
-        }
-    };
+    }
+    const hideSpinner = ()=>{
+            document.getElementById('loader').style.display = "none";
+    }
 
     const loadScript = (src) => {
         return new Promise((resolve, reject) => {
@@ -249,6 +241,10 @@ const TravelMap = (props) => {
                 addWaypoints: false,
             });
 
+            routingControl.on('routingstart', showSpinner);
+            routingControl.on('routesfound', hideSpinner);
+            routingControl.on('routingerror', hideSpinner);
+
             routingControl.on('waypointschanged', function (e) {
                 const updatedWaypoints = e.waypoints;
                 console.log('Waypoints Updated:', updatedWaypoints);
@@ -257,11 +253,7 @@ const TravelMap = (props) => {
                 }));
             });
 
-            // Add the routing control to the map
             routingControl.addTo(mapRef.current);
-            // .on('routingstart', showSpinner)
-            // .on('routesfound routingerror', hideSpinner)
-            // .addTo(mapRef.current);
 
             routeControlRef.current = routingControl;
 
@@ -295,7 +287,7 @@ const TravelMap = (props) => {
         <div>
             <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div>
             {/* <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div> */}
-            {/* <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div> */}
+            <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div>
             {/* <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
                 EXIT
             </Button>

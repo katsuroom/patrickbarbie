@@ -38,6 +38,7 @@ export const StoreActionType = {
   SET_PROPORTIONAL_COLOR: "SET_PROPORTIONAL_COLOR",
   SET_POLITICAL_COLOR: "SET_POLITICAL_COLOR",
   SET_WAYPOINTS: "SET_WAYPOINTS",
+  SET_SELECTED_MAP_LAYER: "SET_SELECTED_MAP_LAYER",
   SET_DOT_COLOR: "SET_DOT_COLOR",
 
   LOGOUT_USER: "LOGOUT_USER",
@@ -98,6 +99,7 @@ function StoreContextProvider(props) {
     polColor: null,
     dotColor: null,
     waypoints: [],
+
   });
 
   store.viewTypes = View;
@@ -257,6 +259,12 @@ function StoreContextProvider(props) {
           waypoints: payload,
         });
       }
+      case StoreActionType.SET_SELECTED_MAP_LAYER: {
+        return setStore({
+          ...store,
+          selectedMapLayer: payload, 
+        });
+      }
       case StoreActionType.SET_PROPORTIONAL_VALUE: {
         return setStore({
           ...store,
@@ -319,6 +327,14 @@ function StoreContextProvider(props) {
       type: StoreActionType.SET_WAYPOINTS,
       payload: waypoints,
     });
+  };
+  store.setSelectedMapLayer = function (selectedLayer) {
+    console.log("Selected Map Layer:", selectedLayer);
+    storeReducer({
+      type: StoreActionType.SET_SELECTED_MAP_LAYER,
+      payload: selectedLayer,
+    });
+
   };
 
   store.setProColor = function (color) {
@@ -746,7 +762,7 @@ function StoreContextProvider(props) {
   store.searchMaps = async function (searchText, searchBy) {
 
     const res = await api.searchMaps(searchText, searchBy);
-    if (store.isHomePage()){
+    if (store.isHomePage()) {
       store.changeView(store.viewTypes.COMMUNITY);
     }
     const maps = res.data.data;
@@ -853,7 +869,7 @@ function StoreContextProvider(props) {
     });
   };
 
-  store.setRawMapFile = function (object){
+  store.setRawMapFile = function (object) {
     storeReducer({
       type: StoreActionType.SET_RAW_MAP_FILE,
       payload: { file: object },

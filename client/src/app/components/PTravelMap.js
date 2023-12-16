@@ -106,6 +106,10 @@ const PTravelMap = (props) => {
     };
   }, []);
 
+  const handleMapLayerSelection = (layerName) => {
+    console.log("Map layer selected:", layerName);
+    store.setSelectedMapLayer(layerName); 
+  };
 
   useEffect(() => {
     if (store.rawMapFile) {
@@ -169,6 +173,14 @@ const PTravelMap = (props) => {
       'Dark': darkLayerRef.current,
       'Light': lightLayerRef.current
     });
+    if (settingLayerRef.current && typeof settingLayerRef.current.on === 'function') {
+      settingLayerRef.current.on('baselayerchange', (e) => {
+        handleMapLayerSelection(e.name);
+      });
+    } else {
+      console.error('Layer control is not initialized correctly');
+    }
+
     settingLayerRef.current.addTo(mapRef.current);
 
     if (geoJsonLayerRef.current) {
