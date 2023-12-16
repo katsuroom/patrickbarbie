@@ -74,7 +74,9 @@ export default function MUISaveChanges() {
         break;
       case MapType.POLITICAL_MAP:
         {
-          alert("Saving Political Map has not yet been implemented.");
+          console.log("save maps props political map")
+          store.currentMapObject.mapProps.categoryColorMapping = store.currentMapObject.mapProps.categoryColorMapping;
+          store.currentMapObject.mapProps.selectedAttribute = store.currentMapObject.mapProps.selectedAttribute;
         }
         break;
       case MapType.TRAVEL_MAP:

@@ -19,56 +19,59 @@ export default function Politicalmap(props) {
     const legendRef = useRef(null);
     const [isColorInit, setIsColorInit] = useState(false);
 
-
     const { categoryColorMappings } = useContext(StoreContext);
     const { selectedAttribute, setSelectedAttribute } = useContext(StoreContext);
 
+    const [defaultLayerAdded, setDefaultLayerAdded] = useState(false);
+
+    const mapLayerRef = useRef(null);
+    const hybridLayerRef = useRef(null);
+    const satelliteLayerRef = useRef(null);
+    const darkLayerRef = useRef(null);
+    const lightLayerRef = useRef(null);
+    const settingLayerRef = useRef(null);
+
+    const [loadScripts, setLoadScripts] = useState(false);
 
 
     const initColor = () => {
-        if (store.currentMapObject.mapProps) {
+        store.minColor = store.currentMapObject.mapProps?.minColor || "#FFFFFF";
+        store.maxColor = store.currentMapObject.mapProps?.maxColor || "#FF0000";
+        store.setMinColor(store.minColor);
+        store.setMaxColor(store.maxColor);
 
-            if (store.currentMapObject.mapProps.minColor) {
-                store.minColor = store.currentMapObject.mapProps.minColor;
-                store.setMinColor(store.currentMapObject.mapProps.minColor);
-            }
-            if (store.currentMapObject.mapProps.maxColor) {
-                store.maxColor = store.currentMapObject.mapProps.maxColor;
-                store.setMaxColor(store.currentMapObject.mapProps.maxColor);
-            }
-        } else {
-            console.log("store.currentMapObject.mapProps is null");
-            store.minColor = "#FFFFFF";
-            store.maxColor = "#FF0000";
-            store.setMinColor("#FFFFFF");
-            store.setMaxColor("#FF0000");
+        if (!store.currentMapObject.mapProps) {
+            store.currentMapObject.mapProps = {};
         }
+
+        if (!store.currentMapObject.mapProps?.categoryColorMappings) {
+            console.log("no categoryColorMappings");
+            const defaultMappings = {};
+            Object.keys(store.parsed_CSV_Data || {}).forEach(attr => {
+                defaultMappings[attr] = '#FFFFFF';
+            });
+            store.categoryColorMappings = defaultMappings;
+        } else {
+            console.log("yes categoryColorMappings");
+            store.categoryColorMappings = store.currentMapObject.mapProps.categoryColorMappings;
+        }
+        store.updateCategoryColorMappings(store.categoryColorMappings);
+        store.currentMapObject.mapProps.categoryColorMappings = store.categoryColorMappings;
+
+
+        // Initialize selectedAttribute
+        if (!store.currentMapObject.mapProps?.selectedAttribute && store.parsed_CSV_Data) {
+            store.selectedAttribute = Object.keys(store.parsed_CSV_Data)[0] || 'none';
+        } else {
+            store.selectedAttribute = store.currentMapObject.mapProps?.selectedAttribute || 'none';
+        }
+        store.updateSelectedAttribute(store.selectedAttribute);
+        store.currentMapObject.mapProps.selectedAttribute = store.selectedAttribute;
 
         if (legendRef.current) {
             legendRef.current.remove();
         }
     };
-
-    if (!isColorInit) {
-        if (store.currentMapObject.mapProps) {
-            console.log("store.currentMapObject.mapProps is not null");
-
-            if (store.currentMapObject.mapProps.minColor) {
-                store.minColor = store.currentMapObject.mapProps.minColor;
-            }
-            if (store.currentMapObject.mapProps.maxColor) {
-                store.maxColor = store.currentMapObject.mapProps.maxColor;
-            }
-        } else {
-            console.log("store.currentMapObject.mapProps is null");
-            store.minColor = "#FFFFFF";
-            store.maxColor = "#FF0000";
-        }
-
-        setIsColorInit(true);
-
-    }
-
 
     useEffect(() => {
         const resizeListener = () => {
@@ -81,17 +84,30 @@ export default function Politicalmap(props) {
     }, []);
 
     useEffect(() => {
-
         initColor();
+    }, [store.currentMapObject, store.parsed_CSV_Data]);
 
-    }, [store.currentMapObject]);
+    // useEffect(() => {
+    //     console.log("in polticalmap.js")
+    //     if (store.selectedAttribute && store.parsed_CSV_Data && store.parsed_CSV_Data[store.selectedAttribute]) {
+    //         const uniqueValues = new Set(store.parsed_CSV_Data[store.selectedAttribute]);
+    //         const newMapping = {};
+    //         uniqueValues.forEach(value => {
+    //             newMapping[value] = '#ffffff';
+    //         });
+    //         store.updateCategoryColorMappings(newMapping);
+    //         store.currentMapObject.mapProps.categoryColorMappings = store.categoryColorMappings;
+    //         // store.currentMapObject.mapProps.selectedAttribute = store.selectedAttribute;
+
+    //     }
+    // }, [store.selectedAttribute, store.parsed_CSV_Data]);
 
     const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
 
     function geoJsonStyle(feature) {
         let fillColor = 'white';
 
-        if (store.parsed_CSV_Data && store.categoryColorMappings && store.selectedAttribute) {
+        if (store.parsed_CSV_Data && store.selectedAttribute && store.parsed_CSV_Data[store.selectedAttribute]) {
             const countryIndex = store.parsed_CSV_Data.Country.indexOf(feature.properties.name);
 
             if (countryIndex !== -1) {
@@ -200,6 +216,73 @@ export default function Politicalmap(props) {
             return;
         }
 
+
+        if (window.MQ) {
+            mapLayerRef.current = window.MQ.mapLayer();
+            hybridLayerRef.current = window.MQ.hybridLayer();
+            satelliteLayerRef.current = window.MQ.satelliteLayer();
+            darkLayerRef.current = window.MQ.darkLayer();
+            lightLayerRef.current = window.MQ.lightLayer();
+            if (settingLayerRef.current) {
+              mapRef.current.removeControl(settingLayerRef.current);
+            }
+            settingLayerRef.current = L.control.layers({
+              Map: mapLayerRef.current,
+              Hybrid: hybridLayerRef.current,
+              Satellite: satelliteLayerRef.current,
+              Dark: darkLayerRef.current,
+              Light: lightLayerRef.current,
+            });
+            settingLayerRef.current.addTo(mapRef.current);
+      
+            mapRef.current.on("baselayerchange", function (event) {
+              // The 'event' object contains information about the change
+              const layerName = event.name; // Name of the selected layer
+              const layer = event.layer; // Reference to the selected layer
+      
+              if (!store.currentMapObject.mapProps) {
+                store.currentMapObject.mapProps = {};
+              }
+              store.currentMapObject.mapProps.layerName = layerName;
+      
+              console.log("Base layer changed to:", layerName);
+              console.log("Base layer changed to:", layer);
+              console.log(mapRef.current);
+              setDefaultLayerAdded(true);
+            });
+      
+            console.log(defaultLayerAdded);
+            console.log(store.currentMapObject);
+      
+            if (!defaultLayerAdded && store.currentMapObject.mapProps?.layerName) {
+              console.log("changing layer...");
+              switch (store.currentMapObject.mapProps?.layerName) {
+                case "Map":
+                  mapRef.current.addLayer(mapLayerRef.current);
+                  break;
+                case "Hybrid":
+                  mapRef.current.addLayer(hybridLayerRef.current);
+                  break;
+                case "Satellite":
+                  mapRef.current.addLayer(satelliteLayerRef.current);
+                  break;
+                case "Dark":
+                  mapRef.current.addLayer(darkLayerRef.current);
+                  break;
+                case "Light":
+                  mapRef.current.addLayer(lightLayerRef.current);
+                  break;
+                default:
+                  break;
+              }
+            }
+          }
+
+
+
+
+
+
         if (store.currentMapObject?.mapType === MapType.POLITICAL_MAP) {
             heatmapOverlayRef.current = L.geoJSON(geoJsonData, {
                 style: geoJsonStyle,
@@ -226,46 +309,39 @@ export default function Politicalmap(props) {
             });
 
             heatmapOverlayRef.current.addTo(mapRef.current);
-            // if (legendVisible) {
-            //     if (legendRef.current) {
-            //         legendRef.current.remove();
-            //     }
 
-            //     const legend = L.control({ position: "bottomright" });
+            if (legendVisible) {
+                console.log("adding legend");
+            
+                if (legendRef.current) {
+                    legendRef.current.remove();
+                }
+            
+                const legend = L.control({ position: "bottomleft" });
+            
+                legend.onAdd = function (map) {
+                    const div = L.DomUtil.create("div", "info legend");
+                    div.style.maxHeight = '300px'; // Increase maximum height
+                    div.style.overflowY = 'scroll'; // Force scrollbar to always show
 
-            //     legend.onAdd = function (map) {
-            //         const div = L.DomUtil.create("div", "info legend");
+                    // loop through our density intervals and generate a label with a colored square for each interval
+                    for (let attribute in store.categoryColorMappings) {
+                        div.innerHTML +=
+                            '<div style="background-color:' +
+                            store.categoryColorMappings[attribute] +
+                            '; height: 10px; font-size: 10px; margin: 2px 0;"> ' + // Reduce height, font size, and margin
+                            attribute +
+                            "</div>";
+                    }
 
-            //         (div.innerHTML +=
-            //             '<div style="background-color:' +
-            //             store.minColor +
-            //             '"> Min: ' +
-            //             Math.min(...store.parsed_CSV_Data[store.key])),
-            //             +"</div> " + "<br>";
-
-            //         (div.innerHTML +=
-            //             '<div style="background-color:' +
-            //             store.maxColor +
-            //             '"> Max: ' +
-            //             Math.max(...store.parsed_CSV_Data[store.key])),
-            //             +"</div> " + "<br>";
-
-            //         return div;
-            //     };
-
-            //     legend.addTo(mapRef.current);
-
-            //     legendRef.current = legend;
-            // }
-
-            // L.easyPrint({
-            //     title: 'Save my map',
-            //     position: 'topleft',
-            //     sizeModes: ['Current', 'A4Landscape', 'A4Portrait'],
-            //     filename: 'myMap',
-            //     exportOnly: true,
-            //     hideControlContainer: true
-            // }).addTo(mapRef.current);
+                    return div;
+                };
+            
+                legend.addTo(mapRef.current);
+            
+                legendRef.current = legend;
+            }
+            
         }
     },
 

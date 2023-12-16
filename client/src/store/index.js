@@ -913,6 +913,8 @@ function StoreContextProvider(props) {
     store.setPolColor(null);
     store.setDotColor(null);
     store.setProportionalValue([]);
+    store.updateCategoryColorMappings([]);
+    store.updateSelectedAttribute(null);
   };
 
   store.isCommunityPage = () => {
