@@ -106,12 +106,13 @@ export default function Politicalmap(props) {
 
     function geoJsonStyle(feature) {
         let fillColor = 'white';
+        let geoUnit = store.parsed_CSV_Data ? Object.keys(store.parsed_CSV_Data)[0] : null;
 
-        if (store.parsed_CSV_Data && store.selectedAttribute && store.parsed_CSV_Data[store.selectedAttribute]) {
-            const countryIndex = store.parsed_CSV_Data.Country.indexOf(feature.properties.name);
+        if (geoUnit && store.parsed_CSV_Data[geoUnit] && store.selectedAttribute && store.parsed_CSV_Data[store.selectedAttribute]) {
+            const geoUnitIndex = store.parsed_CSV_Data[geoUnit].indexOf(feature.properties.name);
 
-            if (countryIndex !== -1) {
-                const attributeValue = store.parsed_CSV_Data[store.selectedAttribute][countryIndex];
+            if (geoUnitIndex !== -1) {
+                const attributeValue = store.parsed_CSV_Data[store.selectedAttribute][geoUnitIndex];
 
                 if (attributeValue && store.categoryColorMappings.hasOwnProperty(attributeValue)) {
                     fillColor = store.categoryColorMappings[attributeValue];
@@ -224,59 +225,59 @@ export default function Politicalmap(props) {
             darkLayerRef.current = window.MQ.darkLayer();
             lightLayerRef.current = window.MQ.lightLayer();
             if (settingLayerRef.current) {
-              mapRef.current.removeControl(settingLayerRef.current);
+                mapRef.current.removeControl(settingLayerRef.current);
             }
             settingLayerRef.current = L.control.layers({
-              Map: mapLayerRef.current,
-              Hybrid: hybridLayerRef.current,
-              Satellite: satelliteLayerRef.current,
-              Dark: darkLayerRef.current,
-              Light: lightLayerRef.current,
+                Map: mapLayerRef.current,
+                Hybrid: hybridLayerRef.current,
+                Satellite: satelliteLayerRef.current,
+                Dark: darkLayerRef.current,
+                Light: lightLayerRef.current,
             });
             settingLayerRef.current.addTo(mapRef.current);
-      
+
             mapRef.current.on("baselayerchange", function (event) {
-              // The 'event' object contains information about the change
-              const layerName = event.name; // Name of the selected layer
-              const layer = event.layer; // Reference to the selected layer
-      
-              if (!store.currentMapObject.mapProps) {
-                store.currentMapObject.mapProps = {};
-              }
-              store.currentMapObject.mapProps.layerName = layerName;
-      
-              console.log("Base layer changed to:", layerName);
-              console.log("Base layer changed to:", layer);
-              console.log(mapRef.current);
-              setDefaultLayerAdded(true);
+                // The 'event' object contains information about the change
+                const layerName = event.name; // Name of the selected layer
+                const layer = event.layer; // Reference to the selected layer
+
+                if (!store.currentMapObject.mapProps) {
+                    store.currentMapObject.mapProps = {};
+                }
+                store.currentMapObject.mapProps.layerName = layerName;
+
+                console.log("Base layer changed to:", layerName);
+                console.log("Base layer changed to:", layer);
+                console.log(mapRef.current);
+                setDefaultLayerAdded(true);
             });
-      
+
             console.log(defaultLayerAdded);
             console.log(store.currentMapObject);
-      
+
             if (!defaultLayerAdded && store.currentMapObject.mapProps?.layerName) {
-              console.log("changing layer...");
-              switch (store.currentMapObject.mapProps?.layerName) {
-                case "Map":
-                  mapRef.current.addLayer(mapLayerRef.current);
-                  break;
-                case "Hybrid":
-                  mapRef.current.addLayer(hybridLayerRef.current);
-                  break;
-                case "Satellite":
-                  mapRef.current.addLayer(satelliteLayerRef.current);
-                  break;
-                case "Dark":
-                  mapRef.current.addLayer(darkLayerRef.current);
-                  break;
-                case "Light":
-                  mapRef.current.addLayer(lightLayerRef.current);
-                  break;
-                default:
-                  break;
-              }
+                console.log("changing layer...");
+                switch (store.currentMapObject.mapProps?.layerName) {
+                    case "Map":
+                        mapRef.current.addLayer(mapLayerRef.current);
+                        break;
+                    case "Hybrid":
+                        mapRef.current.addLayer(hybridLayerRef.current);
+                        break;
+                    case "Satellite":
+                        mapRef.current.addLayer(satelliteLayerRef.current);
+                        break;
+                    case "Dark":
+                        mapRef.current.addLayer(darkLayerRef.current);
+                        break;
+                    case "Light":
+                        mapRef.current.addLayer(lightLayerRef.current);
+                        break;
+                    default:
+                        break;
+                }
             }
-          }
+        }
 
 
 
@@ -312,13 +313,13 @@ export default function Politicalmap(props) {
 
             if (legendVisible) {
                 console.log("adding legend");
-            
+
                 if (legendRef.current) {
                     legendRef.current.remove();
                 }
-            
+
                 const legend = L.control({ position: "bottomleft" });
-            
+
                 legend.onAdd = function (map) {
                     const div = L.DomUtil.create("div", "info legend");
                     div.style.maxHeight = '300px'; // Increase maximum height
@@ -336,12 +337,12 @@ export default function Politicalmap(props) {
 
                     return div;
                 };
-            
+
                 legend.addTo(mapRef.current);
-            
+
                 legendRef.current = legend;
             }
-            
+
         }
     },
 
