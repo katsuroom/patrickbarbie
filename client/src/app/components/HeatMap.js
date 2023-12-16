@@ -49,6 +49,38 @@ export default function Heatmap() {
   const legendRef = useRef(null);
   const [isColorInit, setIsColorInit] = useState(false);
 
+  const [defaultLayerAdded, setDefaultLayerAdded] = useState(false);
+
+  const mapLayerRef = useRef(null);
+  const hybridLayerRef = useRef(null);
+  const satelliteLayerRef = useRef(null);
+  const darkLayerRef = useRef(null);
+  const lightLayerRef = useRef(null);
+  const settingLayerRef = useRef(null);
+
+  const [loadScripts, setLoadScripts] = useState(false);
+
+  const loadScript = (src) => {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => resolve(script);
+      script.onerror = () => reject(new Error(`Script load error for ${src}`));
+      document.body.appendChild(script);
+    });
+  };
+
+  if (!loadScripts) {
+    Promise.all([
+      loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+      loadScript("./mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+    ])
+      .then(() => {
+        setLoadScripts(true);
+      })
+      .catch((error) => console.error(error));
+  }
+
   const initColor = () => {
     if (store.currentMapObject.mapProps) {
       console.log("store.currentMapObject.mapProps is not null");
@@ -75,8 +107,7 @@ export default function Heatmap() {
   };
 
   if (!isColorInit && store.currentMapObject) {
-
-    console.log("color initialized!")
+    console.log("color initialized!");
     if (store.currentMapObject.mapProps) {
       console.log("store.currentMapObject.mapProps is not null");
 
@@ -191,19 +222,33 @@ export default function Heatmap() {
       return;
     }
 
+    
+  if (!loadScripts) {
+    Promise.all([
+      loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+      loadScript("./mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+    ])
+      .then(() => {
+        setLoadScripts(true);
+      })
+      .catch((error) => console.error(error));
+  }
+
+
     if (!mapRef.current) {
       var basemap_options = {
         attribution:
           '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
         // subdomains: "abcd",
         basemap_options,
-        maxZoom: 19,
+        maxZoom: 16,
+        zoom: 10,
       };
 
       mapRef.current = L.map("map-display").setView([0, 0], 2);
-      L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png").addTo(
-        mapRef.current
-      );
+      L.tileLayer(
+        "https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png"
+      ).addTo(mapRef.current);
     }
 
     if (geoJsonLayerRef.current) {
@@ -218,9 +263,6 @@ export default function Heatmap() {
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
         onEachFeature: (feature, layer) => {
           // check if label_y and label_x exist, since they don't exist for KML
-
-
-
           // if (feature.properties.label_y && feature.properties.label_x) {
           //   const label = L.marker(
           //     [feature.properties.label_y, feature.properties.label_x],
@@ -288,16 +330,16 @@ export default function Heatmap() {
       heatmapOverlayRef.current.addTo(mapRef.current);
       if (legendVisible) {
         console.log("adding legend");
-      
+
         if (legendRef.current) {
           legendRef.current.remove();
         }
-      
+
         const legend = L.control({ position: "bottomright" });
-      
+
         legend.onAdd = function (map) {
           const div = L.DomUtil.create("div", "info legend");
-      
+
           div.innerHTML +=
             '<div style="background-color:' +
             (store.minColor ||
@@ -307,7 +349,7 @@ export default function Heatmap() {
             Math.min(...store.parsed_CSV_Data[store.key]) +
             "</div> " +
             "<br>";
-      
+
           div.innerHTML +=
             '<div style="background-color:' +
             (store.maxColor ||
@@ -317,15 +359,93 @@ export default function Heatmap() {
             Math.max(...store.parsed_CSV_Data[store.key]) +
             "</div> " +
             "<br>";
-      
+
           return div;
         };
-      
+
         legend.addTo(mapRef.current);
-      
+
         legendRef.current = legend;
+
+        if (mapLayerRef.current)
+          mapRef.current.removeLayer(mapLayerRef.current);
+        if (hybridLayerRef.current)
+          mapRef.current.removeLayer(hybridLayerRef.current);
+        if (satelliteLayerRef.current)
+          mapRef.current.removeLayer(satelliteLayerRef.current);
+        if (darkLayerRef.current)
+          mapRef.current.removeLayer(darkLayerRef.current);
+        if (lightLayerRef.current)
+          mapRef.current.removeLayer(lightLayerRef.current);
+
+        if (window.MQ) {
+          mapLayerRef.current = window.MQ.mapLayer();
+          hybridLayerRef.current = window.MQ.hybridLayer();
+          satelliteLayerRef.current = window.MQ.satelliteLayer();
+          darkLayerRef.current = window.MQ.darkLayer();
+          lightLayerRef.current = window.MQ.lightLayer();
+          if (settingLayerRef.current) {
+            mapRef.current.removeControl(settingLayerRef.current);
+          }
+          settingLayerRef.current = L.control.layers({
+            Map: mapLayerRef.current,
+            Hybrid: hybridLayerRef.current,
+            Satellite: satelliteLayerRef.current,
+            Dark: darkLayerRef.current,
+            Light: lightLayerRef.current,
+          });
+          settingLayerRef.current.addTo(mapRef.current);
+
+          mapRef.current.on("baselayerchange", function (event) {
+            // The 'event' object contains information about the change
+            const layerName = event.name; // Name of the selected layer
+            const layer = event.layer; // Reference to the selected layer
+
+            if (!store.currentMapObject.mapProps) {
+              store.currentMapObject.mapProps = {};
+            }
+            store.currentMapObject.mapProps.layerName = layerName;
+
+            console.log("Base layer changed to:", layerName);
+            console.log("Base layer changed to:", layer);
+            console.log(mapRef.current);
+            setDefaultLayerAdded(true);
+          });
+
+          console.log(defaultLayerAdded);
+          console.log(store.currentMapObject);
+
+
+          if (
+            !defaultLayerAdded &&
+            store.currentMapObject.mapProps?.layerName
+          ) {
+
+            console.log("changing layer...")
+            switch (store.currentMapObject.mapProps?.layerName) {
+              case "Map":
+                mapRef.current.addLayer(mapLayerRef.current);
+                break;
+              case "Hybrid":
+                mapRef.current.addLayer(hybridLayerRef.current);
+                break;
+              case "Satellite":
+                mapRef.current.addLayer(satelliteLayerRef.current);
+                break;
+              case "Dark":
+                mapRef.current.addLayer(darkLayerRef.current);
+                break;
+              case "Light":
+                mapRef.current.addLayer(lightLayerRef.current);
+                break;
+              default:
+                break;
+            }
+
+            
+          }
+        }
       }
-      
 
       //   L.easyPrint({
       //     title: 'Save my map',

@@ -63,7 +63,7 @@ createMap = async (req, res) => {
 
     // Save map data
 
-    const chunkSize = 15 * 1024 * 1024;
+    const chunkSize = 1 * 1024 * 1024;
     const mapDataBuffer = body.mapData;
     const totalChunks = Math.ceil(mapDataBuffer.length / chunkSize);
     console.log("totalChunks", totalChunks);
@@ -667,7 +667,7 @@ updateMapData = async (req, res) =>{
 
     // Save map data
 
-    const chunkSize = 15 * 1024 * 1024;
+    const chunkSize = 1 * 1024 * 1024;
     const mapDataBuffer = body.mapData;
     const totalChunks = Math.ceil(mapDataBuffer.length / chunkSize);
     console.log("totalChunks", totalChunks);
