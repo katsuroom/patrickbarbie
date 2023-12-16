@@ -1,6 +1,6 @@
 .forkButton:hover, .downloadButton:hover, .editButton:hover, 
 .publishButton:hover, .deleteButton:hover{
-    transform: scale(2.3); 
+    transform: scale(1.5); 
     transition: transform 0.3s ease; 
 }
 
@@ -9,7 +9,7 @@
     transform: scale(1);
   }
   50% {
-    transform: scale(3.5);
+    transform: scale(2);
   }
   100% {
     transform: scale(1);

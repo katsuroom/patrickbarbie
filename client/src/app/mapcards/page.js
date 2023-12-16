@@ -64,11 +64,11 @@ export default function EditScreen() {
   };
 
   const renderMapItem = (map) => (
-    <Grid item xs={12} sm={6} md={6} lg={6} key={map._id}>
+    <Grid item xs={12} sm={3} md={3} lg={3} key={map._id}>
       <ListItem
         onClick={() => handleMapClick(map._id)} 
         sx={{
-          padding: 2,
+          padding: 1,
           cursor: "pointer",
         }}
       >
@@ -143,7 +143,7 @@ export default function EditScreen() {
             <img
             src={map.imageBuffer ? `data:image/png;base64,${Buffer.from(map.imageBuffer).toString('base64')}` : "./empty_world.png"}
               alt="Map Preview"
-              style={{width: 600, height: 250}}
+              style={{width: 200, height: 80}}
             />
 
           <Divider sx={{ marginY: 1 }} />
