@@ -33,9 +33,9 @@ const createMap = (mapData, username, mapName, mapType, token) => {
 };
 
 describe("Create Map Tests", () => {
-    const email = "Teampink416@gmail.com";
-    const password = "Teampink416@gmail.com";
-    const username = "Teampink416@gmail.com";
+    const email = "Admin123@admin.com";
+    const password = "Admin123@admin.com";
+    const username = "admin";
     const mapType = "Heatmap";
     let token;
     let mapData;

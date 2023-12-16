@@ -14,8 +14,8 @@ describe("Login Tests", () => {
     let email, password;
 
     it("log in account", async () => {
-        email = "Teampink416@gmail.com";
-        password = "Teampink416@gmail.com";
+        email = "Admin123@admin.com";
+        password = "Admin123@admin.com";
         const response = await apis.loginUser(email, password);
         expect(response.status).toEqual(200);
     });
