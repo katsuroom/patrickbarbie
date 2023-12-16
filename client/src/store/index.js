@@ -78,6 +78,7 @@ const SearchBy = {
   USER_NAME: "User Name"
 }
 
+
 function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
   const pathname = usePathname();

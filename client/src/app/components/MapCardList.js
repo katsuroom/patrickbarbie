@@ -12,6 +12,7 @@ import StoreContext, { CurrentModal, View } from "@/store";
 import AuthContext from "@/auth";
 import { Typography } from "@mui/material";
 import Stack from "@mui/material/Stack";
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 export default function MapCardList() {
   const { store } = useContext(StoreContext);

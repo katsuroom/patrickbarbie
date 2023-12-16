@@ -14,6 +14,7 @@ const PDotDistribution = dynamic(() =>
   import("../components/PDotDistribution")
 );
 const GeneralProperty = dynamic(() => import("../components/GeneralProperty"));
+import { TextField } from "@mui/material";
 
 // import { ObjectId } from 'mongodb';
 // import PTravelMap from "../components/PTravelMap";
@@ -152,6 +153,7 @@ export default function EditScreen() {
 
   return readyToRender && store.currentMapObject ? (
     <div>
+        
       <div style={toolbarStyle}>
         <MapEditorToolbar />
       </div>

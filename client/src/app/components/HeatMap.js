@@ -437,15 +437,6 @@ export default function Heatmap() {
 
         legendRef.current = legend;
       }
-
-      //   L.easyPrint({
-      //     title: 'Save my map',
-      //     position: 'topleft',
-      //     sizeModes: ['Current', 'A4Landscape', 'A4Portrait'],
-      //     filename: 'myMap',
-      //     exportOnly: true,
-      //     hideControlContainer: true
-      // }).addTo(mapRef.current);
     }
   }, [
     geoJsonData,
