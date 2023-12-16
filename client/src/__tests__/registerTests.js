@@ -13,8 +13,8 @@ const apis = { registerUser };
 
 describe("Registration Tests", () => {
     let username, email, password;
-    let existingEmail = "Teampink416@gmail.com";
-    let existingUsername = "Teampink416";
+    let existingEmail = "Admin123@admin.com";
+    let existingUsername = "admin";
 
     it("register a new account", async () => {
         var currentdate = new Date();
@@ -74,7 +74,7 @@ describe("Registration Tests", () => {
     });
 
     it("Fail to register with email in use (case insensitivity)", async () => {
-        const caseInsensitiveEmail = "TeamPink416@GMAIL.com";
+        const caseInsensitiveEmail = "Admin123@ADMIN.com";
         await expect(apis.registerUser(username, caseInsensitiveEmail, password))
             .rejects
             .toEqual(expect.objectContaining({

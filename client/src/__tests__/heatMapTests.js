@@ -172,9 +172,9 @@ const apis = {
 };
 
 describe("Heatmap Test", () => {
-    const email = "Teampink416@gmail.com";
-    const password = "Teampink416@gmail.com";
-    const username = "Teampink416@gmail.com";
+    const email = "Admin123@admin.com";
+    const password = "Admin123@admin.com";
+    const username = "admin";
     const mapType = "Heatmap";
     const mapData = Buffer.from(Object.values("test"));
     let token;

@@ -38,8 +38,8 @@ const getMapsByUser = (token) => {
 };
 
 describe("Get Maps By User Tests", () => {
-    const email = "Teampink416@gmail.com";
-    const password = "Teampink416@gmail.com";
+    const email = "Admin123@admin.com";
+    const password = "Admin123@admin.com";
     let token;
 
     // Run before all tests

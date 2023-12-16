@@ -77,6 +77,8 @@ export default function Heatmap() {
     ])
       .then(() => {
         setLoadScripts(true);
+        store.setRawMapFile(store.rawMapFile);
+        console.log("script loaded");
       })
       .catch((error) => console.error(error));
   }
@@ -210,6 +212,7 @@ export default function Heatmap() {
   }, []);
 
   useEffect(() => {
+    setDefaultLayerAdded(false);
     if (store.rawMapFile) {
       setGeoJsonData(store.rawMapFile);
     }
@@ -222,18 +225,16 @@ export default function Heatmap() {
       return;
     }
 
-    
-  if (!loadScripts) {
-    Promise.all([
-      loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
-      loadScript("./mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
-    ])
-      .then(() => {
-        setLoadScripts(true);
-      })
-      .catch((error) => console.error(error));
-  }
-
+    if (!loadScripts) {
+      Promise.all([
+        loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+        loadScript("./mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+      ])
+        .then(() => {
+          setLoadScripts(true);
+        })
+        .catch((error) => console.error(error));
+    }
 
     if (!mapRef.current) {
       var basemap_options = {
@@ -291,6 +292,75 @@ export default function Heatmap() {
         }
       } else {
         console.log("geoJsonLayerRef.current is undefined or empty");
+      }
+    }
+
+    if (mapLayerRef.current) mapRef.current.removeLayer(mapLayerRef.current);
+    if (hybridLayerRef.current)
+      mapRef.current.removeLayer(hybridLayerRef.current);
+    if (satelliteLayerRef.current)
+      mapRef.current.removeLayer(satelliteLayerRef.current);
+    if (darkLayerRef.current) mapRef.current.removeLayer(darkLayerRef.current);
+    if (lightLayerRef.current)
+      mapRef.current.removeLayer(lightLayerRef.current);
+    if (window.MQ) {
+      mapLayerRef.current = window.MQ.mapLayer();
+      hybridLayerRef.current = window.MQ.hybridLayer();
+      satelliteLayerRef.current = window.MQ.satelliteLayer();
+      darkLayerRef.current = window.MQ.darkLayer();
+      lightLayerRef.current = window.MQ.lightLayer();
+      if (settingLayerRef.current) {
+        mapRef.current.removeControl(settingLayerRef.current);
+      }
+      settingLayerRef.current = L.control.layers({
+        Map: mapLayerRef.current,
+        Hybrid: hybridLayerRef.current,
+        Satellite: satelliteLayerRef.current,
+        Dark: darkLayerRef.current,
+        Light: lightLayerRef.current,
+      });
+      settingLayerRef.current.addTo(mapRef.current);
+
+      mapRef.current.on("baselayerchange", function (event) {
+        // The 'event' object contains information about the change
+        const layerName = event.name; // Name of the selected layer
+        const layer = event.layer; // Reference to the selected layer
+
+        if (!store.currentMapObject.mapProps) {
+          store.currentMapObject.mapProps = {};
+        }
+        store.currentMapObject.mapProps.layerName = layerName;
+
+        console.log("Base layer changed to:", layerName);
+        console.log("Base layer changed to:", layer);
+        console.log(mapRef.current);
+        setDefaultLayerAdded(true);
+      });
+
+      console.log(defaultLayerAdded);
+      console.log(store.currentMapObject);
+
+      if (!defaultLayerAdded && store.currentMapObject.mapProps?.layerName) {
+        console.log("changing layer...");
+        switch (store.currentMapObject.mapProps?.layerName) {
+          case "Map":
+            mapRef.current.addLayer(mapLayerRef.current);
+            break;
+          case "Hybrid":
+            mapRef.current.addLayer(hybridLayerRef.current);
+            break;
+          case "Satellite":
+            mapRef.current.addLayer(satelliteLayerRef.current);
+            break;
+          case "Dark":
+            mapRef.current.addLayer(darkLayerRef.current);
+            break;
+          case "Light":
+            mapRef.current.addLayer(lightLayerRef.current);
+            break;
+          default:
+            break;
+        }
       }
     }
 
@@ -366,85 +436,6 @@ export default function Heatmap() {
         legend.addTo(mapRef.current);
 
         legendRef.current = legend;
-
-        if (mapLayerRef.current)
-          mapRef.current.removeLayer(mapLayerRef.current);
-        if (hybridLayerRef.current)
-          mapRef.current.removeLayer(hybridLayerRef.current);
-        if (satelliteLayerRef.current)
-          mapRef.current.removeLayer(satelliteLayerRef.current);
-        if (darkLayerRef.current)
-          mapRef.current.removeLayer(darkLayerRef.current);
-        if (lightLayerRef.current)
-          mapRef.current.removeLayer(lightLayerRef.current);
-
-        if (window.MQ) {
-          mapLayerRef.current = window.MQ.mapLayer();
-          hybridLayerRef.current = window.MQ.hybridLayer();
-          satelliteLayerRef.current = window.MQ.satelliteLayer();
-          darkLayerRef.current = window.MQ.darkLayer();
-          lightLayerRef.current = window.MQ.lightLayer();
-          if (settingLayerRef.current) {
-            mapRef.current.removeControl(settingLayerRef.current);
-          }
-          settingLayerRef.current = L.control.layers({
-            Map: mapLayerRef.current,
-            Hybrid: hybridLayerRef.current,
-            Satellite: satelliteLayerRef.current,
-            Dark: darkLayerRef.current,
-            Light: lightLayerRef.current,
-          });
-          settingLayerRef.current.addTo(mapRef.current);
-
-          mapRef.current.on("baselayerchange", function (event) {
-            // The 'event' object contains information about the change
-            const layerName = event.name; // Name of the selected layer
-            const layer = event.layer; // Reference to the selected layer
-
-            if (!store.currentMapObject.mapProps) {
-              store.currentMapObject.mapProps = {};
-            }
-            store.currentMapObject.mapProps.layerName = layerName;
-
-            console.log("Base layer changed to:", layerName);
-            console.log("Base layer changed to:", layer);
-            console.log(mapRef.current);
-            setDefaultLayerAdded(true);
-          });
-
-          console.log(defaultLayerAdded);
-          console.log(store.currentMapObject);
-
-
-          if (
-            !defaultLayerAdded &&
-            store.currentMapObject.mapProps?.layerName
-          ) {
-
-            console.log("changing layer...")
-            switch (store.currentMapObject.mapProps?.layerName) {
-              case "Map":
-                mapRef.current.addLayer(mapLayerRef.current);
-                break;
-              case "Hybrid":
-                mapRef.current.addLayer(hybridLayerRef.current);
-                break;
-              case "Satellite":
-                mapRef.current.addLayer(satelliteLayerRef.current);
-                break;
-              case "Dark":
-                mapRef.current.addLayer(darkLayerRef.current);
-                break;
-              case "Light":
-                mapRef.current.addLayer(lightLayerRef.current);
-                break;
-              default:
-                break;
-            }
-
-            
-          }
-        }
       }
 
       //   L.easyPrint({

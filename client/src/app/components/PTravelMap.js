@@ -84,6 +84,19 @@ const PTravelMap = (props) => {
   };
 
 
+  let spinner = true;
+
+  const showSpinner = () => {
+    if (spinner) {
+      document.getElementById('loader2').style.display = "block";
+    }
+  }
+  const hideSpinner = () => {
+    document.getElementById('loader2').style.display = "none";
+  }
+
+
+
   const loadScript = (src) => {
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
@@ -106,6 +119,10 @@ const PTravelMap = (props) => {
     };
   }, []);
 
+  const handleMapLayerSelection = (layerName) => {
+    console.log("Map layer selected:", layerName);
+    store.setSelectedMapLayer(layerName); 
+  };
 
   useEffect(() => {
     if (store.rawMapFile) {
@@ -169,6 +186,14 @@ const PTravelMap = (props) => {
       'Dark': darkLayerRef.current,
       'Light': lightLayerRef.current
     });
+    if (settingLayerRef.current && typeof settingLayerRef.current.on === 'function') {
+      settingLayerRef.current.on('baselayerchange', (e) => {
+        handleMapLayerSelection(e.name);
+      });
+    } else {
+      console.error('Layer control is not initialized correctly');
+    }
+
     settingLayerRef.current.addTo(mapRef.current);
 
     if (geoJsonLayerRef.current) {
@@ -285,25 +310,19 @@ const PTravelMap = (props) => {
         geocoder: L.Control.Geocoder.nominatim(),
       });
 
-      // Listen for the waypointsUpdated event
+      routingControl.on('routingstart', showSpinner);
+      routingControl.on('routesfound', hideSpinner);
+      routingControl.on('routingerror', hideSpinner);
+
       routingControl.on('waypointschanged', function (e) {
-        // Access the updated waypoints using e.waypoints
         const updatedWaypoints = e.waypoints;
         console.log('Waypoints Updated:', updatedWaypoints);
-
-        // Call your custom function here
-
         store.setWaypoints(updatedWaypoints.map(p => {
           return p.latLng
         }));
       });
 
-      // Add the routing control to the map
       routingControl.addTo(mapRef.current);
-      // .on('routingstart', showSpinner)
-      // .on('routesfound routingerror', hideSpinner)
-      // .addTo(mapRef.current);
-
       routeControlRef.current = routingControl;
 
       // mapRef.current.forEach((routingControl) => {
@@ -337,7 +356,7 @@ const PTravelMap = (props) => {
       width: "99vw" }}>
       {/* <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div> */}
       <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div>
-      <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div>
+      <div id={"loader2"} style={{ height: `5px`, margin: '5px' }}></div>
       <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
         EXIT
       </Button>
