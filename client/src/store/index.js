@@ -78,6 +78,13 @@ const SearchBy = {
   USER_NAME: "User Name"
 }
 
+const SortBy =  {
+  MAP_NAME: "Map Name",
+  LIKES: "Most Likes",
+  VIEWS: "Most Views",
+  LAST_MODIFIED: "Most Recent Modified",
+  CREATED_DATE: "Most Recent Created",
+}
 
 function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
@@ -111,6 +118,7 @@ function StoreContextProvider(props) {
   store.viewTypes = View;
   store.currentModalTypes = CurrentModal;
   store.searchBy = SearchBy;
+  store.sortBy = SortBy;
 
   const storeReducer = (action) => {
     const { type, payload } = action;
@@ -793,6 +801,29 @@ function StoreContextProvider(props) {
       });
     });
   };
+
+  store.sortList = function(by){
+    let list = store.mapList;
+    if (by == SortBy.LIKES){
+      list.sort((a, b) => (a.likedUsers.length < b.likedUsers.length) ? 1 : -1);
+    }
+    else if (by == SortBy.VIEWS){
+      list.sort((a, b) => (a.views < b.views) ? 1 : -1);
+    }
+    else if (by == SortBy.LAST_MODIFIED){
+      list.sort((a, b) => (a.lastModified < b.lastModified) ? 1 : -1);
+    }
+    else if (by == SortBy.CREATED_DATE){
+      list.sort((a, b) => (a.updatedAt < b.updatedAt) ? 1 : -1);
+    }
+    else if (by == SortBy.MAP_NAME){
+      list.sort((a, b) => (a.title < b.title) ? -1 : 1);
+    }
+    storeReducer({
+      type: StoreActionType.SET_MAP_LIST,
+      payload: { mapList: list },
+    });
+  }
 
   store.searchMaps = async function (searchText, searchBy) {
 
