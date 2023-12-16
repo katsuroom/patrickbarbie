@@ -23,6 +23,19 @@ export default function Politicalmap(props) {
     const { selectedAttribute, setSelectedAttribute } = useContext(StoreContext);
 
 
+
+    const [defaultLayerAdded, setDefaultLayerAdded] = useState(false);
+
+    const mapLayerRef = useRef(null);
+    const hybridLayerRef = useRef(null);
+    const satelliteLayerRef = useRef(null);
+    const darkLayerRef = useRef(null);
+    const lightLayerRef = useRef(null);
+    const settingLayerRef = useRef(null);
+
+    const [loadScripts, setLoadScripts] = useState(false);
+
+
     const initColor = () => {
         // Initialize minColor and maxColor
         store.minColor = store.currentMapObject.mapProps?.minColor || "#FFFFFF";
@@ -32,7 +45,7 @@ export default function Politicalmap(props) {
 
         if (!store.currentMapObject.mapProps) {
             store.currentMapObject.mapProps = {};
-          }
+        }
 
         if (!store.currentMapObject.mapProps?.categoryColorMappings) {
             console.log("no categoryColorMappings");
@@ -88,7 +101,7 @@ export default function Politicalmap(props) {
     //         store.updateCategoryColorMappings(newMapping);
     //         store.currentMapObject.mapProps.categoryColorMappings = store.categoryColorMappings;
     //         // store.currentMapObject.mapProps.selectedAttribute = store.selectedAttribute;
-            
+
     //     }
     // }, [store.selectedAttribute, store.parsed_CSV_Data]);
 
@@ -99,10 +112,10 @@ export default function Politicalmap(props) {
 
         if (store.parsed_CSV_Data && store.selectedAttribute && store.parsed_CSV_Data[store.selectedAttribute]) {
             const countryIndex = store.parsed_CSV_Data.Country.indexOf(feature.properties.name);
-        
+
             if (countryIndex !== -1) {
                 const attributeValue = store.parsed_CSV_Data[store.selectedAttribute][countryIndex];
-        
+
                 if (attributeValue && store.categoryColorMappings.hasOwnProperty(attributeValue)) {
                     fillColor = store.categoryColorMappings[attributeValue];
                 }
@@ -205,6 +218,73 @@ export default function Politicalmap(props) {
         if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
             return;
         }
+
+
+        if (window.MQ) {
+            mapLayerRef.current = window.MQ.mapLayer();
+            hybridLayerRef.current = window.MQ.hybridLayer();
+            satelliteLayerRef.current = window.MQ.satelliteLayer();
+            darkLayerRef.current = window.MQ.darkLayer();
+            lightLayerRef.current = window.MQ.lightLayer();
+            if (settingLayerRef.current) {
+              mapRef.current.removeControl(settingLayerRef.current);
+            }
+            settingLayerRef.current = L.control.layers({
+              Map: mapLayerRef.current,
+              Hybrid: hybridLayerRef.current,
+              Satellite: satelliteLayerRef.current,
+              Dark: darkLayerRef.current,
+              Light: lightLayerRef.current,
+            });
+            settingLayerRef.current.addTo(mapRef.current);
+      
+            mapRef.current.on("baselayerchange", function (event) {
+              // The 'event' object contains information about the change
+              const layerName = event.name; // Name of the selected layer
+              const layer = event.layer; // Reference to the selected layer
+      
+              if (!store.currentMapObject.mapProps) {
+                store.currentMapObject.mapProps = {};
+              }
+              store.currentMapObject.mapProps.layerName = layerName;
+      
+              console.log("Base layer changed to:", layerName);
+              console.log("Base layer changed to:", layer);
+              console.log(mapRef.current);
+              setDefaultLayerAdded(true);
+            });
+      
+            console.log(defaultLayerAdded);
+            console.log(store.currentMapObject);
+      
+            if (!defaultLayerAdded && store.currentMapObject.mapProps?.layerName) {
+              console.log("changing layer...");
+              switch (store.currentMapObject.mapProps?.layerName) {
+                case "Map":
+                  mapRef.current.addLayer(mapLayerRef.current);
+                  break;
+                case "Hybrid":
+                  mapRef.current.addLayer(hybridLayerRef.current);
+                  break;
+                case "Satellite":
+                  mapRef.current.addLayer(satelliteLayerRef.current);
+                  break;
+                case "Dark":
+                  mapRef.current.addLayer(darkLayerRef.current);
+                  break;
+                case "Light":
+                  mapRef.current.addLayer(lightLayerRef.current);
+                  break;
+                default:
+                  break;
+              }
+            }
+          }
+
+
+
+
+
 
         if (store.currentMapObject?.mapType === MapType.POLITICAL_MAP) {
             heatmapOverlayRef.current = L.geoJSON(geoJsonData, {

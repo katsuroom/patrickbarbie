@@ -26,10 +26,6 @@ export default function PPoliticalmap() {
     const { store, categoryColorMappings } = useContext(StoreContext);
     const { edit } = useContext(EditContext);
 
-    // const { selectedAttribute, setSelectedAttribute } = useContext(StoreContext);
-    // const [attributeColorMapping, setAttributeColorMapping] = useState({});
-
-
     const [properties, setProperties] = React.useState([]);
     const [newPropertyName, setNewPropertyName] = React.useState('');
     const [newPropertyColor, setNewPropertyColor] = React.useState('#fff');
@@ -45,22 +41,6 @@ export default function PPoliticalmap() {
             setNewPropertyColor('#fff');
         }
     };
-
-
-    // useEffect(() => {
-    //     if (store.selectedAttribute && store.parsed_CSV_Data && store.parsed_CSV_Data[store.selectedAttribute]) {
-    //         const uniqueValues = new Set(store.parsed_CSV_Data[store.selectedAttribute]);
-    //         const newMapping = {};
-    //         uniqueValues.forEach(value => {
-    //             newMapping[value] = '#ffffff';
-    //         });
-    //         // setAttributeColorMapping(newMapping);
-    //         store.updateSelectedAttribute(store.selectedAttribute);
-    //         store.updateCategoryColorMappings(newMapping);
-    //         store.currentMapObject.mapProps.categoryColorMappings = store.categoryColorMappings;
-    //         store.currentMapObject.mapProps.selectedAttribute = store.selectedAttribute;
-    //     }
-    // }, [store.selectedAttribute, store.parsed_CSV_Data]);
 
     useEffect(() => {
         if (store.selectedAttribute && store.parsed_CSV_Data && store.parsed_CSV_Data[store.selectedAttribute]) {
@@ -99,20 +79,6 @@ export default function PPoliticalmap() {
 
     const [minHex, setMinHex] = React.useState(store.minColor);
     const [maxHex, setMaxHex] = React.useState(store.maxColor);
-
-    // const handleMinColorChange = (event) => {
-    //     const color = event.hex;
-    //     setMinHex(color);
-    //     store.setMinColor(color);
-
-    // };
-
-    // const handleMaxColorChange = (event) => {
-    //     const color = event.hex;
-    //     setMaxHex(color);
-    //     store.setMaxColor(color);
-
-    // };
 
     useEffect(() => {
         let tfs = [];
