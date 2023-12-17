@@ -18,6 +18,8 @@ export default function MapCardList() {
   const { store } = useContext(StoreContext);
   const { auth } = useContext(AuthContext);
   const [isHovered, setIsHovered] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // Add state for editing mode
+  const [newTitle, setNewTitle] = useState(""); // Add state for new title
 
   const handleMapClick = (mapId) => {
     store.loadMapFile(mapId);
@@ -25,6 +27,24 @@ export default function MapCardList() {
 
   const handleCreateMap = () => {
     store.openModal(CurrentModal.UPLOAD_MAP);
+  };
+
+  const handleEditTitle = () => {
+    setIsEditing(true);
+    setNewTitle(store.currentMapObject.title);
+  };
+
+  const handleSaveTitle = () => {
+    // Save the new title
+    store.currentMapObject.title = newTitle;
+    store.updateMap(store.currentMapObject)
+    setIsEditing(false);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSaveTitle();
+    }
   };
 
   return (
@@ -115,7 +135,16 @@ export default function MapCardList() {
                     // letterSpacing: "1px",
                   }}
                   className="map-list-name"
-                  primary={map.title}
+                  primary={isEditing && store.currentMapObject._id === map._id ? (
+                    <input
+                      type="text"
+                      value={newTitle}
+                      onChange={(e) => setNewTitle(e.target.value)}
+                      onKeyPress={handleKeyPress} // Add event listener for Enter key press
+                    />
+                  ) : (
+                    map.title
+                  )}
                 />
                 <Box sx={{
                   display: "flex",
@@ -155,11 +184,19 @@ export default function MapCardList() {
                   ).toLocaleString("en-US", { timeZone: "America/New_York" })}`}
                 />
               </Stack>
+              {store.currentMapObject &&
+                store.currentMapObject._id === map._id &&
+                !isEditing && store.currentView === View.HOME && ( // Show pencil icon only when the map is selected, not in editing mode, and on the home page
+                  <ModeEditIcon
+                    sx={{ marginLeft: "auto", cursor: "pointer" }}
+                    onClick={handleEditTitle}
+                  />
+                )}
             </ListItem>
           </div>,
         ])}
       </List>
-      {auth.loggedIn && store.currentView == View.HOME ? (
+      {auth.loggedIn && store.currentView === View.HOME ? (
         <Fab
           sx={{
             position: "absolute",

@@ -5,9 +5,6 @@ import "leaflet/dist/leaflet.css";
 import StoreContext, { MapType } from "@/store";
 import Script from "next/script";
 
-function normalize(value, min, max) {
-  return (value - min) / (max - min);
-}
 function interpolateColor(minColor, maxColor, minValue, maxValue, value) {
   // Convert hex colors to RGB format
   const hexToRgb = (hex) => hex.match(/\w\w/g).map((hex) => parseInt(hex, 16));
@@ -368,75 +365,77 @@ export default function Heatmap() {
       mapRef.current.removeLayer(heatmapOverlayRef.current);
     }
 
+    
+
+    heatmapOverlayRef.current = L.geoJSON(geoJsonData, {
+      style: geoJsonStyle,
+      onEachFeature: (feature, layer) => {
+        layer.on({
+          mouseover: function (e) {
+            console.log(e.target);
+            e.target.setStyle({
+              weight: 10,
+              // color: "black"
+            });
+          },
+          mouseout: function (e) {
+            e.target.setStyle({
+              weight: 2,
+              // color: "light blue"
+            });
+          },
+          click: function (e) {
+            console.log("Layer clicked!");
+          },
+        });
+      },
+    });
+
+    heatmapOverlayRef.current.addTo(mapRef.current);
+
     if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
       return;
     }
 
-    if (store.currentMapObject?.mapType === MapType.HEATMAP) {
-      heatmapOverlayRef.current = L.geoJSON(geoJsonData, {
-        style: geoJsonStyle,
-        onEachFeature: (feature, layer) => {
-          layer.on({
-            mouseover: function (e) {
-              console.log(e.target);
-              e.target.setStyle({
-                weight: 10,
-                // color: "black"
-              });
-            },
-            mouseout: function (e) {
-              e.target.setStyle({
-                weight: 2,
-                // color: "light blue"
-              });
-            },
-            click: function (e) {
-              console.log("Layer clicked!");
-            },
-          });
-        },
-      });
+    
+    if (legendVisible) {
+      console.log("adding legend");
 
-      heatmapOverlayRef.current.addTo(mapRef.current);
-      if (legendVisible) {
-        console.log("adding legend");
-
-        if (legendRef.current) {
-          legendRef.current.remove();
-        }
-
-        const legend = L.control({ position: "bottomright" });
-
-        legend.onAdd = function (map) {
-          const div = L.DomUtil.create("div", "info legend");
-
-          div.innerHTML +=
-            '<div style="background-color:' +
-            (store.minColor ||
-              store.currentMapObject.mapProps?.minColor ||
-              "#FFFFFF") +
-            '"> Min: ' +
-            Math.min(...store.parsed_CSV_Data[store.key]) +
-            "</div> " +
-            "<br>";
-
-          div.innerHTML +=
-            '<div style="background-color:' +
-            (store.maxColor ||
-              store.currentMapObject.mapProps?.maxColor ||
-              "#FFFFFF") +
-            '"> Max: ' +
-            Math.max(...store.parsed_CSV_Data[store.key]) +
-            "</div> " +
-            "<br>";
-
-          return div;
-        };
-
-        legend.addTo(mapRef.current);
-
-        legendRef.current = legend;
+      if (legendRef.current) {
+        legendRef.current.remove();
       }
+
+      const legend = L.control({ position: "bottomright" });
+
+      legend.onAdd = function (map) {
+        const div = L.DomUtil.create("div", "info legend");
+
+        div.innerHTML +=
+          '<div style="background-color:' +
+          (store.minColor ||
+            store.currentMapObject.mapProps?.minColor ||
+            "#FFFFFF") +
+          '"> Min: ' +
+          Math.min(...store.parsed_CSV_Data[store.key]) +
+          "</div> " +
+          "<br>";
+
+        div.innerHTML +=
+          '<div style="background-color:' +
+          (store.maxColor ||
+            store.currentMapObject.mapProps?.maxColor ||
+            "#FFFFFF") +
+          '"> Max: ' +
+          Math.max(...store.parsed_CSV_Data[store.key]) +
+          "</div> " +
+          "<br>";
+
+        return div;
+      };
+
+      legend.addTo(mapRef.current);
+
+      legendRef.current = legend;
     }
   }, [
     geoJsonData,
