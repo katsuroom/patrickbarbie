@@ -78,6 +78,26 @@ export default function MapCardList() {
         >
           {store.currentView}
         </Typography>
+        {auth.loggedIn && store.currentView === View.HOME ? (
+          <Fab
+            size="small"
+            sx={{
+              position: "absolute",
+              bottom: 8,
+              right: 16,
+              bgcolor: "#ffabd1",
+              "&:hover": {
+                bgcolor: "#ffabd1",
+              },
+              ...(isHovered ? { transform: 'scale(1.3)', transition: 'transform 0.3s ease' } : {})
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onClick={handleCreateMap}
+          >
+            <AddIcon />
+          </Fab>
+        ) : null}
       </Box>
       <List
         component="nav"
@@ -127,25 +147,50 @@ export default function MapCardList() {
                   },
                 }}
               >
-                <ListItemText
-                  primaryTypographyProps={{
-                    fontFamily: "Sen",
-                    fontSize: "1.25rem",
-                    fontWeight: "bold",
-                    // letterSpacing: "1px",
-                  }}
-                  className="map-list-name"
-                  primary={isEditing && store.currentMapObject._id === map._id ? (
-                    <input
-                      type="text"
-                      value={newTitle}
-                      onChange={(e) => setNewTitle(e.target.value)}
-                      onKeyPress={handleKeyPress} // Add event listener for Enter key press
-                    />
-                  ) : (
-                    map.title
-                  )}
-                />
+                <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  flexWrap: "wrap",
+                }}
+                >
+                  <ListItemText
+                    primaryTypographyProps={{
+                      fontFamily: "Sen",
+                      fontSize: "1.25rem",
+                      fontWeight: "bold",
+                      // letterSpacing: "1px",
+                    }}
+                    className="map-list-name"
+                    primary={isEditing && store.currentMapObject._id === map._id ? (
+                      <input
+                        type="text"
+                        value={newTitle}
+                        onChange={(e) => setNewTitle(e.target.value)}
+                        onKeyUp={handleKeyPress} // Add event listener for Enter key press
+                      />
+                    ) : (
+                      map.title
+                    )}
+                  />
+                  <Box
+                  style={{
+                    marginLeft: "auto",
+                    marginRight: 0,
+                    marginTop: 5,
+                    display: "flex",
+                  }}>
+                    {store.currentMapObject &&
+                    store.currentMapObject._id === map._id &&
+                    !isEditing && store.currentView === View.HOME && ( // Show pencil icon only when the map is selected, not in editing mode, and on the home page
+                      <ModeEditIcon
+                        sx={{ marginLeft: "auto", cursor: "pointer" }}
+                        onClick={handleEditTitle}
+                      />
+                    )}
+                  </Box>
+                </div>
                 <Box sx={{
                   display: "flex",
                   justifyContent: "space-between"
@@ -184,38 +229,10 @@ export default function MapCardList() {
                   ).toLocaleString("en-US", { timeZone: "America/New_York" })}`}
                 />
               </Stack>
-              {store.currentMapObject &&
-                store.currentMapObject._id === map._id &&
-                !isEditing && store.currentView === View.HOME && ( // Show pencil icon only when the map is selected, not in editing mode, and on the home page
-                  <ModeEditIcon
-                    sx={{ marginLeft: "auto", cursor: "pointer" }}
-                    onClick={handleEditTitle}
-                  />
-                )}
             </ListItem>
           </div>,
         ])}
       </List>
-      {auth.loggedIn && store.currentView === View.HOME ? (
-        <Fab
-          sx={{
-            position: "absolute",
-            bottom: 16,
-            right: 16,
-            bgcolor: "#ffabd1",
-            "&:hover": {
-              bgcolor: "#ffabd1",
-            },
-            ...(isHovered ? { transform: 'scale(1.8)', transition: 'transform 0.3s ease' } : {})
-          }}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          onClick={handleCreateMap}
-        >
-          <AddIcon />
-        </Fab>
-
-      ) : null}
     </Box>
   );
 }

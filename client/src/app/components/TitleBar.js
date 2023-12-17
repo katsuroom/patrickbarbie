@@ -112,8 +112,7 @@ export default function TitleBar() {
         </Box>
         </div>
         ) : null}
-        {auth.loggedIn ? (
-          <IconButton
+        <IconButton
             className="icon-menu"
             sx={{ position: "absolute", top: "0.5%", right: "1%" }}
             onClick={handleMenu}
@@ -121,13 +120,13 @@ export default function TitleBar() {
             {auth.loggedIn ? (
               <div
                 style={{
-                  fontSize: "32pt",
+                  fontSize: "24pt",
                   color: "#F1B3CD",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  width: "48px",
-                  height: "48px",
+                  width: "40px",
+                  height: "40px",
                   borderRadius: "50%",
                   backgroundColor: "#fce8f1",
                   border: "2px solid #F1B3CD",
@@ -141,9 +140,6 @@ export default function TitleBar() {
               <AccountCircleIcon sx={{ fontSize: "32pt", color: "#F1B3CD" }} />
             )}
           </IconButton>
-        ) : (
-          <></>
-        )}
         <Menu
           anchorEl={anchorEl}
           anchorOrigin={{

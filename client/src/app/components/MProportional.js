@@ -1,136 +1,36 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
 import StoreContext from "@/store";
+import L from "leaflet";
 import * as turf from "@turf/turf";
-import "./proportionalMap.css";
-
+import JsonDisplay from "./JsonDisplay";
 
 export default function ProportionalMap() {
-  const [geoJsonData, setGeoJsonData] = useState(null);
-  const [buttonAdded, setButtonAdded] = useState(false);
-  const mapRef = useRef(null);
-  const geoJsonLayerRef = useRef(null);
+  const { store } = useContext(StoreContext);
   const proportionalRef = useRef(null);
   const legendRef = useRef(null);
-  const markers = useRef([]);
-  const workerRef = useRef(null);
-  const { store } = useContext(StoreContext);
 
   useEffect(() => {
     if (store.currentMapObject.mapProps) {
-      console.log("updating");
-      if (store.currentMapObject.mapProps.proColor) {
-        store.proColor = store.currentMapObject.mapProps.proColor;
-        store.setProColor(store.currentMapObject.mapProps.proColor);
-      }
-      if(store.currentMapObject.mapProps.proportional_value){
-        console.log("store.currentMapObject.mapProps.proportional_value", store.currentMapObject.mapProps.proportional_value);
+      store.proColor = store.currentMapObject.mapProps.proColor;
+      store.setProColor(store.currentMapObject.mapProps.proColor);
+      if (store.currentMapObject.mapProps.proportional_value) {
         store.proportional_value = store.currentMapObject.mapProps.proportional_value;
         store.setProportionalValue(store.currentMapObject.mapProps.proportional_value);
       }
     }
+  }, [store.currentMapObject]);
 
-    const resizeListener = () => {
-      setMapHeight(window.innerHeight / 2);
-    };
-    window.addEventListener("resize", resizeListener);
-    return () => {
-      window.removeEventListener("resize", resizeListener);
-    };
-  }, []);
-
-  const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
-
-
-  useEffect(() => {
-    if (store.rawMapFile) setGeoJsonData(store.rawMapFile);
-  }, [store.rawMapFile]);
-
-  useEffect(() => {
-    if (!geoJsonData) {
-      return;
-    }
-
-    //add base map
-    if (!mapRef.current) {
-      var basemap_options = {
-        attribution:
-          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-        // subdomains: "abcd",
-        maxZoom: 19,
-      };
-      mapRef.current = L.map("map-display").setView([0, 0], 2);
-      L.tileLayer(
-        "https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png",
-        basemap_options
-      ).addTo(mapRef.current);
-    }
-
-    // remove old layers
-    if (geoJsonLayerRef.current) {
-      mapRef.current.removeLayer(geoJsonLayerRef.current);
-    }
+  function clearLayer(mapRef) {
     if (proportionalRef.current) {
       mapRef.current.removeLayer(proportionalRef.current);
     }
     if (legendRef.current) {
       mapRef.current.removeControl(legendRef.current);
     }
-    markers.current.forEach((marker) => {
-      mapRef.current.removeLayer(marker);
-    });
-    markers.current = [];
+  }
 
-    function geoJsonStyle(feature) {
-      return {
-        stroke: true,
-        color: "black",
-        weight: 1,
-        fillColor: "yellow",
-        fillOpacity: 0.2,
-      };
-    }
-
-    // add uploaded geojson data
-    if (geoJsonData) {
-      geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
-        style: geoJsonStyle,
-        // onEachFeature: (feature, layer) => {
-        //   // check if label_y and label_x exist, since they don't exist for KML
-        //   if (feature.properties.label_y && feature.properties.label_x) {
-        //     const label = L.marker(
-        //       [feature.properties.label_y, feature.properties.label_x],
-        //       {
-        //         icon: L.divIcon({
-        //           className: "countryLabel",
-        //           html: feature.properties.name,
-        //           iconSize: [1000, 0],
-        //           iconAnchor: [0, 0],
-        //         }),
-        //       }
-        //     ).addTo(mapRef.current);
-        //     markers.current.push(label);
-        //   }
-        // },
-      });
-
-      geoJsonLayerRef.current.addTo(mapRef.current);
-
-      // zoom to fit uploaded geojson data
-      if (geoJsonLayerRef.current) {
-        const bounds = geoJsonLayerRef.current.getBounds();
-        if (bounds.isValid()) {
-          mapRef.current.fitBounds(bounds);
-        } else {
-          console.log("bounds are not valid");
-        }
-      } else {
-        console.log("geoJsonLayerRef.current is undefined or empty");
-      }
-    }
-
-    if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
+  function addLayer(mapRef) {
+    if (!(store.rawMapFile && store.label && store.key && store.parsed_CSV_Data)) {
       return;
     } else {
       // console.log("geoJsonData", geoJsonData);
@@ -144,7 +44,7 @@ export default function ProportionalMap() {
 
       const reducedAndCenteredGeoJSON = {
         type: "FeatureCollection",
-        features: geoJsonData.features.map((feature) => {
+        features: store.rawMapFile.features.map((feature) => {
           const { geometry, properties } = feature;
 
           // Use Turf.js to calculate the center coordinates of the polygon
@@ -161,7 +61,6 @@ export default function ProportionalMap() {
             var index = store.parsed_CSV_Data[store.label].indexOf(
               feature.properties.name
             );
-            console.log(index);
           } catch (error) {
             console.log(error);
           }
@@ -171,7 +70,6 @@ export default function ProportionalMap() {
           // Extract the value from parsedCSV[store.key]
           let gdp_md = store.parsed_CSV_Data[store.key][index];
           gdp_md = gdp_md === "" ? "NA" : Number(gdp_md);
-          console.log("gdp_md", gdp_md);
 
           // Extract only the necessary properties
           const reducedProperties = {
@@ -247,59 +145,43 @@ export default function ProportionalMap() {
       }).addTo(mapRef.current);
 
       // add legend
-      if (store.proportional_value !== null && store.proColor !== null){
+      if (store.proportional_value !== null && store.proColor !== null) {
         legendRef.current = L.control({ position: "bottomright" });
-      legendRef.current.onAdd = function (map) {
-        console.log("store.proportional_value", store.proportional_value);
-        var div = L.DomUtil.create("div", "info legend"),
-          labels = [],
-          categories = [
-            store.proportional_value[1].toFixed(2),
-            (1 / 2) *
-              (
-                store.proportional_value[0] + store.proportional_value[1]
-              ).toFixed(2),
-            store.proportional_value[0].toFixed(2),
-          ];
+        legendRef.current.onAdd = function (map) {
+          console.log("store.proportional_value", store.proportional_value);
+          var div = L.DomUtil.create("div", "info legend"),
+            labels = [],
+            categories = [
+              store.proportional_value[1].toFixed(2),
+              (1 / 2) * (store.proportional_value[0] + store.proportional_value[1]).toFixed(2),
+              store.proportional_value[0].toFixed(2),
+            ];
 
-        // console.log("store.proportional_value", store.proportional_value);
-        // console.log("store.proColor", store.proColor);
-        // for (var i = 0; i < categories.length; i++) {
-        div.innerHTML =
-          '<i class="circle1" style="background: ' +
-          store.proColor +
-          '"></i>' +
-          '<div style="text-align: center;">' +
-          categories[0] +
-          "</div>" +
-          "<br>" +
-          '<i class="circle2" style="background: ' +
-          store.proColor +
-          '"></i>' +
-          '<div style="text-align: center;">' +
-          categories[1] +
-          "</div><br>" +
-          '<i class="circle3" style="background: ' +
-          store.proColor +
-          '"></i>' +
-          '<div style="text-align: center;">' +
-          categories[2] +
-          "</div>";
-        // }
+          // console.log("store.proportional_value", store.proportional_value);
+          // console.log("store.proColor", store.proColor);
+          // for (var i = 0; i < categories.length; i++) {
+          div.innerHTML =
+            `<i class="circle1" style="background: ${store.proColor}"></i>
+            <div style="text-align: center;">${categories[0]}</div>
+            <br>
+            <i class="circle2" style="background: ${store.proColor}"></i>
+            <div style="text-align: center;">${categories[1]}</div>
+            <br>
+            <i class="circle3" style="background: ${store.proColor}"></i>
+            <div style="text-align: center;">${categories[2]}</div>`
+          // }
 
-        return div;
-      };
-      legendRef.current.addTo(mapRef.current);
-    }
+          return div;
+        };
+        legendRef.current.addTo(mapRef.current);
+      }
 
       function getRadius(area) {
         // console.log("area", area);
         // console.log("area === NaN", isNaN(area));
-        console.log("store.proportional value: ", store.proportional_value);
         if (isNaN(area) || area === "NA" || area === "") {
           return 0;
         }
-        console.log("hereeeeeee");
         // var radius = Math.sqrt(area / Math.PI);
         // console.log("radius", radius);
         // var sigmoidRadius = sigmoid(radius);
@@ -312,10 +194,8 @@ export default function ProportionalMap() {
         const maxGDP = Math.max(...validGDPs);
 
         var proportional = [minGDP, maxGDP];
-        console.log("proportional", proportional);
         store.proportional_value = proportional;
         store.setProportionalValue(proportional);
-        console.log(store.proportional_value);
 
         // Normalize the GDP value between 0 and 1
         const normalizedGDP = (area - minGDP) / (maxGDP - minGDP);
@@ -323,7 +203,6 @@ export default function ProportionalMap() {
         // Map the normalized value to the range [0, 70]
         const mappedRadius = normalizedGDP * (70 - 10) + 10;
 
-        console.log("mappedRadius", mappedRadius);
         return mappedRadius;
 
         // Update maxRadiusArray
@@ -340,20 +219,9 @@ export default function ProportionalMap() {
         // }
       }
     }
-  }, [
-    geoJsonData,
-    store.label,
-    store.key,
-    store.parsed_CSV_Data,
-    store.proColor,
-  ]);
+  }
 
   return (
-    <div>
-      <div
-        id={"map-display"}
-        style={{ height: `${mapHeight}px`, margin: "10px" }}
-      ></div>
-    </div>
+    <JsonDisplay clearLayer={clearLayer} addLayer={addLayer}/>
   );
 }

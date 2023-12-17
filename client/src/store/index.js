@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import jsTPS from "../app/common/jsTPS";
 import DotColor_Transaction from "../transactions/DotColor_transaction";
 import HeatColorTransaction from "../transactions/HeatColorTransaction";
+import Procolor_transaction from "../transactions/Procolor_transaction";
 
 import api from "./api";
 
@@ -542,6 +543,9 @@ function StoreContextProvider(props) {
       // const rawMapFile = geobuf.decode(res.data.data);
 
       console.log(res);
+      if(!res.data?.data)
+        return;
+
       const rawMapFile = JSON.parse(res.data.data);
 
       storeReducer({
@@ -975,7 +979,7 @@ function StoreContextProvider(props) {
   store.showSearchBar = () => {
     return pathname == "/main" || pathname == "/mapcards";
   };
-  store.enableEditing = () => {
+  store.isEditPage = () => {
     return pathname == "/edit";
   };
 
@@ -996,10 +1000,7 @@ function StoreContextProvider(props) {
   store.updateMapData = async function (){
     console.log("updating map data");
     let newRawMapFile = JSON.stringify(store.rawMapFile);
-    console.log(newRawMapFile);
-    console.log(store.currentMapObject._id);
     let response = await api.updateMapData(newRawMapFile, store.currentMapObject._id);
-    console.log(response);
     if (response.status != 201){
       alert("Failed to update map data");
       return;
@@ -1027,6 +1028,13 @@ function StoreContextProvider(props) {
   store.setDotColorTransaction = function (newColor) {
     let oldColor = store.dotColor;
     let transaction = new DotColor_Transaction(oldColor, newColor, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+  }
+
+  store.setProColorTransaction = function(newColor){
+    let oldColor = store.proColor;
+    let transaction = new Procolor_transaction(oldColor, newColor, store);
     console.log(transaction);
     tps.addTransaction(transaction);
   }

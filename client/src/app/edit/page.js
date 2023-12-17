@@ -117,7 +117,8 @@ export default function EditScreen() {
     position: "absolute",
     top: "10%",
     right: "5%",
-    maxHeight: "10vh",
+    height: "80vh",
+    overflowY: "scroll"
   };
 
   const toolbarStyle = {
@@ -169,7 +170,7 @@ export default function EditScreen() {
 
       {store.currentMapObject?.mapType !== MapType.TRAVEL_MAP && (
         <div style={panelStyle}>
-          <div className="propertyTitle">Property</div>
+          <div className="propertyTitle">Properties</div>
           <Tabs
             value={tabValue}
             onChange={handleChangeTab}
