@@ -32,16 +32,16 @@ const TravelMap = (props) => {
     const lightLayerRef = useRef(null);
     const settingLayerRef = useRef(null);
 
-    let spinner = true;
+    // let spinner = true;
 
-    const showSpinner = ()=>{
-        if(spinner){
-            document.getElementById('loader').style.display = "block";
-        }
-    }
-    const hideSpinner = ()=>{
-            document.getElementById('loader').style.display = "none";
-    }
+    // const showSpinner = ()=>{
+    //     if(spinner){
+    //         document.getElementById('loader').style.display = "block";
+    //     }
+    // }
+    // const hideSpinner = ()=>{
+    //         document.getElementById('loader').style.display = "none";
+    // }
 
     const loadScript = (src) => {
         return new Promise((resolve, reject) => {
@@ -292,7 +292,7 @@ const TravelMap = (props) => {
         <div>
             <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div>
             {/* <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div> */}
-            <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div>
+            {/* <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div> */}
             {/* <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
                 EXIT
             </Button>
