@@ -1,5 +1,4 @@
-"use client"
-
+"use client";
 
 import React, { useContext, useRef, useState } from "react";
 import Button from "@mui/material/Button";
@@ -10,6 +9,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import shp from "shpjs";
 import tj from "@mapbox/togeojson";
 
+import { useRouter } from "next/navigation";
+
 import StoreContext from "@/store";
 import { CurrentModal } from "@/store";
 
@@ -18,6 +19,7 @@ export default function MUIUploadMap() {
   const workerRef = useRef(null);
   const [uploading, setUploading] = useState(false);
   // const [uploadStatus, setUploadStatus] = useState("");
+  const router = useRouter();
 
   const buttonStyle = {
     mt: 1,
@@ -64,8 +66,37 @@ export default function MUIUploadMap() {
         switch (ext) {
           case "json": {
             const jsonDataString = await readFile(file);
-            geojson = await parseJsonData(jsonDataString);
-            store.uploadMapFile(geojson);
+            let jsonData = await parseJsonData(jsonDataString);
+
+            if (!(jsonData?.type === "PBJSON")) {
+              geojson = jsonData;
+              store.uploadMapFile(geojson);
+            } else {
+              geojson = jsonData.rawMapFile;
+
+              store.mapType = jsonData.mapObject.mapType;
+              store.clearCsv();
+
+              await store.restoreMap(
+                jsonData.mapObject.title,
+                jsonData.mapObject.mapType,
+                geojson,
+                jsonData.mapObject.mapProps
+              );
+
+              // csv
+              await store.setParsedCsvData(jsonData.parsed_CSV_Data);
+              await store.setCsvKey(jsonData.key);
+              await store.setCsvLabel(jsonData.label);
+              await store.saveCSV();
+
+            
+
+                router.push(`/edit?mapId=${store.currentMapObject._id}`);
+                // router.push(`/main`);
+
+            }
+
             // setUploadStatus("Upload complete.");
             break;
           }
@@ -185,7 +216,9 @@ export default function MUIUploadMap() {
       >
         <div className="alertContainer">
           <div className="alert">
-            {"Drag and drop or browse for Shapefile, GeoJson, Keyhole (KML), PBJson files:"}
+            {
+              "Drag and drop or browse for Shapefile, GeoJson, Keyhole (KML), PBJson files:"
+            }
           </div>
           <div className="confirm">
             <div>
@@ -197,11 +230,7 @@ export default function MUIUploadMap() {
                 style={{ display: "none" }}
               />
               <label htmlFor="fileInput">
-                <Button
-                  variant="contained"
-                  component="span"
-                  sx={buttonStyle}
-                >
+                <Button variant="contained" component="span" sx={buttonStyle}>
                   <CloudUploadIcon style={uploadIconStyle} />
                 </Button>
               </label>

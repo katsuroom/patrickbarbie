@@ -30,30 +30,33 @@ export default function EditScreen() {
   const { store } = useContext(StoreContext);
   const [tabValue, setTabValue] = useState("general");
   const [readyToRender, setReadyToRender] = useState(!!store.rawMapFile);
+  console.log("readyToRender", readyToRender);
+  console.log("store.rawMapFile", store.rawMapFile, !!store.rawMapFile);
+  
 
-  const [loadScripts, setLoadScripts] = useState(false);
+  // const [loadScripts, setLoadScripts] = useState(false);
 
-  const loadScript = (src) => {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement("script");
-      script.src = src;
-      script.onload = () => resolve(script);
-      script.onerror = () => reject(new Error(`Script load error for ${src}`));
-      document.body.appendChild(script);
-    });
-  };
+  // const loadScript = (src) => {
+  //   return new Promise((resolve, reject) => {
+  //     const script = document.createElement("script");
+  //     script.src = src;
+  //     script.onload = () => resolve(script);
+  //     script.onerror = () => reject(new Error(`Script load error for ${src}`));
+  //     document.body.appendChild(script);
+  //   });
+  // };
 
-  if (!loadScripts) {
-    Promise.all([
-      loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
-      loadScript("./mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
-    ])
-      .then(() => {
-        setLoadScripts(true);
-        store.setRawMapFile(store.rawMapFile);
-      })
-      .catch((error) => console.error(error));
-  }
+  // if (!loadScripts) {
+  //   Promise.all([
+  //     loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+  //     loadScript("./mq-routing.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
+  //   ])
+  //     .then(() => {
+  //       setLoadScripts(true);
+  //       store.setRawMapFile(store.rawMapFile);
+  //     })
+  //     .catch((error) => console.error(error));
+  // }
 
   useEffect(() => {
     const f = async () => {

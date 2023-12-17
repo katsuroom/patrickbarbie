@@ -54,7 +54,7 @@ export default function MUICreateMap() {
     store.mapType = mapType;
     store.clearCsv();
     await store.createMap(projectName, mapType);
-    router.push("/edit");
+    router.push(`/edit?mapId=${store.currentMapObject._id}`);
     setCreatingMap(false);
   };
   

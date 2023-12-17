@@ -234,7 +234,7 @@ function StoreContextProvider(props) {
           ...store,
           mapList: payload.mapList,
           currentMapObject: payload.currentMapObject,
-          rawMapFile: store.uploadedFile,
+          rawMapFile: payload.rawMapFile || store.uploadedFile,
           uploadedFile: null,
           currentModal: CurrentModal.NONE,
         });
@@ -455,15 +455,56 @@ function StoreContextProvider(props) {
         mapType
       );
       let mapObj = response.data.mapData;
+      store.currentMapObject = mapObj;
 
       // refresh user maps
-      api.getMapsByUser().then((response) => {
+      await api.getMapsByUser().then((response) => {
         console.log("fetched user maps", response.data.data);
         storeReducer({
           type: StoreActionType.CREATE_MAP,
           payload: {
             mapList: response.data.data,
             currentMapObject: mapObj,
+          },
+        });
+      });
+    }
+  };
+
+  store.restoreMap = async function (title, mapType, geojson, mapProps) {
+    console.log("in restore map");
+    console.log("title", title);
+    console.log("mapType", mapType);
+    console.log("geojson", geojson);
+
+
+    // var data = geobuf.encode(file, new Pbf());
+    var data = JSON.stringify(geojson)
+    console.log(data);
+
+    await asyncCreateMap();
+    async function asyncCreateMap() {
+      let response = await api.createMap(
+        data,
+        auth.user.username,
+        title,
+        mapType
+      );
+      let mapObj = response.data.mapData;
+      mapObj.mapProps = mapProps;
+
+      await store.updateMap(mapObj);
+      store.currentMapObject = mapObj;
+
+      // refresh user maps
+      await api.getMapsByUser().then((response) => {
+        console.log("fetched user maps", response.data.data);
+        storeReducer({
+          type: StoreActionType.CREATE_MAP,
+          payload: {
+            mapList: response.data.data,
+            currentMapObject: mapObj,
+            rawMapFile: geojson,
           },
         });
       });
