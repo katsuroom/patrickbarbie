@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import jsTPS from "../app/common/jsTPS";
 import DotColor_Transaction from "../transactions/DotColor_transaction";
 import HeatColorTransaction from "../transactions/HeatColorTransaction";
+import Procolor_transaction from "../transactions/Procolor_transaction";
 
 import api from "./api";
 
@@ -986,6 +987,13 @@ function StoreContextProvider(props) {
   store.setDotColorTransaction = function (newColor) {
     let oldColor = store.dotColor;
     let transaction = new DotColor_Transaction(oldColor, newColor, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+  }
+
+  store.setProColorTransaction = function(newColor){
+    let oldColor = store.proColor;
+    let transaction = new Procolor_transaction(oldColor, newColor, store);
     console.log(transaction);
     tps.addTransaction(transaction);
   }
