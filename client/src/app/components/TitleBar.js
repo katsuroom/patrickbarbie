@@ -142,8 +142,7 @@ export default function TitleBar() {
             )}
           </IconButton>
         ) : (
-          // Render something else when user is not logged in
-          <div>Not logged in</div>
+          <></>
         )}
         <Menu
           anchorEl={anchorEl}
