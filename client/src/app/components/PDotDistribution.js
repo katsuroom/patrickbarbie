@@ -36,7 +36,7 @@ export default function PDotDistribution() {
 
   const handleMaxColorChange = (event) => {
     setMaxHex(event.hex);
-    store.setDotColor(event.hex);
+    store.setDotColorTransaction(event.hex);
   };
 
   useEffect(() => {

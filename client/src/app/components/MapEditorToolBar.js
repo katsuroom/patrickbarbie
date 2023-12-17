@@ -76,8 +76,8 @@ const MapEditorToolbar = () => {
   const [isTextSizePopupVisible, setTextSizePopupVisible] = useState(false);
   const [textSize, setTextSize] = useState(14);
 
-  const handleUndoClick = () => alert('Undo button clicked');
-  const handleRedoClick = () => alert('Redo button clicked');
+  const handleUndoClick = () => { store.undo()};
+  const handleRedoClick = () => { store.redo()};
 
   const handleFontClick = () => setFontDropdownVisible(!isFontDropdownVisible);
   const handleTextSizeClick = () => setTextSizePopupVisible(!isTextSizePopupVisible);
@@ -144,29 +144,63 @@ const MapEditorToolbar = () => {
   );
 
   return (
-    <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', padding: '10px' }}>
-      <button style={buttonStyle} onClick={handleUndoClick}><UndoIcon /></button>
-      <button style={buttonStyle} onClick={handleRedoClick}><RedoIcon /></button>
-      <div style={{ position: 'relative' }}>
-        <button style={buttonStyle} onClick={handleFontClick}>Font <ArrowDropDownIcon /></button>
+    <div
+      style={{
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        padding: "10px",
+      }}
+    >
+      <button
+        style={buttonStyle}
+        disable={!store.canUndo()}
+        onClick={handleUndoClick}
+      >
+        <UndoIcon />
+      </button>
+      <button 
+      style={buttonStyle} 
+      disable={!store.canRedo()}
+      onClick={handleRedoClick}>
+        <RedoIcon />
+      </button>
+      <div style={{ position: "relative" }}>
+        <button style={buttonStyle} onClick={handleFontClick}>
+          Font <ArrowDropDownIcon />
+        </button>
         {isFontDropdownVisible && <FontDropdown />}
       </div>
 
-
-
-      <button style={buttonStyle} onClick={handleTextIncreaseClick}><TextIncreaseIcon /></button>
-      <div style={{ position: 'relative' }}>
-        <button style={buttonStyle} onClick={handleTextSizeClick}><FormatSizeIcon /></button>
+      <button style={buttonStyle} onClick={handleTextIncreaseClick}>
+        <TextIncreaseIcon />
+      </button>
+      <div style={{ position: "relative" }}>
+        <button style={buttonStyle} onClick={handleTextSizeClick}>
+          <FormatSizeIcon />
+        </button>
         {isTextSizePopupVisible && <TextSizePopup />}
       </div>
-      <button style={buttonStyle} onClick={handleTextDecreaseClick}><TextDecreaseIcon /></button>
-      <button style={buttonStyle} onClick={handleBoldClick}><FormatBoldIcon /></button>
-      <button style={buttonStyle} onClick={handleItalicClick}><FormatItalicIcon /></button>
-      <button style={buttonStyle} onClick={handleUnderlinedClick}><FormatUnderlinedIcon /></button>
-      <button style={buttonStyle} onClick={handleFillColorClick}><FormatColorFillIcon /></button>
-      <button style={buttonStyle} onClick={handleBorderColorClick}><BorderColorIcon /></button>
+      <button style={buttonStyle} onClick={handleTextDecreaseClick}>
+        <TextDecreaseIcon />
+      </button>
+      <button style={buttonStyle} onClick={handleBoldClick}>
+        <FormatBoldIcon />
+      </button>
+      <button style={buttonStyle} onClick={handleItalicClick}>
+        <FormatItalicIcon />
+      </button>
+      <button style={buttonStyle} onClick={handleUnderlinedClick}>
+        <FormatUnderlinedIcon />
+      </button>
+      <button style={buttonStyle} onClick={handleFillColorClick}>
+        <FormatColorFillIcon />
+      </button>
+      <button style={buttonStyle} onClick={handleBorderColorClick}>
+        <BorderColorIcon />
+      </button>
 
-      {store.currentMapObject?.mapType === "Travel Map"  ? (
+      {store.currentMapObject?.mapType === "Travel Map" ? (
         <div style={{ position: "relative" }}>
           <button style={buttonStyle} onClick={handleShapeClick}>
             Shape <ArrowDropDownIcon />
