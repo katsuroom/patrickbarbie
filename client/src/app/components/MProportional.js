@@ -222,8 +222,6 @@ export default function ProportionalMap() {
   }
 
   return (
-    <JsonDisplay
-      clearLayer={clearLayer}
-      addLayer={addLayer}/>
+    <JsonDisplay clearLayer={clearLayer} addLayer={addLayer}/>
   );
 }

@@ -219,6 +219,23 @@ export default function EditScreen() {
         >
           {store.currentView}
         </Typography>
+        {auth.loggedIn && store.currentView == View.HOME ? (
+          <Fab
+            size="small"
+            sx={{
+              position: "absolute",
+              bottom: 8,
+              right: "40vw",
+              bgcolor: "#ffabd1",
+              "&:hover": {
+                bgcolor: "#ffabd1",
+              },
+            }}
+            onClick={handleCreateMap}
+          >
+            <AddIcon />
+          </Fab>
+        ) : null}
       </Box>
       <List
         component="nav"
@@ -241,22 +258,6 @@ export default function EditScreen() {
           ])}
         </Grid>
       </List>
-      {auth.loggedIn && store.currentView == View.HOME ? (
-        <Fab
-          sx={{
-            position: "absolute",
-            bottom: 72,
-            right: 16,
-            bgcolor: "#ffabd1",
-            "&:hover": {
-              bgcolor: "#ffabd1",
-            },
-          }}
-          onClick={handleCreateMap}
-        >
-          <AddIcon />
-        </Fab>
-      ) : null}
     </>
   );
 }
