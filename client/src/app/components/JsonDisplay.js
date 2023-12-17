@@ -103,8 +103,7 @@ export default function JsonDisplay(props) {
         store.rawMapFile,
         store.label,
         store.key,
-        store.parsed_CSV_Data,
-        store.dotColor,
+        store.parsed_CSV_Data
     ]);
 
     return (

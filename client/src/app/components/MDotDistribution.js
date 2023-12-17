@@ -9,6 +9,8 @@ export default function DotDistribution() {
   const { store } = useContext(StoreContext);
   const dotDistributionRef = useRef(null);
 
+  const [, refresh] = useState();
+
   useEffect(() => {
     if (store.currentMapObject.mapProps) {
       if (store.currentMapObject.mapProps.dotColor) {
@@ -17,6 +19,10 @@ export default function DotDistribution() {
       }
     }
   }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [store.dotColor]);
 
   // remove layer from mapRef
   function clearLayer(mapRef) {
