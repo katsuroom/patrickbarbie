@@ -247,16 +247,17 @@ const MapEditorToolbar = () => {
       }}
     >
       <button
-        style={buttonStyle}
-        disable={!store.canUndo()}
+        style={{ ...buttonStyle, opacity: store.canUndo() ? 1 : 0.5 }}
+        disabled={!store.canUndo()}
         onClick={handleUndoClick}
       >
         <UndoIcon />
       </button>
       <button 
-      style={buttonStyle} 
-      disable={!store.canRedo()}
-      onClick={handleRedoClick}>
+        style={{ ...buttonStyle, opacity: store.canRedo() ? 1 : 0.5 }}
+        disabled={!store.canRedo()}
+        onClick={handleRedoClick}
+      >
         <RedoIcon />
       </button>
       <div style={{ position: "relative" }}>
