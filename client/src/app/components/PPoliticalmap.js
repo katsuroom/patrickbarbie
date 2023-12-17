@@ -26,10 +26,6 @@ export default function PPoliticalmap() {
     const { store, categoryColorMappings } = useContext(StoreContext);
     const { edit } = useContext(EditContext);
 
-    const { selectedAttribute, setSelectedAttribute } = useContext(StoreContext);
-    const [attributeColorMapping, setAttributeColorMapping] = useState({});
-
-
     const [properties, setProperties] = React.useState([]);
     const [newPropertyName, setNewPropertyName] = React.useState('');
     const [newPropertyColor, setNewPropertyColor] = React.useState('#fff');
@@ -46,32 +42,35 @@ export default function PPoliticalmap() {
         }
     };
 
-    // const updateMapColors = () => {
-    //     store.updateCategoryColorMappings(attributeColorMapping);
-    // };
-
-    // const handleDeleteProperty = (propertyName) => {
-    //     setProperties(properties.filter(property => property.name !== propertyName));
-    // };
-
-    // When a new attribute is selected, reset the color mapping
     useEffect(() => {
-        if (store.selectedAttribute) {
+        if (store.selectedAttribute && store.parsed_CSV_Data && store.parsed_CSV_Data[store.selectedAttribute]) {
             const uniqueValues = new Set(store.parsed_CSV_Data[store.selectedAttribute]);
-            const newMapping = {};
-            uniqueValues.forEach(value => {
-                newMapping[value] = '#ffffff';
-            });
-            setAttributeColorMapping(newMapping);
+            let newMapping = {};
+
+            // If the selectedAttribute has changed, set all unique values to #ffffff
+            if (store.currentMapObject.mapProps.selectedAttribute !== store.selectedAttribute) {
+                uniqueValues.forEach(value => {
+                    newMapping[value] = '#ffffff';
+                });
+            } else {
+                // If the selectedAttribute has not changed, keep the old color mappings
+                newMapping = { ...store.categoryColorMappings };
+            }
+
+            store.updateSelectedAttribute(store.selectedAttribute);
+            store.updateCategoryColorMappings(newMapping);
+            store.currentMapObject.mapProps.categoryColorMappings = store.categoryColorMappings;
+            store.currentMapObject.mapProps.selectedAttribute = store.selectedAttribute;
         }
     }, [store.selectedAttribute, store.parsed_CSV_Data]);
 
-    const handleColorChange = (value, color) => {
-        const updatedMapping = { ...attributeColorMapping, [value]: color.hex };
-        setAttributeColorMapping(updatedMapping);
-        store.updateCategoryColorMappings(updatedMapping);
-    };
+    ;
 
+    const handleColorChange = (value, color) => {
+        const updatedMappings = { ...store.categoryColorMappings, [value]: color.hex };
+        store.updateCategoryColorMappings(updatedMappings);
+        store.currentMapObject.mapProps.categoryColorMappings = updatedMappings;
+    };
 
 
     const [menuItems, setMenuItems] = React.useState([]);
@@ -80,20 +79,6 @@ export default function PPoliticalmap() {
 
     const [minHex, setMinHex] = React.useState(store.minColor);
     const [maxHex, setMaxHex] = React.useState(store.maxColor);
-
-    const handleMinColorChange = (event) => {
-        const color = event.hex;
-        setMinHex(color);
-        store.setMinColor(color);
-
-    };
-
-    const handleMaxColorChange = (event) => {
-        const color = event.hex;
-        setMaxHex(color);
-        store.setMaxColor(color);
-
-    };
 
     useEffect(() => {
         let tfs = [];
@@ -132,7 +117,6 @@ export default function PPoliticalmap() {
     const handleChangeKey = (event) => {
         let tfs = [];
         for (let idx in store.parsed_CSV_Data[event.target.value]) {
-            console.log("gay", idx);
             tfs.push(
 
                 <TextField
@@ -155,8 +139,10 @@ export default function PPoliticalmap() {
         store.setCsvLabel(event.target.value);
     };
 
-    const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
-
+    const openSaveModal = () => {
+        // store.saveMapProperties({ categoryColorMappings: store.categoryColorMappings, selectedAttribute: store.selectedAttribute });
+        store.openModal(CurrentModal.SAVE_EDIT);
+    };
     const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
     const saveCsvChanges = () => {
@@ -306,7 +292,7 @@ export default function PPoliticalmap() {
                 </Select>
 
                 <div>
-                    {Object.entries(attributeColorMapping).map(([value, color]) => (
+                    {Object.entries(store.categoryColorMappings).map(([value, color]) => (
                         <div key={value} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '10px' }}>
                             <div style={{ marginBottom: '5px' }}>{value}</div>
                             <CompactPicker color={color} onChange={color => handleColorChange(value, color)} style={{ marginBottom: '5px' }} />

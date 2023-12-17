@@ -112,13 +112,39 @@ export default function TitleBar() {
         </Box>
         </div>
         ) : null}
-        <IconButton
-          className="icon-menu"
-          sx={{ position: "absolute", top: "0.5%", right: "1%" }}
-          onClick={handleMenu}
-        >
-          <AccountCircleIcon sx={{ fontSize: "32pt", color: "#F1B3CD" }} />
-        </IconButton>
+        {auth.loggedIn ? (
+          <IconButton
+            className="icon-menu"
+            sx={{ position: "absolute", top: "0.5%", right: "1%" }}
+            onClick={handleMenu}
+          >
+            {auth.loggedIn ? (
+              <div
+                style={{
+                  fontSize: "32pt",
+                  color: "#F1B3CD",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "50%",
+                  backgroundColor: "#fce8f1",
+                  border: "2px solid #F1B3CD",
+                  boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.2)",
+                }}
+              >
+                {auth.user.username?.charAt(0)}
+                {/* {auth.user} */}
+              </div>
+            ) : (
+              <AccountCircleIcon sx={{ fontSize: "32pt", color: "#F1B3CD" }} />
+            )}
+          </IconButton>
+        ) : (
+          // Render something else when user is not logged in
+          <div>Not logged in</div>
+        )}
         <Menu
           anchorEl={anchorEl}
           anchorOrigin={{
