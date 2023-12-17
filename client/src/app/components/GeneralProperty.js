@@ -79,7 +79,6 @@ export default function GeneralProperty() {
         setMenuItems(Object.keys(store.rawMapFile.features[0].properties));
     }
 
-   
 
     console.log(menuItems);
 

@@ -7,10 +7,6 @@ import { saveAs } from "file-saver";
 import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
 import Script from "next/script";
 
-function normalize(value, min, max) {
-  return ((value - min) / (max - min)) * 10;
-}
-
 export default function GeoJSONDisplay(props) {
   const [geoJsonData, setGeoJsonData] = useState(null);
   const [buttonAdded, setButtonAdded] = useState(false);
