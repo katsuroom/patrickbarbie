@@ -20,7 +20,7 @@ export default function GeneralProperty() {
     const [selectedKey, setSelectedKey] = React.useState("");
 
     const handleChangeLabel = (event) => {
-        console.log(event.target.value);
+        // console.log(event.target.value);
         setSelectedLabel(event.target.value);
         // console.log("");
     }
@@ -39,13 +39,13 @@ export default function GeneralProperty() {
 
 
     const handleEnterPress = (index, value) => {
-        console.log(index);
-        console.log(value);
+        // console.log(index);
+        // console.log(value);
 
         // Get the current data type
         const currentDataType =
           typeof store.rawMapFile.features[index].properties[selectedKey];
-        console.log(`Current data type: ${currentDataType}`);
+        // console.log(`Current data type: ${currentDataType}`);
 
         // Clone the rawMapFile object to avoid modifying the original directly
         const newRawMapFile = JSON.parse(JSON.stringify(store.rawMapFile));
