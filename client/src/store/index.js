@@ -3,6 +3,8 @@
 import React, { createContext, useState, useContext } from "react";
 import AuthContext from "../auth";
 import { usePathname } from "next/navigation";
+import jsTPS from "../app/common/jsTPS";
+import DotColor_Transaction from "../transactions/DotColor_transaction";
 
 import api from "./api";
 
@@ -10,6 +12,8 @@ const geobuf = require("geobuf");
 const Pbf = require("pbf");
 
 const StoreContext = createContext();
+
+const tps = new jsTPS();
 
 // comments indicate important action types that must not be removed
 export const StoreActionType = {
@@ -467,6 +471,7 @@ function StoreContextProvider(props) {
 
   // loads map data when the map card is clicked
   store.loadMapFile = function (mapId) {
+
     const selected = store.mapList.find(
       (map) => map._id === mapId || map._id.toString() == mapId
     );
@@ -482,6 +487,8 @@ function StoreContextProvider(props) {
       selected.views++;
       store.updateViews(selected);
     }
+
+    tps.clearAllTransactions();
 
     // load raw map file
     // let mapDataId = selected.mapData;
@@ -956,6 +963,32 @@ function StoreContextProvider(props) {
       return;
     }
 
+  }
+
+  store.setDotColorTransaction = function (newColor) {
+    let oldColor = store.dotColor;
+    let transaction = new DotColor_Transaction(oldColor, newColor, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+  }
+
+  store.redo = function (){
+    console.log("redo");
+    tps.redoTransaction();
+  }
+
+  store.undo = function (){
+    console.log("undo");
+    tps.undoTransaction();
+  }
+
+  store.canRedo = function (){
+    console.log(tps.hasTransactionToRedo());
+    return tps.hasTransactionToRedo();
+  }
+  store.canUndo = function (){
+    console.log(tps.hasTransactionToUndo());
+    return tps.hasTransactionToUndo();
   }
 
   return (

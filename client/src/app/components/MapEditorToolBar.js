@@ -76,8 +76,8 @@ const MapEditorToolbar = () => {
   const [isTextSizePopupVisible, setTextSizePopupVisible] = useState(false);
   const [textSize, setTextSize] = useState(14);
 
-  const handleUndoClick = () => alert("Undo button clicked");
-  const handleRedoClick = () => alert("Redo button clicked");
+  const handleUndoClick = () => { store.undo()};
+  const handleRedoClick = () => { store.redo()};
 
   const handleFontClick = () => setFontDropdownVisible(!isFontDropdownVisible);
   const handleTextSizeClick = () =>
@@ -246,10 +246,17 @@ const MapEditorToolbar = () => {
         padding: "10px",
       }}
     >
-      <button style={buttonStyle} onClick={handleUndoClick}>
+      <button
+        style={buttonStyle}
+        disable={!store.canUndo()}
+        onClick={handleUndoClick}
+      >
         <UndoIcon />
       </button>
-      <button style={buttonStyle} onClick={handleRedoClick}>
+      <button 
+      style={buttonStyle} 
+      disable={!store.canRedo()}
+      onClick={handleRedoClick}>
         <RedoIcon />
       </button>
       <div style={{ position: "relative" }}>
