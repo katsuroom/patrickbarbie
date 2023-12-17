@@ -9,20 +9,12 @@ export default function DotDistribution() {
   const { store } = useContext(StoreContext);
   const dotDistributionRef = useRef(null);
 
-  const [, refresh] = useState();
-
   useEffect(() => {
     if (store.currentMapObject.mapProps) {
-      if (store.currentMapObject.mapProps.dotColor) {
-        store.dotColor = store.currentMapObject.mapProps.dotColor;
-        store.setDotColor(store.currentMapObject.mapProps.dotColor);
-      }
+      store.dotColor = store.currentMapObject.mapProps.dotColor;
+      store.setDotColor(store.currentMapObject.mapProps.dotColor);
     }
-  }, []);
-
-  useEffect(() => {
-    refresh();
-  }, [store.dotColor]);
+  }, [store.currentMapObject]);
 
   // remove layer from mapRef
   function clearLayer(mapRef) {

@@ -8,21 +8,17 @@ export default function ProportionalMap() {
   const { store } = useContext(StoreContext);
   const proportionalRef = useRef(null);
   const legendRef = useRef(null);
-  
-  const [, refresh] = useState();
 
   useEffect(() => {
     if (store.currentMapObject.mapProps) {
-      if (store.currentMapObject.mapProps.proColor) {
-        store.proColor = store.currentMapObject.mapProps.proColor;
-        store.setProColor(store.currentMapObject.mapProps.proColor);
-      }
+      store.proColor = store.currentMapObject.mapProps.proColor;
+      store.setProColor(store.currentMapObject.mapProps.proColor);
       if (store.currentMapObject.mapProps.proportional_value) {
         store.proportional_value = store.currentMapObject.mapProps.proportional_value;
         store.setProportionalValue(store.currentMapObject.mapProps.proportional_value);
       }
     }
-  }, []);
+  }, [store.currentMapObject]);
 
   function clearLayer(mapRef) {
     if (proportionalRef.current) {
@@ -65,7 +61,6 @@ export default function ProportionalMap() {
             var index = store.parsed_CSV_Data[store.label].indexOf(
               feature.properties.name
             );
-            console.log(index);
           } catch (error) {
             console.log(error);
           }
@@ -75,7 +70,6 @@ export default function ProportionalMap() {
           // Extract the value from parsedCSV[store.key]
           let gdp_md = store.parsed_CSV_Data[store.key][index];
           gdp_md = gdp_md === "" ? "NA" : Number(gdp_md);
-          console.log("gdp_md", gdp_md);
 
           // Extract only the necessary properties
           const reducedProperties = {
@@ -185,11 +179,9 @@ export default function ProportionalMap() {
       function getRadius(area) {
         // console.log("area", area);
         // console.log("area === NaN", isNaN(area));
-        console.log("store.proportional value: ", store.proportional_value);
         if (isNaN(area) || area === "NA" || area === "") {
           return 0;
         }
-        console.log("hereeeeeee");
         // var radius = Math.sqrt(area / Math.PI);
         // console.log("radius", radius);
         // var sigmoidRadius = sigmoid(radius);
@@ -202,10 +194,8 @@ export default function ProportionalMap() {
         const maxGDP = Math.max(...validGDPs);
 
         var proportional = [minGDP, maxGDP];
-        console.log("proportional", proportional);
         store.proportional_value = proportional;
         store.setProportionalValue(proportional);
-        console.log(store.proportional_value);
 
         // Normalize the GDP value between 0 and 1
         const normalizedGDP = (area - minGDP) / (maxGDP - minGDP);
@@ -213,7 +203,6 @@ export default function ProportionalMap() {
         // Map the normalized value to the range [0, 70]
         const mappedRadius = normalizedGDP * (70 - 10) + 10;
 
-        console.log("mappedRadius", mappedRadius);
         return mappedRadius;
 
         // Update maxRadiusArray
@@ -232,11 +221,9 @@ export default function ProportionalMap() {
     }
   }
 
-  useEffect(() => {
-    refresh();
-  }, [store.proColor]);
-
   return (
-    <JsonDisplay clearLayer={clearLayer} addLayer={addLayer}/>
+    <JsonDisplay
+      clearLayer={clearLayer}
+      addLayer={addLayer}/>
   );
 }
