@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CircularProgress from "@mui/material/CircularProgress";
+import { LinearProgress } from "@mui/material";
 import shp from "shpjs";
 import tj from "@mapbox/togeojson";
 
@@ -18,6 +19,9 @@ export default function MUIUploadMap() {
   const workerRef = useRef(null);
   const [uploading, setUploading] = useState(false);
   // const [uploadStatus, setUploadStatus] = useState("");
+
+  const [progress, setProgress] = useState(0);
+
 
   const buttonStyle = {
     mt: 1,
@@ -56,31 +60,27 @@ export default function MUIUploadMap() {
     if (file) {
       setUploading(true);
       // setUploadStatus("Uploading...");
-
+      setProgress(0);
       let geojson = null;
       let ext = file.name.split(".").pop();
-
       try {
         switch (ext) {
           case "json": {
-            const jsonDataString = await readFile(file);
+            const jsonDataString = await readFile(file, setProgress);
             geojson = await parseJsonData(jsonDataString);
             store.uploadMapFile(geojson);
-            // setUploadStatus("Upload complete.");
             break;
           }
           case "zip": {
-            const data = await readFileAsArrayBuffer(file);
+            const data = await readFileAsArrayBuffer(file, setProgress);
             geojson = await parseShpData(data);
             store.uploadMapFile(geojson);
-            // setUploadStatus("Upload complete.");
             break;
           }
           case "kml": {
-            const kmlData = await readFile(file);
+            const kmlData = await readFile(file, setProgress);
             geojson = await parseKmlData(kmlData);
             store.uploadMapFile(geojson);
-            // setUploadStatus("Upload complete.");
             break;
           }
           default:
@@ -88,37 +88,42 @@ export default function MUIUploadMap() {
         }
       } catch (error) {
         console.error("Error processing file:", error);
-        // setUploadStatus("Error uploading file.");
       } finally {
         setUploading(false);
+        setProgress(100); 
       }
     }
   };
 
-  const readFile = (file) => {
+  const readFile = (file, progressCallback) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
       reader.onload = (event) => resolve(event.target.result);
       reader.onerror = (error) => reject(error);
 
-      // Use the progress event to track reading progress
       reader.onprogress = (event) => {
         if (event.lengthComputable) {
           const percentage = Math.round((event.loaded / event.total) * 100);
-          // setUploadStatus(`Reading file: ${percentage}%`);
+          progressCallback(percentage); 
         }
       };
-
       reader.readAsText(file);
     });
   };
 
-  const readFileAsArrayBuffer = (file) => {
+  const readFileAsArrayBuffer = (file, progressCallback) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (event) => resolve(event.target.result);
       reader.onerror = (error) => reject(error);
+
+      reader.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percentage = Math.round((event.loaded / event.total) * 100);
+          progressCallback(percentage); 
+        }
+      };
       reader.readAsArrayBuffer(file);
     });
   };
@@ -207,9 +212,13 @@ export default function MUIUploadMap() {
               </label>
             </div>
             <div>
-              {uploading ? (
-                <CircularProgress />
-              ) : (
+              {uploading && (
+                <div>
+                  <LinearProgress variant="determinate" value={progress} />
+                  <p>{progress}%</p>
+                </div>
+              )}
+              {!uploading && (
                 <div>
                   {/* {uploadStatus && <p>{uploadStatus}</p>} */}
                   <Button

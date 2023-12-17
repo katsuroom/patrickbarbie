@@ -191,6 +191,9 @@ const TravelMap = (props) => {
             store.setWaypoints(store.currentMapObject.mapProps.waypoints)
             runDirection();
         }
+        else {
+            store.setWaypoints([])
+        }
     }, [store.currentMapObject]);
 
     // const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
