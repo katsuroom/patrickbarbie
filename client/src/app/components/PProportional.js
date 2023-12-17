@@ -45,7 +45,7 @@ export default function PProportional() {
 
   const handleMaxColorChange = (event) => {
     setMaxHex(event.hex);
-    store.setProColor(event.hex);
+    store.setProColorTransaction(event.hex);
   };
 
   useEffect(() => {
