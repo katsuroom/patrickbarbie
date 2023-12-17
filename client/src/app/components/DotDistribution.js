@@ -37,7 +37,16 @@ export default function DotDistribution(){
     useEffect(() => {
       console.log("change raw map file");
       if (store.rawMapFile) setGeoJsonData(store.rawMapFile);
-    }, [store.rawMapFile]);
+      if (store.currentMapObject.mapProps) {
+      if (store.currentMapObject.mapProps.dotColor) {
+        store.dotColor = store.currentMapObject.mapProps.dotColor;
+        store.setDotColor(store.currentMapObject.mapProps.dotColor);
+      }else{
+        store.dotColor = "black";
+        store.setDotColor("black");
+      }
+    }
+    }, [store.currentMapObject]);
 
     useEffect(() => {
       console.log("rendering map");
