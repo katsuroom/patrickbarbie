@@ -4,7 +4,6 @@ import "leaflet-easyprint";
 import "leaflet/dist/leaflet.css";
 import StoreContext from "@/store";
 import { MapType } from "@/store";
-import HeatmapOverlay from "heatmap.js/plugins/leaflet-heatmap";
 import Script from "next/script";
 
 

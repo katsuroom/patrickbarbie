@@ -935,7 +935,7 @@ function StoreContextProvider(props) {
   store.showSearchBar = () => {
     return pathname == "/main" || pathname == "/mapcards";
   };
-  store.enableEditing = () => {
+  store.isEditPage = () => {
     return pathname == "/edit";
   };
 
