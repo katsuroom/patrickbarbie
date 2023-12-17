@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -8,6 +8,8 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
+import { LinearProgress } from "@mui/material";
+
 import "./MUIPublishMap.css";
 import { useRouter } from "next/navigation";
 
@@ -21,6 +23,8 @@ export default function MUICreateMap() {
   const [projectName, setProjectName] = useState("");
   const [mapType, setMapType] = useState(MapType.POLITICAL_MAP);
   const [creatingMap, setCreatingMap] = useState(false);
+  const [progress, setProgress] = useState(0);
+
 
   const buttonStyle = {
     mt: 1,
@@ -47,7 +51,20 @@ export default function MUICreateMap() {
 
   const handleCreateMap = async () => {
     setCreatingMap(true);
-  
+
+    // const chunkSize = 1 * 1024 * 1024;
+    // const mapDataBuffer = store.uploadedFile;
+    // const totalChunks = Math.ceil(mapDataBuffer.length / chunkSize);
+    // console.log("totalChunks", totalChunks);
+    // for (let i = 0; i < totalChunks; i++) {
+    //   console.log("creating chunk #", i);
+    //   const start = i * chunkSize;
+    //   const end = Math.min((i + 1) * chunkSize, mapDataBuffer.length);
+    //   const chunk = mapDataBuffer.slice(start, end);
+    //   var percentage = ((i + 1) / totalChunks) * 100;
+    //   setProgress(percentage)
+    // }
+
     // Simulate an asynchronous delay (remove this in a real-world scenario)
     await new Promise((resolve) => setTimeout(resolve, 500));
   
@@ -58,6 +75,9 @@ export default function MUICreateMap() {
     setCreatingMap(false);
   };
   
+  // useEffect (()=>{
+
+  // }, [percentage])
 
   const handleInputChange = (e) => {
     setProjectName(e.target.value);
@@ -114,7 +134,8 @@ export default function MUICreateMap() {
                 Cancel
               </Button>
               {creatingMap ? (
-                <CircularProgress style={{ marginTop: "20px" }} size={30} />
+                // <LinearProgress variant="determinate" value={progress} />
+                 <CircularProgress style={{ marginTop: "20px" }} size={30} /> 
               ) : (
                 <Button
                   onClick={handleCreateMap}

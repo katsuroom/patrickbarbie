@@ -63,7 +63,20 @@ export default function MUIUploadMap() {
       setProgress(0);
       let geojson = null;
       let ext = file.name.split(".").pop();
+
+      // const formData = new FormData();
+      // formData.append('file', file);
       try {
+
+        // const response = await fetch('/upload-endpoint', {
+        //   method: 'POST',
+        //   body: formData,
+        //   onUploadProgress: (progressEvent) => {
+        //     const percentage = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+        //     setProgress(percentage);
+        //   },
+        // });
+
         switch (ext) {
           case "json": {
             const jsonDataString = await readFile(file, setProgress);
@@ -215,6 +228,7 @@ export default function MUIUploadMap() {
               {uploading && (
                 <div>
                   <LinearProgress variant="determinate" value={progress} />
+                  {/* <CircularProgress style={{ marginTop: "20px" }} size={30} /> */}
                   <p>{progress}%</p>
                 </div>
               )}
