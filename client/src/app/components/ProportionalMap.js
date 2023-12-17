@@ -45,7 +45,29 @@ export default function ProportionalMap() {
 
   useEffect(() => {
     if (store.rawMapFile) setGeoJsonData(store.rawMapFile);
-  }, [store.rawMapFile]);
+
+    if (store.currentMapObject.mapProps) {
+      console.log("updating");
+      if (store.currentMapObject.mapProps.proColor) {
+        store.proColor = store.currentMapObject.mapProps.proColor;
+        store.setProColor(store.currentMapObject.mapProps.proColor);
+      }else{
+        store.proColor = "red";
+        store.setProColor("red");
+      }
+      if (store.currentMapObject.mapProps.proportional_value) {
+        console.log(
+          "store.currentMapObject.mapProps.proportional_value",
+          store.currentMapObject.mapProps.proportional_value
+        );
+        store.proportional_value =
+          store.currentMapObject.mapProps.proportional_value;
+        store.setProportionalValue(
+          store.currentMapObject.mapProps.proportional_value
+        );
+      }
+    }
+  }, [store.currentMapObject]);
 
   useEffect(() => {
     if (!geoJsonData) {
