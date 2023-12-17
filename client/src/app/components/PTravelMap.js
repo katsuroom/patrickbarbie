@@ -84,16 +84,16 @@ const PTravelMap = (props) => {
   };
 
 
-  let spinner = true;
+  // let spinner = true;
 
-  const showSpinner = () => {
-    if (spinner) {
-      document.getElementById('loader2').style.display = "block";
-    }
-  }
-  const hideSpinner = () => {
-    document.getElementById('loader2').style.display = "none";
-  }
+  // const showSpinner = () => {
+  //   if (spinner) {
+  //     document.getElementById('loader2').style.display = "block";
+  //   }
+  // }
+  // const hideSpinner = () => {
+  //   document.getElementById('loader2').style.display = "none";
+  // }
 
 
 
@@ -356,7 +356,7 @@ const PTravelMap = (props) => {
       width: "99vw" }}>
       {/* <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div> */}
       <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div>
-      <div id={"loader2"} style={{ height: `5px`, margin: '5px' }}></div>
+      {/* <div id={"loader2"} style={{ height: `5px`, margin: '5px' }}></div> */}
       <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
         EXIT
       </Button>

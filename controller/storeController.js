@@ -3,6 +3,7 @@ const User = require("../models/user_model");
 const CSV = require("../models/csv_model");
 const Chunk = require("../models/mapdata_model");
 
+
 const jwt = require("jsonwebtoken");
 const auth = require("../auth");
 const path = require("path");
@@ -88,6 +89,9 @@ createMap = async (req, res) => {
       await mapData.save().catch((error) => {
         console.error("Error saving MapData:", error);
       });
+      // progress = ((i + 1) / totalChunks) * 100;
+      // res.write(`data: ${JSON.stringify({ progress })}\n\n`);
+
     }
 
     return res.status(201).json({
