@@ -81,21 +81,20 @@ const SearchBy = {
   ALL: "All",
   MAP_ID: "Map ID",
   MAP_NAME: "Map Name",
-  USER_NAME: "User Name"
-}
+  USER_NAME: "User Name",
+};
 
-const SortBy =  {
+const SortBy = {
   MAP_NAME: "Map Name",
   LIKES: "Most Likes",
   VIEWS: "Most Views",
   LAST_MODIFIED: "Most Recently Modified",
   CREATED_DATE: "Most Recently Created",
-}
+};
 
 function StoreContextProvider(props) {
   const { auth } = useContext(AuthContext);
   const pathname = usePathname();
-
 
   const [store, setStore] = useState({
     currentModal: CurrentModal.NONE, // the currently open modal
@@ -118,7 +117,6 @@ function StoreContextProvider(props) {
     categoryColorMappings: [],
     selectedAttribute: null,
     waypoints: [],
-
   });
 
   store.viewTypes = View;
@@ -297,7 +295,7 @@ function StoreContextProvider(props) {
       case StoreActionType.SET_SELECTED_MAP_LAYER: {
         return setStore({
           ...store,
-          selectedMapLayer: payload, 
+          selectedMapLayer: payload,
         });
       }
       case StoreActionType.SET_PROPORTIONAL_VALUE: {
@@ -383,7 +381,6 @@ function StoreContextProvider(props) {
       type: StoreActionType.SET_SELECTED_MAP_LAYER,
       payload: selectedLayer,
     });
-
   };
 
   store.setProColor = function (color) {
@@ -478,9 +475,8 @@ function StoreContextProvider(props) {
     console.log("mapType", mapType);
     console.log("geojson", geojson);
 
-
     // var data = geobuf.encode(file, new Pbf());
-    var data = JSON.stringify(geojson)
+    var data = JSON.stringify(geojson);
     console.log(data);
 
     await asyncCreateMap();
@@ -500,6 +496,9 @@ function StoreContextProvider(props) {
       // refresh user maps
       await api.getMapsByUser().then((response) => {
         console.log("fetched user maps", response.data.data);
+        store.mapList = response.data.data;
+        store.rawMapFile = geojson;
+
         storeReducer({
           type: StoreActionType.CREATE_MAP,
           payload: {
@@ -514,7 +513,6 @@ function StoreContextProvider(props) {
 
   // loads map data when the map card is clicked
   store.loadMapFile = function (mapId) {
-
     const selected = store.mapList.find(
       (map) => map._id === mapId || map._id.toString() == mapId
     );
@@ -543,8 +541,7 @@ function StoreContextProvider(props) {
       // const rawMapFile = geobuf.decode(res.data.data);
 
       console.log(res);
-      if(!res.data?.data)
-        return;
+      if (!res.data?.data) return;
 
       const rawMapFile = JSON.parse(res.data.data);
 
@@ -855,31 +852,26 @@ function StoreContextProvider(props) {
     });
   };
 
-  store.sortList = function(by){
+  store.sortList = function (by) {
     let list = store.mapList;
-    if (by == SortBy.LIKES){
-      list.sort((a, b) => (a.likedUsers.length < b.likedUsers.length) ? 1 : -1);
-    }
-    else if (by == SortBy.VIEWS){
-      list.sort((a, b) => (a.views < b.views) ? 1 : -1);
-    }
-    else if (by == SortBy.LAST_MODIFIED){
-      list.sort((a, b) => (a.lastModified < b.lastModified) ? 1 : -1);
-    }
-    else if (by == SortBy.CREATED_DATE){
-      list.sort((a, b) => (a.updatedAt < b.updatedAt) ? 1 : -1);
-    }
-    else if (by == SortBy.MAP_NAME){
-      list.sort((a, b) => (a.title < b.title) ? -1 : 1);
+    if (by == SortBy.LIKES) {
+      list.sort((a, b) => (a.likedUsers.length < b.likedUsers.length ? 1 : -1));
+    } else if (by == SortBy.VIEWS) {
+      list.sort((a, b) => (a.views < b.views ? 1 : -1));
+    } else if (by == SortBy.LAST_MODIFIED) {
+      list.sort((a, b) => (a.lastModified < b.lastModified ? 1 : -1));
+    } else if (by == SortBy.CREATED_DATE) {
+      list.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));
+    } else if (by == SortBy.MAP_NAME) {
+      list.sort((a, b) => (a.title < b.title ? -1 : 1));
     }
     storeReducer({
       type: StoreActionType.SET_MAP_LIST,
       payload: { mapList: list },
     });
-  }
+  };
 
   store.searchMaps = async function (searchText, searchBy) {
-
     const res = await api.searchMaps(searchText, searchBy);
     if (store.isHomePage()) {
       store.changeView(store.viewTypes.COMMUNITY);
@@ -995,73 +987,82 @@ function StoreContextProvider(props) {
       type: StoreActionType.SET_RAW_MAP_FILE,
       payload: { file: object },
     });
-  }
+  };
 
-  store.updateMapData = async function (){
+  store.updateMapData = async function () {
     console.log("updating map data");
     let newRawMapFile = JSON.stringify(store.rawMapFile);
-    let response = await api.updateMapData(newRawMapFile, store.currentMapObject._id);
-    if (response.status != 201){
+    let response = await api.updateMapData(
+      newRawMapFile,
+      store.currentMapObject._id
+    );
+    if (response.status != 201) {
       alert("Failed to update map data");
       return;
     }
+  };
 
-  }
-
-  store.setHeatColorTransaction = function (newColor, type){
-    if (type === "min"){
+  store.setHeatColorTransaction = function (newColor, type) {
+    if (type === "min") {
       let oldColor = store.minColor;
-      let transaction = new HeatColorTransaction(type, oldColor, newColor, store);
+      let transaction = new HeatColorTransaction(
+        type,
+        oldColor,
+        newColor,
+        store
+      );
       console.log(transaction);
       tps.addTransaction(transaction);
-    }
-    else if (type === "max"){
+    } else if (type === "max") {
       let oldColor = store.maxColor;
-      let transaction = new HeatColorTransaction(type, oldColor, newColor, store);
+      let transaction = new HeatColorTransaction(
+        type,
+        oldColor,
+        newColor,
+        store
+      );
       console.log(transaction);
       tps.addTransaction(transaction);
     }
-
-  }
-
+  };
 
   store.setDotColorTransaction = function (newColor) {
     let oldColor = store.dotColor;
     let transaction = new DotColor_Transaction(oldColor, newColor, store);
     console.log(transaction);
     tps.addTransaction(transaction);
-  }
+  };
 
-  store.setProColorTransaction = function(newColor){
+  store.setProColorTransaction = function (newColor) {
     let oldColor = store.proColor;
     let transaction = new Procolor_transaction(oldColor, newColor, store);
     console.log(transaction);
     tps.addTransaction(transaction);
-  }
+  };
 
-  store.redo = function (){
+  store.redo = function () {
     console.log("redo");
     tps.redoTransaction();
-  }
+  };
 
-  store.undo = function (){
+  store.undo = function () {
     console.log("undo");
     tps.undoTransaction();
-  }
+  };
 
-  store.canRedo = function (){
+  store.canRedo = function () {
     console.log(tps.hasTransactionToRedo());
     return tps.hasTransactionToRedo();
-  }
-  store.canUndo = function (){
+  };
+  store.canUndo = function () {
     console.log(tps.hasTransactionToUndo());
     return tps.hasTransactionToUndo();
-  }
+  };
 
   return (
     <StoreContext.Provider
       value={{
-        store
+        store,
       }}
     >
       {props.children}

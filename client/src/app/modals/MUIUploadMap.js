@@ -104,12 +104,12 @@ export default function MUIUploadMap() {
               await store.setParsedCsvData(jsonData.parsed_CSV_Data);
               await store.setCsvKey(jsonData.key);
               await store.setCsvLabel(jsonData.label);
-              await store.saveCSV();
+              store.saveCSV();
 
             
 
-                router.push(`/edit?mapId=${store.currentMapObject._id}`);
-                // router.push(`/main`);
+              // router.push(`/edit?mapId=${store.currentMapObject._id}`);
+              router.push(`/main`);
 
             }
 
@@ -150,7 +150,9 @@ export default function MUIUploadMap() {
       reader.onprogress = (event) => {
         if (event.lengthComputable) {
           const percentage = Math.round((event.loaded / event.total) * 100);
-          progressCallback(percentage); 
+          if (progressCallback){
+            progressCallback(percentage); 
+          }
         }
       };
       reader.readAsText(file);
