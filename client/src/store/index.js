@@ -87,8 +87,8 @@ const SortBy =  {
   MAP_NAME: "Map Name",
   LIKES: "Most Likes",
   VIEWS: "Most Views",
-  LAST_MODIFIED: "Most Recent Modified",
-  CREATED_DATE: "Most Recent Created",
+  LAST_MODIFIED: "Most Recently Modified",
+  CREATED_DATE: "Most Recently Created",
 }
 
 function StoreContextProvider(props) {
