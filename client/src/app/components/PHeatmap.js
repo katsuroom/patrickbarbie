@@ -36,24 +36,26 @@ export default function PHeatmap() {
   // const [page, setPage] = React.useState(0);
   const [textFields, setTextFields] = React.useState([]);
 
-  const [minHex, setMinHex] = React.useState(store.minColor || "#FFFFFF");
-  const [maxHex, setMaxHex] = React.useState(store.maxColor || "#FF0000");
+  // const [minHex, setMinHex] = React.useState(store.minColor || "#FFFFFF");
+  // const [maxHex, setMaxHex] = React.useState(store.maxColor || "#FF0000");
 
   const [textFieldChanges, setTextFieldChanges] = React.useState({});
 
   const handleMinColorChange = (event) => {
     const color = event?.hex;
     if (color) {
-      setMinHex(color);
-      store.setMinColor(color);
+      // setMinHex(color);
+      // store.setMinColor(color);
+      store.setHeatColorTransaction(color, "min")
     }
   };
 
   const handleMaxColorChange = (event) => {
     const color = event?.hex;
     if (color) {
-      setMaxHex(color);
-      store.setMaxColor(color);
+      // setMaxHex(color);
+      // store.setMaxColor(color);
+      store.setHeatColorTransaction(color, "max")
     }
   };
 
@@ -306,7 +308,7 @@ export default function PHeatmap() {
         <div>Select Min Color: </div>
         <CompactPicker
           onChange={handleMinColorChange}
-          color={minHex}
+          color={store.minColor || "#FFFFFF"}
           disableAlpha={true} // Disable alpha channel
         />
         {/* </MenuItem>
@@ -328,7 +330,7 @@ export default function PHeatmap() {
 
         <CompactPicker
           onChange={handleMaxColorChange}
-          color={maxHex}
+          color={store.maxColor || "#FF0000"}
           disableAlpha={true} // Disable alpha channel
         />
         {/* </MenuItem>

@@ -10,7 +10,6 @@ export default class DotColor_Transaction extends jsTPS_Transaction {
 
     doTransaction(){
         this.store.setDotColor(this.newcolor);
-
     }
 
     undoTransaction(){

@@ -5,6 +5,7 @@ import AuthContext from "../auth";
 import { usePathname } from "next/navigation";
 import jsTPS from "../app/common/jsTPS";
 import DotColor_Transaction from "../transactions/DotColor_transaction";
+import HeatColorTransaction from "../transactions/HeatColorTransaction";
 
 import api from "./api";
 
@@ -964,6 +965,23 @@ function StoreContextProvider(props) {
     }
 
   }
+
+  store.setHeatColorTransaction = function (newColor, type){
+    if (type === "min"){
+      let oldColor = store.minColor;
+      let transaction = new HeatColorTransaction(type, oldColor, newColor, store);
+      console.log(transaction);
+      tps.addTransaction(transaction);
+    }
+    else if (type === "max"){
+      let oldColor = store.maxColor;
+      let transaction = new HeatColorTransaction(type, oldColor, newColor, store);
+      console.log(transaction);
+      tps.addTransaction(transaction);
+    }
+
+  }
+
 
   store.setDotColorTransaction = function (newColor) {
     let oldColor = store.dotColor;
