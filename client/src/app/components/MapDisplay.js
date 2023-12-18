@@ -9,9 +9,8 @@ const Heatmap = dynamic(() => import('./HeatMap'));
 const Proportional = dynamic(() => import('./MProportional'));
 const TravelMap = dynamic(() => import("./TravelMaps"));
 const DotDistribution = dynamic(() => import("./MDotDistribution"));
-import "leaflet/dist/leaflet.css";
-// import PTravelMap from "./PTravelMap";
 const PTravelMap = dynamic(() => import("./PTravelMap"));
+import "leaflet/dist/leaflet.css";
 
 
 

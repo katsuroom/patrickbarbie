@@ -113,6 +113,7 @@ export default function MapCardList() {
           },
         }}
       >
+        {store.pageLoading && <div id="loader" className="custom-loader" />}
         {store.mapList.map((map, index) => [
           index > 0 && <Divider key={`divider-${map._id}`} />,
           <div style={{ margin: "8px", boxSizing: "border-box" }} key={map._id}>
