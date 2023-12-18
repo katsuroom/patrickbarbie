@@ -493,7 +493,7 @@ function StoreContextProvider(props) {
   };
 
   // create map using uploaded file
-  store.createMap = async function (title, mapType) {
+  store.createMap = async function (title, mapType, selectedLabel) {
     console.log("in create map");
 
     let file = store.uploadedFile;
@@ -507,7 +507,8 @@ function StoreContextProvider(props) {
         data,
         auth.user.username,
         title,
-        mapType
+        mapType,
+        selectedLabel
       );
       let mapObj = response.data.mapData;
       store.currentMapObject = mapObj;
@@ -650,7 +651,8 @@ function StoreContextProvider(props) {
         auth.user.username,
         maptitle,
         store.currentMapObject.mapType,
-        store.currentMapObject.mapProps
+        store.currentMapObject.mapProps,
+        store.currentMapObject.selectedLabel
       );
 
       // refresh user maps

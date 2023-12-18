@@ -46,6 +46,7 @@ createMap = async (req, res) => {
       title: body.title,
       author: body.author,
       mapType: body.mapType,
+      selectedLabel: body.selectedLabel,
     });
 
     User.findOne({ _id: req.userId })

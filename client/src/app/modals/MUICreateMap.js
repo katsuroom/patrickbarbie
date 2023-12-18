@@ -24,6 +24,8 @@ export default function MUICreateMap() {
   const [mapType, setMapType] = useState(MapType.POLITICAL_MAP);
   const [creatingMap, setCreatingMap] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [menuItems, setMenuItems] = React.useState([]);
+  const [selectedLabel, setSelectedLabel] = useState("");
 
 
   const buttonStyle = {
@@ -70,7 +72,7 @@ export default function MUICreateMap() {
   
     store.mapType = mapType;
     store.clearCsv();
-    await store.createMap(projectName, mapType);
+    await store.createMap(projectName, mapType, selectedLabel);
     router.push(`/edit?mapId=${store.currentMapObject._id}`);
     setCreatingMap(false);
   };
@@ -82,6 +84,17 @@ export default function MUICreateMap() {
   const handleInputChange = (e) => {
     setProjectName(e.target.value);
   };
+
+  const changeLabel = (e) => {
+    setSelectedLabel(e.target.value);
+    // store.selectedLabel = e.target.value;
+    // console.log("selectedLabel", store.selectedLabel);
+  };
+
+  if (menuItems.length === 0 && store.uploadedFile) {
+    setMenuItems(Object.keys(store.uploadedFile.features[0].properties));
+    // console.log("menuItems", menuItems);
+  }
 
   return (
     <div>
@@ -126,6 +139,30 @@ export default function MUICreateMap() {
                 </MenuItem>
                 <MenuItem value={MapType.TRAVEL_MAP}>Travel Map</MenuItem>
               </Select>
+              <div>Select a property label representing your region name:</div>
+              {/* <Select
+                onChange={changeLabel}
+                style={selectStyle}
+              >
+                {menuItems.map((value, index) =>{
+                  return(
+                  <MenuItem key={index} value={value}>
+                    {value}
+                  </MenuItem>)
+                })} 
+              </Select> */}
+              <Select
+                labelId="demo-simple-select-standard-label"
+                required
+                onChange={changeLabel}
+                style={selectStyle}
+              >
+                {menuItems.map((mi, index) => (
+                  <MenuItem key={index} value={mi}>
+                    {mi}
+                  </MenuItem>
+                ))}
+              </Select>
               <Button
                 onClick={handleClose}
                 variant="contained"
@@ -135,7 +172,7 @@ export default function MUICreateMap() {
               </Button>
               {creatingMap ? (
                 // <LinearProgress variant="determinate" value={progress} />
-                 <CircularProgress style={{ marginTop: "20px" }} size={30} /> 
+                <CircularProgress style={{ marginTop: "20px" }} size={30} />
               ) : (
                 <Button
                   onClick={handleCreateMap}
