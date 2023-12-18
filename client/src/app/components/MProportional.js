@@ -30,7 +30,7 @@ export default function ProportionalMap() {
   }
 
   function addLayer(mapRef) {
-    if (!(store.rawMapFile && store.label && store.key && store.parsed_CSV_Data)) {
+    if (!(store.rawMapFile && store.label && store.key && store.parsed_CSV_Data && store.table)) {
       return;
     } else {
       // console.log("geoJsonData", geoJsonData);
@@ -58,7 +58,7 @@ export default function ProportionalMap() {
           };
 
           try {
-            var index = store.parsed_CSV_Data[store.label].indexOf(
+            var index = store.table[store.label].indexOf(
               feature.properties.name
             );
           } catch (error) {
@@ -68,7 +68,7 @@ export default function ProportionalMap() {
           // console.log("matchingCSVEntry", matchingCSVEntry);
 
           // Extract the value from parsedCSV[store.key]
-          let gdp_md = store.parsed_CSV_Data[store.key][index];
+          let gdp_md = store.table[store.key][index];
           gdp_md = gdp_md === "" ? "NA" : Number(gdp_md);
 
           // Extract only the necessary properties

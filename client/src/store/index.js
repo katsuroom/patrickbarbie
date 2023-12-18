@@ -399,6 +399,65 @@ function StoreContextProvider(props) {
 
   }
 
+  store.setNewTable = function (csvLabel) {
+    const properties = store.rawMapFile.features.map(
+      (element) => element.properties
+    );
+
+    const generalProperty = {};
+    properties.forEach((element) => {
+      Object.keys(element).forEach((key) => {
+        if (key in generalProperty) {
+          generalProperty[key].push(element[key]);
+        } else {
+          generalProperty[key] = [element[key]];
+        }
+      });
+    });
+
+    console.log(generalProperty);
+    console.log(store.parsed_CSV_Data);
+
+    var indexs = [];
+
+    for (let i = 0; i < store.parsed_CSV_Data[csvLabel].length; i++) {
+      if (
+        generalProperty["name"].includes(store.parsed_CSV_Data[csvLabel][i])
+      ) {
+        indexs.push(i);
+      }
+    }
+
+    // console.log(indexs);
+
+    let newtable = { ...store.parsed_CSV_Data };
+
+    function keepElementsAtIndexes(obj, indexes) {
+      // Iterate over each key in the object
+      for (let key in obj) {
+        // Check if the property is an array
+        if (Array.isArray(obj[key])) {
+          // Create a new array with elements from the specified indexes
+          obj[key] = indexes
+            .map((index) => obj[key][index])
+            .filter((element) => element !== undefined);
+        }
+      }
+    }
+
+    keepElementsAtIndexes(newtable, indexs);
+
+    const final = { ...generalProperty, ...newtable };
+    console.log(final);
+
+    store.table = final;
+
+    storeReducer({
+      type: StoreActionType.SET_TABLE,
+      payload: final,
+    });
+  };
+
 
   store.updateCategoryColorMappings = function (categoryColorMappings) {
     storeReducer({
