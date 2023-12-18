@@ -49,6 +49,7 @@ export const StoreActionType = {
   SET_WAYPOINTS: "SET_WAYPOINTS",
   SET_SELECTED_MAP_LAYER: "SET_SELECTED_MAP_LAYER",
   SET_DOT_COLOR: "SET_DOT_COLOR",
+  SET_SELECTED_LABEL: "SET_SELECTED_LABEL",
 
   LOGOUT_USER: "LOGOUT_USER",
   SET_CATEGORY_COLOR_MAPPINGS: "SET_CATEGORY_COLOR_MAPPINGS",
@@ -123,6 +124,7 @@ function StoreContextProvider(props) {
     selectedAttribute: null,
     waypoints: [],
     pageLoading: false,
+    selectedLabel: null,
   });
 
   store.viewTypes = View;
@@ -350,6 +352,14 @@ function StoreContextProvider(props) {
           table: payload,
         });
       }
+
+      case StoreActionType.SET_SELECTED_LABEL: {
+        return setStore({
+          ...store,
+          selectedLabel: payload,
+        });
+      }
+      
 
       default:
         return store;
@@ -1157,6 +1167,13 @@ function StoreContextProvider(props) {
     console.log(tps.hasTransactionToUndo());
     return tps.hasTransactionToUndo();
   };
+
+  store.setSelectedLabel = function (label){
+    storeReducer({
+      type: StoreActionType.SET_SELECTED_LABEL,
+      payload: label,
+    });
+  }
 
   return (
     <StoreContext.Provider
