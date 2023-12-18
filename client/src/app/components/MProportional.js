@@ -58,6 +58,7 @@ export default function ProportionalMap() {
           };
 
           try {
+            
             var index = store.table[store.label].indexOf(
               feature.properties[store.currentMapObject.selectedLabel]
             );
@@ -69,6 +70,7 @@ export default function ProportionalMap() {
           // console.log("matchingCSVEntry", matchingCSVEntry);
 
           // Extract the value from parsedCSV[store.key]
+          console.log(store.key);
           let gdp_md = store.table[store.key][index];
           gdp_md = gdp_md === "" ? "NA" : Number(gdp_md);
 

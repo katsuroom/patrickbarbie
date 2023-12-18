@@ -136,7 +136,7 @@ export default function PProportional() {
     // console.log(keys);
 
     store.setParsedCsvDataWOR(csv_data);
-    store.setCsvKeyWithoutRerendering(keys[1]);
+    // store.setCsvKeyWithoutRerendering(keys[1]);
     // store.setCsvKey(keys[1]);
     console.log("setting key to", keys[1]);
     store.setCsvLabelWithoutRerendering(keys[0]);
@@ -145,7 +145,7 @@ export default function PProportional() {
     console.log("setting menu item to", keys);
     // setRenderTable(true);
     store.setCsvLabel(keys[0]);
-    store.setCsvKey(keys[1]);
+    // store.setCsvKey(keys[1]);
 
     // store.setTable();
     // console.log(store.table);
