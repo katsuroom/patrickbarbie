@@ -70,6 +70,7 @@ export default function DotDistribution() {
           // });
           // mapRef.current.addLayer(marker); // Add the marker to dotDistributionRef
 
+          console.log(store.dotColor);
           const marker = L.circleMarker(coordinateArray, {
             radius: 5,
             fillColor: store.dotColor ? store.dotColor : "black",
@@ -109,6 +110,10 @@ export default function DotDistribution() {
   }
 
   return (
-    <JsonDisplay clearLayer={clearLayer} addLayer={addLayer}/>
+    <JsonDisplay
+      clearLayer={clearLayer}
+      addLayer={addLayer}
+      triggers={[store.dotColor]}
+    />
   );
 }

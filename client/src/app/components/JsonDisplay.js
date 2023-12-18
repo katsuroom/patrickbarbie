@@ -101,6 +101,7 @@ export default function JsonDisplay(props) {
         // TODO: add map specific layer
         props.addLayer(mapRef);
     }, [
+      ...props.triggers,
         store.rawMapFile,
         store.label,
         store.key,
