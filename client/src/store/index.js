@@ -469,6 +469,7 @@ function StoreContextProvider(props) {
       type: StoreActionType.OPEN_MODAL,
       payload: { modal },
     });
+    store.pageLoading = false
   };
 
   store.closeModal = function () {
@@ -476,6 +477,7 @@ function StoreContextProvider(props) {
       type: StoreActionType.CLOSE_MODAL,
       payload: null,
     });
+    store.pageLoading = false
   };
 
   // uploading a map file
@@ -522,6 +524,7 @@ function StoreContextProvider(props) {
         });
       });
     }
+    store.pageLoading = false
   };
 
   store.restoreMap = async function (title, mapType, geojson, mapProps) {

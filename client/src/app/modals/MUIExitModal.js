@@ -24,6 +24,7 @@ const imgSettings = {
 export default function MUIExit() {
   const router = useRouter();
   const { store } = useContext(StoreContext);
+  store.pageLoading = false
 
   const buttonStyle = {
     mt: 1,
