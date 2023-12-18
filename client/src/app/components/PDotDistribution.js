@@ -2,28 +2,17 @@
 
 import * as React from "react";
 import Table from "@mui/joy/Table";
-import Button from "@mui/joy/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import "./property.css";
 import CsvFileReader from "./CsvFileReader";
 import { useContext, useEffect } from "react";
-import StoreContext, { CurrentModal } from "@/store";
+import StoreContext from "@/store";
 
-// import Table from '@mui/joy/Table';
-// import Button from '@mui/joy/Button';
-// import Add from '@mui/icons-material/Add';
-// import MenuItem from '@mui/material/MenuItem';
-// import Select from '@mui/material/Select';
-// import TextField from '@mui/material/TextField';
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Compact from "@uiw/react-color-compact";
-// import './property.css'
-// import { useContext, useEffect } from "react";
-// import StoreContext from "../store";
-// import CsvFileReader from "./CsvFileReader";
 
 export default function PDotDistribution() {
   const { store } = useContext(StoreContext);
@@ -60,11 +49,6 @@ export default function PDotDistribution() {
     setTextFields(tfs);
   }, [store.parsed_CSV_Data, store.key, store.label]);
 
-  // console.log(store.key);
-  // console.log(store.label);
-
-  // const ROW_PER_PAGE = 30;
-
   function zip(...arrays) {
     let length;
     try {
@@ -81,13 +65,7 @@ export default function PDotDistribution() {
   const handleChangeKey = (event) => {
     let tfs = [];
     for (let idx in store.parsed_CSV_Data[event.target.value]) {
-      // console.log("gay", idx);
       tfs.push(
-        // <input
-        //   id={"search-" + idx}
-        //   defaultValue={store.parsed_CSV_Data[store.key][idx]}
-        //   style={{margin: "8px", width: "100px", height:"30px"}}
-        // />
         <TextField
           id={"tf-" + idx}
           defaultValue={store.parsed_CSV_Data[event.target.value][idx]}
@@ -106,19 +84,6 @@ export default function PDotDistribution() {
   const handleChangeLabel = (event) => {
     // console.log(event.target.value);
     store.setCsvLabel(event.target.value);
-  };
-
-  const openSaveModal = () => {
-    console.log(store.currentMapObject);
-    store.openModal(CurrentModal.SAVE_EDIT);
-  };
-
-  const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
-
-  const saveCsvChanges = () => {
-    // for (let idx in store.parsed_CSV_Data[store.key]) {
-    //   store.parsed_CSV_Data[store.key][idx] = textFields[idx].value;
-    // }
   };
 
   const fileOnLoadComplete = (data) => {
@@ -164,24 +129,9 @@ export default function PDotDistribution() {
     store.setCsvKey(keys[1]);
   };
 
-  // if (store.parsed_CSV_Data && !renderTable){
-  //   console.log("enter here")
-  //   setMenuItems(Object.keys(store.parsed_CSV_Data))
-  //   setRenderTable(true);
-  // }
   if (menuItems.length === 0 && store.parsed_CSV_Data) {
     setMenuItems(Object.keys(store.parsed_CSV_Data));
   }
-
-  // let maxPage =
-  //   store.label && store.parsed_CSV_Data && store.parsed_CSV_Data[store.label]
-  //     ? parseInt(store.parsed_CSV_Data[store.label].length / ROW_PER_PAGE)
-  //     : 0;
-
-  // console.log(store.currentMapObject);
-  // console.log(store.parsed_CSV_Data);
-  // console.log(store.label);
-  // console.log(menuItems);
 
   return (
     <div>
@@ -210,11 +160,6 @@ export default function PDotDistribution() {
                       {mi}
                     </MenuItem>
                   ))}
-                  {/* <MenuItem>
-                    <Button variant="text" startDecorator={<Add />}>
-                      New Label
-                    </Button>
-                  </MenuItem> */}
                 </Select>
               </th>
               <th>
@@ -234,11 +179,6 @@ export default function PDotDistribution() {
                       {mi}
                     </MenuItem>
                   ))}
-                  {/* <MenuItem>
-                    <Button variant="text" startDecorator={<Add />}>
-                      New Column
-                    </Button>
-                  </MenuItem> */}
                 </Select>
               </th>
               {/* <th>Update</th> */}
@@ -259,14 +199,6 @@ export default function PDotDistribution() {
                 <tr key={row.name}>
                   <td>{row[0]}</td>
                   <td>{row[1]}</td>
-                  {/* <td>
-                    <TextField
-                      id="search"
-                      defaultValue={row.calories}
-                      variant="standard"
-                      sx={{ m: 1, minWidth: 120 }}
-                    />
-                  </td> */}
                 </tr>
               ))}
           </tbody>
@@ -289,47 +221,6 @@ export default function PDotDistribution() {
           </Select>
         </FormControl>
       </div>
-      <div>
-        <Button
-          variant="solid"
-          className="exit"
-          sx={{ margin: 1 }}
-          onClick={openExitModal}
-        >
-          EXIT
-        </Button>
-        <Button
-          variant="solid"
-          className="save"
-          sx={{ margin: 1 }}
-          onClick={openSaveModal}
-        >
-          SAVE
-        </Button>
-      </div>
-      {/* <Button
-        variant="solid"
-        className="prev"
-        sx={{ margin: 1 }}
-        disabled={page <= 0}
-        onClick={() => {
-          setPage(page <= 0 ? 0 : page - 1);
-        }}
-      >
-        Prev
-      </Button>
-      Page: {page + 1}
-      <Button
-        variant="solid"
-        className="next"
-        sx={{ margin: 1 }}
-        disabled={page >= maxPage}
-        onClick={() => {
-          setPage(page >= maxPage ? maxPage : page + 1);
-        }}
-      >
-        Next
-      </Button> */}
     </div>
   );
 }

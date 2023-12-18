@@ -2,30 +2,17 @@
 
 import * as React from "react";
 import Table from "@mui/joy/Table";
-import Button from "@mui/joy/Button";
-import Add from "@mui/icons-material/Add";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import "./property.css";
-import { useHistory } from "react-router-dom";
 import CsvFileReader from "./CsvFileReader";
 import { useContext, useEffect } from "react";
-import StoreContext, { CurrentModal } from "@/store";
+import StoreContext from "@/store";
 
-// import Table from '@mui/joy/Table';
-// import Button from '@mui/joy/Button';
-// import Add from '@mui/icons-material/Add';
-// import MenuItem from '@mui/material/MenuItem';
-// import Select from '@mui/material/Select';
-// import TextField from '@mui/material/TextField';
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Compact from "@uiw/react-color-compact";
-// import './property.css'
-// import { useContext, useEffect } from "react";
-// import StoreContext from "../store";
-// import CsvFileReader from "./CsvFileReader";
 
 export default function PProportional() {
   const { store } = useContext(StoreContext);
@@ -115,18 +102,6 @@ export default function PProportional() {
   const handleChangeLabel = (event) => {
     // console.log(event.target.value);
     store.setCsvLabel(event.target.value);
-  };
-
-  const openSaveModal = () => {
-    store.openModal(CurrentModal.SAVE_EDIT);
-  }
-
-  const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
-
-  const saveCsvChanges = () => {
-    // for (let idx in store.parsed_CSV_Data[store.key]) {
-    //   store.parsed_CSV_Data[store.key][idx] = textFields[idx].value;
-    // }
   };
 
   const fileOnLoadComplete = (data) => {
@@ -295,47 +270,6 @@ export default function PProportional() {
           </Select>
         </FormControl>
       </div>
-      <div>
-        <Button
-          variant="solid"
-          className="exit"
-          sx={{ margin: 1 }}
-          onClick={openExitModal}
-        >
-          EXIT
-        </Button>
-        <Button
-          variant="solid"
-          className="save"
-          sx={{ margin: 1 }}
-          onClick={openSaveModal}
-        >
-          SAVE
-        </Button>
-      </div>
-      {/* <Button
-        variant="solid"
-        className="prev"
-        sx={{ margin: 1 }}
-        disabled={page <= 0}
-        onClick={() => {
-          setPage(page <= 0 ? 0 : page - 1);
-        }}
-      >
-        Prev
-      </Button>
-      Page: {page + 1}
-      <Button
-        variant="solid"
-        className="next"
-        sx={{ margin: 1 }}
-        disabled={page >= maxPage}
-        onClick={() => {
-          setPage(page >= maxPage ? maxPage : page + 1);
-        }}
-      >
-        Next
-      </Button> */}
     </div>
   );
 }

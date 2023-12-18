@@ -209,9 +209,10 @@ export default function EditScreen() {
           backgroundColor: "#FC9ABD",
           position: "relative",
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "row",
           textAlign: "center",
           justifyContent: "center",
+          alignItems: "center"
         }}
       >
         <Typography
@@ -228,9 +229,7 @@ export default function EditScreen() {
           <Fab
             size="small"
             sx={{
-              position: "absolute",
-              bottom: 8,
-              right: "40vw",
+              left: 80,
               bgcolor: "#ffabd1",
               "&:hover": {
                 bgcolor: "#ffabd1",
