@@ -32,97 +32,63 @@ export default function PHeatmap() {
   const { store } = useContext(StoreContext);
 
   const [menuItems, setMenuItems] = React.useState([]);
-  // const [renderTable, setRenderTable] = React.useState(false);
-  // const [page, setPage] = React.useState(0);
-  const [textFields, setTextFields] = React.useState([]);
-
-  // const [minHex, setMinHex] = React.useState(store.minColor || "#FFFFFF");
-  // const [maxHex, setMaxHex] = React.useState(store.maxColor || "#FF0000");
-
-  const [textFieldChanges, setTextFieldChanges] = React.useState({});
+  // const [table, setTable] = React.useState({});
 
   const handleMinColorChange = (event) => {
     const color = event?.hex;
     if (color) {
       // setMinHex(color);
       // store.setMinColor(color);
-      store.setHeatColorTransaction(color, "min")
+      store.setHeatColorTransaction(color, "min");
     }
   };
 
   const handleMaxColorChange = (event) => {
     const color = event?.hex;
     if (color) {
-      // setMaxHex(color);
       // store.setMaxColor(color);
-      store.setHeatColorTransaction(color, "max")
+      store.setHeatColorTransaction(color, "max");
     }
   };
 
-  // useEffect(() => {
-  //   let tfs = [];
-  //   if (store.parsed_CSV_Data) {
-  //     for (let idx in store.parsed_CSV_Data[store.key]) {
-  //       tfs.push(
-  //         <TextField
-  //           id={"tf-" + idx}
-  //           defaultValue={store.parsed_CSV_Data[store.key][idx]}
-  //           variant="standard"
-  //           sx={{ m: 1, minWidth: 120 }}
-  //           onChange={(e) =>
-  //             (store.parsed_CSV_Data[store.key][idx] = e.target.value)
-  //           }
-  //         />
-  //       );
-  //     }
-  //   }
-  //   setTextFields(tfs);
-  // }, [store.parsed_CSV_Data, store.key, store.label]);
-
-  // console.log(store.key);
-  // console.log(store.label);
-
-  // const ROW_PER_PAGE = 30;
-
-  function zip(...arrays) {
-    let length;
-    try {
-      length = Math.min(...arrays.map((arr) => arr.length));
-    } catch (error) {
-      length = 0;
+  function zip() {
+    if (!store.tableLabel || !store.key) {
+      return [];
     }
 
-    return Array.from({ length }, (_, index) =>
-      arrays.map((arr) => arr[index])
-    );
+    let res = [];
+
+    // general property
+    if (Object.keys(generalProperty).indexOf(store.key) !== -1) {
+      store.table[store.tableLabel].forEach((element, idx) => {
+        res.push([
+          element,
+          store.table[store.tableLabel].indexOf(element) === -1
+            ? ""
+            : store.table[store.key][
+                store.table[store.tableLabel].indexOf(element)
+              ],
+        ]);
+      });
+    } else {
+      store.table[store.tableLabel].forEach((element, idx) => {
+        res.push([
+          element,
+          store.table[store.label].indexOf(element) === -1
+            ? ""
+            : store.table[store.key][store.table[store.label].indexOf(element)],
+        ]);
+      });
+    }
+
+    return res;
   }
 
   const handleChangeKey = (event) => {
-    // let tfs = [];
-    // for (let idx in store.parsed_CSV_Data[event.target.value]) {
-    //   console.log("gay", idx);
-    //   tfs.push(
-    //     // <input
-    //     //   id={"search-" + idx}
-    //     //   defaultValue={store.parsed_CSV_Data[store.key][idx]}
-    //     //   style={{margin: "8px", width: "100px", height:"30px"}}
-    //     // />
-    //     <TextField
-    //       id={"tf-" + idx}
-    //       defaultValue={store.parsed_CSV_Data[event.target.value][idx]}
-    //       variant="standard"
-    //       sx={{ m: 1, minWidth: 120 }}
-    //       onChange={(e) =>
-    //         (store.parsed_CSV_Data[event.target.value][idx] = e.target.value)
-    //       }
-    //     />
-    //   );
-    // }
-    // setTextFields(tfs);
     store.setCsvKey(event.target.value);
   };
 
-  const handleChangeLabel = (event) => {
+  const handleChangeCsvLabel = (event) => {
     console.log(event.target.value);
     store.setCsvLabel(event.target.value);
   };
@@ -131,10 +97,11 @@ export default function PHeatmap() {
 
   const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
-  const saveCsvChanges = () => {
-    // for (let idx in store.parsed_CSV_Data[store.key]) {
-    //   store.parsed_CSV_Data[store.key][idx] = textFields[idx].value;
-    // }
+  const saveCsvChanges = () => {};
+
+  const handleChangeTableLabel = (event) => {
+    console.log(event.target.value);
+    store.setTableLabel(event.target.value);
   };
 
   const fileOnLoadComplete = (data) => {
@@ -180,29 +147,77 @@ export default function PHeatmap() {
     store.setCsvKey(keys[1]);
   };
 
-  // if (store.parsed_CSV_Data && !renderTable){
-  //   console.log("enter here")
-  //   setMenuItems(Object.keys(store.parsed_CSV_Data))
-  //   setRenderTable(true);
-  // }
-  if (menuItems.length === 0 && store.parsed_CSV_Data) {
-    setMenuItems(Object.keys(store.parsed_CSV_Data));
+  const properties = store.rawMapFile.features.map(
+    (element) => element.properties
+  );
+  const generalProperty = {};
+  properties.forEach((element) => {
+    Object.keys(element).forEach((key) => {
+      if (key in generalProperty) {
+        generalProperty[key].push(element[key]);
+      } else {
+        generalProperty[key] = [element[key]];
+      }
+    });
+  });
+
+  if (menuItems.length !== Object.keys(store.table).length) {
+    setMenuItems(Object.keys(store.table));
   }
-
-  // let maxPage =
-  //   store.label && store.parsed_CSV_Data && store.parsed_CSV_Data[store.label]
-  //     ? parseInt(store.parsed_CSV_Data[store.label].length / ROW_PER_PAGE)
-  //     : 0;
-
-  // console.log(store.currentMapObject);
-  // console.log(store.parsed_CSV_Data);
-  // console.log(store.label);
-  // console.log(menuItems);
 
   return (
     <div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
       <div style={{ overflow: "auto", maxHeight: "45vh" }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ paddingRight: "10%" }}>Select Label: </div>
+          <Select
+            // labelId="demo-simple-select-standard-label"
+            // id="searchOn"
+            value={store.tableLabel}
+            required
+            onChange={handleChangeTableLabel}
+            sx={{ minWidth: "40%", marginLeft: "auto" }}
+            MenuProps={{
+              style: { maxHeight: "50%" },
+            }}
+          >
+            {Object.keys(generalProperty).map((mi) => (
+              <MenuItem key={mi} value={mi}>
+                {mi}
+              </MenuItem>
+            ))}
+          </Select>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ paddingRight: "10%" }}>Select CSV Label: </div>
+          <Select
+            // labelId="demo-simple-select-standard-label"
+            // id="searchOn"
+            value={store.label ? store.label : "label"}
+            required
+            onChange={handleChangeCsvLabel}
+            sx={{ minWidth: "40%", marginLeft: "auto" }}
+            MenuProps={{
+              style: { maxHeight: "50%" },
+            }}
+          >
+            {Object.keys(store.parsed_CSV_Data).map((mi) => (
+              <MenuItem key={mi} value={mi}>
+                {mi}
+              </MenuItem>
+            ))}
+            {/* <MenuItem>
+                    <Button variant="text" startDecorator={<Add />}>
+                      New Label
+                    </Button>
+                  </MenuItem> */}
+          </Select>
+        </div>
+
+        <hr />
+
         <Table
           className="property-table"
           sx={{ "& thead th::nth-of-type(1)": { width: "40%" } }}
@@ -210,12 +225,12 @@ export default function PHeatmap() {
           <thead>
             <tr>
               <th>
-                <Select
+                {/* <Select
                   // labelId="demo-simple-select-standard-label"
                   // id="searchOn"
                   value={store.label ? store.label : "label"}
                   required
-                  onChange={handleChangeLabel}
+                  onChange={handleChangeCsvLabel}
                   sx={{ minWidth: "80%" }}
                   MenuProps={{
                     style: { maxHeight: "50%" },
@@ -226,12 +241,11 @@ export default function PHeatmap() {
                       {mi}
                     </MenuItem>
                   ))}
-                  {/* <MenuItem>
-                    <Button variant="text" startDecorator={<Add />}>
-                      New Label
-                    </Button>
-                  </MenuItem> */}
-                </Select>
+                  
+                </Select> 
+                */}
+
+                <div>Label</div>
               </th>
               <th>
                 <Select
@@ -261,20 +275,11 @@ export default function PHeatmap() {
             </tr>
           </thead>
           <tbody>
-            {store.parsed_CSV_Data &&
-              zip(
-                // store.parsed_CSV_Data[store.label].slice(
-                //   page * ROW_PER_PAGE,
-                //   (page + 1) * ROW_PER_PAGE
-                // ),
-                // textFields.slice(page * ROW_PER_PAGE, (page + 1) * ROW_PER_PAGE)
-                store.parsed_CSV_Data[store.label],
-                store.parsed_CSV_Data[store.key]
-                // textFields
-              ).map((row, idx) => (
-                <tr key={row[idx] + "tr" + idx}>
-                  <td key={row[idx] + "td1" + idx}>{row[0]}</td>
-                  <td key={row[idx] + "td2" + idx}>{row[1]}</td>
+            {store.table &&
+              zip().map((row, idx) => (
+                <tr key={"tr" + idx}>
+                  <td key={"td1" + idx}>{row[0]}</td>
+                  <td key={"td2" + idx}>{row[1]}</td>
                   {/* <td>
                     <TextField
                       id="search"

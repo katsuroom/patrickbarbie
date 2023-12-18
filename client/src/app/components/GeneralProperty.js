@@ -82,6 +82,8 @@ export default function GeneralProperty() {
 
     console.log(menuItems);
 
+
+
     return (
       <div>
         <div style={{ overflow: "auto", maxHeight: "45vh" }}>

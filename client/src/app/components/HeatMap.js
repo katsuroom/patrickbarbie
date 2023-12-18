@@ -171,10 +171,10 @@ export default function Heatmap() {
     let idx;
 
     try {
-      idx = store.parsed_CSV_Data[store.label].indexOf(feature.properties.name);
+      idx = store.table[store.label].indexOf(feature.properties.name);
     } catch (error) {}
 
-    if (!idx || idx < 0 || !store.parsed_CSV_Data) {
+    if (!idx || idx < 0 || !store.table) {
       fillColor = "white";
     } else {
       fillColor = interpolateColor(
@@ -184,9 +184,9 @@ export default function Heatmap() {
         store.maxColor ||
           store.currentMapObject.mapProps?.maxColor ||
           "#FF0000",
-        Math.min(...store.parsed_CSV_Data[store.key]),
-        Math.max(...store.parsed_CSV_Data[store.key]),
-        store.parsed_CSV_Data[store.key][idx]
+        Math.min(...store.table[store.key]),
+        Math.max(...store.table[store.key]),
+        store.table[store.key][idx]
       );
     }
     return {
@@ -393,7 +393,7 @@ export default function Heatmap() {
 
     heatmapOverlayRef.current.addTo(mapRef.current);
 
-    if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
+    if (!(geoJsonData && store.label && store.key && store.table)) {
       return;
     }
 
@@ -416,7 +416,7 @@ export default function Heatmap() {
             store.currentMapObject.mapProps?.minColor ||
             "#FFFFFF") +
           '"> Min: ' +
-          Math.min(...store.parsed_CSV_Data[store.key]) +
+          Math.min(...store.table[store.key]) +
           "</div> " +
           "<br>";
 
@@ -426,7 +426,7 @@ export default function Heatmap() {
             store.currentMapObject.mapProps?.maxColor ||
             "#FFFFFF") +
           '"> Max: ' +
-          Math.max(...store.parsed_CSV_Data[store.key]) +
+          Math.max(...store.table[store.key]) +
           "</div> " +
           "<br>";
 
@@ -441,7 +441,7 @@ export default function Heatmap() {
     geoJsonData,
     store.label,
     store.key,
-    store.parsed_CSV_Data,
+    store.table,
     store.minColor,
     store.maxColor,
   ]);

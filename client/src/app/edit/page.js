@@ -87,6 +87,8 @@ export default function EditScreen() {
         store.setParsedCsvData(csvObj.csvData);
         store.setCsvKey(csvObj.key);
         store.setCsvLabel(csvObj.label);
+
+        store.setTable();
       }
     };
     func();

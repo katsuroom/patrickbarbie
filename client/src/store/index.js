@@ -27,6 +27,8 @@ export const StoreActionType = {
   SET_CSV_KEY: "SET_CSV_KEY",
   SET_CSV_LABEL: "SET_CSV_LABEL",
   SET_RAW_MAP_FILE: "SET_RAW_MAP_FILE",
+  SET_TABLE: "SET_TABLE",
+  SET_TABLE_LABEL: "SET_TABLE_LABEL",
   LOAD_MAP_LIST: "LOAD_MAP_LIST",
 
   LOAD_MAP: "LOAD_MAP",
@@ -100,6 +102,8 @@ function StoreContextProvider(props) {
     currentModal: CurrentModal.NONE, // the currently open modal
     uploadedFile: null,
     rawMapFile: null,
+    tableLabel: null,
+    table: null,
     label: null,
     key: null, // csv key [column name] for map displaying
     StartKey: null, // csv key [column name] for map displaying
@@ -331,11 +335,57 @@ function StoreContextProvider(props) {
           currentView: View.COMMUNITY,
         });
       }
+      case StoreActionType.SET_TABLE_LABEL: {
+        return setStore({
+          ...store,
+          tableLabel: payload,
+        });
+      }
+
+      case StoreActionType.SET_TABLE: {
+        return setStore({
+          ...store,
+          table: payload,
+        });
+      }
 
       default:
         return store;
     }
   };
+
+  store.setTableLabel = function (label) {
+    storeReducer({
+      type: StoreActionType.SET_TABLE_LABEL,
+      payload: label,
+    });
+  };
+
+
+  store.setTable = function () {
+    const properties = store.rawMapFile.features.map(
+      (element) => element.properties
+    );
+    const generalProperty = {};
+    properties.forEach((element) => {
+      Object.keys(element).forEach((key) => {
+        if (key in generalProperty) {
+          generalProperty[key].push(element[key]);
+        } else {
+          generalProperty[key] = [element[key]];
+        }
+      });
+    });
+  
+    const table = { ...generalProperty, ...store.parsed_CSV_Data };
+
+    storeReducer({
+      type: StoreActionType.SET_TABLE,
+      payload: table,
+    });
+
+  }
+
 
   store.updateCategoryColorMappings = function (categoryColorMappings) {
     storeReducer({
