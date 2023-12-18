@@ -422,7 +422,7 @@ function StoreContextProvider(props) {
 
     for (let i = 0; i < store.parsed_CSV_Data[csvLabel].length; i++) {
       if (
-        generalProperty["name"].includes(store.parsed_CSV_Data[csvLabel][i])
+        generalProperty[store.currentMapObject.selectedLabel].includes(store.parsed_CSV_Data[csvLabel][i])
       ) {
         indexs.push(i);
       }
@@ -1203,6 +1203,7 @@ function StoreContextProvider(props) {
     let transaction = new Procolor_transaction(oldColor, newColor, store);
     console.log(transaction);
     tps.addTransaction(transaction);
+    console.log(store.proColor);
   };
 
   store.setGeneralPropertyTransaction = function (selectedKey, newValue, index) {

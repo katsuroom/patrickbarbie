@@ -144,7 +144,11 @@ export default function ProportionalMap() {
       }).addTo(mapRef.current);
 
       // add legend
+
+      console.log("HHHHHHHHHHHHHHHH", store.proportional_value);
+      console.log("HHHHHHHHHHHHHHHH", store.proColor);
       if (store.proportional_value !== null && store.proColor !== null) {
+        console.log("HHHHHHHHHHHHHHHH", store.proportional_value);
         legendRef.current = L.control({ position: "bottomright" });
         legendRef.current.onAdd = function (map) {
           console.log("store.proportional_value", store.proportional_value);

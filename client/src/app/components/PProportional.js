@@ -252,9 +252,9 @@ export default function PProportional() {
           </thead>
           <tbody>
             {store.table &&
-              store.key &&
+              store.key && store.currentMapObject.selectedLabel &&
               zip(
-                store.table["name"],
+                store.table[store.currentMapObject.selectedLabel],
                 store.table[store.key]
                 // textFields
               ).map((row) => (

@@ -26,7 +26,6 @@ export default function MUICreateMap() {
   const [selectedLabel, setSelectedLabel] = useState("");
   const [progress, setProgress] = useState(0);
   const [menuItems, setMenuItems] = React.useState([]);
-  const [selectedLabel, setSelectedLabel] = useState("");
 
 
   const buttonStyle = {
