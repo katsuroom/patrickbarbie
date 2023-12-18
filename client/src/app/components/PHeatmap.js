@@ -52,7 +52,7 @@ export default function PHeatmap() {
   };
 
   function zip() {
-    if (!store.tableLabel || !store.key) {
+    if (!store.table || !store.tableLabel || !store.key) {
       return [];
     }
 
@@ -203,7 +203,7 @@ export default function PHeatmap() {
               style: { maxHeight: "50%" },
             }}
           >
-            {Object.keys(store.parsed_CSV_Data).map((mi) => (
+            {store.parsed_CSV_Data && Object.keys(store.parsed_CSV_Data).map((mi) => (
               <MenuItem key={mi} value={mi}>
                 {mi}
               </MenuItem>
