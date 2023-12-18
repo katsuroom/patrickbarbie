@@ -153,7 +153,8 @@ export default function PProportional() {
   };
 
   const handleEnterPress = (index, value) => {
-    store.setGeneralPropertyTransaction(selectedKey, value, index);
+    store.updateTable(store.key, value, index);
+    // store.setGeneralPropertyTransaction(selectedKey, value, index);
 
     // store.setGeneralProperty(selectedKey, value, index);
   };
@@ -257,8 +258,8 @@ export default function PProportional() {
                 store.table[store.currentMapObject.selectedLabel],
                 store.table[store.key]
                 // textFields
-              ).map((row) => (
-                <tr key={row.name}>
+              ).map((row, index) => (
+                <tr key={index}>
                   <td>{row[0]}</td>
                   <td>{row[1]}</td>
                   <td>

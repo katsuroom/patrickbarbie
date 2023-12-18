@@ -58,7 +58,7 @@ export default function ProportionalMap() {
           };
 
           try {
-            
+
             var index = store.table[store.label].indexOf(
               feature.properties[store.currentMapObject.selectedLabel]
             );

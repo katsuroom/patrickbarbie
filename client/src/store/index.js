@@ -484,6 +484,18 @@ function StoreContextProvider(props) {
     });
   };
 
+  store.updateTable = function (key, value, index){
+    console.log("old Table: ", store.table);
+    let newTable = store.table;
+    newTable[key][index] = value;
+    console.log("new Table: ", newTable);
+    store.table = newTable;
+    storeReducer({
+      type: StoreActionType.SET_TABLE,
+      payload: newTable,
+    });
+  }
+
 
   store.updateCategoryColorMappings = function (categoryColorMappings) {
     storeReducer({
