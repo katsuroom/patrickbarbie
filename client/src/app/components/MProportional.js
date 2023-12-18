@@ -75,8 +75,6 @@ export default function ProportionalMap() {
           const reducedProperties = {
             name: properties.name,
             gdp_md: gdp_md,
-            adm0_a3: properties.adm0_a3,
-            continent: properties.continent,
           };
 
           return {
