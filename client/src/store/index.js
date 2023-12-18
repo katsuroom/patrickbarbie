@@ -118,6 +118,7 @@ function StoreContextProvider(props) {
     categoryColorMappings: [],
     selectedAttribute: null,
     waypoints: [],
+    pageLoading: false,
   });
 
   store.viewTypes = View;
@@ -927,12 +928,15 @@ function StoreContextProvider(props) {
 
   // switches between home and community
   store.changeView = function (view) {
+    store.pageLoading = true
     if (view === store.viewTypes.HOME && !auth.loggedIn) {
+      store.pageLoading = false
       return;
     }
     console.log("changing view to", view);
 
     if (store.currentView === view) {
+      store.pageLoading = false
       return;
     }
     store.currentView = view;
@@ -940,6 +944,7 @@ function StoreContextProvider(props) {
       type: StoreActionType.CHANGE_VIEW,
       payload: { view },
     });
+    store.pageLoading = false
   };
 
   store.logoutUser = function () {
