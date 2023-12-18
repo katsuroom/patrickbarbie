@@ -640,7 +640,7 @@ function StoreContextProvider(props) {
         const csvObj = (await api.getCsvById(store.currentMapObject.csvData))
           .data.data;
         csvData = (
-          await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData)
+          await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData, csvObj.tableLabel)
         ).data.csvData._id;
       }
 

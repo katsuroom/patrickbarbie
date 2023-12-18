@@ -59,7 +59,7 @@ const forkMap = async (
   mapObj.mapProps = mapProps;
   let updateRes = await updateMap(mapObj);
   return mapObj;
-
+  
   //   let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
   // return fetch(`${baseURL}/forkmap/`, {
   //   method: "POST",
