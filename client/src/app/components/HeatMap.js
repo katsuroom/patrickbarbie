@@ -270,7 +270,7 @@ export default function Heatmap() {
             pos, {
               icon: L.divIcon({
                 className: "countryLabel",
-                html: text,
+                html: `<div style="font-size: 30px;">${text}</div>`,
                 iconSize: [1000, 0],
                 iconAnchor: [0, 0],
               }),
