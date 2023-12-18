@@ -67,24 +67,57 @@ export default function PProportional() {
       }
     }
     setTextFields(tfs);
+
+    
+
   }, [store.parsed_CSV_Data, store.key, store.label]);
 
-  // console.log(store.key);
-  // console.log(store.label);
 
-  // const ROW_PER_PAGE = 30;
 
-  function zip(...arrays) {
-    let length;
-    try {
-      length = Math.min(...arrays.map((arr) => arr.length));
-    } catch (error) {
-      length = 0;
+  function zip() {
+    console.log(store.selectedLabel);
+    console.log(store.key);
+    console.log(store.label);
+    console.log(store.table);
+    if (!store.selectedLabel || !store.key) {
+      return [];
     }
 
-    return Array.from({ length }, (_, index) =>
-      arrays.map((arr) => arr[index])
-    );
+    
+    //merge the csv to rawMapFile
+
+    console.log(store.parsed_CSV_Data);
+    
+    let table = [];
+    
+
+    let res = [];
+
+   
+    // // general property
+    // if (Object.keys(generalProperty).indexOf(store.key) !== -1) {
+    //   store.table[store.tableLabel].forEach((element, idx) => {
+    //     res.push([
+    //       element,
+    //       store.table[store.tableLabel].indexOf(element) === -1
+    //         ? ""
+    //         : store.table[store.key][
+    //             store.table[store.tableLabel].indexOf(element)
+    //           ],
+    //     ]);
+    //   });
+    // } else {
+    //   store.table[store.tableLabel].forEach((element, idx) => {
+    //     res.push([
+    //       element,
+    //       store.table[store.label].indexOf(element) === -1
+    //         ? ""
+    //         : store.table[store.key][store.table[store.label].indexOf(element)],
+    //     ]);
+    //   });
+    // }
+
+    return res;
   }
 
   const handleChangeKey = (event) => {
@@ -132,7 +165,7 @@ export default function PProportional() {
   const fileOnLoadComplete = (data) => {
     // setRenderTable(false);
 
-    // console.log(data);
+    console.log(data);
     let csv_data = {};
     let keys = new Set();
     try {
@@ -172,6 +205,11 @@ export default function PProportional() {
     store.setCsvKey(keys[1]);
   };
 
+  const handleChangeCsvLabel = (event) => {
+    console.log(event.target.value);
+    store.setCsvLabel(event.target.value);
+  };
+
   // if (store.parsed_CSV_Data && !renderTable){
   //   console.log("enter here")
   //   setMenuItems(Object.keys(store.parsed_CSV_Data))
@@ -195,6 +233,28 @@ export default function PProportional() {
     <div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
       <div style={{ overflow: "auto", maxHeight: "45vh" }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ paddingRight: "10%" }}>Select CSV Label: </div>
+          <Select
+            value={store.label ? store.label : "label"}
+            required
+            onChange={handleChangeCsvLabel}
+            sx={{ minWidth: "40%", marginLeft: "auto" }}
+            MenuProps={{
+              style: { maxHeight: "50%" },
+            }}
+          >
+            {store.parsed_CSV_Data &&
+              Object.keys(store.parsed_CSV_Data).map((mi) => (
+                <MenuItem key={mi} value={mi}>
+                  {mi}
+                </MenuItem>
+              ))}
+          </Select>
+        </div>
+
+        <hr />
+
         <Table
           className="property-table"
           sx={{ "& thead th::nth-of-type(1)": { width: "40%" } }}
@@ -202,7 +262,7 @@ export default function PProportional() {
           <thead>
             <tr>
               <th>
-                <Select
+                {/* <Select
                   // labelId="demo-simple-select-standard-label"
                   // id="searchOn"
                   value={store.label ? store.label : "label"}
@@ -218,12 +278,8 @@ export default function PProportional() {
                       {mi}
                     </MenuItem>
                   ))}
-                  {/* <MenuItem>
-                    <Button variant="text" startDecorator={<Add />}>
-                      New Label
-                    </Button>
-                  </MenuItem> */}
-                </Select>
+                </Select> */}
+                Label:
               </th>
               <th>
                 <Select
@@ -253,20 +309,11 @@ export default function PProportional() {
             </tr>
           </thead>
           <tbody>
-            {store.parsed_CSV_Data &&
-              zip(
-                // store.parsed_CSV_Data[store.label].slice(
-                //   page * ROW_PER_PAGE,
-                //   (page + 1) * ROW_PER_PAGE
-                // ),
-                // textFields.slice(page * ROW_PER_PAGE, (page + 1) * ROW_PER_PAGE)
-                store.parsed_CSV_Data[store.label],
-                store.parsed_CSV_Data[store.key]
-                // textFields
-              ).map((row) => (
-                <tr key={row.name}>
-                  <td>{row[0]}</td>
-                  <td>{row[1]}</td>
+            {
+              zip().map((row, idx) => (
+                <tr key={"tr" + idx}>
+                  <td key={"td1" + idx}>{row[0]}</td>
+                  <td key={"td2" + idx}>{row[1]}</td>
                   {/* <td>
                     <TextField
                       id="search"
@@ -282,7 +329,9 @@ export default function PProportional() {
       </div>
       <div>
         <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
-          <InputLabel id="demo-simple-select-helper-label">Circle Color</InputLabel>
+          <InputLabel id="demo-simple-select-helper-label">
+            Circle Color
+          </InputLabel>
           <Select
             labelId="demo-simple-select-helper-label"
             id="demo-simple-select-helper"
