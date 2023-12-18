@@ -480,12 +480,14 @@ function StoreContextProvider(props) {
 
   // uploading a map file
   store.uploadMapFile = function (file) {
+    store.pageLoading = true
     console.log("file entered store");
     console.log(file);
     storeReducer({
       type: StoreActionType.UPLOAD_MAP_FILE,
       payload: { file },
     });
+    store.pageLoading = false
   };
 
   // create map using uploaded file

@@ -75,6 +75,7 @@ export default function MapView() {
   // Main component render
   const res = (
     <div style={{ overflowY: "scroll", height: "80vh" }}>
+      {store.pageLoading && <div id="loader" className="custom-loader" />}
       <div >
         <MapDisplay />
       </div>
