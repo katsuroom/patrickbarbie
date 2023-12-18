@@ -145,6 +145,8 @@ export default function PHeatmap() {
     // setRenderTable(true);
     store.setCsvLabel(keys[0]);
     store.setCsvKey(keys[1]);
+
+    store.setTable();
   };
 
   const properties = store.rawMapFile.features.map(
@@ -161,9 +163,9 @@ export default function PHeatmap() {
     });
   });
 
-  if (store.table && menuItems.length !== Object.keys(store.table).length) {
-    setMenuItems(Object.keys(store.table));
-  }
+  // if (store.table && menuItems.length !== Object.keys(store.table).length) {
+  //   setMenuItems(Object.keys(store.table));
+  // }
 
   return (
     <div>
@@ -259,7 +261,7 @@ export default function PHeatmap() {
                     style: { maxHeight: "50%" },
                   }}
                 >
-                  {menuItems.map((mi) => (
+                  {store.table && Object.keys(store.table).map((mi) => (
                     <MenuItem key={mi} value={mi}>
                       {mi}
                     </MenuItem>
