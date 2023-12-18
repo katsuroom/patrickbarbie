@@ -14,25 +14,26 @@ import AuthContext from "@/auth";
 import { useRouter } from "next/navigation";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import './page.css'
 
 export default function EditScreen() {
   const { store } = useContext(StoreContext);
   const { auth } = useContext(AuthContext);
   const [hoveredMap, setHoveredMap] = useState(null);
+  const [loading, setLoading] = useState(true); 
   const router = useRouter();
 
   useEffect(() => {
     const func = async () => {
-      if (auth.loggedIn) {
-        console.log("change view to home");
-        console.log("auth.loggedIn", auth.loggedIn);
-        await store.changeView(store.viewTypes.HOME);
-      } else {
-        console.log("change view to community");
-        await store.changeView(store.viewTypes.COMMUNITY);
-      }
-
-      store.getMapList();
+        if (auth.loggedIn) {
+          console.log("change view to home");
+          console.log("auth.loggedIn", auth.loggedIn);
+          await store.changeView(store.viewTypes.HOME);
+        } else {
+          console.log("change view to community");
+          await store.changeView(store.viewTypes.COMMUNITY);
+        }
+        store.getMapList();
     };
     func();
   }, []);
@@ -66,7 +67,7 @@ export default function EditScreen() {
   const renderMapItem = (map) => (
     <Grid item xs={12} sm={3} md={3} lg={3} key={map._id}>
       <ListItem
-        onClick={() => handleMapClick(map._id)} 
+        onClick={() => handleMapClick(map._id)}
         sx={{
           padding: 1,
           cursor: "pointer",
@@ -139,12 +140,15 @@ export default function EditScreen() {
           <Divider sx={{ marginY: 1 }} />
 
           {/* Image Preview */}
-          
-            <img
-            src={map.imageBuffer ? `data:image/png;base64,${Buffer.from(map.imageBuffer).toString('base64')}` : "./empty_world.png"}
-              alt="Map Preview"
-              style={{width: 200, height: 80}}
-            />
+          <img
+            src={
+              map.imageBuffer
+                ? `data:image/png;base64,${Buffer.from(map.imageBuffer).toString('base64')}`
+                : "./empty_world.png"
+            }
+            alt="Map Preview"
+            style={{ width: 200, height: 80 }}
+          />
 
           <Divider sx={{ marginY: 1 }} />
 
@@ -219,7 +223,7 @@ export default function EditScreen() {
         >
           {store.currentView}
         </Typography>
-        {auth.loggedIn && store.currentView == View.HOME ? (
+        {auth.loggedIn && store.currentView === View.HOME ? (
           <Fab
             size="small"
             sx={{
@@ -237,6 +241,8 @@ export default function EditScreen() {
           </Fab>
         ) : null}
       </Box>
+      {store.pageLoading && <div id="loader" className="custom-loader" />}
+
       <List
         component="nav"
         aria-label="map folders"
@@ -260,4 +266,5 @@ export default function EditScreen() {
       </List>
     </>
   );
+
 }
