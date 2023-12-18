@@ -78,7 +78,8 @@ export default function MUIExportImage() {
           mapObject: {title, mapType, mapProps},
           parsed_CSV_Data: store.parsed_CSV_Data,
           key: store.key,
-          label: store.label
+          label: store.label,
+          tableLabel: store.tableLabel,
         })
       );
     let link = document.getElementById("download-anchor");

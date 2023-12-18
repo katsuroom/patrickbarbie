@@ -457,6 +457,7 @@ createCSV = async (req, res) => {
     key: body.key,
     label: body.label,
     csvData: body.csvData,
+    tableLabel: body.tableLabel,
   });
 
   if (body.key === null || body.label === null || body.csvData === null) {

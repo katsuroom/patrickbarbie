@@ -261,7 +261,7 @@ const getMainScreenMap = (fileName) => {
   });
 };
 
-const createCSV = (key, label, csvData) => {
+const createCSV = (key, label, csvData, tableLabel) => {
   let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
   return fetch(`${baseURL}/csv/`, {
     method: "POST",
@@ -270,6 +270,7 @@ const createCSV = (key, label, csvData) => {
       Authorization: token,
     },
     body: JSON.stringify({
+      tableLabel,
       key,
       label,
       csvData,

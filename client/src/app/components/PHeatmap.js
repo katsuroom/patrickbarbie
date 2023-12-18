@@ -161,7 +161,7 @@ export default function PHeatmap() {
     });
   });
 
-  if (menuItems.length !== Object.keys(store.table).length) {
+  if (store.table && menuItems.length !== Object.keys(store.table).length) {
     setMenuItems(Object.keys(store.table));
   }
 

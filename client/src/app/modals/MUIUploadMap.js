@@ -104,6 +104,7 @@ export default function MUIUploadMap() {
               await store.setParsedCsvData(jsonData.parsed_CSV_Data);
               await store.setCsvKey(jsonData.key);
               await store.setCsvLabel(jsonData.label);
+              await store.setTableLabel(jsonData.tableLabel)
               store.saveCSV();
 
             

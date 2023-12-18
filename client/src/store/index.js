@@ -357,6 +357,7 @@ function StoreContextProvider(props) {
   };
 
   store.setTableLabel = function (label) {
+    store.tableLabel = label;
     storeReducer({
       type: StoreActionType.SET_TABLE_LABEL,
       payload: label,
@@ -956,7 +957,8 @@ function StoreContextProvider(props) {
       const response = await api.createCSV(
         store.key,
         store.label,
-        store.parsed_CSV_Data
+        store.parsed_CSV_Data,
+        store.tableLabel
       );
       console.log("response", response);
       const csvObj = response.data.csvData;
@@ -971,6 +973,7 @@ function StoreContextProvider(props) {
       csvObj.key = store.key;
       csvObj.label = store.label;
       csvObj.csvData = store.parsed_CSV_Data;
+      csvObj.tableLabel = store.tableLabel;
       console.log(csvObj);
       store.updateCSV(csvObj);
     }

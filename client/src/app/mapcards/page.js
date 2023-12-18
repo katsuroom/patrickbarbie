@@ -43,6 +43,7 @@ export default function EditScreen() {
       store.setParsedCsvData(null);
       store.setCsvKey(null);
       store.setCsvLabel(null);
+      store.setTableLabel(null)
 
       if (store.currentMapObject && store.currentMapObject.csvData) {
         const csvObj = await store.getCsvById(store.currentMapObject.csvData);
