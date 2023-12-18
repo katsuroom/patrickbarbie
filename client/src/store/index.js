@@ -1161,6 +1161,32 @@ function StoreContextProvider(props) {
     return tps.hasTransactionToUndo();
   };
 
+  store.getJsonLabels = function (feature, layer) {
+    // check if GeoJSON
+    if (feature.properties.label_y && feature.properties.label_x) {
+      return [[feature.properties.label_y, feature.properties.label_x], feature.properties.name];
+    }
+
+    // check if KML
+    else if(feature.properties.shape_area) {
+      return [layer.getBounds().getCenter(), feature.properties.shape_area];
+    }
+
+    // check if Shapefile
+    else if(feature.properties.NAME_0 || feature.properties.NAME_1 || feature.properties.NAME_2) {
+      if (feature.properties.NAME_2)
+        return [layer.getBounds().getCenter(), feature.properties.NAME_2];
+
+      else if (feature.properties.NAME_1)
+        return [layer.getBounds().getCenter(), feature.properties.NAME_1];
+
+      else if (feature.properties.NAME_0)
+        return [layer.getBounds().getCenter(), feature.properties.NAME_0];
+    }
+
+    return null;
+  };
+
   return (
     <StoreContext.Provider
       value={{

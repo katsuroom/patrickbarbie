@@ -13,6 +13,7 @@ import CsvFileReader from "./CsvFileReader";
 import { useContext, useEffect } from "react";
 import StoreContext, { CurrentModal } from "@/store";
 import { CompactPicker } from "react-color";
+import Typography from "@mui/material/Typography";
 
 // import Table from '@mui/joy/Table';
 // import Button from '@mui/joy/Button';
@@ -93,12 +94,6 @@ export default function PHeatmap() {
     store.setCsvLabel(event.target.value);
   };
 
-  const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
-
-  const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
-
-  const saveCsvChanges = () => {};
-
   const handleChangeTableLabel = (event) => {
     console.log(event.target.value);
     store.setTableLabel(event.target.value);
@@ -172,7 +167,7 @@ export default function PHeatmap() {
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
       <div style={{ overflow: "auto", maxHeight: "45vh" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ paddingRight: "10%" }}>Select Label: </div>
+          <div style={{ paddingRight: "10%" }}>Select Property: </div>
           <Select
             // labelId="demo-simple-select-standard-label"
             // id="searchOn"
@@ -193,7 +188,7 @@ export default function PHeatmap() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ paddingRight: "10%" }}>Select CSV Label: </div>
+          <div style={{ paddingRight: "10%" }}>Select Matching CSV Label: </div>
           <Select
             // labelId="demo-simple-select-standard-label"
             // id="searchOn"
@@ -301,90 +296,20 @@ export default function PHeatmap() {
         </Table>
       </div>
       <div>
-        {/* <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
-        <InputLabel id="min-color-label">Min</InputLabel>
-        <Select
-          labelId="min-color-label"
-          id="min-color-select"
-          label="Min Color"
-          sx={{ minWidth: 130 }}
-          value={minHex}
-          onChange={(event) => setMinHex(event.target.value)}
-        >
-          <MenuItem value={minHex}> */}
-        <div>Select Min Color: </div>
+        <Typography sx={{padding: 1}}>Select Min Color: </Typography>
         <CompactPicker
           onChange={handleMinColorChange}
           color={store.minColor || "#FFFFFF"}
           disableAlpha={true} // Disable alpha channel
         />
-        {/* </MenuItem>
-        </Select>
-      </FormControl> */}
-
-        {/* <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
-        <InputLabel id="max-color-label">Max</InputLabel>
-        <Select
-          labelId="max-color-label"
-          id="max-color-select"
-          label="Max Color"
-          sx={{ minWidth: 130 }}
-          value={maxHex}
-          onChange={(event) => setMaxHex(event.target.value)}
-        >
-          <MenuItem value={maxHex}> */}
-        <div style={{ paddingTop: "1%" }}>Select Max Color: </div>
+        <Typography sx={{padding: 1}}>Select Max Color: </Typography>
 
         <CompactPicker
           onChange={handleMaxColorChange}
           color={store.maxColor || "#FF0000"}
           disableAlpha={true} // Disable alpha channel
         />
-        {/* </MenuItem>
-        </Select>
-      </FormControl> */}
       </div>
-      <div>
-        <Button
-          variant="solid"
-          className="exit"
-          sx={{ margin: 1 }}
-          onClick={openExitModal}
-        >
-          EXIT
-        </Button>
-        <Button
-          variant="solid"
-          className="save"
-          sx={{ margin: 1 }}
-          onClick={openSaveModal}
-        >
-          SAVE
-        </Button>
-      </div>
-      {/* <Button
-        variant="solid"
-        className="prev"
-        sx={{ margin: 1 }}
-        disabled={page <= 0}
-        onClick={() => {
-          setPage(page <= 0 ? 0 : page - 1);
-        }}
-      >
-        Prev
-      </Button>
-      Page: {page + 1}
-      <Button
-        variant="solid"
-        className="next"
-        sx={{ margin: 1 }}
-        disabled={page >= maxPage}
-        onClick={() => {
-          setPage(page >= maxPage ? maxPage : page + 1);
-        }}
-      >
-        Next
-      </Button> */}
     </div>
   );
 }

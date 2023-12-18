@@ -31,13 +31,6 @@ export default function GeneralProperty() {
         setSelectedKey(event.target.value);
     }
 
-    const openSaveModal = () => {
-      store.openModal(CurrentModal.SAVE_EDIT);
-    };
-
-    const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
-
-
     const handleEnterPress = (index, value) => {
 
       store.setGeneralPropertyTransaction(selectedKey, value, index);
@@ -146,25 +139,6 @@ export default function GeneralProperty() {
                 : null}
             </tbody>
           </Table>
-        </div>
-
-        <div>
-          <Button
-            variant="solid"
-            className="exit"
-            sx={{ margin: 1 }}
-            onClick={openExitModal}
-          >
-            EXIT
-          </Button>
-          <Button
-            variant="solid"
-            className="save"
-            sx={{ margin: 1 }}
-            onClick={openSaveModal}
-          >
-            SAVE
-          </Button>
         </div>
         <MUISaveChanges />
         <MUIExit />

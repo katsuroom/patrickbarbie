@@ -6,7 +6,7 @@ import PHeatmap from "../components/PHeatmap";
 import dynamic from "next/dynamic";
 
 import MapDisplay from "../components/MapDisplay";
-import StoreContext, { MapType } from "@/store";
+import StoreContext, { MapType, CurrentModal } from "@/store";
 const PTravelMap = dynamic(() => import("../components/PTravelMap"));
 const PPoliticalmap = dynamic(() => import("../components/PPoliticalmap"));
 const PProportional = dynamic(() => import("../components/PProportional"));
@@ -14,7 +14,7 @@ const PDotDistribution = dynamic(() =>
   import("../components/PDotDistribution")
 );
 const GeneralProperty = dynamic(() => import("../components/GeneralProperty"));
-import { TextField } from "@mui/material";
+import Button from "@mui/joy/Button";
 
 // import { ObjectId } from 'mongodb';
 // import PTravelMap from "../components/PTravelMap";
@@ -120,9 +120,16 @@ export default function EditScreen() {
     position: "absolute",
     top: "10%",
     right: "5%",
-    height: "80vh",
+    height: "70vh", // 80
     overflowY: "scroll"
   };
+
+  const buttonsStyle= {
+    width: "30%",
+    position: "absolute",
+    top: "82%",
+    right: "5%",
+  }
 
   const toolbarStyle = {
     justifyContent: "center",
@@ -158,32 +165,52 @@ export default function EditScreen() {
     setTabValue(newValue);
   };
 
+  const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
+
+  const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
+
   return readyToRender && store.currentMapObject ? (
     <div>
-        
       <div style={toolbarStyle}>
         <MapEditorToolbar />
       </div>
       <div style={{ width: "65vw" }}>
         <MapDisplay />
       </div>
-      {/* <div style={panelStyle}>
-        {propertyPanel}
-      </div> */}
 
       {store.currentMapObject?.mapType !== MapType.TRAVEL_MAP && (
-        <div style={panelStyle}>
-          <div className="propertyTitle">Properties</div>
-          <Tabs
-            value={tabValue}
-            onChange={handleChangeTab}
-            aria-label="basic tabs example"
-          >
-            <Tab label="General" value="general" />
-            <Tab label="Specific" value="specific" />
-          </Tabs>
-          {tabValue === "general" && <GeneralProperty />}
-          {tabValue === "specific" && propertyPanel}
+        <div>
+          <div style={panelStyle}>
+            <div className="propertyTitle">Properties</div>
+            <Tabs
+              value={tabValue}
+              onChange={handleChangeTab}
+              aria-label="basic tabs example"
+            >
+              <Tab label="General" value="general" />
+              <Tab label="Specific" value="specific" />
+            </Tabs>
+            {tabValue === "general" && <GeneralProperty />}
+            {tabValue === "specific" && propertyPanel}
+          </div>
+          <div style={buttonsStyle}>
+            <Button
+              variant="solid"
+              className="exit"
+              sx={{ margin: 1 }}
+              onClick={openExitModal}
+            >
+              EXIT
+            </Button>
+            <Button
+              variant="solid"
+              className="save"
+              sx={{ margin: 1 }}
+              onClick={openSaveModal}
+            >
+              SAVE
+            </Button>
+          </div>
         </div>
       )}
     </div>

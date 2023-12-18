@@ -87,7 +87,8 @@ export default function MUIUploadMap() {
             if (!(jsonData?.type === "PBJSON")) {
               geojson = jsonData;
               store.uploadMapFile(geojson);
-            } else {
+            }
+            else {
               geojson = jsonData.rawMapFile;
 
               store.mapType = jsonData.mapObject.mapType;
@@ -107,11 +108,8 @@ export default function MUIUploadMap() {
               await store.setTableLabel(jsonData.tableLabel)
               store.saveCSV();
 
-            
-
               // router.push(`/edit?mapId=${store.currentMapObject._id}`);
               router.push(`/main`);
-
             }
 
             // setUploadStatus("Upload complete.");

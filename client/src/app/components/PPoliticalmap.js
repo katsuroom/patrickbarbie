@@ -2,23 +2,15 @@
 
 import React from "react";
 import Table from "@mui/joy/Table";
-import Button from "@mui/joy/Button";
-import Box from "@mui/joy/Box";
-import Add from "@mui/icons-material/Add";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import "./property.css";
-import { useHistory } from "react-router-dom";
 import CsvFileReader from "./CsvFileReader";
-import { useContext, useEffect, useState } from "react";
-import StoreContext, { CurrentModal } from "@/store";
+import { useContext, useEffect } from "react";
+import StoreContext from "@/store";
 import { CompactPicker } from "react-color";
-import Paper from "@mui/material/Paper";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
-
 
 import EditContext from "@/edit";
 
@@ -138,12 +130,6 @@ export default function PPoliticalmap() {
         console.log(event.target.value);
         store.setCsvLabel(event.target.value);
     };
-
-    const openSaveModal = () => {
-        // store.saveMapProperties({ categoryColorMappings: store.categoryColorMappings, selectedAttribute: store.selectedAttribute });
-        store.openModal(CurrentModal.SAVE_EDIT);
-    };
-    const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
     const saveCsvChanges = () => {
         // for (let idx in store.parsed_CSV_Data[store.key]) {
@@ -283,6 +269,7 @@ export default function PPoliticalmap() {
 
 
             <div>
+                <Typography sx={{padding: 1}}>Select Category:</Typography>
                 <Select value={store.selectedAttribute} onChange={e => store.updateSelectedAttribute(e.target.value)}>
                     {store.parsed_CSV_Data && Object.keys(store.parsed_CSV_Data).length > 0 ?
                         Object.keys(store.parsed_CSV_Data).map(key => (
@@ -300,26 +287,6 @@ export default function PPoliticalmap() {
                         </div>
                     ))}
                 </div>
-            </div>
-
-
-            <div>
-                <Button
-                    variant="solid"
-                    className="exit"
-                    sx={{ margin: 1 }}
-                    onClick={openExitModal}
-                >
-                    EXIT
-                </Button>
-                <Button
-                    variant="solid"
-                    className="save"
-                    sx={{ margin: 1 }}
-                    onClick={openSaveModal}
-                >
-                    SAVE
-                </Button>
             </div>
         </div>
     );
