@@ -399,6 +399,32 @@ function StoreContextProvider(props) {
 
   }
 
+  store.setPropertyTable = function () {
+    const properties = store.rawMapFile.features.map(
+      (element) => element.properties
+    );
+    const generalProperty = {};
+    properties.forEach((element) => {
+      Object.keys(element).forEach((key) => {
+        if (key in generalProperty) {
+          generalProperty[key].push(element[key]);
+        } else {
+          generalProperty[key] = [element[key]];
+        }
+      });
+    });
+
+    const table = { ...generalProperty};
+    store.table = table;
+
+    console.log(table);
+
+    storeReducer({
+      type: StoreActionType.SET_TABLE,
+      payload: table,
+    });
+  };
+
   store.setNewTable = function (csvLabel) {
     const properties = store.rawMapFile.features.map(
       (element) => element.properties

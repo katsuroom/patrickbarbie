@@ -77,7 +77,7 @@ export default function PProportional() {
 
   const handleChangeKey = (event) => {
     let tfs = [];
-    for (let idx in store.parsed_CSV_Data[event.target.value]) {
+    for (let idx in store.table[event.target.value]) {
       // console.log("gay", idx);
       tfs.push(
         // <input
@@ -87,11 +87,11 @@ export default function PProportional() {
         // />
         <TextField
           id={"tf-" + idx}
-          defaultValue={store.parsed_CSV_Data[event.target.value][idx]}
+          defaultValue={store.table[event.target.value][idx]}
           variant="standard"
           sx={{ m: 1, minWidth: 120 }}
           onChange={(e) =>
-            (store.parsed_CSV_Data[event.target.value][idx] = e.target.value)
+            (store.table[event.target.value][idx] = e.target.value)
           }
         />
       );

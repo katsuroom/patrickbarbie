@@ -75,6 +75,9 @@ export default function MUICreateMap() {
     await store.createMap(projectName, mapType, selectedLabel);
     router.push(`/edit?mapId=${store.currentMapObject._id}`);
     setCreatingMap(false);
+    // store.setPropertyTable();
+    // console.log(store.table);
+    // store.closeModal();
   };
   
   // useEffect (()=>{

@@ -59,6 +59,9 @@ export default function EditScreen() {
   // }
 
   useEffect(() => {
+    store.setPropertyTable();
+    console.log(store.table);
+    
     const f = async () => {
       console.log("refreshing edit");
       if (!store.currentMapObject) {
