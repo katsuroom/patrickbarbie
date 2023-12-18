@@ -7,6 +7,7 @@ import jsTPS from "../app/common/jsTPS";
 import DotColor_Transaction from "../transactions/DotColor_transaction";
 import HeatColorTransaction from "../transactions/HeatColorTransaction";
 import Procolor_transaction from "../transactions/Procolor_transaction";
+import GeneralProperty_Transaction from "../transactions/GeneralProperty_transaction";
 
 import api from "./api";
 
@@ -1002,6 +1003,36 @@ function StoreContextProvider(props) {
     }
   };
 
+  store.setGeneralProperty = function (selectedKey, value, index){
+    // Get the current data type
+    const currentDataType =
+      typeof store.rawMapFile.features[index].properties[selectedKey];
+
+    // Clone the rawMapFile object to avoid modifying the original directly
+    const newRawMapFile = JSON.parse(JSON.stringify(store.rawMapFile));
+
+    // Update the property in the cloned object based on data type
+    switch (currentDataType) {
+      case "number":
+        newRawMapFile.features[index].properties[selectedKey] =
+          parseFloat(value);
+        break;
+      case "boolean":
+        newRawMapFile.features[index].properties[selectedKey] =
+          value.toLowerCase() === "true";
+        break;
+      // Add more cases as needed
+      default:
+        newRawMapFile.features[index].properties[selectedKey] = value;
+    }
+
+    // Update the store with the modified object
+    store.rawMapFile = newRawMapFile;
+    store.setRawMapFile(newRawMapFile);
+    console.log(store.rawMapFile);
+    console.log(store.currentMapObject);
+  }
+
   store.setHeatColorTransaction = function (newColor, type) {
     if (type === "min") {
       let oldColor = store.minColor;
@@ -1039,6 +1070,14 @@ function StoreContextProvider(props) {
     console.log(transaction);
     tps.addTransaction(transaction);
   };
+
+  store.setGeneralPropertyTransaction = function (selectedKey, newValue, index) {
+    let oldValue = store.rawMapFile.features[index].properties[selectedKey];
+    let transaction = new GeneralProperty_Transaction(index, selectedKey, oldValue, newValue, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+  }
+  
 
   store.redo = function () {
     console.log("redo");
