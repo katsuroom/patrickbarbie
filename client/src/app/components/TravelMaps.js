@@ -3,22 +3,15 @@ import './travelmap.css';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
-
-// import endIconUrl from './red.png';
-// import startIconUrl from './blue.png';
 import StoreContext, { CurrentModal } from "@/store";
 import 'leaflet-contextmenu';
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 import 'leaflet-control-geocoder';
-import Button from "@mui/joy/Button";
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css';
 
 
-const TravelMap = (props) => {
-    // const [start, setStart] = useState('');
-    // const [end, setEnd] = useState('');
+const TravelMap = () => {
     const mapRef = useRef(null);
-
     const routeControlRef = useRef(null);
     const { store } = useContext(StoreContext);
     const geoJsonLayerRef = useRef(null);
@@ -32,17 +25,6 @@ const TravelMap = (props) => {
     const lightLayerRef = useRef(null);
     const settingLayerRef = useRef(null);
 
-    // let spinner = true;
-
-    // const showSpinner = ()=>{
-    //     if(spinner){
-    //         document.getElementById('loader').style.display = "block";
-    //     }
-    // }
-    // const hideSpinner = ()=>{
-    //         document.getElementById('loader').style.display = "none";
-    // }
-
     const loadScript = (src) => {
         return new Promise((resolve, reject) => {
             const script = document.createElement('script');
@@ -52,7 +34,6 @@ const TravelMap = (props) => {
             document.body.appendChild(script);
         });
     };
-
 
     const [mapHeight, setMapHeight] = useState(window.innerWidth / 3);
     useEffect(() => {
@@ -96,15 +77,6 @@ const TravelMap = (props) => {
                 layers: [mapLayer],
                 center: [40.731701, -73.993411],
                 zoom: 12,
-                // contextmenu: true,
-                // contextmenuWidth: 140,
-                // contextmenuItems: [{
-                //     text: 'Start from here',
-                //     callback: startHere
-                // }, {
-                //     text: 'Go to here',
-                //     callback: goHere
-                // }]
             });
         }
         if (mapLayerRef.current) mapRef.current.removeLayer(mapLayerRef.current);
@@ -118,9 +90,11 @@ const TravelMap = (props) => {
         satelliteLayerRef.current = window.MQ.satelliteLayer();
         darkLayerRef.current = window.MQ.darkLayer();
         lightLayerRef.current = window.MQ.lightLayer();
+
         if (settingLayerRef.current) {
             mapRef.current.removeControl(settingLayerRef.current);
         }
+
         settingLayerRef.current = L.control.layers({
             'Map': mapLayerRef.current,
             'Hybrid': hybridLayerRef.current,
@@ -128,34 +102,38 @@ const TravelMap = (props) => {
             'Dark': darkLayerRef.current,
             'Light': lightLayerRef.current
         });
+
         settingLayerRef.current.addTo(mapRef.current);
 
         if (geoJsonLayerRef.current) {
             mapRef.current.removeLayer(geoJsonLayerRef.current);
         }
+
         markers.current.forEach((marker) => {
             mapRef.current.removeLayer(marker);
         });
+
         markers.current = [];
 
         if (store.rawMapFile) {
             geoJsonLayerRef.current = L.geoJSON(store.rawMapFile, {
                 onEachFeature: (feature, layer) => {
-                    let labelData = store.getJsonLabels(feature, layer);
-                    if (!labelData) return;
-          
-                    const [pos, text] = labelData;
-          
-                    const label = L.marker(pos, {
-                      icon: L.divIcon({
-                        className: "countryLabel",
-                        html: `<div style="font-size: 30px;">${text}</div>`,
-                        iconSize: [1000, 0],
-                        iconAnchor: [0, 0],
-                      }),
-                    }).addTo(mapRef.current);
-                    markers.current.push(label);
-                  },
+                    // check if label_y and label_x exist, since they don't exist for KML
+                    if (feature.properties.label_y && feature.properties.label_x) {
+                        const label = L.marker(
+                            [feature.properties.label_y, feature.properties.label_x],
+                            {
+                                icon: L.divIcon({
+                                    className: "countryLabel",
+                                    html: feature.properties.name,
+                                    iconSize: [1000, 0],
+                                    iconAnchor: [0, 0],
+                                }),
+                            }
+                        ).addTo(mapRef.current);
+                        markers.current.push(label);
+                    }
+                },
             });
 
             geoJsonLayerRef.current.addTo(mapRef.current);
@@ -171,11 +149,8 @@ const TravelMap = (props) => {
                 console.log("geoJsonLayerRef.current is undefined or empty");
             }
         }
-        runDirection();
 
-        // L.Routing.control ({
-        //     geocoder: L.Control.Geocoder.nominatim()
-        // }).addTo(mapRef.current)
+        runDirection();
     }
 
     useEffect(() => {
@@ -189,29 +164,11 @@ const TravelMap = (props) => {
             store.setWaypoints(store.currentMapObject.mapProps.waypoints)
             runDirection();
         }
-        else {
-            store.setWaypoints([])
-        }
     }, [store.currentMapObject]);
-
-    // const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
-    // const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
     const runDirection = async () => {
 
-        // const runDirection = async (start, end) => {
-        const geocode = async (address) => {
-            const url = `https://www.mapquestapi.com/geocoding/v1/address?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC&location=${encodeURIComponent(address)}`;
-            const response = await fetch(url);
-            const data = await response.json();
-            const location = data.results[0].locations[0].latLng;
-            return location;
-        };
-
         try {
-            // const startPoint = await geocode(start);
-            // const endPoint = await geocode(end);
-
             const startIcon = L.icon({
                 iconUrl: "/blue.png",
                 iconSize: [25, 41],
@@ -236,17 +193,12 @@ const TravelMap = (props) => {
 
             const routingControl = L.Routing.control({
                 waypoints: store.waypoints,
+                routeWhileDragging: true,
                 createMarker: function (i, waypoint, n) {
                     const markerIcon = i === 0 ? startIcon : (i > 0 && i < n - 1) ? inBetweenIcon : endIcon;
-                    return L.marker(waypoint.latLng, { icon: markerIcon });
+                    return L.marker(waypoint.latLng, { draggable: true, icon: markerIcon });
                 },
-                routeWhileDragging: false,
-                addWaypoints: false,
             });
-
-            routingControl.on('routingstart', showSpinner);
-            routingControl.on('routesfound', hideSpinner);
-            routingControl.on('routingerror', hideSpinner);
 
             routingControl.on('waypointschanged', function (e) {
                 const updatedWaypoints = e.waypoints;
@@ -256,34 +208,20 @@ const TravelMap = (props) => {
                 }));
             });
 
-            routingControl.addTo(mapRef.current);
+            // Add the routing control to the map
+            if (mapRef.current) {
+                routingControl.addTo(mapRef.current);
+                routeControlRef.current = routingControl;
+            }
+            // .on('routingstart', showSpinner)
+            // .on('routesfound routingerror', hideSpinner)
+            // .addTo(mapRef.current);
 
             routeControlRef.current = routingControl;
 
-            // mapRef.current.forEach((routingControl) => {
-            //     mapRef.current.removeLayer(routingControl);
-            // });
         } catch (error) {
             console.error('Error in geocoding or routing:', error);
         }
-    };
-
-    // var spinner = true;
-    // const showSpinner = ()=>{
-    //     if(spinner){
-    //         document.getElementById('loader').style.display = "block";
-    //     }
-    // }
-    // const hideSpinner = ()=>{
-    //         document.getElementById('loader').style.display = "none";
-    // }
-
-
-    const submitForm = (event) => {
-        event.preventDefault();
-        // runDirection(start, end);
-        setStart('');
-        setEnd('');
     };
 
     return (
@@ -291,12 +229,6 @@ const TravelMap = (props) => {
             <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div>
             {/* <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div> */}
             {/* <div id={"loader"} style={{ height: `5px`, margin: '5px' }}></div> */}
-            {/* <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
-                EXIT
-            </Button>
-            <Button variant="solid" className="save" sx={{ margin: 1 }} onClick={openSaveModal}>
-                SAVE
-            </Button> */}
         </div>
 
     );

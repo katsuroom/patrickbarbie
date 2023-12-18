@@ -3,9 +3,6 @@ import './travelmap.css';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
-
-// import endIconUrl from './red.png';
-// import startIconUrl from './blue.png';
 import StoreContext, { CurrentModal } from "@/store";
 import 'leaflet-contextmenu';
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
@@ -14,11 +11,8 @@ import Button from "@mui/joy/Button";
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css';
 
 
-const PTravelMap = (props) => {
-  // const [start, setStart] = useState('');
-  // const [end, setEnd] = useState('');
+const PTravelMap = () => {
   const mapRef = useRef(null);
-
   const routeControlRef = useRef(null);
   const { store } = useContext(StoreContext);
   const geoJsonLayerRef = useRef(null);
@@ -31,23 +25,7 @@ const PTravelMap = (props) => {
   const darkLayerRef = useRef(null);
   const lightLayerRef = useRef(null);
   const settingLayerRef = useRef(null);
-
-
-
-  // const startHere = (e) => {
-  //   if (routeControlRef.current) {
-  //     routeControlRef.current.spliceWaypoints(0, 1, e.latlng);
-  //     console.log('routeControlRef.current.getWaypoints' + routeControlRef.current.getWaypoints().map(wp => wp.latLng))
-  //     console.log('routeControlRef.current.Waypoints' + routeControlRef.current.Waypoints)
-  //   }
-  // };
-
-  // const goHere = (e) => {
-  //   if (routeControlRef.current) {
-  //     routeControlRef.current.spliceWaypoints(routeControlRef.current.getWaypoints().length - 1, 1, e.latlng);
-  //     // store.setWaypoints(routeControlRef.current.getWaypoints());
-  //   }
-  // };
+  const [loading, setLoading] = useState(false);
 
   const startHere = (e) => {
     if (geoJsonLayerRef.current) {
@@ -57,11 +35,11 @@ const PTravelMap = (props) => {
           try {
             routeControlRef.current.spliceWaypoints(0, 1, e.latlng);
           } catch (error) {
-            window.alert("Error: Unable to set the start location. Please try a different location.");
+            window.alert("Selected start location data is not available.");
           }
         }
       } else {
-        window.alert("Selected start location is outside the GeoJSON data range.");
+        window.alert("Selected start location is outside the data range.");
       }
     }
   };
@@ -74,27 +52,14 @@ const PTravelMap = (props) => {
           try {
             routeControlRef.current.spliceWaypoints(routeControlRef.current.getWaypoints().length - 1, 1, e.latlng);
           } catch (error) {
-            window.alert("Error: Unable to set the destination location. Please try a different location.");
+            window.alert("Selected destination location data is not available");
           }
         }
       } else {
-        window.alert("Selected destination location is outside the GeoJSON data range.");
+        window.alert("Selected destination location is outside the data range.");
       }
     }
   };
-
-
-  // let spinner = true;
-
-  // const showSpinner = () => {
-  //   if (spinner) {
-  //     document.getElementById('loader2').style.display = "block";
-  //   }
-  // }
-  // const hideSpinner = () => {
-  //   document.getElementById('loader2').style.display = "none";
-  // }
-
 
 
   const loadScript = (src) => {
@@ -107,7 +72,6 @@ const PTravelMap = (props) => {
     });
   };
 
-
   const [mapHeight, setMapHeight] = useState(window.innerWidth / 3);
   useEffect(() => {
     const resizeListener = () => {
@@ -119,10 +83,6 @@ const PTravelMap = (props) => {
     };
   }, []);
 
-  const handleMapLayerSelection = (layerName) => {
-    console.log("Map layer selected:", layerName);
-    store.setSelectedMapLayer(layerName); 
-  };
 
   useEffect(() => {
     if (store.rawMapFile) {
@@ -186,14 +146,6 @@ const PTravelMap = (props) => {
       'Dark': darkLayerRef.current,
       'Light': lightLayerRef.current
     });
-    if (settingLayerRef.current && typeof settingLayerRef.current.on === 'function') {
-      settingLayerRef.current.on('baselayerchange', (e) => {
-        handleMapLayerSelection(e.name);
-      });
-    } else {
-      console.error('Layer control is not initialized correctly');
-    }
-
     settingLayerRef.current.addTo(mapRef.current);
 
     if (geoJsonLayerRef.current) {
@@ -207,20 +159,22 @@ const PTravelMap = (props) => {
     if (store.rawMapFile) {
       geoJsonLayerRef.current = L.geoJSON(store.rawMapFile, {
         onEachFeature: (feature, layer) => {
-          let labelData = store.getJsonLabels(feature, layer);
-          if (!labelData) return;
 
-          const [pos, text] = labelData;
-
-          const label = L.marker(pos, {
-            icon: L.divIcon({
-              className: "countryLabel",
-              html: `<div style="font-size: 30px;">${text}</div>`,
-              iconSize: [1000, 0],
-              iconAnchor: [0, 0],
-            }),
-          }).addTo(mapRef.current);
-          markers.current.push(label);
+          // check if label_y and label_x exist, since they don't exist for KML
+          if (feature.properties.label_y && feature.properties.label_x) {
+            const label = L.marker(
+              [feature.properties.label_y, feature.properties.label_x],
+              {
+                icon: L.divIcon({
+                  className: "countryLabel",
+                  html: feature.properties.name,
+                  iconSize: [1000, 0],
+                  iconAnchor: [0, 0],
+                }),
+              }
+            ).addTo(mapRef.current);
+            markers.current.push(label);
+          }
         },
       });
 
@@ -237,11 +191,8 @@ const PTravelMap = (props) => {
         console.log("geoJsonLayerRef.current is undefined or empty");
       }
     }
-    runDirection();
 
-    // L.Routing.control ({
-    //     geocoder: L.Control.Geocoder.nominatim()
-    // }).addTo(mapRef.current)
+    runDirection();
   }
 
   useEffect(() => {
@@ -262,18 +213,15 @@ const PTravelMap = (props) => {
 
   const runDirection = async () => {
 
-    // const runDirection = async (start, end) => {
-    const geocode = async (address) => {
-      const url = `https://www.mapquestapi.com/geocoding/v1/address?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC&location=${encodeURIComponent(address)}`;
-      const response = await fetch(url);
-      const data = await response.json();
-      const location = data.results[0].locations[0].latLng;
-      return location;
-    };
+    if (store.waypoints){
+      setLoading(true);
+    }
 
     try {
-      // const startPoint = await geocode(start);
-      // const endPoint = await geocode(end);
+
+      if (routeControlRef.current) {
+        mapRef.current.removeControl(routeControlRef.current);
+      }
 
       const startIcon = L.icon({
         iconUrl: "/blue.png",
@@ -293,12 +241,7 @@ const PTravelMap = (props) => {
         iconAnchor: [12, 41]
       });
 
-
-      if (routeControlRef.current) {
-        mapRef.current.removeControl(routeControlRef.current);
-      }
-
-      const routingControl = L.Routing.control({
+      const routingControl = L.Routing.control({   
         waypoints: store.waypoints,
         routeWhileDragging: true,
         createMarker: function (i, waypoint, n) {
@@ -308,10 +251,7 @@ const PTravelMap = (props) => {
         geocoder: L.Control.Geocoder.nominatim(),
       });
 
-      routingControl.on('routingstart', showSpinner);
-      routingControl.on('routesfound', hideSpinner);
-      routingControl.on('routingerror', hideSpinner);
-
+      // Listen for the waypointsUpdated event
       routingControl.on('waypointschanged', function (e) {
         const updatedWaypoints = e.waypoints;
         console.log('Waypoints Updated:', updatedWaypoints);
@@ -320,41 +260,31 @@ const PTravelMap = (props) => {
         }));
       });
 
-      routingControl.addTo(mapRef.current);
-      routeControlRef.current = routingControl;
+      routingControl.on('routingstart', function () {
+        setLoading(true); 
+      });
 
-      // mapRef.current.forEach((routingControl) => {
-      //     mapRef.current.removeLayer(routingControl);
-      // });
+      routingControl.on('routesfound routingerror', function () {
+        setLoading(false); 
+      });
+
+      // Add the routing control to the map
+      routingControl.addTo(mapRef.current);
+
+      routeControlRef.current = routingControl;
     } catch (error) {
       console.error('Error in geocoding or routing:', error);
+      setLoading(false);
     }
-  };
-
-  // var spinner = true;
-  // const showSpinner = ()=>{
-  //     if(spinner){
-  //         document.getElementById('loader').style.display = "block";
-  //     }
-  // }
-  // const hideSpinner = ()=>{
-  //         document.getElementById('loader').style.display = "none";
-  // }
-
-
-  const submitForm = (event) => {
-    event.preventDefault();
-    // runDirection(start, end);
-    setStart('');
-    setEnd('');
   };
 
   return (
     <div style={{
-      width: "99vw" }}>
+      width: "99vw"
+    }}>
       {/* <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div> */}
       <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div>
-      {/* <div id={"loader2"} style={{ height: `5px`, margin: '5px' }}></div> */}
+      {/* {loading && <div id={"loader"}></div>} */}
       <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
         EXIT
       </Button>
