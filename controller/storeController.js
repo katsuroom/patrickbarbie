@@ -46,6 +46,7 @@ createMap = async (req, res) => {
       title: body.title,
       author: body.author,
       mapType: body.mapType,
+      selectedLabel: body.selectedLabel,
     });
 
     User.findOne({ _id: req.userId })
@@ -210,16 +211,8 @@ deleteCSV = (req, res) => {
 
 updateMap = (req, res) => {
   console.log("start update Map");
-  // if (auth.verifyUser(req) === null) {
-  //   return res.status(401).json({
-  //     loggedIn: false,
-  //     user: null,
-  //     errorMessage: "Unauthorized",
-  //   });
-  // }
+
   const body = req.body.mapData;
-  // console.log("body: " + JSON.stringify(body));
-  console.log("req: ", req.userId);
 
   if (!body) {
     return res.status(400).json({
@@ -239,7 +232,6 @@ updateMap = (req, res) => {
           error: "Map not found",
         });
       }
-      // console.log("map found: " + JSON.stringify(map));
 
       for (const [key, value] of Object.entries(body)) {
         if (!["__v", "createdAt", "updatedAt", "_id"].includes(key))
@@ -250,9 +242,12 @@ updateMap = (req, res) => {
       return map.save();
     })
     .then((updatedMap) => {
+      // Exclude circular properties before sending the response
+      const sanitizedMap = JSON.parse(JSON.stringify(updatedMap));
+
       return res.status(200).json({
         success: true,
-        data: updatedMap,
+        data: sanitizedMap,
         message: "Map updated successfully",
       });
     })

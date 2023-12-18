@@ -538,6 +538,7 @@ function StoreContextProvider(props) {
       type: StoreActionType.OPEN_MODAL,
       payload: { modal },
     });
+    store.pageLoading = false
   };
 
   store.closeModal = function () {
@@ -545,6 +546,7 @@ function StoreContextProvider(props) {
       type: StoreActionType.CLOSE_MODAL,
       payload: null,
     });
+    store.pageLoading = false
   };
 
   // uploading a map file
@@ -560,7 +562,7 @@ function StoreContextProvider(props) {
   };
 
   // create map using uploaded file
-  store.createMap = async function (title, mapType) {
+  store.createMap = async function (title, mapType, selectedLabel) {
     console.log("in create map");
 
     let file = store.uploadedFile;
@@ -574,7 +576,8 @@ function StoreContextProvider(props) {
         data,
         auth.user.username,
         title,
-        mapType
+        mapType,
+        selectedLabel
       );
       let mapObj = response.data.mapData;
       store.currentMapObject = mapObj;
@@ -591,6 +594,7 @@ function StoreContextProvider(props) {
         });
       });
     }
+    store.pageLoading = false
   };
 
   store.restoreMap = async function (title, mapType, geojson, mapProps) {
@@ -706,7 +710,7 @@ function StoreContextProvider(props) {
         const csvObj = (await api.getCsvById(store.currentMapObject.csvData))
           .data.data;
         csvData = (
-          await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData)
+          await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData, csvObj.tableLabel)
         ).data.csvData._id;
       }
 
@@ -716,7 +720,8 @@ function StoreContextProvider(props) {
         auth.user.username,
         maptitle,
         store.currentMapObject.mapType,
-        store.currentMapObject.mapProps
+        store.currentMapObject.mapProps,
+        store.currentMapObject.selectedLabel
       );
 
       // refresh user maps
@@ -1233,6 +1238,32 @@ function StoreContextProvider(props) {
       payload: label,
     });
   }
+
+  store.getJsonLabels = function (feature, layer) {
+    // check if GeoJSON
+    if (feature.properties.label_y && feature.properties.label_x) {
+      return [[feature.properties.label_y, feature.properties.label_x], feature.properties.name];
+    }
+
+    // check if KML
+    else if(feature.properties.shape_area) {
+      return [layer.getBounds().getCenter(), feature.properties.shape_area];
+    }
+
+    // check if Shapefile
+    else if(feature.properties.NAME_0 || feature.properties.NAME_1 || feature.properties.NAME_2) {
+      if (feature.properties.NAME_2)
+        return [layer.getBounds().getCenter(), feature.properties.NAME_2];
+
+      else if (feature.properties.NAME_1)
+        return [layer.getBounds().getCenter(), feature.properties.NAME_1];
+
+      else if (feature.properties.NAME_0)
+        return [layer.getBounds().getCenter(), feature.properties.NAME_0];
+    }
+
+    return null;
+  };
 
   return (
     <StoreContext.Provider

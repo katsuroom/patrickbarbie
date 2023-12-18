@@ -191,7 +191,7 @@ sendPasswordRecoveryEmail = async (req, res) => {
     port: 465,
     secure: true,
     auth: {
-      user: "Admin123@admin.com",
+      user: "TeamPink416@gmail.com",
       pass: "ycrl ahby kbwf ijrn",
     },
   });

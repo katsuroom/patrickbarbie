@@ -63,9 +63,10 @@ export default function MapCardList() {
           backgroundColor: "#FC9ABD",
           position: "relative",
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "row",
           textAlign: "center",
           justifyContent: "center",
+          alignItems: "center"
         }}
       >
         <Typography
@@ -83,8 +84,7 @@ export default function MapCardList() {
             size="small"
             sx={{
               position: "absolute",
-              bottom: 8,
-              right: 16,
+              right: 20,
               bgcolor: "#ffabd1",
               "&:hover": {
                 bgcolor: "#ffabd1",
@@ -231,7 +231,7 @@ export default function MapCardList() {
                 />
               </Stack>
             </ListItem>
-          </div>,
+          </div>
         ])}
       </List>
     </Box>

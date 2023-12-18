@@ -141,23 +141,21 @@ const TravelMap = (props) => {
         if (store.rawMapFile) {
             geoJsonLayerRef.current = L.geoJSON(store.rawMapFile, {
                 onEachFeature: (feature, layer) => {
-
-                    // check if label_y and label_x exist, since they don't exist for KML
-                    if (feature.properties.label_y && feature.properties.label_x) {
-                        const label = L.marker(
-                            [feature.properties.label_y, feature.properties.label_x],
-                            {
-                                icon: L.divIcon({
-                                    className: "countryLabel",
-                                    // html: feature.properties.name,
-                                    iconSize: [1000, 0],
-                                    iconAnchor: [0, 0],
-                                }),
-                            }
-                        ).addTo(mapRef.current);
-                        markers.current.push(label);
-                    }
-                },
+                    let labelData = store.getJsonLabels(feature, layer);
+                    if (!labelData) return;
+          
+                    const [pos, text] = labelData;
+          
+                    const label = L.marker(pos, {
+                      icon: L.divIcon({
+                        className: "countryLabel",
+                        html: `<div style="font-size: 30px;">${text}</div>`,
+                        iconSize: [1000, 0],
+                        iconAnchor: [0, 0],
+                      }),
+                    }).addTo(mapRef.current);
+                    markers.current.push(label);
+                  },
             });
 
             geoJsonLayerRef.current.addTo(mapRef.current);

@@ -59,8 +59,9 @@ export default function ProportionalMap() {
 
           try {
             var index = store.table[store.label].indexOf(
-              feature.properties.name
+              feature.properties[store.currentMapObject.selectedLabel]
             );
+            console.log("index", index);
           } catch (error) {
             console.log(error);
           }
@@ -73,10 +74,8 @@ export default function ProportionalMap() {
 
           // Extract only the necessary properties
           const reducedProperties = {
-            name: properties.name,
+            name: properties[store.currentMapObject.selectedLabel],
             gdp_md: gdp_md,
-            adm0_a3: properties.adm0_a3,
-            continent: properties.continent,
           };
 
           return {
@@ -92,7 +91,7 @@ export default function ProportionalMap() {
       // add proportional circles
       proportionalRef.current = L.geoJson(reducedAndCenteredGeoJSON, {
         filter: function (feature) {
-          if (feature.properties.name) {
+          if (feature.properties[store.currentMapObject.selectedLabel]) {
             // This test to see if the key exits
             return feature;
           }
@@ -120,7 +119,7 @@ export default function ProportionalMap() {
         onEachFeature: function (feature, layer) {
           var popup =
             "<p><b>" +
-            layer.feature.properties.name +
+            layer.feature.properties[store.currentMapObject.selectedLabel] +
             "</b></p>" +
             "<p>GDP: " +
             layer.feature.properties.gdp_md +

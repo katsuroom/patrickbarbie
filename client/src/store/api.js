@@ -9,7 +9,7 @@ const baseURL =
 //     baseURL: baseURL,
 // })
 
-const createMap = (mapData, username, mapName, mapType) => {
+const createMap = (mapData, username, mapName, mapType, selectedLabel) => {
   console.log("in api.createMap");
   let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
   return fetch(`${baseURL}/map/`, {
@@ -23,6 +23,7 @@ const createMap = (mapData, username, mapName, mapType) => {
       mapData: mapData,
       author: username,
       mapType: mapType,
+      selectedLabel: selectedLabel,
     }),
   })
     .then((response) => {
@@ -51,15 +52,16 @@ const forkMap = async (
   username,
   mapName,
   mapType,
-  mapProps
+  mapProps,
+  selectedLabel
 ) => {
-  let createRes = await createMap(mapData, username, mapName, mapType);
+  let createRes = await createMap(mapData, username, mapName, mapType, selectedLabel);
   let mapObj = createRes.data.mapData;
   mapObj.csvData = csvData;
   mapObj.mapProps = mapProps;
   let updateRes = await updateMap(mapObj);
   return mapObj;
-
+  
   //   let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
   // return fetch(`${baseURL}/forkmap/`, {
   //   method: "POST",

@@ -26,6 +26,7 @@ export default function MUICreateMap() {
   const [selectedLabel, setSelectedLabel] = useState("");
   const [progress, setProgress] = useState(0);
   const [menuItems, setMenuItems] = React.useState([]);
+  const [selectedLabel, setSelectedLabel] = useState("");
 
 
   const buttonStyle = {
@@ -72,7 +73,7 @@ export default function MUICreateMap() {
   
     store.mapType = mapType;
     store.clearCsv();
-    await store.createMap(projectName, mapType);
+    await store.createMap(projectName, mapType, selectedLabel);
     router.push(`/edit?mapId=${store.currentMapObject._id}`);
     setCreatingMap(false);
   };
@@ -86,10 +87,10 @@ export default function MUICreateMap() {
   };
 
   const changeLabel = (e) => {
-    store.setSelectedLabel(e.target.value);
-    store.selectedLabel = e.target.value;
-    console.log("selectedLabel", store.selectedLabel);
-  }
+    setSelectedLabel(e.target.value);
+    // store.selectedLabel = e.target.value;
+    // console.log("selectedLabel", store.selectedLabel);
+  };
 
   if (menuItems.length === 0 && store.uploadedFile) {
     setMenuItems(Object.keys(store.uploadedFile.features[0].properties));
