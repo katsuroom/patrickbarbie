@@ -6,21 +6,23 @@ import StoreContext from "@/store";
 import { MapType } from "@/store";
 import Script from "next/script";
 
-export default function Politicalmap(props) {
-    const { store } = useContext(StoreContext);
-    const { categoryColorMappings, selectedAttribute, setSelectedAttribute } = useContext(StoreContext);
-    const [geoJsonData, setGeoJsonData] = useState(null);
-    const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
-    const [legendVisible, setLegendVisible] = useState(true);
-    const [isColorInit, setIsColorInit] = useState(false);
-    const [defaultLayerAdded, setDefaultLayerAdded] = useState(false);
-    const [loadScripts, setLoadScripts] = useState(false);
 
+export default function Politicalmap(props) {
+    const [geoJsonData, setGeoJsonData] = useState(null);
     const mapRef = useRef(null);
     const geoJsonLayerRef = useRef(null);
     const heatmapOverlayRef = useRef(null);
     const markers = useRef([]);
+    const { store } = useContext(StoreContext);
+    const [legendVisible, setLegendVisible] = useState(true);
     const legendRef = useRef(null);
+    const [isColorInit, setIsColorInit] = useState(false);
+
+    const { categoryColorMappings } = useContext(StoreContext);
+    const { selectedAttribute, setSelectedAttribute } = useContext(StoreContext);
+
+    const [defaultLayerAdded, setDefaultLayerAdded] = useState(false);
+
     const mapLayerRef = useRef(null);
     const hybridLayerRef = useRef(null);
     const satelliteLayerRef = useRef(null);
@@ -28,7 +30,9 @@ export default function Politicalmap(props) {
     const lightLayerRef = useRef(null);
     const settingLayerRef = useRef(null);
 
-    // Initialize color and selectedAttribute
+    const [loadScripts, setLoadScripts] = useState(false);
+
+
     const initColor = () => {
         store.minColor = store.currentMapObject.mapProps?.minColor || "#FFFFFF";
         store.maxColor = store.currentMapObject.mapProps?.maxColor || "#FF0000";
@@ -68,7 +72,37 @@ export default function Politicalmap(props) {
         }
     };
 
-    // Style for GeoJSON data
+    useEffect(() => {
+        const resizeListener = () => {
+            setMapHeight(window.innerHeight / 2);
+        };
+        window.addEventListener("resize", resizeListener);
+        return () => {
+            window.removeEventListener("resize", resizeListener);
+        };
+    }, []);
+
+    useEffect(() => {
+        initColor();
+    }, [store.currentMapObject, store.parsed_CSV_Data]);
+
+    // useEffect(() => {
+    //     console.log("in polticalmap.js")
+    //     if (store.selectedAttribute && store.parsed_CSV_Data && store.parsed_CSV_Data[store.selectedAttribute]) {
+    //         const uniqueValues = new Set(store.parsed_CSV_Data[store.selectedAttribute]);
+    //         const newMapping = {};
+    //         uniqueValues.forEach(value => {
+    //             newMapping[value] = '#ffffff';
+    //         });
+    //         store.updateCategoryColorMappings(newMapping);
+    //         store.currentMapObject.mapProps.categoryColorMappings = store.categoryColorMappings;
+    //         // store.currentMapObject.mapProps.selectedAttribute = store.selectedAttribute;
+
+    //     }
+    // }, [store.selectedAttribute, store.parsed_CSV_Data]);
+
+    const [mapHeight, setMapHeight] = useState(window.innerHeight / 2);
+
     function geoJsonStyle(feature) {
         let fillColor = 'white';
         let geoUnit = store.parsed_CSV_Data ? Object.keys(store.parsed_CSV_Data)[0] : null;
@@ -94,7 +128,7 @@ export default function Politicalmap(props) {
         };
     }
 
-    // Resize listener for window resize event
+
     useEffect(() => {
         const resizeListener = () => {
             setMapHeight(window.innerHeight / 2);
@@ -105,26 +139,16 @@ export default function Politicalmap(props) {
         };
     }, []);
 
-    // Initialize color when store.currentMapObject or store.parsed_CSV_Data changes
-    useEffect(() => {
-        if (store.currentMapObject.mapProps && store.parsed_CSV_Data) {
-            initColor();
-        }
-    }, [store.currentMapObject, store.parsed_CSV_Data]);
-
-    // Update geoJsonData when store.rawMapFile changes
     useEffect(() => {
         if (store.rawMapFile) setGeoJsonData(store.rawMapFile);
     }, [store.rawMapFile]);
 
-    // Update GeoJSON layer style when store.selectedAttribute or store.categoryColorMappings changes
     useEffect(() => {
         if (geoJsonLayerRef.current) {
             geoJsonLayerRef.current.setStyle(geoJsonStyle);
         }
     }, [store.selectedAttribute, store.categoryColorMappings]);
 
-    // Main effect for handling map and layers
     useEffect(() => {
 
 
@@ -255,6 +279,7 @@ export default function Politicalmap(props) {
         }
 
 
+
         if (store.currentMapObject?.mapType === MapType.POLITICAL_MAP) {
             heatmapOverlayRef.current = L.geoJSON(geoJsonData, {
                 style: geoJsonStyle,
@@ -315,13 +340,28 @@ export default function Politicalmap(props) {
             }
 
         }
-    }, [geoJsonData, store.label, store.key, store.parsed_CSV_Data, store.minColor, store.maxColor, store.selectedAttribute, store.categoryColorMappings]);
+    },
+
+        [
+            geoJsonData,
+            store.label,
+            store.key,
+            store.parsed_CSV_Data,
+            store.minColor,
+            store.maxColor,
+            store.selectedAttribute,
+            store.categoryColorMappings,
+        ]);
 
     return (
         <div>
             <Script src="https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js"></Script>
             <Script src="https://cdn.jsdelivr.net/npm/leaflet-heatmap@1.0.0/leaflet-heatmap.js"></Script>
-            <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: "10px" }}></div>
+
+            <div
+                id={"map-display"}
+                style={{ height: `${mapHeight}px`, margin: "10px" }}
+            ></div>
         </div>
     );
 }
