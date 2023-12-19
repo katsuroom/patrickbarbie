@@ -741,7 +741,7 @@ function StoreContextProvider(props) {
         const csvObj = (await api.getCsvById(store.currentMapObject.csvData))
           .data.data;
         csvData = (
-          await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData, store.selectedLabel)
+          await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData, store.currentMapObject.selectedLabel)
         ).data.csvData._id;
       }
 
@@ -1066,7 +1066,7 @@ function StoreContextProvider(props) {
         store.label,
         store.parsed_CSV_Data,
         // store.tableLabel
-        store.selectedLabel
+        store.currentMapObject.selectedLabel
       );
       console.log("response", response);
       const csvObj = response.data.csvData;

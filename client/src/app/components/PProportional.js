@@ -25,6 +25,8 @@ export default function PProportional() {
   const [csvLabels, setCsvLabels] = React.useState([]);
   const [uploadedCSVFile, setUploadedCSVFile] = React.useState(null);
 
+  const [editingCell, setEditingCell] = React.useState(null);
+
   const [MinHex, setMinHex] = React.useState(store.minColor);
   const [MaxHex, setMaxHex] = React.useState(store.proColor);
 
@@ -36,6 +38,14 @@ export default function PProportional() {
   const handleMaxColorChange = (event) => {
     setMaxHex(event.hex);
     store.setProColorTransaction(event.hex);
+  };
+
+  const handleCellBlur = () => {
+    setEditingCell(null);
+  };
+
+  const handleCellClick = (rowIndex, columnIndex) => {
+    setEditingCell({ rowIndex, columnIndex });
   };
 
   useEffect(() => {
@@ -159,6 +169,26 @@ export default function PProportional() {
     store.updateTable(store.key, value, index);
   };
 
+  const handleCellValueChange = (event) => {
+    const { value } = event.target;
+    const { rowIndex, columnIndex } = editingCell;
+    console.log(rowIndex, columnIndex, value);
+
+    if (columnIndex === 0) {
+      store.parsed_CSV_Data[store.currentMapObject.selectedLabel][rowIndex] =
+        value;
+    } else {
+      store.parsed_CSV_Data[store.key][rowIndex] = value;
+    }
+
+    const table = { ...store.parsed_CSV_Data };
+
+    console.log(table);
+    store.setParsedCsvData(table);
+
+    setEditingCell(null);
+  };
+
   const handleChangeCsvLabel = (event) => {
     console.log("changing csv Label");
     console.log(event.target.value);
@@ -189,30 +219,33 @@ export default function PProportional() {
     <div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
       <div style={{ overflow: "auto", maxHeight: "45vh" }}>
-        {uploadedCsv ?
-        <div>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ paddingRight: "10%" }}>Select CSV Label Matching with General Properties: </div>
-          <Select
-            disabled={uploadedCsv ? false : true}
-            value={store.label ? store.label : "label"}
-            required
-            onChange={handleChangeCsvLabel}
-            sx={{ minWidth: "40%", marginLeft: "auto" }}
-            MenuProps={{
-              style: { maxHeight: "50%" },
-            }}
-          >
-            {csvLabels &&
-              csvLabels.map((mi) => (
-                <MenuItem key={mi} value={mi}>
-                  {mi}
-                </MenuItem>
-              ))}
-          </Select>
-        </div>
-        <hr /> 
-        </div> : null}
+        {uploadedCsv ? (
+          <div>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <div style={{ paddingRight: "10%" }}>
+                Select CSV Label Matching with General Properties:{" "}
+              </div>
+              <Select
+                disabled={uploadedCsv ? false : true}
+                value={store.label ? store.label : "label"}
+                required
+                onChange={handleChangeCsvLabel}
+                sx={{ minWidth: "40%", marginLeft: "auto" }}
+                MenuProps={{
+                  style: { maxHeight: "50%" },
+                }}
+              >
+                {csvLabels &&
+                  csvLabels.map((mi) => (
+                    <MenuItem key={mi} value={mi}>
+                      {mi}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </div>
+            <hr />
+          </div>
+        ) : null}
 
         <Table
           className="property-table"
@@ -245,7 +278,7 @@ export default function PProportional() {
                   </MenuItem> */}
                 </Select>
               </th>
-              <th>Update: </th>
+              {/* <th>Update: </th> */}
             </tr>
           </thead>
           <tbody>
@@ -256,20 +289,32 @@ export default function PProportional() {
                 store.parsed_CSV_Data[store.currentMapObject.selectedLabel],
                 store.parsed_CSV_Data[store.key]
                 // textFields
-              ).map((row, index) => (
-                <tr key={index}>
-                  <td>{row[0]}</td>
-                  <td>{row[1]}</td>
-                  <td>
-                    <TextField
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          handleEnterPress(index, e.target.value);
-                        }
-                      }}
-                      variant="standard"
-                    />
-                  </td>
+              ).map((row, rowIndex) => (
+                <tr key={"tr" + rowIndex}>
+                  {row.map((cell, columnIndex) => (
+                    <td
+                      key={`td${columnIndex}${rowIndex}`}
+                      onClick={() => handleCellClick(rowIndex, columnIndex)}
+                    >
+                      {editingCell &&
+                      editingCell.rowIndex === rowIndex &&
+                      editingCell.columnIndex === columnIndex ? (
+                        <input
+                          type="text"
+                          defaultValue={cell}
+                          onChange={(e) => {}}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleCellValueChange(e);
+                            }
+                          }}
+                          onBlur={handleCellBlur}
+                        />
+                      ) : (
+                        cell
+                      )}
+                    </td>
+                  ))}
                 </tr>
               ))}
           </tbody>
