@@ -73,9 +73,13 @@ export default function ProportionalMap() {
 
           // Extract the value from parsedCSV[store.key]
           console.log(store.key);
-          let gdp_md = store.parsed_CSV_Data[store.key][index];
+          let gdp_md = "";
+          try{
+          gdp_md = store.parsed_CSV_Data[store.key][index];
           gdp_md = gdp_md === "" ? "NA" : Number(gdp_md);
-
+          }catch(error){
+            console.log(error);
+          }
           // Extract only the necessary properties
           const reducedProperties = {
             name: properties[store.currentMapObject.selectedLabel],

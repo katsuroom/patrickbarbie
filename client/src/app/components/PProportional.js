@@ -23,6 +23,7 @@ export default function PProportional() {
   const [textFields, setTextFields] = React.useState([]);
   const [uploadedCsv, setUploadedCsv] = React.useState(false);
   const [csvLabels, setCsvLabels] = React.useState([]);
+  const [uploadedCSVFile, setUploadedCSVFile] = React.useState(null);
 
   const [MinHex, setMinHex] = React.useState(store.minColor);
   const [MaxHex, setMaxHex] = React.useState(store.proColor);
@@ -132,13 +133,13 @@ export default function PProportional() {
     keys = Array.from(keys);
     // console.log(keys);
 
-    store.setParsedCsvDataWOR(csv_data);
+    // store.setParsedCsvDataWOR(csv_data);
     // store.setCsvKeyWithoutRerendering(keys[1]);
     // store.setCsvKey(keys[1]);
 
     console.log(store.parsed_CSV_Data);
-    setCsvLabels(Object.keys(store.parsed_CSV_Data));
-
+    setCsvLabels(Object.keys(csv_data));
+    setUploadedCSVFile(csv_data);
     setMenuItems(keys);
 
     console.log("setting key to", keys[1]);
@@ -161,7 +162,8 @@ export default function PProportional() {
   const handleChangeCsvLabel = (event) => {
     console.log("changing csv Label");
     console.log(event.target.value);
-    store.setNewTable(event.target.value);
+    store.setNewTable(event.target.value, uploadedCSVFile);
+    // store.setNewTable(event.target.value);
     setMenuItems(Object.keys(store.parsed_CSV_Data));
     console.log(store.parsed_CSV_Data);
     store.setCsvLabel(event.target.value);
@@ -189,6 +191,8 @@ export default function PProportional() {
     <div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
       <div style={{ overflow: "auto", maxHeight: "45vh" }}>
+        {uploadedCsv ?
+        <div>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ paddingRight: "10%" }}>Select CSV Label Matching with General Properties: </div>
           <Select
@@ -209,8 +213,8 @@ export default function PProportional() {
               ))}
           </Select>
         </div>
-
-        <hr />
+        <hr /> 
+        </div> : null}
 
         <Table
           className="property-table"

@@ -415,7 +415,7 @@ function StoreContextProvider(props) {
     });
   };
 
-  store.setNewTable = function (csvLabel) {
+  store.setNewTable = function (csvLabel, newCSVData) {
     console.log("setting new table");
     const properties = store.rawMapFile.features.map(
       (element) => element.properties
@@ -466,7 +466,7 @@ function StoreContextProvider(props) {
 
 
     const orderMapping = {};
-    generalProperty[store.currentMapObject.selectedLabel].forEach(
+    store.parsed_CSV_Data[store.currentMapObject.selectedLabel].forEach(
       (name, index) => {
         orderMapping[name] = index;
       }
@@ -499,13 +499,15 @@ function StoreContextProvider(props) {
 
     // Reorder 'parsed_CSV_Data' based on the order in 'generalProperty'
     const reorderedParsedCSVData = reorderData(
-      store.parsed_CSV_Data,
+      newCSVData,
       csvLabel,
       orderMapping
     );
 
-    const final = { ...generalProperty, ...reorderedParsedCSVData };
+    const final = { ...store.parsed_CSV_Data, ...reorderedParsedCSVData };
     console.log(final);
+
+    store.parsed_CSV_Data = final;
 
     storeReducer({
       type: StoreActionType.SET_PARSED_CSV_DATA,
