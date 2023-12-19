@@ -5,15 +5,18 @@ export default class TravelWaypointsTransaction extends jsTPS_Transaction {
     super();
     // this.type = type;
     this.store = initStore;
-    this.newWaypoints = newWaypoints;
-    this.oldWaypoints = oldWaypoints;
+    this.newWaypoints = JSON.parse(JSON.stringify(newWaypoints));
+    this.oldWaypoints = JSON.parse(JSON.stringify(oldWaypoints));
+    // this.oldWaypoints = oldWaypoints;
   }
 
   doTransaction() {
-    this.store.setWaypoints(this.oldWaypoints);
-  }
-
-  undoTransaction() {
     this.store.setWaypoints(this.newWaypoints);
+  }
+  
+  undoTransaction() {
+    console.log("newWaypoints" + this.newWaypoints)
+    console.log("oldWaypoints" + this.oldWaypoints)
+    this.store.setWaypoints(this.oldWaypoints);
   }
 }

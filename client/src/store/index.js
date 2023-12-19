@@ -1348,8 +1348,8 @@ function StoreContextProvider(props) {
   store.setTravelWaypointsTransaction = function (newWaypoints) {
       let oldWaypoints = store.waypoints;
       let transaction = new TravelWaypointsTransaction(
-        oldWaypoints,
         newWaypoints,
+        oldWaypoints,
         store
       );
       console.log(transaction);
