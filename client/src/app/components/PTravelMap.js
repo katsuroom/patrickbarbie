@@ -271,9 +271,7 @@ const PTravelMap = () => {
   const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
   const runDirection = async () => {
-
     try {
-
       if (routeControlRef.current) {
         mapRef.current.removeControl(routeControlRef.current);
       }
@@ -295,7 +293,7 @@ const PTravelMap = () => {
         iconSize: [25, 41],
         iconAnchor: [12, 41]
       });
-      console.log("store.waypoints " + store.waypoints)
+
       const routingControl = L.Routing.control({
         waypoints: store.waypoints,
         routeWhileDragging: true,
@@ -305,7 +303,6 @@ const PTravelMap = () => {
         },
         geocoder: L.Control.Geocoder.nominatim(),
       });
-      store.pageLoading = false
 
       // Listen for the waypointsUpdated event
       routingControl.on('waypointschanged', function (e) {
@@ -319,8 +316,8 @@ const PTravelMap = () => {
       routingControl.addTo(mapRef.current);
 
       routingControl.on('routingstart', function () {
-        // setLoading(true);
-        store.setPageLoading(true);
+        if (!mapRef.current._zooming) 
+          store.setPageLoading(true);
       });
 
       routingControl.on('routesfound', function () {
@@ -335,12 +332,10 @@ const PTravelMap = () => {
       routeControlRef.current = routingControl;
     } catch (error) {
       console.error('Error in geocoding or routing:', error);
-      // setLoading(false);
-      // store.pageLoading = false
       store.setPageLoading(false);
-
     }
   };
+
 
   return (
     <div style={{
