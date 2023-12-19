@@ -1481,7 +1481,7 @@ function StoreContextProvider(props) {
   store.setFontStyleTransaction = function (newFontStyle) {
     if (store.currentMapObject && store.currentMapObject.mapProps) {
       let oldFontStyle = store.currentMapObject.mapProps.fontStyle;
-      let transaction = store.FontSize_Transaction(store.currentMapObject,oldFontStyle, newFontStyle, store);
+      let transaction = new Fontstyle_Transaction(store.currentMapObject,oldFontStyle, newFontStyle, store);
       console.log(transaction);
       tps.addTransaction(transaction);
     }

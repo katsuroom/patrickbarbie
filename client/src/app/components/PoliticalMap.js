@@ -7,6 +7,7 @@ import { MapType } from "@/store";
 import Script from "next/script";
 
 export default function Politicalmap(props) {
+
   const [geoJsonData, setGeoJsonData] = useState(null);
   const mapRef = useRef(null);
   const geoJsonLayerRef = useRef(null);
@@ -30,6 +31,21 @@ export default function Politicalmap(props) {
   const settingLayerRef = useRef(null);
 
   const [loadScripts, setLoadScripts] = useState(false);
+
+  const updateMarkerIcon = (marker, text) => {
+    const fontSize = store.currentMapObject?.mapProps?.fontSize || 12;
+    const fontWeight = store.currentMapObject?.mapProps?.bold ? 'bold' : 'normal';
+    const fontStyle = store.currentMapObject?.mapProps?.italicize ? 'italic' : 'normal';
+    const textDecoration = store.currentMapObject?.mapProps?.underline ? 'underline' : 'none';
+    const fontFamily = store.fontStyle;
+
+    marker.setIcon(L.divIcon({
+      className: "countryLabel",
+      html: `<div style="font-size: ${fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`, // Apply font weight, style, decoration, and family
+      iconSize: [1000, 0],
+      iconAnchor: [0, 0],
+    }));
+  };
 
   const initColor = () => {
     store.minColor = store.currentMapObject.mapProps?.minColor || "#FFFFFF";
@@ -172,6 +188,19 @@ export default function Politicalmap(props) {
   }, [store.selectedAttribute, store.categoryColorMappings]);
 
   useEffect(() => {
+    markers.current.forEach((marker) => {
+      updateMarkerIcon(marker, marker.options.text);
+    });
+  }, [
+    store.currentMapObject?.mapProps?.fontSize,
+    store.currentMapObject?.mapProps?.bold,
+    store.currentMapObject?.mapProps?.italicize,
+    store.currentMapObject?.mapProps?.underline,
+    store.fontStyle
+  ]);
+
+
+  useEffect(() => {
     if (!geoJsonData) {
       return;
     }
@@ -193,37 +222,29 @@ export default function Politicalmap(props) {
 
     if (geoJsonData) {
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
-        // onEachFeature: (feature, layer) => {
-        //     // check if label_y and label_x exist, since they don't exist for KML
-        //     if (feature.properties.label_y && feature.properties.label_x) {
-        //         const label = L.marker(
-        //             [feature.properties.label_y, feature.properties.label_x],
-        //             {
-        //                 icon: L.divIcon({
-        //                     className: "countryLabel",
-        //                     html: feature.properties.name,
-        //                     iconSize: [1000, 0],
-        //                     iconAnchor: [0, 0],
-        //                 }),
-        //             }
-        //         ).addTo(mapRef.current);
-        //         markers.current.push(label);
-        //     }
-        // },
         onEachFeature: (feature, layer) => {
           let labelData = store.getJsonLabels(feature, layer);
           if (!labelData) return;
 
           const [pos, text] = labelData;
+          const fontSize = store.currentMapObject?.mapProps?.fontSize || 12;
+          const fontWeight = store.currentMapObject?.mapProps?.bold ? 'bold' : 'normal';
+          const fontStyle = store.currentMapObject?.mapProps?.italicize ? 'italic' : 'normal';
+          const textDecoration = store.currentMapObject?.mapProps?.underline ? 'underline' : 'normal';
+          const fontFamily = store.fontStyle;
 
-          const label = L.marker(pos, {
+
+          const label = L.marker(
+            pos, {
             icon: L.divIcon({
               className: "countryLabel",
-              html: `<div style="font-size: 30px;">${text}</div>`,
+              html: `<div style="font-size: ${fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`, // Apply font weight, style, decoration, and family
               iconSize: [1000, 0],
               iconAnchor: [0, 0],
             }),
-          }).addTo(mapRef.current);
+            text: text,
+          }
+          ).addTo(mapRef.current);
           markers.current.push(label);
         },
       });
@@ -251,7 +272,7 @@ export default function Politicalmap(props) {
     }
 
     if (window.MQ) {
-      
+
       mapLayerRef.current = window.MQ.mapLayer();
       hybridLayerRef.current = window.MQ.hybridLayer();
       satelliteLayerRef.current = window.MQ.satelliteLayer();
