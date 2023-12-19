@@ -21,6 +21,11 @@ export default function PProportional() {
   // const [renderTable, setRenderTable] = React.useState(false);
   // const [page, setPage] = React.useState(0);
   const [textFields, setTextFields] = React.useState([]);
+  const [uploadedCsv, setUploadedCsv] = React.useState(false);
+  const [csvLabels, setCsvLabels] = React.useState([]);
+  const [uploadedCSVFile, setUploadedCSVFile] = React.useState(null);
+
+  const [editingCell, setEditingCell] = React.useState(null);
 
   const [MinHex, setMinHex] = React.useState(store.minColor);
   const [MaxHex, setMaxHex] = React.useState(store.proColor);
@@ -35,11 +40,19 @@ export default function PProportional() {
     store.setProColorTransaction(event.hex);
   };
 
+  const handleCellBlur = () => {
+    setEditingCell(null);
+  };
+
+  const handleCellClick = (rowIndex, columnIndex) => {
+    setEditingCell({ rowIndex, columnIndex });
+  };
+
   useEffect(() => {
     let tfs = [];
     if (store.parsed_CSV_Data) {
       for (let idx in store.parsed_CSV_Data[store.key]) {
-        console.log(111);
+        // console.log(111);
         tfs.push(
           <TextField
             id={"tf-" + idx}
@@ -55,11 +68,6 @@ export default function PProportional() {
     }
     setTextFields(tfs);
   }, [store.parsed_CSV_Data, store.key, store.label]);
-
-  // console.log(store.key);
-  // console.log(store.label);
-
-  // const ROW_PER_PAGE = 30;
 
   function zip(...arrays) {
     let length;
@@ -107,7 +115,7 @@ export default function PProportional() {
   const fileOnLoadComplete = (data) => {
     // setRenderTable(false);
 
-    // console.log(data);
+    console.log(data);
     let csv_data = {};
     let keys = new Set();
     try {
@@ -126,6 +134,7 @@ export default function PProportional() {
           csv_data[key].push(val);
         }
       }
+      setUploadedCsv(true);
     } catch (error) {
       console.log("parse CSV file failed", error);
     }
@@ -134,72 +143,116 @@ export default function PProportional() {
     keys = Array.from(keys);
     // console.log(keys);
 
-    store.setParsedCsvDataWOR(csv_data);
-    store.setCsvKeyWithoutRerendering(keys[1]);
+    // store.setParsedCsvDataWOR(csv_data);
+    // store.setCsvKeyWithoutRerendering(keys[1]);
     // store.setCsvKey(keys[1]);
+
+    console.log(store.parsed_CSV_Data);
+    setCsvLabels(Object.keys(csv_data));
+    setUploadedCSVFile(csv_data);
+    setMenuItems(keys);
+
     console.log("setting key to", keys[1]);
     store.setCsvLabelWithoutRerendering(keys[0]);
     console.log("setting label to", keys[0]);
-    setMenuItems(keys);
+    
     console.log("setting menu item to", keys);
     // setRenderTable(true);
     store.setCsvLabel(keys[0]);
-    store.setCsvKey(keys[1]);
+    // store.setCsvKey(keys[1]);
+
+    // store.setTable();
+    // console.log(store.table);
   };
 
-  // if (store.parsed_CSV_Data && !renderTable){
-  //   console.log("enter here")
-  //   setMenuItems(Object.keys(store.parsed_CSV_Data))
-  //   setRenderTable(true);
+  const handleEnterPress = (index, value) => {
+    store.updateTable(store.key, value, index);
+  };
+
+  const handleCellValueChange = (event) => {
+    const { value } = event.target;
+    const { rowIndex, columnIndex } = editingCell;
+    console.log(rowIndex, columnIndex, value);
+
+    const table = JSON.parse(JSON.stringify(store.parsed_CSV_Data));
+
+    if (columnIndex === 0) {
+      table[store.currentMapObject.selectedLabel][rowIndex] = value;
+    } else {
+      table[store.key][rowIndex] = value;
+    }
+
+    console.log(table);
+    store.setCsvTransaction(table);
+
+    setEditingCell(null);
+  };
+
+  const handleChangeCsvLabel = (event) => {
+    console.log("changing csv Label");
+    console.log(event.target.value);
+    store.setNewTable(event.target.value, uploadedCSVFile);
+    // store.setNewTable(event.target.value);
+    setMenuItems(Object.keys(store.parsed_CSV_Data));
+    console.log(store.parsed_CSV_Data);
+    store.setCsvLabel(event.target.value);
+    // console.log(store.table);
+    console.log(store.label);
+  };
+
+  // if (store.table && menuItems.length !== Object.keys(store.table).length) {
+  //   setMenuItems(Object.keys(store.table));
   // }
+
+
+  console.log(store.label);
+  console.log(store.currentMapObject.selectedLabel);
+  console.log(store.key);
+  console.log(store.parsed_CSV_Data);
+
   if (menuItems.length === 0 && store.parsed_CSV_Data) {
     setMenuItems(Object.keys(store.parsed_CSV_Data));
   }
-
-  // let maxPage =
-  //   store.label && store.parsed_CSV_Data && store.parsed_CSV_Data[store.label]
-  //     ? parseInt(store.parsed_CSV_Data[store.label].length / ROW_PER_PAGE)
-  //     : 0;
-
-  // console.log(store.currentMapObject);
-  // console.log(store.parsed_CSV_Data);
-  // console.log(store.label);
-  // console.log(menuItems);
 
   return (
     <div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
       <div style={{ overflow: "auto", maxHeight: "45vh" }}>
+        {uploadedCsv ? (
+          <div>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <div style={{ paddingRight: "10%" }}>
+                Select CSV Label Matching with General Properties:{" "}
+              </div>
+              <Select
+                disabled={uploadedCsv ? false : true}
+                value={store.label ? store.label : "label"}
+                required
+                onChange={handleChangeCsvLabel}
+                sx={{ minWidth: "40%", marginLeft: "auto" }}
+                MenuProps={{
+                  style: { maxHeight: "50%" },
+                }}
+              >
+                {csvLabels &&
+                  csvLabels.map((mi) => (
+                    <MenuItem key={mi} value={mi}>
+                      {mi}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </div>
+            <hr />
+          </div>
+        ) : null}
+
         <Table
           className="property-table"
           sx={{ "& thead th::nth-of-type(1)": { width: "40%" } }}
         >
           <thead>
             <tr>
-              <th>
-                <Select
-                  // labelId="demo-simple-select-standard-label"
-                  // id="searchOn"
-                  value={store.label ? store.label : "label"}
-                  required
-                  onChange={handleChangeLabel}
-                  sx={{ minWidth: "80%" }}
-                  MenuProps={{
-                    style: { maxHeight: "50%" },
-                  }}
-                >
-                  {menuItems.map((mi) => (
-                    <MenuItem key={mi} value={mi}>
-                      {mi}
-                    </MenuItem>
-                  ))}
-                  {/* <MenuItem>
-                    <Button variant="text" startDecorator={<Add />}>
-                      New Label
-                    </Button>
-                  </MenuItem> */}
-                </Select>
-              </th>
+              <th>Label:</th>
               <th>
                 <Select
                   labelId="demo-simple-select-standard-label"
@@ -224,32 +277,43 @@ export default function PProportional() {
                   </MenuItem> */}
                 </Select>
               </th>
-              {/* <th>Update</th> */}
+              {/* <th>Update: </th> */}
             </tr>
           </thead>
           <tbody>
             {store.parsed_CSV_Data &&
+              store.key &&
+              store.currentMapObject.selectedLabel &&
               zip(
-                // store.parsed_CSV_Data[store.label].slice(
-                //   page * ROW_PER_PAGE,
-                //   (page + 1) * ROW_PER_PAGE
-                // ),
-                // textFields.slice(page * ROW_PER_PAGE, (page + 1) * ROW_PER_PAGE)
-                store.parsed_CSV_Data[store.label],
+                store.parsed_CSV_Data[store.currentMapObject.selectedLabel],
                 store.parsed_CSV_Data[store.key]
                 // textFields
-              ).map((row) => (
-                <tr key={row.name}>
-                  <td>{row[0]}</td>
-                  <td>{row[1]}</td>
-                  {/* <td>
-                    <TextField
-                      id="search"
-                      defaultValue={row.calories}
-                      variant="standard"
-                      sx={{ m: 1, minWidth: 120 }}
-                    />
-                  </td> */}
+              ).map((row, rowIndex) => (
+                <tr key={"tr" + rowIndex}>
+                  {row.map((cell, columnIndex) => (
+                    <td
+                      key={`td${columnIndex}${rowIndex}`}
+                      onClick={() => handleCellClick(rowIndex, columnIndex)}
+                    >
+                      {editingCell &&
+                      editingCell.rowIndex === rowIndex &&
+                      editingCell.columnIndex === columnIndex ? (
+                        <input
+                          type="text"
+                          defaultValue={cell}
+                          onChange={(e) => {}}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleCellValueChange(e);
+                            }
+                          }}
+                          onBlur={handleCellBlur}
+                        />
+                      ) : (
+                        cell
+                      )}
+                    </td>
+                  ))}
                 </tr>
               ))}
           </tbody>
@@ -257,7 +321,9 @@ export default function PProportional() {
       </div>
       <div>
         <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
-          <InputLabel id="demo-simple-select-helper-label">Circle Color</InputLabel>
+          <InputLabel id="demo-simple-select-helper-label">
+            Circle Color
+          </InputLabel>
           <Select
             labelId="demo-simple-select-helper-label"
             id="demo-simple-select-helper"

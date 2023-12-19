@@ -59,6 +59,9 @@ export default function EditScreen() {
   // }
 
   useEffect(() => {
+    store.setPropertyTable();
+    console.log(store.table);
+    
     const f = async () => {
       console.log("refreshing edit");
       if (!store.currentMapObject) {
@@ -74,6 +77,7 @@ export default function EditScreen() {
     if (!readyToRender) {
       f();
     }
+    store.tps.clearAllTransactions();
   }, []);
 
   useEffect(() => {
@@ -88,8 +92,6 @@ export default function EditScreen() {
         store.setCsvKey(csvObj.key);
         store.setCsvLabel(csvObj.label);
 
-        store.setTableLabel(csvObj.tableLabel)
-        store.setTable();
       }
     };
     func();
@@ -182,7 +184,7 @@ export default function EditScreen() {
         <div>
           <div style={panelStyle}>
             <div className="propertyTitle">Properties</div>
-            <Tabs
+            {/* <Tabs
               value={tabValue}
               onChange={handleChangeTab}
               aria-label="basic tabs example"
@@ -191,7 +193,8 @@ export default function EditScreen() {
               <Tab label="Specific" value="specific" />
             </Tabs>
             {tabValue === "general" && <GeneralProperty />}
-            {tabValue === "specific" && propertyPanel}
+            {tabValue === "specific" && propertyPanel} */}
+            {propertyPanel}
           </div>
           <div style={buttonsStyle}>
             <Button

@@ -9,7 +9,7 @@ const baseURL =
 //     baseURL: baseURL,
 // })
 
-const createMap = (mapData, username, mapName, mapType) => {
+const createMap = (mapData, username, mapName, mapType, selectedLabel) => {
   console.log("in api.createMap");
   let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
   return fetch(`${baseURL}/map/`, {
@@ -23,6 +23,7 @@ const createMap = (mapData, username, mapName, mapType) => {
       mapData: mapData,
       author: username,
       mapType: mapType,
+      selectedLabel: selectedLabel,
     }),
   })
     .then((response) => {
@@ -51,9 +52,10 @@ const forkMap = async (
   username,
   mapName,
   mapType,
-  mapProps
+  mapProps,
+  selectedLabel
 ) => {
-  let createRes = await createMap(mapData, username, mapName, mapType);
+  let createRes = await createMap(mapData, username, mapName, mapType, selectedLabel);
   let mapObj = createRes.data.mapData;
   mapObj.csvData = csvData;
   mapObj.mapProps = mapProps;
@@ -262,6 +264,16 @@ const getMainScreenMap = (fileName) => {
 };
 
 const createCSV = (key, label, csvData, tableLabel) => {
+  console.log("in api.createCSV");
+  console.log("token: ", JSON.parse(localStorage.getItem("user"))?.data?.token);
+  console.log("key: ", key);
+  console.log("label: ", label);
+  console.log("csvData: ", csvData);
+  console.log("tableLabel: ", tableLabel);
+
+  if (!label){
+    label = undefined;
+  }
   let token = JSON.parse(localStorage.getItem("user"))?.data?.token;
   return fetch(`${baseURL}/csv/`, {
     method: "POST",
@@ -279,7 +291,7 @@ const createCSV = (key, label, csvData, tableLabel) => {
     .then((response) => {
       if (!response.ok) {
         // If the response status is not OK, reject the promise with an error
-        throw new Error(`Failed to create map. Status: ${response.status}`);
+        throw new Error(`Failed to create csv. Status: ${response.status}`);
       }
       // Parse JSON and include status in the resolved value
       return response.json();

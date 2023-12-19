@@ -108,19 +108,26 @@ export default function Politicalmap(props) {
 
   function geoJsonStyle(feature) {
     let fillColor = "white";
-    let geoUnit = store.parsed_CSV_Data
-      ? Object.keys(store.parsed_CSV_Data)[0]
-      : null;
+    // let geoUnit = store.parsed_CSV_Data
+    //   ? Object.keys(store.parsed_CSV_Data)[0]
+    //   : null;
+
+    let geoUnit = store.selectedAttribute;
+
+    console.log(geoUnit)
 
     if (
       geoUnit &&
-      store.parsed_CSV_Data[geoUnit] &&
+      store.parsed_CSV_Data &&
       store.selectedAttribute &&
       store.parsed_CSV_Data[store.selectedAttribute]
     ) {
-      const geoUnitIndex = store.parsed_CSV_Data[geoUnit].indexOf(
+
+
+      const geoUnitIndex = store.parsed_CSV_Data[store.currentMapObject.selectedLabel].indexOf(
         feature.properties.name
       );
+
 
       if (geoUnitIndex !== -1) {
         const attributeValue =
@@ -239,7 +246,7 @@ export default function Politicalmap(props) {
       mapRef.current.removeLayer(heatmapOverlayRef.current);
     }
 
-    if (!(geoJsonData && store.label && store.key && store.parsed_CSV_Data)) {
+    if (!(geoJsonData && store.key && store.parsed_CSV_Data)) {
       return;
     }
 

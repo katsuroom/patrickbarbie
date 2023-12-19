@@ -299,10 +299,14 @@ const PTravelMap = () => {
     store.waypoints = []
     if (store.currentMapObject.mapProps?.waypoints) {
       console.log("store.currentMapObject.mapProps" + store.currentMapObject.mapProps.waypoints)
-      store.setWaypoints(store.currentMapObject.mapProps.waypoints)
+      store.setTravelWaypointsTransaction(store.currentMapObject.mapProps.waypoints)
       runDirection();
     }
   }, [store.currentMapObject]);
+
+  useEffect(() => {
+      runDirection();
+  }, [store.waypoints]);
 
   const openSaveModal = () => store.openModal(CurrentModal.SAVE_EDIT);
   const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
@@ -332,6 +336,7 @@ const PTravelMap = () => {
         iconSize: [25, 41],
         iconAnchor: [12, 41]
       });
+      console.log("store.waypoints " + store.waypoints)
       const routingControl = L.Routing.control({
         waypoints: store.waypoints,
         routeWhileDragging: true,
@@ -347,7 +352,7 @@ const PTravelMap = () => {
       routingControl.on('waypointschanged', function (e) {
         const updatedWaypoints = e.waypoints;
         console.log('Waypoints Updated:', updatedWaypoints);
-        store.setWaypoints(updatedWaypoints.map(p => {
+        store.setTravelWaypointsTransaction(updatedWaypoints.map(p => {
           return p.latLng
         }));
       });

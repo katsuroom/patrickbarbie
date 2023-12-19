@@ -6,8 +6,12 @@ import { usePathname } from "next/navigation";
 import jsTPS from "../app/common/jsTPS";
 import DotColor_Transaction from "../transactions/DotColor_transaction";
 import HeatColorTransaction from "../transactions/HeatColorTransaction";
+import TravelWaypointsTransaction from "../transactions/TravelWaypointsTransaction";
 import Procolor_transaction from "../transactions/Procolor_transaction";
 import GeneralProperty_Transaction from "../transactions/GeneralProperty_transaction";
+import CSV_Transaction from "@/transactions/CSVTransaction";
+import Label_Transaction from "@/transactions/LabelTransaction";
+import Key_Transaction from "@/transactions/KeyTransaction";
 
 
 import FontSize_Transaction from "../transactions/FontSize_transaction";
@@ -57,6 +61,7 @@ export const StoreActionType = {
   SET_WAYPOINTS: "SET_WAYPOINTS",
   SET_SELECTED_MAP_LAYER: "SET_SELECTED_MAP_LAYER",
   SET_DOT_COLOR: "SET_DOT_COLOR",
+  SET_SELECTED_LABEL: "SET_SELECTED_LABEL",
 
   LOGOUT_USER: "LOGOUT_USER",
   SET_CATEGORY_COLOR_MAPPINGS: "SET_CATEGORY_COLOR_MAPPINGS",
@@ -118,7 +123,6 @@ function StoreContextProvider(props) {
     currentModal: CurrentModal.NONE, // the currently open modal
     uploadedFile: null,
     rawMapFile: null,
-    tableLabel: null,
     table: null,
     label: null,
     key: null, // csv key [column name] for map displaying
@@ -138,6 +142,7 @@ function StoreContextProvider(props) {
     selectedAttribute: null,
     waypoints: [],
     pageLoading: false,
+    selectedLabel: null,
     fontSize: 12,
     bold: false,
     italicize: false,
@@ -149,6 +154,8 @@ function StoreContextProvider(props) {
   store.currentModalTypes = CurrentModal;
   store.searchBy = SearchBy;
   store.sortBy = SortBy;
+
+  store.tps = tps;
 
   const storeReducer = (action) => {
     const { type, payload } = action;
@@ -363,17 +370,18 @@ function StoreContextProvider(props) {
           currentView: View.COMMUNITY,
         });
       }
-      case StoreActionType.SET_TABLE_LABEL: {
-        return setStore({
-          ...store,
-          tableLabel: payload,
-        });
-      }
 
       case StoreActionType.SET_TABLE: {
         return setStore({
           ...store,
           table: payload,
+        });
+      }
+
+      case StoreActionType.SET_SELECTED_LABEL: {
+        return setStore({
+          ...store,
+          selectedLabel: payload,
         });
       }
 
@@ -427,7 +435,7 @@ function StoreContextProvider(props) {
   };
 
   store.setPageLoading = function (pageLoading) {
-    store.pageLoading = pageLoading;
+    // store.pageLoading = pageLoading;
     storeReducer({
       type: StoreActionType.PAGE_LOADING,
       payload: pageLoading,
@@ -435,6 +443,7 @@ function StoreContextProvider(props) {
   }
 
   store.setTable = function () {
+    console.log("setting table")
     const properties = store.rawMapFile.features.map(
       (element) => element.properties
     );
@@ -450,12 +459,113 @@ function StoreContextProvider(props) {
     });
 
     const table = { ...generalProperty, ...store.parsed_CSV_Data };
+    console.log(table);
 
     storeReducer({
-      type: StoreActionType.SET_TABLE,
-      payload: table,
+      type: StoreActionType.SET_PARSED_CSV_DATA,
+      payload: { parsed_CSV_Data: table },
     });
 
+  }
+
+  store.setPropertyTable = function () {
+    console.log("setting property table")
+    const properties = store.rawMapFile.features.map(
+      (element) => element.properties
+    );
+    const generalProperty = {};
+    properties.forEach((element) => {
+      Object.keys(element).forEach((key) => {
+        if (key in generalProperty) {
+          generalProperty[key].push(element[key]);
+        } else {
+          generalProperty[key] = [element[key]];
+        }
+      });
+    });
+
+    const table = { ...generalProperty};
+    // store.table = table;
+
+
+    storeReducer({
+      type: StoreActionType.SET_PARSED_CSV_DATA,
+      payload: { parsed_CSV_Data: table },
+    });
+  };
+
+  store.setNewTable = function (csvLabel, newCSVData) {
+    console.log("setting new table");
+   
+    console.log(store.parsed_CSV_Data);
+
+    console.log(newCSVData);
+
+    const orderMapping = {};
+    store.parsed_CSV_Data[store.currentMapObject.selectedLabel].forEach(
+      (name, index) => {
+        orderMapping[name] = index;
+      }
+    );
+
+    // Function to reorder the elements in 'parsed_CSV_Data' based on 'orderMapping'
+    function reorderData(csvData, label, orderMap) {
+      // Extract the items and their corresponding orders
+      let itemsWithOrder = csvData[label].map((name, index) => {
+        return { name, order: orderMap[name], originalIndex: index };
+      });
+
+      // Filter out items not present in 'orderMap' and then sort by order
+      itemsWithOrder = itemsWithOrder.filter(
+        (item) => item.order !== undefined
+      );
+      itemsWithOrder.sort((a, b) => a.order - b.order);
+
+      // Rebuild the object with the sorted items
+      let sortedData = {};
+      for (let key in csvData) {
+        if (Array.isArray(csvData[key])) {
+          sortedData[key] = itemsWithOrder.map(
+            (item) => csvData[key][item.originalIndex]
+          );
+        }
+      }
+      return sortedData;
+    }
+
+    if(csvLabel !== null){
+      console.log("reordering data");
+      var reorderedParsedCSVData = reorderData(
+        newCSVData,
+        csvLabel,
+        orderMapping
+      );
+    }else{
+      console.log("save the data as it is");
+      var reorderedParsedCSVData = newCSVData;
+      console.log(reorderedParsedCSVData);
+    }
+
+    const final = { ...store.parsed_CSV_Data, ...reorderedParsedCSVData };
+    console.log(final);
+
+    store.parsed_CSV_Data = final;
+
+    storeReducer({
+      type: StoreActionType.SET_PARSED_CSV_DATA,
+      payload: { parsed_CSV_Data: final },
+    });
+  };
+
+  store.updateTable = function (key, value, index){
+    console.log("updating table");
+    var newTable = {...store.parsed_CSV_Data};
+    newTable[key][index] = value;
+    
+    storeReducer({
+      type: StoreActionType.SET_PARSED_CSV_DATA,
+      payload: { parsed_CSV_Data: newTable },
+    });
   }
 
 
@@ -628,7 +738,7 @@ function StoreContextProvider(props) {
   };
 
   // create map using uploaded file
-  store.createMap = async function (title, mapType) {
+  store.createMap = async function (title, mapType, selectedLabel) {
     console.log("in create map");
 
     let file = store.uploadedFile;
@@ -642,7 +752,8 @@ function StoreContextProvider(props) {
         data,
         auth.user.username,
         title,
-        mapType
+        mapType,
+        selectedLabel
       );
       let mapObj = response.data.mapData;
       store.currentMapObject = mapObj;
@@ -775,7 +886,7 @@ function StoreContextProvider(props) {
         const csvObj = (await api.getCsvById(store.currentMapObject.csvData))
           .data.data;
         csvData = (
-          await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData, csvObj.tableLabel)
+          await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData, store.currentMapObject.selectedLabel)
         ).data.csvData._id;
       }
 
@@ -785,7 +896,8 @@ function StoreContextProvider(props) {
         auth.user.username,
         maptitle,
         store.currentMapObject.mapType,
-        store.currentMapObject.mapProps
+        store.currentMapObject.mapProps,
+        store.currentMapObject.selectedLabel
       );
 
       // refresh user maps
@@ -839,6 +951,7 @@ function StoreContextProvider(props) {
   };
 
   store.updateCSV = function (csvObject) {
+    console.log(csvObject);
     api.updateCSV(csvObject).then((response) => {
       console.log(response);
     });
@@ -974,12 +1087,12 @@ function StoreContextProvider(props) {
     }
   };
 
-  store.setParsedCsvData = function (data) {
-    store.setParsedCsvDataWOR(data);
+  store.setParsedCsvData = function (parsed_CSV_Data) {
+    store.setParsedCsvDataWOR(parsed_CSV_Data);
     // console.log('store.setParsedCsvData', data);
     storeReducer({
       type: StoreActionType.SET_PARSED_CSV_DATA,
-      payload: { data },
+      payload: { parsed_CSV_Data },
     });
   };
 
@@ -1024,6 +1137,7 @@ function StoreContextProvider(props) {
 
   store.getMapListCommunity = async function () {
     await api.getPublishedMaps().then((response) => {
+      // store.pageLoading = true
       console.log("fetched published maps", response.data.data);
 
       let currentMapObj = null;
@@ -1065,6 +1179,7 @@ function StoreContextProvider(props) {
   };
 
   store.searchMaps = async function (searchText, searchBy) {
+    store.pageLoading = true
     const res = await api.searchMaps(searchText, searchBy);
     if (store.isHomePage()) {
       store.changeView(store.viewTypes.COMMUNITY);
@@ -1075,6 +1190,7 @@ function StoreContextProvider(props) {
       type: StoreActionType.SET_MAP_LIST,
       payload: { mapList: maps },
     });
+    store.pageLoading = false
   };
 
   store.getCsvById = async function (id) {
@@ -1098,7 +1214,8 @@ function StoreContextProvider(props) {
         store.key,
         store.label,
         store.parsed_CSV_Data,
-        store.tableLabel
+        // store.tableLabel
+        store.currentMapObject.selectedLabel
       );
       console.log("response", response);
       const csvObj = response.data.csvData;
@@ -1113,7 +1230,7 @@ function StoreContextProvider(props) {
       csvObj.key = store.key;
       csvObj.label = store.label;
       csvObj.csvData = store.parsed_CSV_Data;
-      csvObj.tableLabel = store.tableLabel;
+      csvObj.tableLabel = store.currentMapObject.selectedLabel;
       console.log(csvObj);
       store.updateCSV(csvObj);
     }
@@ -1237,6 +1354,17 @@ function StoreContextProvider(props) {
     console.log(store.currentMapObject);
   }
 
+  store.setTravelWaypointsTransaction = function (newWaypoints) {
+      let oldWaypoints = store.waypoints;
+      let transaction = new TravelWaypointsTransaction(
+        newWaypoints,
+        oldWaypoints,
+        store
+      );
+      console.log(transaction);
+      tps.addTransaction(transaction);
+  };
+
   store.setHeatColorTransaction = function (newColor, type) {
     if (type === "min") {
       let oldColor = store.minColor;
@@ -1273,6 +1401,7 @@ function StoreContextProvider(props) {
     let transaction = new Procolor_transaction(oldColor, newColor, store);
     console.log(transaction);
     tps.addTransaction(transaction);
+    console.log(store.proColor);
   };
 
   store.setGeneralPropertyTransaction = function (selectedKey, newValue, index) {
@@ -1280,6 +1409,30 @@ function StoreContextProvider(props) {
     let transaction = new GeneralProperty_Transaction(index, selectedKey, oldValue, newValue, store);
     console.log(transaction);
     tps.addTransaction(transaction);
+  }
+
+  store.setCsvTransaction = function (newCSV) {
+    console.log("newCSV", newCSV);
+    console.log("store.parsed_CSV_Data", store.parsed_CSV_Data);
+    let transaction = new CSV_Transaction({...store.parsed_CSV_Data}, {...newCSV}, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+
+  }
+
+  store.setCsvLabelTransaction = function (label) {
+    let transaction = new Label_Transaction(label,store.label, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+
+  }
+
+
+  store.setCsvKeyTransaction = function (key) {
+    let transaction = new Key_Transaction(key, store.key, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+
   }
 
   store.setFontSizeTransaction = function (newSize) {
@@ -1346,6 +1499,13 @@ function StoreContextProvider(props) {
     console.log(tps.hasTransactionToUndo());
     return tps.hasTransactionToUndo();
   };
+
+  store.setSelectedLabel = function (label){
+    storeReducer({
+      type: StoreActionType.SET_SELECTED_LABEL,
+      payload: label,
+    });
+  }
 
   store.getJsonLabels = function (feature, layer) {
     // check if GeoJSON
