@@ -468,6 +468,7 @@ export default function Heatmap() {
     if (heatmapOverlayRef.current) {
       mapRef.current.removeLayer(heatmapOverlayRef.current);
     }
+    
 
     heatmapOverlayRef.current = L.geoJSON(geoJsonData, {
       style: geoJsonStyle,
