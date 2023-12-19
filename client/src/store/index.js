@@ -807,6 +807,7 @@ function StoreContextProvider(props) {
   };
 
   store.updateCSV = function (csvObject) {
+    console.log(csvObject);
     api.updateCSV(csvObject).then((response) => {
       console.log(response);
     });
@@ -1082,7 +1083,7 @@ function StoreContextProvider(props) {
       csvObj.key = store.key;
       csvObj.label = store.label;
       csvObj.csvData = store.parsed_CSV_Data;
-      csvObj.tableLabel = store.selectedLabel;
+      csvObj.tableLabel = store.currentMapObject.selectedLabel;
       console.log(csvObj);
       store.updateCSV(csvObj);
     }
