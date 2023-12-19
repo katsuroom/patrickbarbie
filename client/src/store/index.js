@@ -390,7 +390,9 @@ function StoreContextProvider(props) {
       });
     });
   
+    console.log(store.parsed_CSV_Data);
     const table = { ...generalProperty, ...store.parsed_CSV_Data };
+    console.log(table);
 
     storeReducer({
       type: StoreActionType.SET_TABLE,
@@ -444,36 +446,76 @@ function StoreContextProvider(props) {
     console.log(generalProperty);
     console.log(store.parsed_CSV_Data);
 
-    var indexs = [];
+    // var indexs = [];
 
-    for (let i = 0; i < store.parsed_CSV_Data[csvLabel].length; i++) {
-      if (
-        generalProperty[store.currentMapObject.selectedLabel].includes(store.parsed_CSV_Data[csvLabel][i])
-      ) {
-        indexs.push(i);
+    // for (let i = 0; i < store.parsed_CSV_Data[csvLabel].length; i++) {
+    //   if (
+    //     generalProperty[store.currentMapObject.selectedLabel].includes(store.parsed_CSV_Data[csvLabel][i])
+    //   ) {
+    //     indexs.push(i);
+    //   }
+    // }
+
+    // // console.log(indexs);
+
+    // let newtable = { ...store.parsed_CSV_Data };
+
+    // function keepElementsAtIndexes(obj, indexes) {
+    //   // Iterate over each key in the object
+    //   for (let key in obj) {
+    //     // Check if the property is an array
+    //     if (Array.isArray(obj[key])) {
+    //       // Create a new array with elements from the specified indexes
+    //       obj[key] = indexes
+    //         .map((index) => obj[key][index])
+    //         .filter((element) => element !== undefined);
+    //     }
+    //   }
+    // }
+
+    // keepElementsAtIndexes(newtable, indexs);
+
+
+    const orderMapping = {};
+    generalProperty[store.currentMapObject.selectedLabel].forEach(
+      (name, index) => {
+        orderMapping[name] = index;
       }
-    }
+    );
 
-    // console.log(indexs);
+    // Function to reorder the elements in 'parsed_CSV_Data' based on 'orderMapping'
+    function reorderData(csvData, label, orderMap) {
+      // Extract the items and their corresponding orders
+      let itemsWithOrder = csvData[label].map((name, index) => {
+        return { name, order: orderMap[name], originalIndex: index };
+      });
 
-    let newtable = { ...store.parsed_CSV_Data };
+      // Filter out items not present in 'orderMap' and then sort by order
+      itemsWithOrder = itemsWithOrder.filter(
+        (item) => item.order !== undefined
+      );
+      itemsWithOrder.sort((a, b) => a.order - b.order);
 
-    function keepElementsAtIndexes(obj, indexes) {
-      // Iterate over each key in the object
-      for (let key in obj) {
-        // Check if the property is an array
-        if (Array.isArray(obj[key])) {
-          // Create a new array with elements from the specified indexes
-          obj[key] = indexes
-            .map((index) => obj[key][index])
-            .filter((element) => element !== undefined);
+      // Rebuild the object with the sorted items
+      let sortedData = {};
+      for (let key in csvData) {
+        if (Array.isArray(csvData[key])) {
+          sortedData[key] = itemsWithOrder.map(
+            (item) => csvData[key][item.originalIndex]
+          );
         }
       }
+      return sortedData;
     }
 
-    keepElementsAtIndexes(newtable, indexs);
+    // Reorder 'parsed_CSV_Data' based on the order in 'generalProperty'
+    const reorderedParsedCSVData = reorderData(
+      store.parsed_CSV_Data,
+      csvLabel,
+      orderMapping
+    );
 
-    const final = { ...generalProperty, ...newtable };
+    const final = { ...generalProperty, ...reorderedParsedCSVData };
     console.log(final);
 
     store.table = final;
@@ -488,8 +530,7 @@ function StoreContextProvider(props) {
     console.log("old Table: ", store.table);
     let newTable = store.table;
     newTable[key][index] = value;
-    console.log("new Table: ", newTable);
-    store.table = newTable;
+    
     storeReducer({
       type: StoreActionType.SET_TABLE,
       payload: newTable,

@@ -54,9 +54,6 @@ export default function PProportional() {
       }
     }
     setTextFields(tfs);
-
-    
-
   }, [store.parsed_CSV_Data, store.key, store.label]);
 
 
@@ -153,10 +150,7 @@ export default function PProportional() {
   };
 
   const handleEnterPress = (index, value) => {
-    store.updateTable(store.key, value, index);
-    // store.setGeneralPropertyTransaction(selectedKey, value, index);
-
-    // store.setGeneralProperty(selectedKey, value, index);
+    store.updateTable(store.key, value, index); 
   };
 
   const handleChangeCsvLabel = (event) => {
@@ -168,26 +162,9 @@ export default function PProportional() {
     
   };
 
-  // if (store.parsed_CSV_Data && !renderTable){
-  //   console.log("enter here")
-  //   setMenuItems(Object.keys(store.parsed_CSV_Data))
-  //   setRenderTable(true);
-  // }
   if (store.table && menuItems.length !== Object.keys(store.table).length) {
     setMenuItems(Object.keys(store.table));
   }
-
-  
-
-  // let maxPage =
-  //   store.label && store.parsed_CSV_Data && store.parsed_CSV_Data[store.label]
-  //     ? parseInt(store.parsed_CSV_Data[store.label].length / ROW_PER_PAGE)
-  //     : 0;
-
-  // console.log(store.currentMapObject);
-  // console.log(store.parsed_CSV_Data);
-  // console.log(store.label);
-  // console.log(menuItems);
 
   console.log(store.table);
 

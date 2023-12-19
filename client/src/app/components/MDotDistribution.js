@@ -109,6 +109,10 @@ export default function DotDistribution() {
   }
 
   return (
-    <JsonDisplay clearLayer={clearLayer} addLayer={addLayer}/>
+    <JsonDisplay
+      clearLayer={clearLayer}
+      addLayer={addLayer}
+      triggers={[store.dotColor]}
+    />
   );
 }

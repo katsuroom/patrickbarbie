@@ -15,13 +15,230 @@ import FormControl from "@mui/material/FormControl";
 import Compact from "@uiw/react-color-compact";
 
 export default function PDotDistribution() {
+  // const { store } = useContext(StoreContext);
+
+  // const [menuItems, setMenuItems] = React.useState([]);
+
+  // const [textFields, setTextFields] = React.useState([]);
+
+  // const [MaxHex, setMaxHex] = React.useState(store.dotColor);
+
+  // const handleMaxColorChange = (event) => {
+  //   setMaxHex(event.hex);
+  //   store.setDotColorTransaction(event.hex);
+  // };
+
+  // useEffect(() => {
+  //   let tfs = [];
+  //   if (store.parsed_CSV_Data) {
+  //     for (let idx in store.parsed_CSV_Data[store.key]) {
+  //       console.log(111);
+  //       tfs.push(
+  //         <TextField
+  //           id={"tf-" + idx}
+  //           defaultValue={store.parsed_CSV_Data[store.key][idx]}
+  //           variant="standard"
+  //           sx={{ m: 1, minWidth: 120 }}
+  //           onChange={(e) =>
+  //             (store.parsed_CSV_Data[store.key][idx] = e.target.value)
+  //           }
+  //         />
+  //       );
+  //     }
+  //   }
+  //   setTextFields(tfs);
+  // }, [store.parsed_CSV_Data, store.key, store.label]);
+
+  // function zip(...arrays) {
+  //   let length;
+  //   try {
+  //     length = Math.min(...arrays.map((arr) => arr.length));
+  //   } catch (error) {
+  //     length = 0;
+  //   }
+
+  //   return Array.from({ length }, (_, index) =>
+  //     arrays.map((arr) => arr[index])
+  //   );
+  // }
+
+  // const handleChangeKey = (event) => {
+  //   let tfs = [];
+  //   for (let idx in store.parsed_CSV_Data[event.target.value]) {
+  //     tfs.push(
+  //       <TextField
+  //         id={"tf-" + idx}
+  //         defaultValue={store.parsed_CSV_Data[event.target.value][idx]}
+  //         variant="standard"
+  //         sx={{ m: 1, minWidth: 120 }}
+  //         onChange={(e) =>
+  //           (store.parsed_CSV_Data[event.target.value][idx] = e.target.value)
+  //         }
+  //       />
+  //     );
+  //   }
+  //   setTextFields(tfs);
+  //   store.setCsvKey(event.target.value);
+  // };
+
+  // const handleChangeLabel = (event) => {
+  //   // console.log(event.target.value);
+  //   store.setCsvLabel(event.target.value);
+  // };
+
+  // const fileOnLoadComplete = (data) => {
+  //   // setRenderTable(false);
+
+  //   // console.log(data);
+  //   let csv_data = {};
+  //   let keys = new Set();
+  //   try {
+  //     for (let rowNum in data) {
+  //       for (let key in data[rowNum]) {
+  //         let val = data[rowNum][key];
+  //         // console.log(key, val);
+  //         if (val === undefined) {
+  //           continue;
+  //         }
+  //         // console.log(key, val);
+  //         keys.add(key);
+  //         if (!csv_data[key]) {
+  //           csv_data[key] = [];
+  //         }
+  //         csv_data[key].push(val);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log("parse CSV file failed", error);
+  //   }
+
+  //   // console.log(csv_data);
+  //   keys = Array.from(keys);
+  //   // console.log(keys);
+
+  //   store.setParsedCsvDataWOR(csv_data);
+  //   store.setCsvKeyWithoutRerendering(keys[1]);
+  //   // store.setCsvKey(keys[1]);
+  //   console.log("setting key to", keys[1]);
+  //   store.setCsvLabelWithoutRerendering(keys[0]);
+  //   console.log("setting label to", keys[0]);
+  //   setMenuItems(keys);
+  //   console.log("setting menu item to", keys);
+  //   // setRenderTable(true);
+  //   store.setCsvLabel(keys[0]);
+  //   store.setCsvKey(keys[1]);
+  // };
+
+  // if (menuItems.length === 0 && store.parsed_CSV_Data) {
+  //   setMenuItems(Object.keys(store.parsed_CSV_Data));
+  // }
+
+  // return (
+  //   <div>
+  //     <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
+  //     <div style={{ overflow: "auto", maxHeight: "45vh" }}>
+  //       <Table
+  //         className="property-table"
+  //         sx={{ "& thead th::nth-of-type(1)": { width: "40%" } }}
+  //       >
+  //         <thead>
+  //           <tr>
+  //             <th>
+  //               <Select
+  //                 // labelId="demo-simple-select-standard-label"
+  //                 // id="searchOn"
+  //                 value={store.label ? store.label : "label"}
+  //                 required
+  //                 onChange={handleChangeLabel}
+  //                 sx={{ minWidth: "80%" }}
+  //                 MenuProps={{
+  //                   style: { maxHeight: "50%" },
+  //                 }}
+  //               >
+  //                 {menuItems.map((mi) => (
+  //                   <MenuItem key={mi} value={mi}>
+  //                     {mi}
+  //                   </MenuItem>
+  //                 ))}
+  //               </Select>
+  //             </th>
+  //             <th>
+  //               <Select
+  //                 labelId="demo-simple-select-standard-label"
+  //                 id="searchOn"
+  //                 value={store.key ? store.key : "key"}
+  //                 required
+  //                 onChange={handleChangeKey}
+  //                 sx={{ minWidth: "80%" }}
+  //                 MenuProps={{
+  //                   style: { maxHeight: "50%" },
+  //                 }}
+  //               >
+  //                 {menuItems.map((mi) => (
+  //                   <MenuItem key={mi} value={mi}>
+  //                     {mi}
+  //                   </MenuItem>
+  //                 ))}
+  //               </Select>
+  //             </th>
+  //             {/* <th>Update</th> */}
+  //           </tr>
+  //         </thead>
+  //         <tbody>
+  //           {store.parsed_CSV_Data &&
+  //             zip(
+  //               // store.parsed_CSV_Data[store.label].slice(
+  //               //   page * ROW_PER_PAGE,
+  //               //   (page + 1) * ROW_PER_PAGE
+  //               // ),
+  //               // textFields.slice(page * ROW_PER_PAGE, (page + 1) * ROW_PER_PAGE)
+  //               store.parsed_CSV_Data[store.label],
+  //               store.parsed_CSV_Data[store.key]
+  //               // textFields
+  //             ).map((row) => (
+  //               <tr key={row.name}>
+  //                 <td>{row[0]}</td>
+  //                 <td>{row[1]}</td>
+  //               </tr>
+  //             ))}
+  //         </tbody>
+  //       </Table>
+  //     </div>
+  //     <div>
+  //       <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
+  //         <InputLabel id="demo-simple-select-helper-label">
+  //           Dot Color
+  //         </InputLabel>
+  //         <Select
+  //           labelId="demo-simple-select-helper-label"
+  //           id="demo-simple-select-helper"
+  //           label="Age"
+  //           sx={{ minWidth: 130 }}
+  //         >
+  //           <MenuItem value={MaxHex}>
+  //             <Compact onChange={handleMaxColorChange} color={MaxHex} />
+  //           </MenuItem>
+  //         </Select>
+  //       </FormControl>
+  //     </div>
+  //   </div>
+  // );
+
+
   const { store } = useContext(StoreContext);
 
   const [menuItems, setMenuItems] = React.useState([]);
-
+  // const [renderTable, setRenderTable] = React.useState(false);
+  // const [page, setPage] = React.useState(0);
   const [textFields, setTextFields] = React.useState([]);
 
-  const [MaxHex, setMaxHex] = React.useState(store.dotColor);
+  const [MinHex, setMinHex] = React.useState(store.minColor);
+  const [MaxHex, setMaxHex] = React.useState(store.proColor);
+
+  const handleMinColorChange = (event) => {
+    setMinHex(event.hex);
+    store.setMinColor(event.hex);
+  };
 
   const handleMaxColorChange = (event) => {
     setMaxHex(event.hex);
@@ -32,7 +249,7 @@ export default function PDotDistribution() {
     let tfs = [];
     if (store.parsed_CSV_Data) {
       for (let idx in store.parsed_CSV_Data[store.key]) {
-        console.log(111);
+        // console.log(111);
         tfs.push(
           <TextField
             id={"tf-" + idx}
@@ -64,15 +281,21 @@ export default function PDotDistribution() {
 
   const handleChangeKey = (event) => {
     let tfs = [];
-    for (let idx in store.parsed_CSV_Data[event.target.value]) {
+    for (let idx in store.table[event.target.value]) {
+      // console.log("gay", idx);
       tfs.push(
+        // <input
+        //   id={"search-" + idx}
+        //   defaultValue={store.parsed_CSV_Data[store.key][idx]}
+        //   style={{margin: "8px", width: "100px", height:"30px"}}
+        // />
         <TextField
           id={"tf-" + idx}
-          defaultValue={store.parsed_CSV_Data[event.target.value][idx]}
+          defaultValue={store.table[event.target.value][idx]}
           variant="standard"
           sx={{ m: 1, minWidth: 120 }}
           onChange={(e) =>
-            (store.parsed_CSV_Data[event.target.value][idx] = e.target.value)
+            (store.table[event.target.value][idx] = e.target.value)
           }
         />
       );
@@ -89,7 +312,7 @@ export default function PDotDistribution() {
   const fileOnLoadComplete = (data) => {
     // setRenderTable(false);
 
-    // console.log(data);
+    console.log(data);
     let csv_data = {};
     let keys = new Set();
     try {
@@ -117,7 +340,7 @@ export default function PDotDistribution() {
     // console.log(keys);
 
     store.setParsedCsvDataWOR(csv_data);
-    store.setCsvKeyWithoutRerendering(keys[1]);
+    // store.setCsvKeyWithoutRerendering(keys[1]);
     // store.setCsvKey(keys[1]);
     console.log("setting key to", keys[1]);
     store.setCsvLabelWithoutRerendering(keys[0]);
@@ -126,42 +349,53 @@ export default function PDotDistribution() {
     console.log("setting menu item to", keys);
     // setRenderTable(true);
     store.setCsvLabel(keys[0]);
-    store.setCsvKey(keys[1]);
+    // store.setCsvKey(keys[1]);
+
+    store.setTable();
+    console.log(store.table);
   };
 
-  if (menuItems.length === 0 && store.parsed_CSV_Data) {
-    setMenuItems(Object.keys(store.parsed_CSV_Data));
+  const handleEnterPress = (index, value) => {
+    store.updateTable(store.key, value, index);
+    console.log(store.table);
+    // store.setGeneralPropertyTransaction(selectedKey, value, index);
+
+    // store.setGeneralProperty(selectedKey, value, index);
+  };
+
+  // if (store.parsed_CSV_Data && !renderTable){
+  //   console.log("enter here")
+  //   setMenuItems(Object.keys(store.parsed_CSV_Data))
+  //   setRenderTable(true);
+  // }
+  if (store.table && menuItems.length !== Object.keys(store.table).length) {
+    setMenuItems(Object.keys(store.table));
   }
+
+  // let maxPage =
+  //   store.label && store.parsed_CSV_Data && store.parsed_CSV_Data[store.label]
+  //     ? parseInt(store.parsed_CSV_Data[store.label].length / ROW_PER_PAGE)
+  //     : 0;
+
+  // console.log(store.currentMapObject);
+  // console.log(store.parsed_CSV_Data);
+  // console.log(store.label);
+  // console.log(menuItems);
+
+  console.log(store.table);
 
   return (
     <div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
       <div style={{ overflow: "auto", maxHeight: "45vh" }}>
+
         <Table
           className="property-table"
           sx={{ "& thead th::nth-of-type(1)": { width: "40%" } }}
         >
           <thead>
             <tr>
-              <th>
-                <Select
-                  // labelId="demo-simple-select-standard-label"
-                  // id="searchOn"
-                  value={store.label ? store.label : "label"}
-                  required
-                  onChange={handleChangeLabel}
-                  sx={{ minWidth: "80%" }}
-                  MenuProps={{
-                    style: { maxHeight: "50%" },
-                  }}
-                >
-                  {menuItems.map((mi) => (
-                    <MenuItem key={mi} value={mi}>
-                      {mi}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </th>
+              <th>Label:</th>
               <th>
                 <Select
                   labelId="demo-simple-select-standard-label"
@@ -179,26 +413,38 @@ export default function PDotDistribution() {
                       {mi}
                     </MenuItem>
                   ))}
+                  {/* <MenuItem>
+                    <Button variant="text" startDecorator={<Add />}>
+                      New Column
+                    </Button>
+                  </MenuItem> */}
                 </Select>
               </th>
-              {/* <th>Update</th> */}
+              <th>Update: </th>
             </tr>
           </thead>
           <tbody>
-            {store.parsed_CSV_Data &&
+            {store.table &&
+              store.key &&
+              store.currentMapObject.selectedLabel &&
               zip(
-                // store.parsed_CSV_Data[store.label].slice(
-                //   page * ROW_PER_PAGE,
-                //   (page + 1) * ROW_PER_PAGE
-                // ),
-                // textFields.slice(page * ROW_PER_PAGE, (page + 1) * ROW_PER_PAGE)
-                store.parsed_CSV_Data[store.label],
-                store.parsed_CSV_Data[store.key]
+                store.table[store.currentMapObject.selectedLabel],
+                store.table[store.key]
                 // textFields
-              ).map((row) => (
-                <tr key={row.name}>
+              ).map((row, index) => (
+                <tr key={index}>
                   <td>{row[0]}</td>
                   <td>{row[1]}</td>
+                  <td>
+                    <TextField
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleEnterPress(index, e.target.value);
+                        }
+                      }}
+                      variant="standard"
+                    />
+                  </td>
                 </tr>
               ))}
           </tbody>
@@ -206,10 +452,10 @@ export default function PDotDistribution() {
       </div>
       <div>
         <FormControl className="formcolor" sx={{ m: 2, minWidth: 100 }}>
-          <InputLabel id="demo-simple-select-helper-label">
-            Dot Color
-          </InputLabel>
-          <Select
+           <InputLabel id="demo-simple-select-helper-label">
+             Dot Color
+           </InputLabel>
+         <Select
             labelId="demo-simple-select-helper-label"
             id="demo-simple-select-helper"
             label="Age"

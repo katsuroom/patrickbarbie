@@ -9,6 +9,7 @@ export default function ProportionalMap() {
   const proportionalRef = useRef(null);
   const legendRef = useRef(null);
 
+
   useEffect(() => {
     if (store.currentMapObject.mapProps) {
       store.proColor = store.currentMapObject.mapProps.proColor;
@@ -19,6 +20,8 @@ export default function ProportionalMap() {
       }
     }
   }, [store.currentMapObject]);
+
+  
 
   function clearLayer(mapRef) {
     if (proportionalRef.current) {
@@ -227,6 +230,10 @@ export default function ProportionalMap() {
   }
 
   return (
-    <JsonDisplay clearLayer={clearLayer} addLayer={addLayer}/>
+    <JsonDisplay
+      clearLayer={clearLayer}
+      addLayer={addLayer}
+      triggers={[store.proColor, store.table]}
+    />
   );
 }
