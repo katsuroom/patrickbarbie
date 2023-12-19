@@ -43,6 +43,32 @@ export default function PHeatmap() {
 
   const [editingCell, setEditingCell] = useState(null);
 
+  if (!store.parsed_CSV_Data) {
+    const properties = store.rawMapFile.features.map(
+      (element) => element.properties
+    );
+    const generalProperty = {};
+    properties.forEach((element) => {
+      Object.keys(element).forEach((key) => {
+        if (key in generalProperty) {
+          generalProperty[key].push(element[key]);
+        } else {
+          generalProperty[key] = [element[key]];
+        }
+      });
+    });
+
+    console.log(store.parsed_CSV_Data);
+    const table = { ...generalProperty, ...store.parsed_CSV_Data };
+    console.log(table);
+
+    store.setParsedCsvDataWOR(table);
+    store.setParsedCsvData(table);
+
+    // store.setCsvLabel(Object.keys(store.parsed_CSV_Data)[0]);
+    store.setCsvKey(Object.keys(store.parsed_CSV_Data)[0]);
+  }
+
 
 
   const handleCellClick = (rowIndex, columnIndex) => {
