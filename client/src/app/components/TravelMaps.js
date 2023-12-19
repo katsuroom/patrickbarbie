@@ -24,6 +24,10 @@ const TravelMap = () => {
     const darkLayerRef = useRef(null);
     const lightLayerRef = useRef(null);
     const settingLayerRef = useRef(null);
+    const [geoJsonData, setGeoJsonData] = useState(null);
+    const [defaultLayerAdded, setDefaultLayerAdded] = useState(false);
+
+
 
     const loadScript = (src) => {
         return new Promise((resolve, reject) => {
@@ -46,6 +50,12 @@ const TravelMap = () => {
         };
     }, []);
 
+    useEffect(() => {
+        setDefaultLayerAdded(false);
+        if (store.rawMapFile) {
+            setGeoJsonData(store.rawMapFile);
+        }
+    }, [store.rawMapFile]);
 
     useEffect(() => {
         if (store.rawMapFile) {
@@ -57,9 +67,7 @@ const TravelMap = () => {
                     setLoadScripts(true);
                 }).catch(error => console.error(error));
             }
-            else {
-                refreshMap();
-            }
+            refreshMap();
         }
     }, [store.rawMapFile]);
 
@@ -67,7 +75,7 @@ const TravelMap = () => {
     const refreshMap = () => {
 
         console.log('travel map + ' + store.rawMapFile)
-        if (!loadScripts || !store.rawMapFile) {
+        if (!loadScripts || !geoJsonData) {
             return;
         }
 
@@ -79,60 +87,101 @@ const TravelMap = () => {
                 zoom: 12,
             });
         }
+        if (geoJsonLayerRef.current) {
+            mapRef.current.removeLayer(geoJsonLayerRef.current);
+        }
+        markers.current.forEach((marker) => {
+            mapRef.current.removeLayer(marker);
+        });
+        markers.current = [];
+
         if (mapLayerRef.current) mapRef.current.removeLayer(mapLayerRef.current);
         if (hybridLayerRef.current) mapRef.current.removeLayer(hybridLayerRef.current);
         if (satelliteLayerRef.current) mapRef.current.removeLayer(satelliteLayerRef.current);
         if (darkLayerRef.current) mapRef.current.removeLayer(darkLayerRef.current);
         if (lightLayerRef.current) mapRef.current.removeLayer(lightLayerRef.current);
 
-        mapLayerRef.current = window.MQ.mapLayer();
-        hybridLayerRef.current = window.MQ.hybridLayer();
-        satelliteLayerRef.current = window.MQ.satelliteLayer();
-        darkLayerRef.current = window.MQ.darkLayer();
-        lightLayerRef.current = window.MQ.lightLayer();
+        if (window.MQ) {
+            mapLayerRef.current = window.MQ.mapLayer();
+            hybridLayerRef.current = window.MQ.hybridLayer();
+            satelliteLayerRef.current = window.MQ.satelliteLayer();
+            darkLayerRef.current = window.MQ.darkLayer();
+            lightLayerRef.current = window.MQ.lightLayer();
 
-        if (settingLayerRef.current) {
-            mapRef.current.removeControl(settingLayerRef.current);
+            if (settingLayerRef.current) {
+                mapRef.current.removeControl(settingLayerRef.current);
+            }
+
+            // settingLayerRef.current = L.control.layers({
+            //     'Map': mapLayerRef.current,
+            //     'Hybrid': hybridLayerRef.current,
+            //     'Satellite': satelliteLayerRef.current,
+            //     'Dark': darkLayerRef.current,
+            //     'Light': lightLayerRef.current
+            // });
+
+            // settingLayerRef.current.addTo(mapRef.current);
+
+            // mapRef.current.on("baselayerchange", function (event) {
+            //     const layerName = event.name; // Name of the selected layer
+            //     const layer = event.layer; // Reference to the selected layer
+
+            //     if (!store.currentMapObject.mapProps) {
+            //         store.currentMapObject.mapProps = {};
+            //     }
+
+            //     store.currentMapObject.mapProps.layerName = layerName;
+
+            //     console.log("Base layer changed to:", layerName);
+            //     console.log("Base layer changed to:", layer);
+            //     console.log(mapRef.current);
+            //     setDefaultLayerAdded(true);
+            // });
+
+            if (!defaultLayerAdded && store.currentMapObject.mapProps?.layerName) {
+                console.log("changing layer...");
+                switch (store.currentMapObject.mapProps?.layerName) {
+                    case "Map":
+                        mapRef.current.addLayer(mapLayerRef.current);
+                        break;
+                    case "Hybrid":
+                        mapRef.current.addLayer(hybridLayerRef.current);
+                        break;
+                    case "Satellite":
+                        mapRef.current.addLayer(satelliteLayerRef.current);
+                        break;
+                    case "Dark":
+                        mapRef.current.addLayer(darkLayerRef.current);
+                        break;
+                    case "Light":
+                        mapRef.current.addLayer(lightLayerRef.current);
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
-        settingLayerRef.current = L.control.layers({
-            'Map': mapLayerRef.current,
-            'Hybrid': hybridLayerRef.current,
-            'Satellite': satelliteLayerRef.current,
-            'Dark': darkLayerRef.current,
-            'Light': lightLayerRef.current
-        });
 
-        settingLayerRef.current.addTo(mapRef.current);
-
-        if (geoJsonLayerRef.current) {
-            mapRef.current.removeLayer(geoJsonLayerRef.current);
-        }
-
-        markers.current.forEach((marker) => {
-            mapRef.current.removeLayer(marker);
-        });
-
-        markers.current = [];
-
-        if (store.rawMapFile) {
-            geoJsonLayerRef.current = L.geoJSON(store.rawMapFile, {
+        if (geoJsonData) {
+            geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
                 onEachFeature: (feature, layer) => {
-                    // check if label_y and label_x exist, since they don't exist for KML
-                    if (feature.properties.label_y && feature.properties.label_x) {
-                        const label = L.marker(
-                            [feature.properties.label_y, feature.properties.label_x],
-                            {
-                                icon: L.divIcon({
-                                    className: "countryLabel",
-                                    html: feature.properties.name,
-                                    iconSize: [1000, 0],
-                                    iconAnchor: [0, 0],
-                                }),
-                            }
-                        ).addTo(mapRef.current);
-                        markers.current.push(label);
+                    let labelData = store.getJsonLabels(feature, layer);
+                    if (!labelData) return;
+
+                    const [pos, text] = labelData;
+
+                    const label = L.marker(
+                        pos, {
+                        icon: L.divIcon({
+                            className: "countryLabel",
+                            html: `<div style="font-size: 30px;">${text}</div>`,
+                            iconSize: [1000, 0],
+                            iconAnchor: [0, 0],
+                        }),
                     }
+                    ).addTo(mapRef.current);
+                    markers.current.push(label);
                 },
             });
 
@@ -151,6 +200,8 @@ const TravelMap = () => {
         }
 
         runDirection();
+
+        store.pageLoading = false
     }
 
     useEffect(() => {
@@ -193,10 +244,10 @@ const TravelMap = () => {
 
             const routingControl = L.Routing.control({
                 waypoints: store.waypoints,
-                routeWhileDragging: true,
+                // routeWhileDragging: true,
                 createMarker: function (i, waypoint, n) {
                     const markerIcon = i === 0 ? startIcon : (i > 0 && i < n - 1) ? inBetweenIcon : endIcon;
-                    return L.marker(waypoint.latLng, { draggable: true, icon: markerIcon });
+                    return L.marker(waypoint.latLng, { icon: markerIcon });
                 },
             });
 

@@ -26,6 +26,9 @@ const PTravelMap = () => {
   const lightLayerRef = useRef(null);
   const settingLayerRef = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [defaultLayerAdded, setDefaultLayerAdded] = useState(false);
+  const [geoJsonData, setGeoJsonData] = useState(null);
+
 
   const startHere = (e) => {
     if (geoJsonLayerRef.current) {
@@ -94,9 +97,7 @@ const PTravelMap = () => {
           setLoadScripts(true);
         }).catch(error => console.error(error));
       }
-      else {
-        refreshMap();
-      }
+      refreshMap();
     }
   }, [store.rawMapFile]);
 
@@ -104,7 +105,7 @@ const PTravelMap = () => {
   const refreshMap = () => {
 
     console.log('travel map + ' + store.rawMapFile)
-    if (!loadScripts || !store.rawMapFile) {
+    if (!loadScripts || !geoJsonData) {
       return;
     }
 
@@ -125,29 +126,6 @@ const PTravelMap = () => {
         }]
       });
     }
-    if (mapLayerRef.current) mapRef.current.removeLayer(mapLayerRef.current);
-    if (hybridLayerRef.current) mapRef.current.removeLayer(hybridLayerRef.current);
-    if (satelliteLayerRef.current) mapRef.current.removeLayer(satelliteLayerRef.current);
-    if (darkLayerRef.current) mapRef.current.removeLayer(darkLayerRef.current);
-    if (lightLayerRef.current) mapRef.current.removeLayer(lightLayerRef.current);
-
-    mapLayerRef.current = window.MQ.mapLayer();
-    hybridLayerRef.current = window.MQ.hybridLayer();
-    satelliteLayerRef.current = window.MQ.satelliteLayer();
-    darkLayerRef.current = window.MQ.darkLayer();
-    lightLayerRef.current = window.MQ.lightLayer();
-    if (settingLayerRef.current) {
-      mapRef.current.removeControl(settingLayerRef.current);
-    }
-    settingLayerRef.current = L.control.layers({
-      'Map': mapLayerRef.current,
-      'Hybrid': hybridLayerRef.current,
-      'Satellite': satelliteLayerRef.current,
-      'Dark': darkLayerRef.current,
-      'Light': lightLayerRef.current
-    });
-    settingLayerRef.current.addTo(mapRef.current);
-
     if (geoJsonLayerRef.current) {
       mapRef.current.removeLayer(geoJsonLayerRef.current);
     }
@@ -156,25 +134,93 @@ const PTravelMap = () => {
     });
     markers.current = [];
 
-    if (store.rawMapFile) {
-      geoJsonLayerRef.current = L.geoJSON(store.rawMapFile, {
-        onEachFeature: (feature, layer) => {
+    if (mapLayerRef.current) mapRef.current.removeLayer(mapLayerRef.current);
+    if (hybridLayerRef.current) mapRef.current.removeLayer(hybridLayerRef.current);
+    if (satelliteLayerRef.current) mapRef.current.removeLayer(satelliteLayerRef.current);
+    if (darkLayerRef.current) mapRef.current.removeLayer(darkLayerRef.current);
+    if (lightLayerRef.current) mapRef.current.removeLayer(lightLayerRef.current);
 
-          // check if label_y and label_x exist, since they don't exist for KML
-          if (feature.properties.label_y && feature.properties.label_x) {
-            const label = L.marker(
-              [feature.properties.label_y, feature.properties.label_x],
-              {
-                icon: L.divIcon({
-                  className: "countryLabel",
-                  html: feature.properties.name,
-                  iconSize: [1000, 0],
-                  iconAnchor: [0, 0],
-                }),
-              }
-            ).addTo(mapRef.current);
-            markers.current.push(label);
+    if (window.MQ) {
+      mapLayerRef.current = window.MQ.mapLayer();
+      hybridLayerRef.current = window.MQ.hybridLayer();
+      satelliteLayerRef.current = window.MQ.satelliteLayer();
+      darkLayerRef.current = window.MQ.darkLayer();
+      lightLayerRef.current = window.MQ.lightLayer();
+
+      if (settingLayerRef.current) {
+        mapRef.current.removeControl(settingLayerRef.current);
+      }
+
+      settingLayerRef.current = L.control.layers({
+        'Map': mapLayerRef.current,
+        'Hybrid': hybridLayerRef.current,
+        'Satellite': satelliteLayerRef.current,
+        'Dark': darkLayerRef.current,
+        'Light': lightLayerRef.current
+      });
+
+      settingLayerRef.current.addTo(mapRef.current);
+
+      mapRef.current.on("baselayerchange", function (event) {
+        const layerName = event.name; // Name of the selected layer
+        const layer = event.layer; // Reference to the selected layer
+
+        if (!store.currentMapObject.mapProps) {
+          store.currentMapObject.mapProps = {};
+        }
+
+        store.currentMapObject.mapProps.layerName = layerName;
+
+        console.log("Base layer changed to:", layerName);
+        console.log("Base layer changed to:", layer);
+        console.log(mapRef.current);
+        setDefaultLayerAdded(true);
+      });
+
+      if (!defaultLayerAdded && store.currentMapObject.mapProps?.layerName) {
+        console.log("changing layer...");
+        switch (store.currentMapObject.mapProps?.layerName) {
+          case "Map":
+            mapRef.current.addLayer(mapLayerRef.current);
+            break;
+          case "Hybrid":
+            mapRef.current.addLayer(hybridLayerRef.current);
+            break;
+          case "Satellite":
+            mapRef.current.addLayer(satelliteLayerRef.current);
+            break;
+          case "Dark":
+            mapRef.current.addLayer(darkLayerRef.current);
+            break;
+          case "Light":
+            mapRef.current.addLayer(lightLayerRef.current);
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
+
+    if (geoJsonData) {
+      geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
+        onEachFeature: (feature, layer) => {
+          let labelData = store.getJsonLabels(feature, layer);
+          if (!labelData) return;
+
+          const [pos, text] = labelData;
+
+          const label = L.marker(
+            pos, {
+            icon: L.divIcon({
+              className: "countryLabel",
+              html: `<div style="font-size: 30px;">${text}</div>`,
+              iconSize: [1000, 0],
+              iconAnchor: [0, 0],
+            }),
           }
+          ).addTo(mapRef.current);
+          markers.current.push(label);
         },
       });
 
@@ -193,7 +239,16 @@ const PTravelMap = () => {
     }
 
     runDirection();
+
+    store.pageLoading = false
   }
+
+  useEffect(() => {
+    setDefaultLayerAdded(false);
+    if (store.rawMapFile) {
+      setGeoJsonData(store.rawMapFile);
+    }
+  }, [store.rawMapFile]);
 
   useEffect(() => {
     refreshMap();
@@ -212,10 +267,6 @@ const PTravelMap = () => {
   const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
   const runDirection = async () => {
-
-    if (store.waypoints){
-      setLoading(true);
-    }
 
     try {
 
@@ -240,8 +291,7 @@ const PTravelMap = () => {
         iconSize: [25, 41],
         iconAnchor: [12, 41]
       });
-
-      const routingControl = L.Routing.control({   
+      const routingControl = L.Routing.control({
         waypoints: store.waypoints,
         routeWhileDragging: true,
         createMarker: function (i, waypoint, n) {
@@ -250,6 +300,7 @@ const PTravelMap = () => {
         },
         geocoder: L.Control.Geocoder.nominatim(),
       });
+      store.pageLoading = false
 
       // Listen for the waypointsUpdated event
       routingControl.on('waypointschanged', function (e) {
@@ -260,21 +311,27 @@ const PTravelMap = () => {
         }));
       });
 
-      routingControl.on('routingstart', function () {
-        setLoading(true); 
-      });
-
-      routingControl.on('routesfound routingerror', function () {
-        setLoading(false); 
-      });
-
-      // Add the routing control to the map
       routingControl.addTo(mapRef.current);
+
+      routingControl.on('routingstart', function () {
+        // setLoading(true);
+        store.pageLoading = true;
+      });
+
+      routingControl.on('routesfound', function () {
+        console.log('-----routesfound------');
+        store.pageLoading = false;
+      });
+
+      routingControl.on('routingerror', function () {
+        store.pageLoading = false;
+      });
 
       routeControlRef.current = routingControl;
     } catch (error) {
       console.error('Error in geocoding or routing:', error);
-      setLoading(false);
+      // setLoading(false);
+      store.pageLoading = false
     }
   };
 
@@ -285,6 +342,7 @@ const PTravelMap = () => {
       {/* <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div> */}
       <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div>
       {/* {loading && <div id={"loader"}></div>} */}
+      {store.pageLoading && <div id="loader" className="custom-loader" />}
       <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>
         EXIT
       </Button>
