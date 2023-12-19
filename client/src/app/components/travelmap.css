@@ -45,7 +45,7 @@ input:nth-child(1) {
 .leaflet-routing-alternatives-container {
   /* display: none; */
   max-width: 320px;
-  max-height: calc(var(--max-height-factor) * 85vh);
+  max-height: calc(var(--max-height-factor) * 35vh);
   overflow: auto;
   background-color: rgba(255, 255, 255, 0.6);
 }
