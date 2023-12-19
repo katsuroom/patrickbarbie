@@ -107,9 +107,9 @@ const TravelMap = () => {
                 darkLayerRef.current = window.MQ.darkLayer();
                 lightLayerRef.current = window.MQ.lightLayer();
 
-                if (settingLayerRef.current && mapRef.current) {
-                    mapRef.current.removeControl(settingLayerRef.current);
-                }
+                // if (settingLayerRef.current && mapRef.current) {
+                //     mapRef.current.removeControl(settingLayerRef.current);
+                // }
 
                 // settingLayerRef.current = L.control.layers({
                 //     'Map': mapLayerRef.current,

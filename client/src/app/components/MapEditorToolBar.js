@@ -375,7 +375,7 @@ const MapEditorToolbar = () => {
         <BorderColorIcon />
       </button> */}
 
-      {store.currentMapObject?.mapType === "Travel Map" ? (
+      {/* {store.currentMapObject?.mapType === "Travel Map" ? (
         <div style={{ position: "relative" }}>
 
           <button style={buttonStyle} onClick={handleShapeClick}>
@@ -385,7 +385,7 @@ const MapEditorToolbar = () => {
         </div>
       ) : (
         <> </>
-      )}
+      )} */}
     </div>
   );
 };

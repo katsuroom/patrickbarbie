@@ -1056,6 +1056,7 @@ function StoreContextProvider(props) {
   };
 
   store.searchMaps = async function (searchText, searchBy) {
+    store.pageLoading = true
     const res = await api.searchMaps(searchText, searchBy);
     if (store.isHomePage()) {
       store.changeView(store.viewTypes.COMMUNITY);
@@ -1066,6 +1067,7 @@ function StoreContextProvider(props) {
       type: StoreActionType.SET_MAP_LIST,
       payload: { mapList: maps },
     });
+    store.pageLoading = false
   };
 
   store.getCsvById = async function (id) {
