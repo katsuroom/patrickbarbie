@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import jsTPS from "../app/common/jsTPS";
 import DotColor_Transaction from "../transactions/DotColor_transaction";
 import HeatColorTransaction from "../transactions/HeatColorTransaction";
+import TravelWaypointsTransaction from "../transactions/TravelWaypointsTransaction";
 import Procolor_transaction from "../transactions/Procolor_transaction";
 import GeneralProperty_Transaction from "../transactions/GeneralProperty_transaction";
 import CSV_Transaction from "@/transactions/CSVTransaction";
@@ -434,7 +435,7 @@ function StoreContextProvider(props) {
   };
 
   store.setPageLoading = function (pageLoading) {
-    store.pageLoading = pageLoading;
+    // store.pageLoading = pageLoading;
     storeReducer({
       type: StoreActionType.PAGE_LOADING,
       payload: pageLoading,
@@ -1342,6 +1343,17 @@ function StoreContextProvider(props) {
     console.log(store.rawMapFile);
     console.log(store.currentMapObject);
   }
+
+  store.setTravelWaypointsTransaction = function (newWaypoints) {
+      let oldWaypoints = store.waypoints;
+      let transaction = new TravelWaypointsTransaction(
+        oldWaypoints,
+        newWaypoints,
+        store
+      );
+      console.log(transaction);
+      tps.addTransaction(transaction);
+  };
 
   store.setHeatColorTransaction = function (newColor, type) {
     if (type === "min") {
