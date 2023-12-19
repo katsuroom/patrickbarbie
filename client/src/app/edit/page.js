@@ -58,44 +58,44 @@ export default function EditScreen() {
   //     .catch((error) => console.error(error));
   // }
 
-  useEffect(() => {
-    store.setPropertyTable();
-    console.log(store.table);
+  // useEffect(() => {
+  //   store.setPropertyTable();
+  //   console.log(store.table);
     
-    const f = async () => {
-      console.log("refreshing edit");
-      if (!store.currentMapObject) {
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        let mapId = urlParams.get("mapId");
-        await store.getMapListHome();
-        await store.loadMapFile(mapId);
+  //   const f = async () => {
+  //     console.log("refreshing edit");
+  //     if (!store.currentMapObject) {
+  //       const queryString = window.location.search;
+  //       const urlParams = new URLSearchParams(queryString);
+  //       let mapId = urlParams.get("mapId");
+  //       await store.getMapListHome();
+  //       await store.loadMapFile(mapId);
 
-        setReadyToRender(true);
-      }
-    };
-    if (!readyToRender) {
-      f();
-    }
-    store.tps.clearAllTransactions();
-  }, []);
+  //       setReadyToRender(true);
+  //     }
+  //   };
+  //   if (!readyToRender) {
+  //     f();
+  //   }
+  //   store.tps.clearAllTransactions();
+  // }, []);
 
-  useEffect(() => {
-    const func = async () => {
-      console.log("refreshing edit");
-      if (store.currentMapObject && store.currentMapObject.csvData) {
-        const csvObj = await store.getCsvById(store.currentMapObject.csvData);
+  // useEffect(() => {
+  //   const func = async () => {
+  //     console.log("refreshing edit");
+  //     if (store.currentMapObject && store.currentMapObject.csvData) {
+  //       const csvObj = await store.getCsvById(store.currentMapObject.csvData);
 
-        console.log(csvObj);
+  //       console.log(csvObj);
 
-        store.setParsedCsvData(csvObj.csvData);
-        store.setCsvKey(csvObj.key);
-        store.setCsvLabel(csvObj.label);
+  //       store.setParsedCsvData(csvObj.csvData);
+  //       store.setCsvKey(csvObj.key);
+  //       store.setCsvLabel(csvObj.label);
 
-      }
-    };
-    func();
-  }, [store.currentMapObject]);
+  //     }
+  //   };
+  //   func();
+  // }, [store.currentMapObject]);
 
   // useEffect(() => {
   //   const f = async () => {
