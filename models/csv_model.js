@@ -4,7 +4,8 @@ const ObjectId = Schema.Types.ObjectId
 
 const CsvSchema = new Schema(
     {
-        label: {type: String, required: true},
+        tableLabel: {type: String, required: true},
+        label: {type: String, required: false},
         key: {type: String, required: true},
         csvData: {type: Object, required: true}
     },
