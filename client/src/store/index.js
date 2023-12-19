@@ -12,6 +12,7 @@ import GeneralProperty_Transaction from "../transactions/GeneralProperty_transac
 import CSV_Transaction from "@/transactions/CSVTransaction";
 import Label_Transaction from "@/transactions/LabelTransaction";
 import Key_Transaction from "@/transactions/KeyTransaction";
+import PolColorTransaction from "@/transactions/PolColorTransaction";
 
 
 import FontSize_Transaction from "../transactions/FontSize_transaction";
@@ -1410,6 +1411,13 @@ function StoreContextProvider(props) {
     console.log(store.proColor);
   };
 
+  // store.setPolColorTransaction = function (newColor) {
+  //   let oldColor = store.polColor;
+  //   let transaction = new PolColorTransaction(oldColor, newColor, index, store);
+  //   console.log(transaction);
+  //   tps.addTransaction(transaction);
+  // };
+
   store.setGeneralPropertyTransaction = function (selectedKey, newValue, index) {
     let oldValue = store.rawMapFile.features[index].properties[selectedKey];
     let transaction = new GeneralProperty_Transaction(index, selectedKey, oldValue, newValue, store);
@@ -1517,6 +1525,11 @@ function StoreContextProvider(props) {
     // check if GeoJSON
     if (feature.properties.label_y && feature.properties.label_x) {
       return [[feature.properties.label_y, feature.properties.label_x], feature.properties.name];
+    }
+
+    // check if odd GeoJSON
+    if(feature.properties.name) {
+      return [layer.getBounds().getCenter(), feature.properties.name];
     }
 
     // check if KML
