@@ -384,7 +384,7 @@ function StoreContextProvider(props) {
 
     storeReducer({
       type: StoreActionType.SET_PARSED_CSV_DATA,
-      payload: table,
+      payload: { parsed_CSV_Data: table },
     });
 
   }
@@ -417,53 +417,10 @@ function StoreContextProvider(props) {
 
   store.setNewTable = function (csvLabel, newCSVData) {
     console.log("setting new table");
-    const properties = store.rawMapFile.features.map(
-      (element) => element.properties
-    );
-
-    const generalProperty = {};
-    properties.forEach((element) => {
-      Object.keys(element).forEach((key) => {
-        if (key in generalProperty) {
-          generalProperty[key].push(element[key]);
-        } else {
-          generalProperty[key] = [element[key]];
-        }
-      });
-    });
-
-    console.log(generalProperty);
+   
     console.log(store.parsed_CSV_Data);
 
-    // var indexs = [];
-
-    // for (let i = 0; i < store.parsed_CSV_Data[csvLabel].length; i++) {
-    //   if (
-    //     generalProperty[store.currentMapObject.selectedLabel].includes(store.parsed_CSV_Data[csvLabel][i])
-    //   ) {
-    //     indexs.push(i);
-    //   }
-    // }
-
-    // // console.log(indexs);
-
-    // let newtable = { ...store.parsed_CSV_Data };
-
-    // function keepElementsAtIndexes(obj, indexes) {
-    //   // Iterate over each key in the object
-    //   for (let key in obj) {
-    //     // Check if the property is an array
-    //     if (Array.isArray(obj[key])) {
-    //       // Create a new array with elements from the specified indexes
-    //       obj[key] = indexes
-    //         .map((index) => obj[key][index])
-    //         .filter((element) => element !== undefined);
-    //     }
-    //   }
-    // }
-
-    // keepElementsAtIndexes(newtable, indexs);
-
+    console.log(newCSVData);
 
     const orderMapping = {};
     store.parsed_CSV_Data[store.currentMapObject.selectedLabel].forEach(
@@ -497,12 +454,18 @@ function StoreContextProvider(props) {
       return sortedData;
     }
 
-    // Reorder 'parsed_CSV_Data' based on the order in 'generalProperty'
-    const reorderedParsedCSVData = reorderData(
-      newCSVData,
-      csvLabel,
-      orderMapping
-    );
+    if(csvLabel !== null){
+      console.log("reordering data");
+      var reorderedParsedCSVData = reorderData(
+        newCSVData,
+        csvLabel,
+        orderMapping
+      );
+    }else{
+      console.log("save the data as it is");
+      var reorderedParsedCSVData = newCSVData;
+      console.log(reorderedParsedCSVData);
+    }
 
     const final = { ...store.parsed_CSV_Data, ...reorderedParsedCSVData };
     console.log(final);

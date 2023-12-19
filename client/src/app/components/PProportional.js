@@ -175,9 +175,7 @@ export default function PProportional() {
   //   setMenuItems(Object.keys(store.table));
   // }
 
-  
 
-  console.log(store.table);
   console.log(store.label);
   console.log(store.currentMapObject.selectedLabel);
   console.log(store.key);
