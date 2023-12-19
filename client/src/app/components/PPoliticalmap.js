@@ -292,7 +292,7 @@ export default function PPoliticalmap() {
             <div style={{ overflow: "auto", maxHeight: "45vh" }}>
                 {csvUploaded && (
                     <div style={{ display: "flex", alignItems: "center" }}>
-                        <div style={{ paddingRight: "10%" }}>Merge CSV on: </div>
+                        <div style={{ paddingRight: "10%" }}>Match with label: </div>
                         <Select
                             // labelId="demo-simple-select-standard-label"
                             // id="searchOn"
