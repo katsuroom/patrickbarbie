@@ -77,6 +77,7 @@ export default function EditScreen() {
     if (!readyToRender) {
       f();
     }
+    store.tps.clearAllTransactions();
   }, []);
 
   useEffect(() => {

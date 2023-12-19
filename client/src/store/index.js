@@ -9,6 +9,8 @@ import HeatColorTransaction from "../transactions/HeatColorTransaction";
 import Procolor_transaction from "../transactions/Procolor_transaction";
 import GeneralProperty_Transaction from "../transactions/GeneralProperty_transaction";
 import CSV_Transaction from "@/transactions/CSVTransaction";
+import Label_Transaction from "@/transactions/LabelTransaction";
+import Key_Transaction from "@/transactions/KeyTransaction";
 
 import api from "./api";
 
@@ -131,6 +133,8 @@ function StoreContextProvider(props) {
   store.currentModalTypes = CurrentModal;
   store.searchBy = SearchBy;
   store.sortBy = SortBy;
+
+  store.tps = tps;
 
   const storeReducer = (action) => {
     const { type, payload } = action;
@@ -1285,6 +1289,21 @@ function StoreContextProvider(props) {
     console.log("newCSV", newCSV);
     console.log("store.parsed_CSV_Data", store.parsed_CSV_Data);
     let transaction = new CSV_Transaction({...store.parsed_CSV_Data}, {...newCSV}, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+
+  }
+
+  store.setCsvLabelTransaction = function (label) {
+    let transaction = new Label_Transaction(label,store.label, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+
+  }
+
+
+  store.setCsvKeyTransaction = function (key) {
+    let transaction = new Key_Transaction(key, store.key, store);
     console.log(transaction);
     tps.addTransaction(transaction);
 
