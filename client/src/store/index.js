@@ -741,7 +741,7 @@ function StoreContextProvider(props) {
         const csvObj = (await api.getCsvById(store.currentMapObject.csvData))
           .data.data;
         csvData = (
-          await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData, store.currentMapObject.selectedLabel)
+          await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData, store.selectedLabel)
         ).data.csvData._id;
       }
 
@@ -941,12 +941,12 @@ function StoreContextProvider(props) {
     }
   };
 
-  store.setParsedCsvData = function (data) {
-    store.setParsedCsvDataWOR(data);
+  store.setParsedCsvData = function (parsed_CSV_Data) {
+    store.setParsedCsvDataWOR(parsed_CSV_Data);
     // console.log('store.setParsedCsvData', data);
     storeReducer({
       type: StoreActionType.SET_PARSED_CSV_DATA,
-      payload: { data },
+      payload: { parsed_CSV_Data },
     });
   };
 
@@ -1066,7 +1066,7 @@ function StoreContextProvider(props) {
         store.label,
         store.parsed_CSV_Data,
         // store.tableLabel
-        store.currentMapObject.selectedLabel
+        store.selectedLabel
       );
       console.log("response", response);
       const csvObj = response.data.csvData;
@@ -1081,7 +1081,7 @@ function StoreContextProvider(props) {
       csvObj.key = store.key;
       csvObj.label = store.label;
       csvObj.csvData = store.parsed_CSV_Data;
-      csvObj.tableLabel = store.currentMapObject.selectedLabel;
+      csvObj.tableLabel = store.selectedLabel;
       console.log(csvObj);
       store.updateCSV(csvObj);
     }

@@ -10,7 +10,7 @@ import TextField from "@mui/material/TextField";
 import "./property.css";
 import { useHistory } from "react-router-dom";
 import CsvFileReader from "./CsvFileReader";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import StoreContext, { CurrentModal } from "@/store";
 import { CompactPicker } from "react-color";
 import Typography from "@mui/material/Typography";
@@ -35,9 +35,48 @@ export default function PHeatmap() {
   const [menuItems, setMenuItems] = React.useState([]);
 
   const [csvUploaded, setCsvUploaded] = React.useState(false);
+  const [prevParsedCsvData, setPrevParsedCsvData] = React.useState({});
   // const [table, setTable] = React.useState({});
 
+  const [uploadedCsvData, setUploadedCsvData] = React.useState({});
+
+  const [editingCell, setEditingCell] = useState(null);
+
+
+
+  const handleCellClick = (rowIndex, columnIndex) => {
+    setEditingCell({ rowIndex, columnIndex });
+  };
+
+  const handleCellValueChange = (event) => {
+    const { value } = event.target;
+    const { rowIndex, columnIndex } = editingCell;
+    console.log(rowIndex, columnIndex, value);
+
+    if (columnIndex === 0) {
+      store.parsed_CSV_Data[store.currentMapObject.selectedLabel][rowIndex] = value;
+    }
+    else{
+      store.parsed_CSV_Data[store.key][rowIndex] = value;
+    }
+
+    const table = { ...store.parsed_CSV_Data };
+
+    console.log(table);
+    store.setParsedCsvData(table);
+
+    setEditingCell(null);
+    
+  };
+
+  const handleCellBlur = () => {
+    setEditingCell(null);
+  };
+
+
+  useEffect(() => {
   if (!store.parsed_CSV_Data) {
+    
     const properties = store.rawMapFile.features.map(
       (element) => element.properties
     );
@@ -56,12 +95,13 @@ export default function PHeatmap() {
     const table = { ...generalProperty, ...store.parsed_CSV_Data };
     console.log(table);
 
-    store.setParsedCsvDataWOR;
+    store.setParsedCsvDataWOR(table);
     store.setParsedCsvData(table);
 
     // store.setCsvLabel(Object.keys(store.parsed_CSV_Data)[0]);
     store.setCsvKey(Object.keys(store.parsed_CSV_Data)[0]);
   }
+  }, []);
 
   const handleMinColorChange = (event) => {
     const color = event?.hex;
@@ -81,40 +121,16 @@ export default function PHeatmap() {
   };
 
   function zip() {
-    // if (!store.table || !store.tableLabel || !store.key) {
-    //   return [];
-    // }
-
+    if (!store.parsed_CSV_Data[store.currentMapObject.selectedLabel]){
+      return [];
+    }
     let res = [];
 
-    // general property
-    if (Object.keys(generalProperty).indexOf(store.key) !== -1) {
-      store.table[store.currentMapObject.selectedLabel].forEach(
-        (element, idx) => {
-          res.push([
-            element,
-            store.table[store.currentMapObject.selectedLabel].indexOf(
-              element
-            ) === -1
-              ? ""
-              : store.table[store.key][
-                  store.table[store.currentMapObject.selectedLabel].indexOf(
-                    element
-                  )
-                ],
-          ]);
-        }
-      );
-    } else {
-      store.table[store.tableLabel].forEach((element, idx) => {
-        res.push([
-          element,
-          store.table[store.label].indexOf(element) === -1
-            ? ""
-            : store.table[store.key][store.table[store.label].indexOf(element)],
-        ]);
-      });
-    }
+    store.parsed_CSV_Data[store.currentMapObject.selectedLabel].forEach(
+      (name, idx) => {
+        res.push([name, store.parsed_CSV_Data[store.key][idx]]);
+      }
+    );
 
     return res;
   }
@@ -124,14 +140,46 @@ export default function PHeatmap() {
   };
 
   const handleChangeCsvLabel = (event) => {
-    console.log(event.target.value);
-    store.setCsvLabel(event.target.value);
+    // console.log(event.target.value);
+    // store.setCsvLabel(event.target.value);
+
+    let table;
+
+    if (!Object.keys(prevParsedCsvData).length) {
+      table = { ...store.parsed_CSV_Data };
+    } else {
+      table = { ...prevParsedCsvData };
+    }
+    console.log(table);
+
+    const label = event.target.value;
+
+    // if keys in uploadedCsvData already exist in table, then delete the key.
+    Object.keys(uploadedCsvData).forEach((key) => {
+      if (table[key]) {
+        delete table[key];
+      }
+    });
+
+    // then merge uploadedCsvData to table
+    table[store.currentMapObject.selectedLabel].map((name) => {
+      Object.keys(uploadedCsvData).forEach((key) => {
+        if (!table[key]) {
+          table[key] = [];
+        }
+
+        table[key].push(
+          uploadedCsvData[label].indexOf(name) === -1
+            ? ""
+            : uploadedCsvData[key][uploadedCsvData[label].indexOf(name)]
+        );
+      });
+    });
+
+    store.setParsedCsvData(table);
+    store.setCsvLabel(label);
   };
 
-  const handleChangeTableLabel = (event) => {
-    console.log(event.target.value);
-    store.setTableLabel(event.target.value);
-  };
 
   const fileOnLoadComplete = (data) => {
     // setRenderTable(false);
@@ -163,19 +211,22 @@ export default function PHeatmap() {
     keys = Array.from(keys);
     console.log(keys);
 
-    store.setParsedCsvDataWOR(csv_data);
-    store.setCsvKeyWithoutRerendering(keys[1]);
+    // store.setParsedCsvDataWOR(csv_data);
+    // store.setCsvKeyWithoutRerendering(keys[1]);
+    // // store.setCsvKey(keys[1]);
+    // console.log("setting key to", keys[1]);
+    // store.setCsvLabelWithoutRerendering(keys[0]);
+    // console.log("setting label to", keys[0]);
+    // setMenuItems(keys);
+    // console.log("setting menu item to", keys);
+    // // setRenderTable(true);
+    // store.setCsvLabel(keys[0]);
     // store.setCsvKey(keys[1]);
-    console.log("setting key to", keys[1]);
-    store.setCsvLabelWithoutRerendering(keys[0]);
-    console.log("setting label to", keys[0]);
-    setMenuItems(keys);
-    console.log("setting menu item to", keys);
-    // setRenderTable(true);
-    store.setCsvLabel(keys[0]);
-    store.setCsvKey(keys[1]);
+
+    store.setCsvLabel(null);
 
     setCsvUploaded(true);
+    setUploadedCsvData(csv_data);
   };
 
   const properties = store.rawMapFile.features.map(
@@ -196,6 +247,7 @@ export default function PHeatmap() {
   //   setMenuItems(Object.keys(store.table));
   // }
 
+
   return (
     <div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
@@ -214,12 +266,11 @@ export default function PHeatmap() {
                 style: { maxHeight: "50%" },
               }}
             >
-              {store.parsed_CSV_Data &&
-                Object.keys(store.parsed_CSV_Data).map((mi) => (
-                  <MenuItem key={mi} value={mi}>
-                    {mi}
-                  </MenuItem>
-                ))}
+              {Object.keys(uploadedCsvData).map((mi) => (
+                <MenuItem key={mi} value={mi}>
+                  {mi}
+                </MenuItem>
+              ))}
               {/* <MenuItem>
                     <Button variant="text" startDecorator={<Add />}>
                       New Label
@@ -272,12 +323,11 @@ export default function PHeatmap() {
                     style: { maxHeight: "50%" },
                   }}
                 >
-                  {store.table &&
-                    Object.keys(store.table).map((mi) => (
-                      <MenuItem key={mi} value={mi}>
-                        {mi}
-                      </MenuItem>
-                    ))}
+                  {Object.keys(store.parsed_CSV_Data).map((mi) => (
+                    <MenuItem key={mi} value={mi}>
+                      {mi}
+                    </MenuItem>
+                  ))}
                   {/* <MenuItem>
                     <Button variant="text" startDecorator={<Add />}>
                       New Column
@@ -289,26 +339,37 @@ export default function PHeatmap() {
             </tr>
           </thead>
           <tbody>
-            {store.table &&
-              zip().map((row, idx) => (
-                <tr key={"tr" + idx}>
-                  <td key={"td1" + idx}>{row[0]}</td>
-                  <td key={"td2" + idx}>{row[1]}</td>
-                  {/* <td>
-                    <TextField
-                      id="search"
-                      variant="standard"
-                      key={row[idx] + "td3" + idx}
-                      sx={{ m: 1, minWidth: 120 }}
-                      onChange={(e) =>
-                        textFieldChanges[idx] = e.target.value
-                        // (store.parsed_CSV_Data[store.key][idx] = e.target.value)
-                      }
-                      onKeyDown={() => {store.parsed_CSV_Data[store.key][idx] = textFieldChanges[idx]}}
-                    />
-                  </td> */}
-                </tr>
-              ))}
+            {zip().map((row, rowIndex) => (
+              <tr key={"tr" + rowIndex}>
+                {row.map((cell, columnIndex) => (
+                  <td
+                    key={`td${columnIndex}${rowIndex}`}
+                    onClick={() => handleCellClick(rowIndex, columnIndex)}
+                  >
+                    {editingCell &&
+                    editingCell.rowIndex === rowIndex &&
+                    editingCell.columnIndex === columnIndex ? (
+                      <input
+                        type="text"
+                        defaultValue={cell}
+                        onChange={(e) => {
+                          
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            handleCellValueChange(e);
+                          }
+                        }}
+
+                        onBlur={handleCellBlur}
+                      />
+                    ) : (
+                      cell
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
           </tbody>
         </Table>
       </div>

@@ -67,6 +67,7 @@ export default function Heatmap() {
     });
   };
 
+
   if (!loadScripts) {
     Promise.all([
       loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
@@ -76,9 +77,13 @@ export default function Heatmap() {
         setLoadScripts(true);
         store.setRawMapFile(store.rawMapFile);
         console.log("script loaded");
+
       })
       .catch((error) => console.error(error));
   }
+
+
+
 
   const initColor = () => {
     if (store.currentMapObject.mapProps) {
@@ -346,7 +351,9 @@ export default function Heatmap() {
       console.log(defaultLayerAdded);
       console.log(store.currentMapObject);
 
-      if (!defaultLayerAdded && store.currentMapObject.mapProps?.layerName) {
+      if (
+        // !defaultLayerAdded && 
+        store.currentMapObject.mapProps?.layerName) {
         console.log("changing layer...");
         switch (store.currentMapObject.mapProps?.layerName) {
           case "Map":
@@ -455,6 +462,7 @@ export default function Heatmap() {
     store.maxColor,
   ]);
 
+
   return (
     <div>
       <Script src="https://cdn.jsdelivr.net/npm/heatmapjs@2.0.2/heatmap.js"></Script>
@@ -463,7 +471,11 @@ export default function Heatmap() {
       <div
         id={"map-display"}
         style={{ height: `${mapHeight}px`, margin: "10px" }}
-      ></div>
+        
+      >
+        
+      </div>
+      {loadScripts ? "" : "loading"}
     </div>
   );
 }
