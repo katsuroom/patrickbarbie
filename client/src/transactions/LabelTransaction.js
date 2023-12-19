@@ -1,7 +1,7 @@
 import jsTPS_Transaction from "@/app/common/jsTPS.js";
 
 export default class Label_Transaction extends jsTPS_Transaction {
-    constructor(oldLabel, newLabel, initStore){
+    constructor(newLabel, oldLabel, initStore){
         super();
         this.store = initStore;
         this.oldLabel = oldLabel;
