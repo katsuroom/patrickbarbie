@@ -175,7 +175,7 @@ const MapEditorToolbar = () => {
   //   };
 
 
-  const handleUnderlinedClick= () => {
+  const handleUnderlinedClick = () => {
     if (store.currentMapObject && store.currentMapObject.mapProps) {
       store.setUnderlineTransaction(!store.currentMapObject.mapProps.underline);
     }
@@ -190,69 +190,106 @@ const MapEditorToolbar = () => {
   // const handleFillColorClick = () => alert("Fill Color button clicked");
   // const handleBorderColorClick = () => alert("Border Color button clicked");
 
+
+  // const FontDropdown = () => (
+  //   <div style={dropdownStyle}>
+  //     <div
+  //       style={dropdownItemStyle}
+  //       onClick={() => {
+  //         store.setFontStyleTransaction("Arial"); closeDropdown();
+  //       }}
+  //     >
+  //       Arial
+  //     </div>
+  //     <div
+  //       style={dropdownItemStyle}
+  //       onClick={() => {
+  //         store.setFontStyleTransaction("Times New Roman");
+  //         closeDropdown();
+  //       }}
+  //     >
+  //       Times New Roman
+  //     </div>
+  //     <div
+  //       style={dropdownItemStyle}
+  //       onClick={() => {
+  //         store.setFontStyleTransaction("Courier New");
+  //         closeDropdown();
+  //       }}
+  //     >
+  //       Courier New
+  //     </div>
+
+  //     <div
+  //       style={dropdownItemStyle}
+  //       onClick={() => {
+  //         store.setFontStyleTransaction("Sans Serif");
+  //         closeDropdown();
+  //       }}
+  //     >
+  //       Sans Serif
+  //     </div>
+
+
+  //     <div
+  //       style={dropdownItemStyle}
+  //       onClick={() => {
+  //         store.setFontStyleTransaction("Georgia");
+  //         closeDropdown();
+  //       }}
+  //     >
+  //       Georgia
+  //     </div>
+
+  //     <div
+  //       style={dropdownItemStyle}
+  //       onClick={() => {
+  //         store.setFontStyleTransaction("Comic Sans MS");
+  //         closeDropdown();
+  //       }}
+  //     >
+  //       Comic Sans MS
+  //     </div>
+
+
+  //   </div>
+  // );
+
+
   const FontDropdown = () => (
     <div style={dropdownStyle}>
-      <div
-        style={dropdownItemStyle}
-        onClick={() => {
-          store.setFontStyleTransaction("Arial"); closeDropdown();
-        }}
-      >
+      <div style={dropdownItemStyle} onClick={() => handleFontStyleClick("Arial")}>
         Arial
       </div>
-      <div
-        style={dropdownItemStyle}
-        onClick={() => {
-          store.setFontStyleTransaction("Times New Roman");
-          closeDropdown();
-        }}
-      >
+      <div style={dropdownItemStyle} onClick={() => handleFontStyleClick("Times New Roman")}>
         Times New Roman
       </div>
-      <div
-        style={dropdownItemStyle}
-        onClick={() => {
-          store.setFontStyleTransaction("Courier New");
-          closeDropdown();
-        }}
-      >
+      <div style={dropdownItemStyle} onClick={() => handleFontStyleClick("Courier New")}>
         Courier New
       </div>
-
-      <div
-        style={dropdownItemStyle}
-        onClick={() => {
-          store.setFontStyleTransaction("Sans Serif");
-          closeDropdown();
-        }}
-      >
+      <div style={dropdownItemStyle} onClick={() => handleFontStyleClick("Sans Serif")}>
         Sans Serif
       </div>
-
-
-      <div
-        style={dropdownItemStyle}
-        onClick={() => {
-          store.setFontStyleTransaction("Georgia");
-          closeDropdown();
-        }}
-      >
+      <div style={dropdownItemStyle} onClick={() => handleFontStyleClick("Georgia")}>
         Georgia
       </div>
-
-      <div
-        style={dropdownItemStyle}
-        onClick={() => {
-          store.setFontStyleTransaction("Comic Sans MS");
-          closeDropdown();
-        }}
-      >
+      <div style={dropdownItemStyle} onClick={() => handleFontStyleClick("Comic Sans MS")}>
         Comic Sans MS
       </div>
-
-
     </div>
   );
+
+  const handleFontStyleClick = (fontStyle) => {
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      store.setFontStyleTransaction(fontStyle);
+    }
+    else {
+      store.currentMapObject.mapProps = { fontStyle: fontStyle };
+      store.setFontStyleTransaction(fontStyle);
+    }
+    closeDropdown();
+  };
+
 
   const TextSizePopup = () => (
     <div style={textStylePopup}>
