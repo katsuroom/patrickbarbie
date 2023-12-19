@@ -57,6 +57,32 @@ export default function Heatmap() {
 
   const [loadScripts, setLoadScripts] = useState(false);
 
+  if (!store.parsed_CSV_Data) {
+    const properties = store.rawMapFile.features.map(
+      (element) => element.properties
+    );
+    const generalProperty = {};
+    properties.forEach((element) => {
+      Object.keys(element).forEach((key) => {
+        if (key in generalProperty) {
+          generalProperty[key].push(element[key]);
+        } else {
+          generalProperty[key] = [element[key]];
+        }
+      });
+    });
+
+    console.log(store.parsed_CSV_Data);
+    const table = { ...generalProperty, ...store.parsed_CSV_Data };
+    console.log(table);
+
+    store.setParsedCsvDataWOR(table);
+    store.setParsedCsvData(table);
+
+    // store.setCsvLabel(Object.keys(store.parsed_CSV_Data)[0]);
+    store.setCsvKey(Object.keys(store.parsed_CSV_Data)[0]);
+  }
+
   const loadScript = (src) => {
     return new Promise((resolve, reject) => {
       const script = document.createElement("script");
@@ -383,8 +409,23 @@ export default function Heatmap() {
     heatmapOverlayRef.current = L.geoJSON(geoJsonData, {
       style: geoJsonStyle,
       onEachFeature: (feature, layer) => {
+        var popup =
+          "<p><b>" +
+          layer.feature.properties[store.currentMapObject.selectedLabel] +
+          "</b></p>" +
+          "<p>Value: " +
+          store.parsed_CSV_Data[store.key][
+            store.parsed_CSV_Data[store.currentMapObject.selectedLabel].indexOf
+            (
+              layer.feature.properties[store.currentMapObject.selectedLabel]
+            )
+          ] +
+          " </p>";
+
         layer.on({
           mouseover: function (e) {
+            layer.bindPopup(popup).openPopup();
+
             console.log(e.target);
             e.target.setStyle({
               weight: 10,
@@ -396,6 +437,7 @@ export default function Heatmap() {
               weight: 2,
               // color: "light blue"
             });
+            layer.bindPopup(popup).closePopup();
           },
           click: function (e) {
             console.log("Layer clicked!");
