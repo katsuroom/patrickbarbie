@@ -316,7 +316,7 @@ export default function Heatmap() {
       mapRef.current.removeLayer(lightLayerRef.current);
     if (window.MQ) {
       mapLayerRef.current = window.MQ.mapLayer();
-      hybridLayerRef.current = window.MQ.hybridLayer();
+      // hybridLayerRef.current = window.MQ.hybridLayer();
       satelliteLayerRef.current = window.MQ.satelliteLayer();
       darkLayerRef.current = window.MQ.darkLayer();
       lightLayerRef.current = window.MQ.lightLayer();
@@ -325,7 +325,7 @@ export default function Heatmap() {
       }
       settingLayerRef.current = L.control.layers({
         Map: mapLayerRef.current,
-        Hybrid: hybridLayerRef.current,
+        // Hybrid: hybridLayerRef.current,
         Satellite: satelliteLayerRef.current,
         Dark: darkLayerRef.current,
         Light: lightLayerRef.current,
@@ -359,9 +359,9 @@ export default function Heatmap() {
           case "Map":
             mapRef.current.addLayer(mapLayerRef.current);
             break;
-          case "Hybrid":
-            mapRef.current.addLayer(hybridLayerRef.current);
-            break;
+          // case "Hybrid":
+          //   mapRef.current.addLayer(hybridLayerRef.current);
+          //   break;
           case "Satellite":
             mapRef.current.addLayer(satelliteLayerRef.current);
             break;
