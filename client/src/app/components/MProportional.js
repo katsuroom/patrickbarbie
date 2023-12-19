@@ -33,7 +33,7 @@ export default function ProportionalMap() {
   }
 
   function addLayer(mapRef) {
-    if (!(store.rawMapFile && store.label && store.key && store.parsed_CSV_Data && store.table)) {
+    if (!(store.rawMapFile && store.key && store.table)) {
       return;
     } else {
       // console.log("geoJsonData", geoJsonData);
@@ -62,9 +62,9 @@ export default function ProportionalMap() {
 
           try {
 
-            var index = store.table[store.label].indexOf(
-              feature.properties[store.currentMapObject.selectedLabel]
-            );
+            var index = store.table[
+              store.currentMapObject.selectedLabel
+            ].indexOf(feature.properties[store.currentMapObject.selectedLabel]);
             console.log("index", index);
           } catch (error) {
             console.log(error);
