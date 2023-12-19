@@ -1104,9 +1104,15 @@ function StoreContextProvider(props) {
   // fetches map list based on current view
   store.getMapList = async function () {
     if (store.isHomePage()) {
-      store.getMapListHome();
+      // store.pageLoading = true;
+      await store.getMapListHome();
+      // store.pageLoading = false;
+
     } else {
-      store.getMapListCommunity();
+      // store.pageLoading = true;
+      await store.getMapListCommunity();
+      // store.pageLoading = false;
+
     }
   };
 
