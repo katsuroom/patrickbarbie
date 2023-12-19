@@ -27,6 +27,8 @@ import LocationOffIcon from "@mui/icons-material/LocationOff"; // Delete locatio
 import StarBorderIcon from "@mui/icons-material/StarBorder"; // Add star
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
+
+
 const buttonStyle = {
   margin: "0 5px",
   background: "pink",
@@ -76,8 +78,8 @@ const MapEditorToolbar = () => {
   const [isTextSizePopupVisible, setTextSizePopupVisible] = useState(false);
   const [textSize, setTextSize] = useState(14);
 
-  const handleUndoClick = () => { store.undo()};
-  const handleRedoClick = () => { store.redo()};
+  const handleUndoClick = () => { store.undo() };
+  const handleRedoClick = () => { store.redo() };
 
   const handleFontClick = () => setFontDropdownVisible(!isFontDropdownVisible);
   const handleTextSizeClick = () =>
@@ -88,57 +90,129 @@ const MapEditorToolbar = () => {
   };
 
   const handleTextSizeChange = (e) => {
-    const newSize = e.target.value;
+    const newSize = parseInt(e.target.value, 10);
     setTextSize(newSize);
-    alert(`Text size changed to: ${newSize}`);
   };
 
-  const handleTextIncreaseClick = () => alert("Text Increase button clicked");
-  const handleTextDecreaseClick = () => alert("Text Decrease button clicked");
-  const handleBoldClick = () => alert("Bold button clicked");
-  const handleItalicClick = () => alert("Italic button clicked");
-  const handleUnderlinedClick = () => alert("Underlined button clicked");
-  const handleFillColorClick = () => alert("Fill Color button clicked");
-  const handleBorderColorClick = () => alert("Border Color button clicked");
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      const newSize = parseInt(e.target.value, 10);
+      setTextSize(newSize);
+      store.setFontSizeTransaction(newSize);
+    }
+  };
+
+
+
+  const handleTextIncreaseClick = () => {
+    store.setFontSizeTransaction(store.fontSize + 1)
+  };
+
+  const handleTextDecreaseClick = () => {
+    store.setFontSizeTransaction(store.fontSize - 1)
+  };
+
+
+  const handleBoldClick = () => {
+    store.setBoldTransaction(!store.bold)
+  }
+
+
+  const handleItalicClick =
+    () => { store.setItalicizeTransaction(!store.italicize) };
+
+
+  const handleUnderlinedClick = () => {
+    store.setUnderlineTransaction(!store.underline)
+  };
+
+
+  // const handleFillColorClick = () => alert("Fill Color button clicked");
+  // const handleBorderColorClick = () => alert("Border Color button clicked");
 
   const FontDropdown = () => (
     <div style={dropdownStyle}>
       <div
         style={dropdownItemStyle}
         onClick={() => {
-          console.log("Selected Font 1");
-          closeDropdown();
+          store.setFontStyleTransaction("Arial"); closeDropdown();
         }}
       >
-        Font Style 1
+        Arial
       </div>
       <div
         style={dropdownItemStyle}
         onClick={() => {
-          console.log("Selected Font 2");
+          store.setFontStyleTransaction("Times New Roman");
           closeDropdown();
         }}
       >
-        Font Style 2
+        Times New Roman
       </div>
       <div
         style={dropdownItemStyle}
         onClick={() => {
-          console.log("Selected Font 3");
+          store.setFontStyleTransaction("Courier New");
           closeDropdown();
         }}
       >
-        Font Style 3
+        Courier New
       </div>
+
+      <div
+        style={dropdownItemStyle}
+        onClick={() => {
+          store.setFontStyleTransaction("Sans Serif");
+          closeDropdown();
+        }}
+      >
+        Sans Serif
+      </div>
+
+
+      <div
+        style={dropdownItemStyle}
+        onClick={() => {
+          store.setFontStyleTransaction("Georgia");
+          closeDropdown();
+        }}
+      >
+        Georgia
+      </div>
+
+      <div
+        style={dropdownItemStyle}
+        onClick={() => {
+          store.setFontStyleTransaction("Comic Sans MS");
+          closeDropdown();
+        }}
+      >
+        Comic Sans MS
+      </div>
+
+        
     </div>
   );
 
   const TextSizePopup = () => (
     <div style={textStylePopup}>
+      <style>
+        {`
+          input[type="number"]::-webkit-inner-spin-button,
+          input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
+          input[type="number"] {
+            -moz-appearance: textfield;
+          }
+        `}
+      </style>
       <input
         type="number"
         value={textSize}
         onChange={handleTextSizeChange}
+        onKeyPress={handleKeyPress}
         style={{ width: "60px" }}
         min="1"
         max="100"
@@ -253,7 +327,7 @@ const MapEditorToolbar = () => {
       >
         <UndoIcon />
       </button>
-      <button 
+      <button
         style={{ ...buttonStyle, opacity: store.canRedo() ? 1 : 0.5 }}
         disabled={!store.canRedo()}
         onClick={handleRedoClick}
@@ -274,7 +348,13 @@ const MapEditorToolbar = () => {
         <button style={buttonStyle} onClick={handleTextSizeClick}>
           <FormatSizeIcon />
         </button>
-        {isTextSizePopupVisible && <TextSizePopup />}
+        {isTextSizePopupVisible && (
+          <TextSizePopup
+            value={textSize}
+            onChange={handleTextSizeChange}
+            onKeyPress={handleKeyPress}
+          />
+        )}
       </div>
       <button style={buttonStyle} onClick={handleTextDecreaseClick}>
         <TextDecreaseIcon />
@@ -288,16 +368,16 @@ const MapEditorToolbar = () => {
       <button style={buttonStyle} onClick={handleUnderlinedClick}>
         <FormatUnderlinedIcon />
       </button>
-      <button style={buttonStyle} onClick={handleFillColorClick}>
+      {/* <button style={buttonStyle} onClick={handleFillColorClick}>
         <FormatColorFillIcon />
       </button>
       <button style={buttonStyle} onClick={handleBorderColorClick}>
         <BorderColorIcon />
-      </button>
+      </button> */}
 
-      {store.currentMapObject?.mapType === "Travel Map" ? (
+      {/* {store.currentMapObject?.mapType === "Travel Map" ? (
         <div style={{ position: "relative" }}>
-          
+
           <button style={buttonStyle} onClick={handleShapeClick}>
             Shape <ArrowDropDownIcon />
           </button>
@@ -305,7 +385,7 @@ const MapEditorToolbar = () => {
         </div>
       ) : (
         <> </>
-      )}
+      )} */}
     </div>
   );
 };

@@ -6,11 +6,20 @@ import { usePathname } from "next/navigation";
 import jsTPS from "../app/common/jsTPS";
 import DotColor_Transaction from "../transactions/DotColor_transaction";
 import HeatColorTransaction from "../transactions/HeatColorTransaction";
+import TravelWaypointsTransaction from "../transactions/TravelWaypointsTransaction";
 import Procolor_transaction from "../transactions/Procolor_transaction";
 import GeneralProperty_Transaction from "../transactions/GeneralProperty_transaction";
 import CSV_Transaction from "@/transactions/CSVTransaction";
 import Label_Transaction from "@/transactions/LabelTransaction";
 import Key_Transaction from "@/transactions/KeyTransaction";
+
+
+import FontSize_Transaction from "../transactions/FontSize_transaction";
+import Bold_Transaction from "@/transactions/Bold_transaction";
+import Italicize_Transaction from "@/transactions/Italicize_transaction";
+import Underline_Transaction from "@/transactions/Underline_transaction";
+import Fontstyle_Transaction from "@/transactions/FontStyle_transaction";
+
 
 import api from "./api";
 
@@ -57,6 +66,13 @@ export const StoreActionType = {
   LOGOUT_USER: "LOGOUT_USER",
   SET_CATEGORY_COLOR_MAPPINGS: "SET_CATEGORY_COLOR_MAPPINGS",
   SET_SELECTED_ATTRIBUTE: "SET_SELECTED_ATTRIBUTE",
+
+  SET_FONT_SIZE: "SET_FONT_SIZE",
+  SET_BOLD: "SET_BOLD",
+  SET_ITALICIZE: "SET_ITALICIZE",
+  SET_UNDERLINE: "SET_UNDERLINE",
+  SET_FONT_STYLE: "SET_FONT_STYLE",
+  PAGE_LOADING: "PAGE_LOADING",
 };
 
 export const CurrentModal = {
@@ -127,6 +143,11 @@ function StoreContextProvider(props) {
     waypoints: [],
     pageLoading: false,
     selectedLabel: null,
+    fontSize: 12,
+    bold: false,
+    italicize: false,
+    underline: false,
+    fontStyle: 'Arial',
   });
 
   store.viewTypes = View;
@@ -286,6 +307,12 @@ function StoreContextProvider(props) {
           currentModal: CurrentModal.NONE,
         });
       }
+      case StoreActionType.PAGE_LOADING: {
+        return setStore({
+          ...store,
+          pageLoading: payload,
+        });
+      }
       case StoreActionType.SET_MIN_COLOR: {
         return setStore({
           ...store,
@@ -357,15 +384,63 @@ function StoreContextProvider(props) {
           selectedLabel: payload,
         });
       }
-      
+
+      case StoreActionType.SET_FONT_SIZE: {
+        return setStore({
+          ...store,
+          fontSize: payload,
+        });
+      }
+
+      case StoreActionType.SET_BOLD: {
+        return setStore({
+          ...store,
+          bold: payload,
+        });
+      }
+
+      case StoreActionType.SET_ITALICIZE: {
+        return setStore({
+          ...store,
+          italicize: payload,
+        });
+      }
+
+      case StoreActionType.SET_UNDERLINE: {
+        return setStore({
+          ...store,
+          underline: payload,
+        });
+      }
+
+      case StoreActionType.SET_FONT_STYLE: {
+        return setStore({
+          ...store,
+          fontStyle: payload,
+        });
+      }
+
 
       default:
         return store;
     }
   };
 
+  store.setTableLabel = function (label) {
+    store.tableLabel = label;
+    storeReducer({
+      type: StoreActionType.SET_TABLE_LABEL,
+      payload: label,
+    });
+  };
 
-
+  store.setPageLoading = function (pageLoading) {
+    // store.pageLoading = pageLoading;
+    storeReducer({
+      type: StoreActionType.PAGE_LOADING,
+      payload: pageLoading,
+    })
+  }
 
   store.setTable = function () {
     console.log("setting table")
@@ -382,8 +457,7 @@ function StoreContextProvider(props) {
         }
       });
     });
-  
-    console.log(store.parsed_CSV_Data);
+
     const table = { ...generalProperty, ...store.parsed_CSV_Data };
     console.log(table);
 
@@ -567,6 +641,63 @@ function StoreContextProvider(props) {
       payload: color,
     });
   };
+
+  store.setFontSize = function (size) {
+    console.log("setFontSize", size);
+
+    store.fontSize = size;
+
+    storeReducer({
+      type: StoreActionType.SET_FONT_SIZE,
+      payload: size,
+    });
+  };
+
+  store.setBold = function (bold) {
+    console.log("setBold", bold);
+
+    store.bold = bold;
+
+    storeReducer({
+      type: StoreActionType.SET_BOLD,
+      payload: bold,
+    });
+  };
+
+
+  store.setItalicize = function (italicize) {
+    console.log("setItalicize", italicize);
+
+    store.italicize = italicize;
+
+    storeReducer({
+      type: StoreActionType.SET_ITALICIZE,
+      payload: italicize,
+    });
+  };
+
+  store.setUnderline = function (underline) {
+    console.log("setUnderline", underline);
+
+    store.underline = underline;
+
+    storeReducer({
+      type: StoreActionType.SET_UNDERLINE,
+      payload: underline,
+    });
+  }
+
+  store.setFontStyle = function (fontStyle) {
+    console.log("setFontStyle", fontStyle);
+
+    store.fontStyle = fontStyle;
+
+    storeReducer({
+      type: StoreActionType.SET_FONT_STYLE,
+      payload: fontStyle,
+    });
+  }
+
 
   store.openModal = function (modal) {
     console.log("opening modal: ", modal);
@@ -811,6 +942,7 @@ function StoreContextProvider(props) {
   };
 
   store.updateCSV = function (csvObject) {
+    console.log(csvObject);
     api.updateCSV(csvObject).then((response) => {
       console.log(response);
     });
@@ -1002,6 +1134,7 @@ function StoreContextProvider(props) {
 
   store.getMapListCommunity = async function () {
     await api.getPublishedMaps().then((response) => {
+      // store.pageLoading = true
       console.log("fetched published maps", response.data.data);
 
       let currentMapObj = null;
@@ -1043,6 +1176,7 @@ function StoreContextProvider(props) {
   };
 
   store.searchMaps = async function (searchText, searchBy) {
+    store.pageLoading = true
     const res = await api.searchMaps(searchText, searchBy);
     if (store.isHomePage()) {
       store.changeView(store.viewTypes.COMMUNITY);
@@ -1053,6 +1187,7 @@ function StoreContextProvider(props) {
       type: StoreActionType.SET_MAP_LIST,
       payload: { mapList: maps },
     });
+    store.pageLoading = false
   };
 
   store.getCsvById = async function (id) {
@@ -1092,7 +1227,7 @@ function StoreContextProvider(props) {
       csvObj.key = store.key;
       csvObj.label = store.label;
       csvObj.csvData = store.parsed_CSV_Data;
-      csvObj.tableLabel = store.selectedLabel;
+      csvObj.tableLabel = store.currentMapObject.selectedLabel;
       console.log(csvObj);
       store.updateCSV(csvObj);
     }
@@ -1138,6 +1273,12 @@ function StoreContextProvider(props) {
     store.setProportionalValue([]);
     store.updateCategoryColorMappings([]);
     store.updateSelectedAttribute(null);
+
+    store.setFontSize(12);
+    store.setBold(false);
+    store.setItalicize(false);
+    store.setUnderline(false);
+    store.setFontStyle('Arial');
   };
 
   store.isCommunityPage = () => {
@@ -1180,7 +1321,7 @@ function StoreContextProvider(props) {
     }
   };
 
-  store.setGeneralProperty = function (selectedKey, value, index){
+  store.setGeneralProperty = function (selectedKey, value, index) {
     // Get the current data type
     const currentDataType =
       typeof store.rawMapFile.features[index].properties[selectedKey];
@@ -1209,6 +1350,17 @@ function StoreContextProvider(props) {
     console.log(store.rawMapFile);
     console.log(store.currentMapObject);
   }
+
+  store.setTravelWaypointsTransaction = function (newWaypoints) {
+      let oldWaypoints = store.waypoints;
+      let transaction = new TravelWaypointsTransaction(
+        newWaypoints,
+        oldWaypoints,
+        store
+      );
+      console.log(transaction);
+      tps.addTransaction(transaction);
+  };
 
   store.setHeatColorTransaction = function (newColor, type) {
     if (type === "min") {
@@ -1279,7 +1431,41 @@ function StoreContextProvider(props) {
     tps.addTransaction(transaction);
 
   }
-  
+
+  store.setFontSizeTransaction = function (newSize) {
+    let oldSize = store.fontSize;
+    let transaction = new FontSize_Transaction(oldSize, newSize, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+  }
+
+  store.setBoldTransaction = function (newBold) {
+    let oldBold = store.bold;
+    let transaction = new Bold_Transaction(oldBold, newBold, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+  }
+
+  store.setItalicizeTransaction = function (newItalicize) {
+    let oldItalicize = store.italicize;
+    let transaction = new Italicize_Transaction(oldItalicize, newItalicize, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+  }
+
+  store.setUnderlineTransaction = function (newUnderline) {
+    let oldUnderline = store.underline;
+    let transaction = new Underline_Transaction(oldUnderline, newUnderline, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+  }
+
+  store.setFontStyleTransaction = function (newFontStyle) {
+    let oldFontStyle = store.fontStyle;
+    let transaction = new Fontstyle_Transaction(oldFontStyle, newFontStyle, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+  }
 
   store.redo = function () {
     console.log("redo");
@@ -1314,12 +1500,12 @@ function StoreContextProvider(props) {
     }
 
     // check if KML
-    else if(feature.properties.shape_area) {
+    else if (feature.properties.shape_area) {
       return [layer.getBounds().getCenter(), feature.properties.shape_area];
     }
 
     // check if Shapefile
-    else if(feature.properties.NAME_0 || feature.properties.NAME_1 || feature.properties.NAME_2) {
+    else if (feature.properties.NAME_0 || feature.properties.NAME_1 || feature.properties.NAME_2) {
       if (feature.properties.NAME_2)
         return [layer.getBounds().getCenter(), feature.properties.NAME_2];
 

@@ -174,17 +174,16 @@ export default function PProportional() {
     const { rowIndex, columnIndex } = editingCell;
     console.log(rowIndex, columnIndex, value);
 
+    const table = JSON.parse(JSON.stringify(store.parsed_CSV_Data));
+
     if (columnIndex === 0) {
-      store.parsed_CSV_Data[store.currentMapObject.selectedLabel][rowIndex] =
-        value;
+      table[store.currentMapObject.selectedLabel][rowIndex] = value;
     } else {
-      store.parsed_CSV_Data[store.key][rowIndex] = value;
+      table[store.key][rowIndex] = value;
     }
 
-    const table = { ...store.parsed_CSV_Data };
-
     console.log(table);
-    store.setParsedCsvData(table);
+    store.setCsvTransaction(table);
 
     setEditingCell(null);
   };
