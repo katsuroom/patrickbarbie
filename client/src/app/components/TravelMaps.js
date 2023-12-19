@@ -37,7 +37,7 @@ const TravelMap = () => {
         });
     };
 
-    const [mapHeight, setMapHeight] = useState(window.innerWidth / 2);
+    const [mapHeight, setMapHeight] = useState(window.innerWidth / 4);
     useEffect(() => {
         const resizeListener = () => {
             setMapHeight(window.innerWidth / 2);
@@ -83,17 +83,17 @@ const TravelMap = () => {
                 mapRef.current = L.map('map-display', {
                     layers: [mapLayer],
                     center: [40.731701, -73.993411],
-                    zoom: 10,
+                    zoom: 12,
                 });
             }
 
             if (mapRef.current) {
                 try {
-                    if (mapLayerRef.current) mapRef.current.removeLayer(mapLayerRef.current);
-                    if (hybridLayerRef.current) mapRef.current.removeLayer(hybridLayerRef.current);
-                    if (satelliteLayerRef.current) mapRef.current.removeLayer(satelliteLayerRef.current);
-                    if (darkLayerRef.current) mapRef.current.removeLayer(darkLayerRef.current);
-                    if (lightLayerRef.current) mapRef.current.removeLayer(lightLayerRef.current);
+                    if (mapLayerRef.current) mapRef.current?.removeLayer(mapLayerRef.current);
+                    if (hybridLayerRef.current) mapRef.current?.removeLayer(hybridLayerRef.current);
+                    if (satelliteLayerRef.current) mapRef.current?.removeLayer(satelliteLayerRef.current);
+                    if (darkLayerRef.current) mapRef.current?.removeLayer(darkLayerRef.current);
+                    if (lightLayerRef.current) mapRef.current?.removeLayer(lightLayerRef.current);
                 } catch (removeLayerError) {
                     console.error('Error removing layers:', removeLayerError);
                 }
@@ -160,45 +160,13 @@ const TravelMap = () => {
                 }
             }
 
-            if (geoJsonLayerRef.current && mapRef.current) {
-                try {
-                    mapRef.current.removeLayer(geoJsonLayerRef.current);
-                } catch (removeLayerError) {
-                    console.error('Error removing geoJsonLayer:', removeLayerError);
-                }
+            if (geoJsonLayerRef.current) {
+                mapRef.current?.removeLayer(geoJsonLayerRef.current);
             }
-
             markers.current.forEach((marker) => {
-                mapRef.current.removeLayer(marker);
+                mapRef.current?.removeLayer(marker);
             });
             markers.current = [];
-
-            // if (geoJsonData) {
-            //     geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
-            //         onEachFeature: (feature, layer) => {
-            //             let labelData = store.getJsonLabels(feature, layer);
-            //             if (!labelData) return;
-
-            //             const [pos, text] = labelData;
-            //             const fontWeight = store.bold ? 'bold' : 'normal';
-            //             const fontStyle = store.italicize ? 'italic' : 'normal';
-            //             const textDecoration = store.underline ? 'underline' : 'none';
-            //             const fontFamily = store.fontStyle;
-
-            //             const label = L.marker(
-            //                 pos, {
-            //                 icon: L.divIcon({
-            //                     className: "countryLabel",
-            //                     html: `<div style="font-size: ${store.fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`,
-            //                     iconSize: [1000, 0],
-            //                     iconAnchor: [0, 0],
-            //                 }),
-            //                 text: text,
-            //             }
-            //             ).addTo(mapRef.current);
-            //             markers.current.push(label);
-            //         },
-            //     });
 
             if (geoJsonData) {
                 geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
@@ -228,8 +196,6 @@ const TravelMap = () => {
                         markers.current.push(label);
                     },
                 });
-
-
 
                 geoJsonLayerRef.current.addTo(mapRef.current);
 

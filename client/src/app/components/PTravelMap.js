@@ -129,7 +129,7 @@ const PTravelMap = () => {
       mapRef.current = L.map('map-display', {
         layers: [mapLayer],
         center: [40.731701, -73.993411],
-        zoom: 10,
+        zoom: 12,
         contextmenu: true,
         contextmenuWidth: 140,
         contextmenuItems: [{
@@ -141,19 +141,26 @@ const PTravelMap = () => {
         }]
       });
     }
+    
     if (geoJsonLayerRef.current) {
-      mapRef.current.removeLayer(geoJsonLayerRef.current);
+      mapRef.current?.removeLayer(geoJsonLayerRef.current);
     }
     markers.current.forEach((marker) => {
-      mapRef.current.removeLayer(marker);
+      mapRef.current?.removeLayer(marker);
     });
     markers.current = [];
 
-    if (mapLayerRef.current) mapRef.current.removeLayer(mapLayerRef.current);
-    if (hybridLayerRef.current) mapRef.current.removeLayer(hybridLayerRef.current);
-    if (satelliteLayerRef.current) mapRef.current.removeLayer(satelliteLayerRef.current);
-    if (darkLayerRef.current) mapRef.current.removeLayer(darkLayerRef.current);
-    if (lightLayerRef.current) mapRef.current.removeLayer(lightLayerRef.current);
+    if (mapRef.current) {
+      try {
+        if (mapLayerRef.current) mapRef.current?.removeLayer(mapLayerRef.current);
+        if (hybridLayerRef.current) mapRef.current?.removeLayer(hybridLayerRef.current);
+        if (satelliteLayerRef.current) mapRef.current?.removeLayer(satelliteLayerRef.current);
+        if (darkLayerRef.current) mapRef.current?.removeLayer(darkLayerRef.current);
+        if (lightLayerRef.current) mapRef.current?.removeLayer(lightLayerRef.current);
+      } catch (removeLayerError) {
+        console.error('Error removing layers:', removeLayerError);
+      }
+    }
 
     if (window.MQ) {
       mapLayerRef.current = window.MQ.mapLayer();
@@ -163,7 +170,7 @@ const PTravelMap = () => {
       lightLayerRef.current = window.MQ.lightLayer();
 
       if (settingLayerRef.current) {
-        mapRef.current.removeControl(settingLayerRef.current);
+        mapRef.current?.removeControl(settingLayerRef.current);
       }
 
       settingLayerRef.current = L.control.layers({
@@ -216,7 +223,6 @@ const PTravelMap = () => {
       }
     }
 
-
     if (geoJsonData) {
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
         onEachFeature: (feature, layer) => {
@@ -229,7 +235,6 @@ const PTravelMap = () => {
           const fontStyle =  store.currentMapObject?.mapProps?.italicize ? 'italic' : 'normal';
           const textDecoration= store.currentMapObject?.mapProps?.underline ? 'underline' : 'normal';
           const fontFamily = store.fontStyle;
-
 
           const label = L.marker(
             pos, {
@@ -261,8 +266,6 @@ const PTravelMap = () => {
     }
 
     runDirection();
-
-    store.pageLoading = false
   }
 
   // useEffect(() => {
@@ -304,6 +307,7 @@ const PTravelMap = () => {
   }, [store.currentMapObject]);
 
   useEffect(() => {
+    
       runDirection();
   }, [store.waypoints]);
 
@@ -313,7 +317,7 @@ const PTravelMap = () => {
   const runDirection = async () => {
     try {
       if (routeControlRef.current) {
-        mapRef.current.removeControl(routeControlRef.current);
+        mapRef.current?.removeControl(routeControlRef.current);
       }
 
       const startIcon = L.icon({
@@ -356,12 +360,10 @@ const PTravelMap = () => {
       routingControl.addTo(mapRef.current);
 
       routingControl.on('routingstart', function () {
-        // if (!mapRef.current._zooming) 
           store.setPageLoading(true);
       });
 
       routingControl.on('routesfound', function () {
-        console.log('-----routesfound------');
         store.setPageLoading(false);
       });
 
