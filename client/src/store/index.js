@@ -9,6 +9,10 @@ import HeatColorTransaction from "../transactions/HeatColorTransaction";
 import Procolor_transaction from "../transactions/Procolor_transaction";
 import GeneralProperty_Transaction from "../transactions/GeneralProperty_transaction";
 
+
+import FontSize_Transaction from "../transactions/FontSize_transaction";
+
+
 import api from "./api";
 
 const geobuf = require("geobuf");
@@ -53,6 +57,8 @@ export const StoreActionType = {
   LOGOUT_USER: "LOGOUT_USER",
   SET_CATEGORY_COLOR_MAPPINGS: "SET_CATEGORY_COLOR_MAPPINGS",
   SET_SELECTED_ATTRIBUTE: "SET_SELECTED_ATTRIBUTE",
+
+  SET_FONT_SIZE: "SET_FONT_SIZE",
 };
 
 export const CurrentModal = {
@@ -123,6 +129,7 @@ function StoreContextProvider(props) {
     selectedAttribute: null,
     waypoints: [],
     pageLoading: false,
+    fontSize : 12,
   });
 
   store.viewTypes = View;
@@ -351,6 +358,13 @@ function StoreContextProvider(props) {
         });
       }
 
+      case StoreActionType.SET_FONT_SIZE: {
+        return setStore({
+          ...store,
+          fontSize: payload,
+        }); 
+      }
+
       default:
         return store;
     }
@@ -460,6 +474,17 @@ function StoreContextProvider(props) {
     storeReducer({
       type: StoreActionType.SET_DOT_COLOR,
       payload: color,
+    });
+  };
+
+  store.setFontSize = function (size) {
+    console.log("setFontSize", size);
+
+    store.fontSize = size;
+    
+    storeReducer({
+      type: StoreActionType.SET_FONT_SIZE,
+      payload: size,
     });
   };
 
@@ -1024,6 +1049,8 @@ function StoreContextProvider(props) {
     store.setProportionalValue([]);
     store.updateCategoryColorMappings([]);
     store.updateSelectedAttribute(null);
+
+    store.setFontSize(12);
   };
 
   store.isCommunityPage = () => {
@@ -1137,6 +1164,14 @@ function StoreContextProvider(props) {
   store.setGeneralPropertyTransaction = function (selectedKey, newValue, index) {
     let oldValue = store.rawMapFile.features[index].properties[selectedKey];
     let transaction = new GeneralProperty_Transaction(index, selectedKey, oldValue, newValue, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+  }
+
+  store.setFontSizeTransaction = function (newSize) {
+    let oldSize = store.fontSize;
+    let transaction = new FontSize_Transaction(oldSize, newSize, store);
+    console.log("============================================================")
     console.log(transaction);
     tps.addTransaction(transaction);
   }
