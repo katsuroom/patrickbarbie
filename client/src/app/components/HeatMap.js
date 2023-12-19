@@ -67,7 +67,6 @@ export default function Heatmap() {
     });
   };
 
-
   if (!loadScripts) {
     Promise.all([
       loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
@@ -77,13 +76,9 @@ export default function Heatmap() {
         setLoadScripts(true);
         store.setRawMapFile(store.rawMapFile);
         console.log("script loaded");
-
       })
       .catch((error) => console.error(error));
   }
-
-
-
 
   const initColor = () => {
     if (store.currentMapObject.mapProps) {
@@ -176,10 +171,12 @@ export default function Heatmap() {
     let idx;
 
     try {
-      console.log(store.currentMapObject.selectedLabel)
+      console.log(store.currentMapObject.selectedLabel);
       console.log(feature.properties[store.currentMapObject.selectedLabel]);
       console.log(store.parsed_CSV_Data[store.key]);
-      idx = store.parsed_CSV_Data[store.currentMapObject.selectedLabel].indexOf(feature.properties[store.currentMapObject.selectedLabel]);
+      idx = store.parsed_CSV_Data[store.currentMapObject.selectedLabel].indexOf(
+        feature.properties[store.currentMapObject.selectedLabel]
+      );
     } catch (error) {
       console.log(error);
     }
@@ -200,7 +197,7 @@ export default function Heatmap() {
       );
     }
 
-    console.log("fillcolor" ,fillColor)
+    console.log("fillcolor", fillColor);
     return {
       stroke: true,
       color: "black",
@@ -274,20 +271,18 @@ export default function Heatmap() {
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
         onEachFeature: (feature, layer) => {
           let labelData = store.getJsonLabels(feature, layer);
-          if(!labelData) return;
+          if (!labelData) return;
 
           const [pos, text] = labelData;
 
-          const label = L.marker(
-            pos, {
-              icon: L.divIcon({
-                className: "countryLabel",
-                html: `<div style="font-size: 12px;">${text}</div>`,
-                iconSize: [1000, 0],
-                iconAnchor: [0, 0],
-              }),
-            }
-          ).addTo(mapRef.current);
+          const label = L.marker(pos, {
+            icon: L.divIcon({
+              className: "countryLabel",
+              html: `<div style="font-size: 12px;">${text}</div>`,
+              iconSize: [1000, 0],
+              iconAnchor: [0, 0],
+            }),
+          }).addTo(mapRef.current);
           markers.current.push(label);
         },
       });
@@ -330,7 +325,10 @@ export default function Heatmap() {
         Dark: darkLayerRef.current,
         Light: lightLayerRef.current,
       });
-      settingLayerRef.current.addTo(mapRef.current);
+
+      if (store.isEditPage()) {
+        settingLayerRef.current.addTo(mapRef.current);
+      }
 
       mapRef.current.on("baselayerchange", function (event) {
         // The 'event' object contains information about the change
@@ -352,8 +350,9 @@ export default function Heatmap() {
       console.log(store.currentMapObject);
 
       if (
-        // !defaultLayerAdded && 
-        store.currentMapObject.mapProps?.layerName) {
+        // !defaultLayerAdded &&
+        store.currentMapObject.mapProps?.layerName
+      ) {
         console.log("changing layer...");
         switch (store.currentMapObject.mapProps?.layerName) {
           case "Map":
@@ -380,8 +379,6 @@ export default function Heatmap() {
     if (heatmapOverlayRef.current) {
       mapRef.current.removeLayer(heatmapOverlayRef.current);
     }
-
-    
 
     heatmapOverlayRef.current = L.geoJSON(geoJsonData, {
       style: geoJsonStyle,
@@ -413,7 +410,6 @@ export default function Heatmap() {
       return;
     }
 
-    
     if (legendVisible) {
       console.log("adding legend");
 
@@ -460,8 +456,8 @@ export default function Heatmap() {
     store.parsed_CSV_Data,
     store.minColor,
     store.maxColor,
+    loadScripts,
   ]);
-
 
   return (
     <div>
@@ -471,10 +467,7 @@ export default function Heatmap() {
       <div
         id={"map-display"}
         style={{ height: `${mapHeight}px`, margin: "10px" }}
-        
-      >
-        
-      </div>
+      ></div>
       {loadScripts ? "" : "loading"}
     </div>
   );

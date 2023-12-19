@@ -34,6 +34,7 @@ export default function EditScreen() {
         //   await store.changeView(store.viewTypes.COMMUNITY);
         // }
         store.getMapList();
+        
     };
     func();
   }, []);
@@ -55,6 +56,8 @@ export default function EditScreen() {
     func();
   }, [store.currentMapObject]);
 
+  
+  
   const handleMapClick = (mapId) => {
     store.loadMapFile(mapId);
     router.push("/main");
