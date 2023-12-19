@@ -67,6 +67,7 @@ export default function Heatmap() {
     });
   };
 
+
   if (!loadScripts) {
     Promise.all([
       loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
@@ -76,9 +77,13 @@ export default function Heatmap() {
         setLoadScripts(true);
         store.setRawMapFile(store.rawMapFile);
         console.log("script loaded");
+
       })
       .catch((error) => console.error(error));
   }
+
+
+
 
   const initColor = () => {
     if (store.currentMapObject.mapProps) {
@@ -171,10 +176,15 @@ export default function Heatmap() {
     let idx;
 
     try {
-      idx = store.table[store.label].indexOf(feature.properties.name);
-    } catch (error) {}
+      console.log(store.currentMapObject.selectedLabel)
+      console.log(feature.properties[store.currentMapObject.selectedLabel]);
+      console.log(store.parsed_CSV_Data[store.key]);
+      idx = store.parsed_CSV_Data[store.currentMapObject.selectedLabel].indexOf(feature.properties[store.currentMapObject.selectedLabel]);
+    } catch (error) {
+      console.log(error);
+    }
 
-    if (!idx || idx < 0 || !store.table) {
+    if (!idx || idx < 0 || !store.parsed_CSV_Data) {
       fillColor = "white";
     } else {
       fillColor = interpolateColor(
@@ -184,11 +194,13 @@ export default function Heatmap() {
         store.maxColor ||
           store.currentMapObject.mapProps?.maxColor ||
           "#FF0000",
-        Math.min(...store.table[store.key]),
-        Math.max(...store.table[store.key]),
-        store.table[store.key][idx]
+        Math.min(...store.parsed_CSV_Data[store.key]),
+        Math.max(...store.parsed_CSV_Data[store.key]),
+        store.parsed_CSV_Data[store.key][idx]
       );
     }
+
+    console.log("fillcolor" ,fillColor)
     return {
       stroke: true,
       color: "black",
@@ -270,7 +282,7 @@ export default function Heatmap() {
             pos, {
               icon: L.divIcon({
                 className: "countryLabel",
-                html: `<div style="font-size: 30px;">${text}</div>`,
+                html: `<div style="font-size: 12px;">${text}</div>`,
                 iconSize: [1000, 0],
                 iconAnchor: [0, 0],
               }),
@@ -304,7 +316,7 @@ export default function Heatmap() {
       mapRef.current.removeLayer(lightLayerRef.current);
     if (window.MQ) {
       mapLayerRef.current = window.MQ.mapLayer();
-      hybridLayerRef.current = window.MQ.hybridLayer();
+      // hybridLayerRef.current = window.MQ.hybridLayer();
       satelliteLayerRef.current = window.MQ.satelliteLayer();
       darkLayerRef.current = window.MQ.darkLayer();
       lightLayerRef.current = window.MQ.lightLayer();
@@ -313,7 +325,7 @@ export default function Heatmap() {
       }
       settingLayerRef.current = L.control.layers({
         Map: mapLayerRef.current,
-        Hybrid: hybridLayerRef.current,
+        // Hybrid: hybridLayerRef.current,
         Satellite: satelliteLayerRef.current,
         Dark: darkLayerRef.current,
         Light: lightLayerRef.current,
@@ -339,15 +351,17 @@ export default function Heatmap() {
       console.log(defaultLayerAdded);
       console.log(store.currentMapObject);
 
-      if (!defaultLayerAdded && store.currentMapObject.mapProps?.layerName) {
+      if (
+        // !defaultLayerAdded && 
+        store.currentMapObject.mapProps?.layerName) {
         console.log("changing layer...");
         switch (store.currentMapObject.mapProps?.layerName) {
           case "Map":
             mapRef.current.addLayer(mapLayerRef.current);
             break;
-          case "Hybrid":
-            mapRef.current.addLayer(hybridLayerRef.current);
-            break;
+          // case "Hybrid":
+          //   mapRef.current.addLayer(hybridLayerRef.current);
+          //   break;
           case "Satellite":
             mapRef.current.addLayer(satelliteLayerRef.current);
             break;
@@ -395,7 +409,7 @@ export default function Heatmap() {
 
     heatmapOverlayRef.current.addTo(mapRef.current);
 
-    if (!(geoJsonData && store.label && store.key && store.table)) {
+    if (!(geoJsonData && store.key && store.parsed_CSV_Data)) {
       return;
     }
 
@@ -418,7 +432,7 @@ export default function Heatmap() {
             store.currentMapObject.mapProps?.minColor ||
             "#FFFFFF") +
           '"> Min: ' +
-          Math.min(...store.table[store.key]) +
+          Math.min(...store.parsed_CSV_Data[store.key]) +
           "</div> " +
           "<br>";
 
@@ -428,7 +442,7 @@ export default function Heatmap() {
             store.currentMapObject.mapProps?.maxColor ||
             "#FFFFFF") +
           '"> Max: ' +
-          Math.max(...store.table[store.key]) +
+          Math.max(...store.parsed_CSV_Data[store.key]) +
           "</div> " +
           "<br>";
 
@@ -443,10 +457,11 @@ export default function Heatmap() {
     geoJsonData,
     store.label,
     store.key,
-    store.table,
+    store.parsed_CSV_Data,
     store.minColor,
     store.maxColor,
   ]);
+
 
   return (
     <div>
@@ -456,7 +471,11 @@ export default function Heatmap() {
       <div
         id={"map-display"}
         style={{ height: `${mapHeight}px`, margin: "10px" }}
-      ></div>
+        
+      >
+        
+      </div>
+      {loadScripts ? "" : "loading"}
     </div>
   );
 }

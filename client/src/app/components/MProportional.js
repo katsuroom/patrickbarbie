@@ -9,6 +9,7 @@ export default function ProportionalMap() {
   const proportionalRef = useRef(null);
   const legendRef = useRef(null);
 
+
   useEffect(() => {
     if (store.currentMapObject.mapProps) {
       store.proColor = store.currentMapObject.mapProps.proColor;
@@ -20,6 +21,8 @@ export default function ProportionalMap() {
     }
   }, [store.currentMapObject]);
 
+  
+
   function clearLayer(mapRef) {
     if (proportionalRef.current) {
       mapRef.current.removeLayer(proportionalRef.current);
@@ -30,7 +33,7 @@ export default function ProportionalMap() {
   }
 
   function addLayer(mapRef) {
-    if (!(store.rawMapFile && store.label && store.key && store.parsed_CSV_Data)) {
+    if (!(store.rawMapFile && store.key && store.parsed_CSV_Data)) {
       return;
     } else {
       // console.log("geoJsonData", geoJsonData);
@@ -58,9 +61,10 @@ export default function ProportionalMap() {
           };
 
           try {
-            var index = store.parsed_CSV_Data[store.label].indexOf(
-              feature.properties.name
-            );
+            var index = store.parsed_CSV_Data[
+              store.currentMapObject.selectedLabel
+            ].indexOf(feature.properties[store.currentMapObject.selectedLabel]);
+            console.log("index", index);
           } catch (error) {
             console.log(error);
           }
@@ -68,15 +72,18 @@ export default function ProportionalMap() {
           // console.log("matchingCSVEntry", matchingCSVEntry);
 
           // Extract the value from parsedCSV[store.key]
-          let gdp_md = store.parsed_CSV_Data[store.key][index];
+          console.log(store.key);
+          let gdp_md = "";
+          try{
+          gdp_md = store.parsed_CSV_Data[store.key][index];
           gdp_md = gdp_md === "" ? "NA" : Number(gdp_md);
-
+          }catch(error){
+            console.log(error);
+          }
           // Extract only the necessary properties
           const reducedProperties = {
-            name: properties.name,
+            name: properties[store.currentMapObject.selectedLabel],
             gdp_md: gdp_md,
-            adm0_a3: properties.adm0_a3,
-            continent: properties.continent,
           };
 
           return {
@@ -92,7 +99,7 @@ export default function ProportionalMap() {
       // add proportional circles
       proportionalRef.current = L.geoJson(reducedAndCenteredGeoJSON, {
         filter: function (feature) {
-          if (feature.properties.name) {
+          if (feature.properties[store.currentMapObject.selectedLabel]) {
             // This test to see if the key exits
             return feature;
           }
@@ -120,7 +127,7 @@ export default function ProportionalMap() {
         onEachFeature: function (feature, layer) {
           var popup =
             "<p><b>" +
-            layer.feature.properties.name +
+            layer.feature.properties[store.currentMapObject.selectedLabel] +
             "</b></p>" +
             "<p>GDP: " +
             layer.feature.properties.gdp_md +
@@ -145,7 +152,11 @@ export default function ProportionalMap() {
       }).addTo(mapRef.current);
 
       // add legend
+
+      console.log("HHHHHHHHHHHHHHHH", store.proportional_value);
+      console.log("HHHHHHHHHHHHHHHH", store.proColor);
       if (store.proportional_value !== null && store.proColor !== null) {
+        console.log("HHHHHHHHHHHHHHHH", store.proportional_value);
         legendRef.current = L.control({ position: "bottomright" });
         legendRef.current.onAdd = function (map) {
           console.log("store.proportional_value", store.proportional_value);
@@ -153,22 +164,24 @@ export default function ProportionalMap() {
             labels = [],
             categories = [
               store.proportional_value[1].toFixed(2),
-              (1 / 2) * (store.proportional_value[0] + store.proportional_value[1]).toFixed(2),
+              (1 / 2) *
+                (
+                  store.proportional_value[0] + store.proportional_value[1]
+                ).toFixed(2),
               store.proportional_value[0].toFixed(2),
             ];
 
           // console.log("store.proportional_value", store.proportional_value);
           // console.log("store.proColor", store.proColor);
           // for (var i = 0; i < categories.length; i++) {
-          div.innerHTML =
-            `<i class="circle1" style="background: ${store.proColor}"></i>
+          div.innerHTML = `<i class="circle1" style="background: ${store.proColor}"></i>
             <div style="text-align: center;">${categories[0]}</div>
             <br>
             <i class="circle2" style="background: ${store.proColor}"></i>
             <div style="text-align: center;">${categories[1]}</div>
             <br>
             <i class="circle3" style="background: ${store.proColor}"></i>
-            <div style="text-align: center;">${categories[2]}</div>`
+            <div style="text-align: center;">${categories[2]}</div>`;
           // }
 
           return div;

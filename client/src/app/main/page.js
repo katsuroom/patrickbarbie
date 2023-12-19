@@ -49,9 +49,6 @@ export default function MainScreen() {
         store.setParsedCsvData(csvObj.csvData);
         store.setCsvKey(csvObj.key);
         store.setCsvLabel(csvObj.label);
-        store.setTableLabel(csvObj.tableLabel)
-        store.setTable();
-
       }
     };
     func();

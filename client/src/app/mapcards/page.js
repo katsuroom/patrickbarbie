@@ -25,14 +25,14 @@ export default function EditScreen() {
 
   useEffect(() => {
     const func = async () => {
-        if (auth.loggedIn) {
-          console.log("change view to home");
-          console.log("auth.loggedIn", auth.loggedIn);
-          await store.changeView(store.viewTypes.HOME);
-        } else {
-          console.log("change view to community");
-          await store.changeView(store.viewTypes.COMMUNITY);
-        }
+        // if (auth.loggedIn) {
+        //   console.log("change view to home");
+        //   console.log("auth.loggedIn", auth.loggedIn);
+        //   await store.changeView(store.viewTypes.HOME);
+        // } else {
+        //   console.log("change view to community");
+        //   await store.changeView(store.viewTypes.COMMUNITY);
+        // }
         store.getMapList();
     };
     func();
@@ -43,7 +43,6 @@ export default function EditScreen() {
       store.setParsedCsvData(null);
       store.setCsvKey(null);
       store.setCsvLabel(null);
-      store.setTableLabel(null)
 
       if (store.currentMapObject && store.currentMapObject.csvData) {
         const csvObj = await store.getCsvById(store.currentMapObject.csvData);

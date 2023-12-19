@@ -39,6 +39,7 @@ const MapSchema = new Schema(
     mapType: { type: String, required: true },
     mapProps: {type: Object, required: false},
     imageBuffer: {type: Buffer, required: false},
+    selectedLabel: {type: String, required: false},
 
   },
   { timestamps: true }
