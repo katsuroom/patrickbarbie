@@ -67,6 +67,7 @@ export const StoreActionType = {
   SET_ITALICIZE: "SET_ITALICIZE",
   SET_UNDERLINE: "SET_UNDERLINE",
   SET_FONT_STYLE: "SET_FONT_STYLE",
+  PAGE_LOADING: "PAGE_LOADING",
 };
 
 export const CurrentModal = {
@@ -299,6 +300,12 @@ function StoreContextProvider(props) {
           currentModal: CurrentModal.NONE,
         });
       }
+      case StoreActionType.PAGE_LOADING: {
+        return setStore({
+          ...store,
+          pageLoading: payload,
+        });
+      }
       case StoreActionType.SET_MIN_COLOR: {
         return setStore({
           ...store,
@@ -419,6 +426,13 @@ function StoreContextProvider(props) {
     });
   };
 
+  store.setPageLoading = function (pageLoading) {
+    store.pageLoading = pageLoading;
+    storeReducer({
+      type: StoreActionType.PAGE_LOADING,
+      payload: pageLoading,
+    })
+  }
 
   store.setTable = function () {
     const properties = store.rawMapFile.features.map(
