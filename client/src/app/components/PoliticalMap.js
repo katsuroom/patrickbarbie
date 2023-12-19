@@ -251,6 +251,7 @@ export default function Politicalmap(props) {
     }
 
     if (window.MQ) {
+      
       mapLayerRef.current = window.MQ.mapLayer();
       hybridLayerRef.current = window.MQ.hybridLayer();
       satelliteLayerRef.current = window.MQ.satelliteLayer();

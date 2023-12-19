@@ -1,18 +1,33 @@
 import jsTPS_Transaction from "@/app/common/jsTPS.js";
 
 export default class Underline_Transaction extends jsTPS_Transaction {
-    constructor(oldUnderline, newUnderline, initStore) {
+    constructor(currentMapObject, oldUnderline, newUnderline, store) {
         super();
-        this.store = initStore;
+        this.currentMapObject = currentMapObject;
         this.oldUnderline = oldUnderline;
         this.newUnderline = newUnderline;
+        this.store = store;
     }
+    
 
     doTransaction() {
-        this.store.setUnderline(this.newUnderline);
+        if (this.currentMapObject && this.currentMapObject.mapProps) {
+            console.log("Underline_Transaction: Doing Transaction");
+            this.store.setUnderline(this.newUnderline);
+            this.currentMapObject.mapProps.Underline = this.newUnderline;
+            this.currentMapObject.mapProps = JSON.parse(JSON.stringify(this.currentMapObject.mapProps));
+        }
     }
 
     undoTransaction() {
-        this.store.setUnderline(this.oldUnderline);
+        if (this.currentMapObject && this.currentMapObject.mapProps) {
+            console.log("Underline_Transaction: Undoing Transaction");
+            this.store.setUnderline(this.oldUnderline);
+            this.currentMapObject.mapProps.Underline = this.oldUnderline;
+        }
+    }
+
+    toString() {
+        return `Underline_Transaction: ${this.oldUnderline} -> ${this.newUnderline}`;
     }
 }
