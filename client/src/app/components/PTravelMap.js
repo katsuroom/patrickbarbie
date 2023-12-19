@@ -25,7 +25,7 @@ const PTravelMap = () => {
   const darkLayerRef = useRef(null);
   const lightLayerRef = useRef(null);
   const settingLayerRef = useRef(null);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [defaultLayerAdded, setDefaultLayerAdded] = useState(false);
   const [geoJsonData, setGeoJsonData] = useState(null);
 
@@ -91,17 +91,16 @@ const PTravelMap = () => {
     });
   };
 
-  const [mapHeight, setMapHeight] = useState(window.innerWidth / 3);
+  const [mapHeight, setMapHeight] = useState(window.innerHeight / 1.6);
   useEffect(() => {
     const resizeListener = () => {
-      setMapHeight(window.innerWidth / 3);
+      setMapHeight(window.innerHeight / 1.6);
     };
-    window.addEventListener('resize', resizeListener);
+    window.addEventListener("resize", resizeListener);
     return () => {
-      window.removeEventListener('resize', resizeListener);
+      window.removeEventListener("resize", resizeListener);
     };
   }, []);
-
 
   useEffect(() => {
     if (store.rawMapFile) {
@@ -312,9 +311,7 @@ const PTravelMap = () => {
   const openExitModal = () => store.openModal(CurrentModal.EXIT_EDIT);
 
   const runDirection = async () => {
-
     try {
-
       if (routeControlRef.current) {
         mapRef.current.removeControl(routeControlRef.current);
       }
@@ -336,7 +333,7 @@ const PTravelMap = () => {
         iconSize: [25, 41],
         iconAnchor: [12, 41]
       });
-      console.log("store.waypoints " + store.waypoints)
+
       const routingControl = L.Routing.control({
         waypoints: store.waypoints,
         routeWhileDragging: true,
@@ -346,7 +343,6 @@ const PTravelMap = () => {
         },
         geocoder: L.Control.Geocoder.nominatim(),
       });
-      store.pageLoading = false
 
       // Listen for the waypointsUpdated event
       routingControl.on('waypointschanged', function (e) {
@@ -360,8 +356,8 @@ const PTravelMap = () => {
       routingControl.addTo(mapRef.current);
 
       routingControl.on('routingstart', function () {
-        // setLoading(true);
-        store.setPageLoading(true);
+        // if (!mapRef.current._zooming) 
+          store.setPageLoading(true);
       });
 
       routingControl.on('routesfound', function () {
@@ -376,19 +372,17 @@ const PTravelMap = () => {
       routeControlRef.current = routingControl;
     } catch (error) {
       console.error('Error in geocoding or routing:', error);
-      // setLoading(false);
-      // store.pageLoading = false
       store.setPageLoading(false);
-
     }
   };
+
 
   return (
     <div style={{
       width: "99vw"
     }}>
-      {/* <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div> */}
-      {<div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div>}
+      <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: "10px" }}></div>
+      {/* {<div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div>} */}
       {/* {loading && <div id={"loader"}></div>} */}
       {store.pageLoading && <div id="loader" className="custom-loader" />}
       <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>

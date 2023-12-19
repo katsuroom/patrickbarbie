@@ -37,10 +37,10 @@ const TravelMap = () => {
         });
     };
 
-    const [mapHeight, setMapHeight] = useState(window.innerWidth / 3);
+    const [mapHeight, setMapHeight] = useState(window.innerWidth / 2);
     useEffect(() => {
         const resizeListener = () => {
-            setMapHeight(window.innerWidth / 3);
+            setMapHeight(window.innerWidth / 2);
         };
         window.addEventListener('resize', resizeListener);
         return () => {
