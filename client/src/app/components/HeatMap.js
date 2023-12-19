@@ -346,7 +346,9 @@ export default function Heatmap() {
       console.log(defaultLayerAdded);
       console.log(store.currentMapObject);
 
-      if (!defaultLayerAdded && store.currentMapObject.mapProps?.layerName) {
+      if (
+        // !defaultLayerAdded && 
+        store.currentMapObject.mapProps?.layerName) {
         console.log("changing layer...");
         switch (store.currentMapObject.mapProps?.layerName) {
           case "Map":
