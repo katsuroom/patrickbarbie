@@ -137,7 +137,7 @@ export default function PHeatmap() {
   }
 
   const handleChangeKey = (event) => {
-    store.setCsvKey(event.target.value);
+    store.setCsvKeyTransaction(event.target.value);
   };
 
   const handleChangeCsvLabel = (event) => {
@@ -178,7 +178,7 @@ export default function PHeatmap() {
     });
 
     store.setParsedCsvData(table);
-    store.setCsvLabel(label);
+    store.setCsvLabelTransaction(label);
   };
 
 
@@ -224,7 +224,7 @@ export default function PHeatmap() {
     // store.setCsvLabel(keys[0]);
     // store.setCsvKey(keys[1]);
 
-    store.setCsvLabel(null);
+    store.setCsvLabelTransaction(null);
 
     setCsvUploaded(true);
     setUploadedCsvData(csv_data);
