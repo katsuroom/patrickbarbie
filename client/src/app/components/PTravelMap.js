@@ -114,7 +114,7 @@ const PTravelMap = () => {
       mapRef.current = L.map('map-display', {
         layers: [mapLayer],
         center: [40.731701, -73.993411],
-        zoom: 12,
+        zoom: 10,
         contextmenu: true,
         contextmenuWidth: 140,
         contextmenuItems: [{
@@ -315,23 +315,25 @@ const PTravelMap = () => {
 
       routingControl.on('routingstart', function () {
         // setLoading(true);
-        store.pageLoading = true;
+        store.setPageLoading(true);
       });
 
       routingControl.on('routesfound', function () {
         console.log('-----routesfound------');
-        store.pageLoading = false;
+        store.setPageLoading(false);
       });
 
       routingControl.on('routingerror', function () {
-        store.pageLoading = false;
+        store.setPageLoading(false);
       });
 
       routeControlRef.current = routingControl;
     } catch (error) {
       console.error('Error in geocoding or routing:', error);
       // setLoading(false);
-      store.pageLoading = false
+      // store.pageLoading = false
+      store.setPageLoading(false);
+
     }
   };
 
@@ -340,7 +342,7 @@ const PTravelMap = () => {
       width: "99vw"
     }}>
       {/* <div id={"map-display"} style={{ height: `${mapHeight}px`, margin: '10px' }}></div> */}
-      <div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div>
+      {<div id={"map-display"} style={{ width: "99vw", height: `${mapHeight}px`, margin: '10px' }}></div>}
       {/* {loading && <div id={"loader"}></div>} */}
       {store.pageLoading && <div id="loader" className="custom-loader" />}
       <Button variant="solid" className="exit" sx={{ margin: 1 }} onClick={openExitModal}>

@@ -84,7 +84,7 @@ const TravelMap = () => {
             mapRef.current = L.map('map-display', {
                 layers: [mapLayer],
                 center: [40.731701, -73.993411],
-                zoom: 12,
+                zoom: 10,
             });
         }
         if (geoJsonLayerRef.current) {
