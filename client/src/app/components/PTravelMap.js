@@ -25,7 +25,7 @@ const PTravelMap = () => {
   const darkLayerRef = useRef(null);
   const lightLayerRef = useRef(null);
   const settingLayerRef = useRef(null);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [defaultLayerAdded, setDefaultLayerAdded] = useState(false);
   const [geoJsonData, setGeoJsonData] = useState(null);
 
@@ -356,7 +356,7 @@ const PTravelMap = () => {
       routingControl.addTo(mapRef.current);
 
       routingControl.on('routingstart', function () {
-        if (!mapRef.current._zooming) 
+        // if (!mapRef.current._zooming) 
           store.setPageLoading(true);
       });
 
