@@ -164,7 +164,6 @@ export default function Politicalmap(props) {
     }
   }, [store.selectedAttribute, store.categoryColorMappings]);
 
-
   useEffect(() => {
     if (!geoJsonData) {
       return;
@@ -187,6 +186,23 @@ export default function Politicalmap(props) {
 
     if (geoJsonData) {
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
+        // onEachFeature: (feature, layer) => {
+        //     // check if label_y and label_x exist, since they don't exist for KML
+        //     if (feature.properties.label_y && feature.properties.label_x) {
+        //         const label = L.marker(
+        //             [feature.properties.label_y, feature.properties.label_x],
+        //             {
+        //                 icon: L.divIcon({
+        //                     className: "countryLabel",
+        //                     html: feature.properties.name,
+        //                     iconSize: [1000, 0],
+        //                     iconAnchor: [0, 0],
+        //                 }),
+        //             }
+        //         ).addTo(mapRef.current);
+        //         markers.current.push(label);
+        //     }
+        // },
         onEachFeature: (feature, layer) => {
           let labelData = store.getJsonLabels(feature, layer);
           if (!labelData) return;
@@ -196,7 +212,7 @@ export default function Politicalmap(props) {
           const label = L.marker(pos, {
             icon: L.divIcon({
               className: "countryLabel",
-              html: `<div style="font-size: ${store.fontSize}px;">${text}</div>`,
+              html: `<div style="font-size: 30px;">${text}</div>`,
               iconSize: [1000, 0],
               iconAnchor: [0, 0],
             }),
@@ -357,49 +373,6 @@ export default function Politicalmap(props) {
     store.selectedAttribute,
     store.categoryColorMappings,
   ]);
-
-  useEffect(() => {
-    if (!geoJsonData) {
-      return;
-    }
-
-    if (geoJsonLayerRef.current) {
-      mapRef.current.removeLayer(geoJsonLayerRef.current);
-    }
-    markers.current.forEach((marker) => {
-      mapRef.current.removeLayer(marker);
-    });
-    markers.current = [];
-
-    geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
-      onEachFeature: (feature, layer) => {
-        let labelData = store.getJsonLabels(feature, layer);
-        if (!labelData) return;
-
-        const [pos, text] = labelData;
-
-        // Apply dynamic styling
-        const fontWeight = store.bold ? 'bold' : 'normal';
-        const fontStyle = store.italicize ? 'italic' : 'normal';
-        const textDecoration = store.underline ? 'underline' : 'none';
-        const fontFamily = store.fontStyle;
-
-        const label = L.marker(pos, {
-          icon: L.divIcon({
-            className: "countryLabel",
-            html: `<div style="font-size: ${store.fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`,
-            iconSize: [1000, 0],
-            iconAnchor: [0, 0],
-          }),
-        }).addTo(mapRef.current);
-
-        markers.current.push(label);
-      },
-    });
-
-    geoJsonLayerRef.current.addTo(mapRef.current);
-  }, [geoJsonData, store.fontSize, store.bold, store.italicize, store.underline, store.fontStyle]);
-
 
   return (
     <div>
