@@ -173,6 +173,33 @@ const TravelMap = () => {
             });
             markers.current = [];
 
+            // if (geoJsonData) {
+            //     geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
+            //         onEachFeature: (feature, layer) => {
+            //             let labelData = store.getJsonLabels(feature, layer);
+            //             if (!labelData) return;
+
+            //             const [pos, text] = labelData;
+            //             const fontWeight = store.bold ? 'bold' : 'normal';
+            //             const fontStyle = store.italicize ? 'italic' : 'normal';
+            //             const textDecoration = store.underline ? 'underline' : 'none';
+            //             const fontFamily = store.fontStyle;
+
+            //             const label = L.marker(
+            //                 pos, {
+            //                 icon: L.divIcon({
+            //                     className: "countryLabel",
+            //                     html: `<div style="font-size: ${store.fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`,
+            //                     iconSize: [1000, 0],
+            //                     iconAnchor: [0, 0],
+            //                 }),
+            //                 text: text,
+            //             }
+            //             ).addTo(mapRef.current);
+            //             markers.current.push(label);
+            //         },
+            //     });
+
             if (geoJsonData) {
                 geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
                     onEachFeature: (feature, layer) => {
@@ -180,25 +207,29 @@ const TravelMap = () => {
                         if (!labelData) return;
 
                         const [pos, text] = labelData;
-                        const fontWeight = store.bold ? 'bold' : 'normal';
-                        const fontStyle = store.italicize ? 'italic' : 'normal';
-                        const textDecoration = store.underline ? 'underline' : 'none';
+                        // Use properties from store.currentMapObject?.mapProps with fallbacks
+                        const fontSize = store.currentMapObject?.mapProps?.fontSize || 12;
+                        const fontWeight = store.currentMapObject?.mapProps?.bold ? 'bold' : 'normal';
+                        const fontStyle = store.currentMapObject?.mapProps?.italicize ? 'italic' : 'normal';
+                        const textDecoration = store.currentMapObject?.mapProps?.underline ? 'underline' : 'none';
                         const fontFamily = store.fontStyle;
 
                         const label = L.marker(
                             pos, {
                             icon: L.divIcon({
                                 className: "countryLabel",
-                                html: `<div style="font-size: ${store.fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`,
+                                html: `<div style="font-size: ${fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`,
                                 iconSize: [1000, 0],
                                 iconAnchor: [0, 0],
                             }),
-                            text: text,
-                        }
-                        ).addTo(mapRef.current);
+                            options: { text: text }, 
+                        }).addTo(mapRef.current);
+
                         markers.current.push(label);
                     },
                 });
+
+
 
                 geoJsonLayerRef.current.addTo(mapRef.current);
 

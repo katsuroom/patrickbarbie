@@ -58,6 +58,28 @@ export default function JsonDisplay(props) {
     });
     markers.current = [];
 
+    // geoJsonLayerRef.current = L.geoJSON(store.rawMapFile, {
+    //   style: geoJsonStyle,
+    //   onEachFeature: (feature, layer) => {
+    //     let labelData = store.getJsonLabels(feature, layer);
+    //     if (!labelData) return;
+
+    //     const [pos, text] = labelData;
+
+    //     const label = L.marker(
+    //       pos, {
+    //       icon: L.divIcon({
+    //         className: "countryLabel",
+    //         html: `<div style="font-size: ${store.fontSize}px;">${text}</div>`,
+    //         iconSize: [1000, 0],
+    //         iconAnchor: [0, 0],
+    //       }),
+    //     }
+    //     ).addTo(mapRef.current);
+    //     markers.current.push({ marker: label, text: text });
+    //   },
+    // });
+
     geoJsonLayerRef.current = L.geoJSON(store.rawMapFile, {
       style: geoJsonStyle,
       onEachFeature: (feature, layer) => {
@@ -66,11 +88,17 @@ export default function JsonDisplay(props) {
 
         const [pos, text] = labelData;
 
+        const fontSize = store.currentMapObject?.mapProps?.fontSize || 12;
+        const fontWeight = store.currentMapObject?.mapProps?.bold ? 'bold' : 'normal';
+        const fontStyle = store.currentMapObject?.mapProps?.italicize ? 'italic' : 'normal';
+        const textDecoration = store.currentMapObject?.mapProps?.underline ? 'underline' : 'normal';
+        const fontFamily = store.fontStyle;
+
         const label = L.marker(
           pos, {
           icon: L.divIcon({
             className: "countryLabel",
-            html: `<div style="font-size: ${store.fontSize}px;">${text}</div>`,
+            html: `<div style="font-size: ${fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`, // Apply font weight, style, decoration, and family
             iconSize: [1000, 0],
             iconAnchor: [0, 0],
           }),
@@ -105,18 +133,19 @@ export default function JsonDisplay(props) {
 
   useEffect(() => {
     markers.current.forEach(({ marker, text }) => {
-      const fontWeight = store.bold ? 'bold' : 'normal';
-      const fontStyle = store.italicize ? 'italic' : 'normal';
-      const textDecoration = store.underline ? 'underline' : 'none';
+      const fontSize = store.currentMapObject?.mapProps?.fontSize || 12;
+      const fontWeight = store.currentMapObject?.mapProps?.bold ? 'bold' : 'normal';
+      const fontStyle = store.currentMapObject?.mapProps?.italicize ? 'italic' : 'normal';
+      const textDecoration = store.currentMapObject?.mapProps?.underline ? 'underline' : 'normal';
       const fontFamily = store.fontStyle;
       marker.setIcon(L.divIcon({
         className: "countryLabel",
-        html: `<div style="font-size: ${store.fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`, // Apply font weight, style, decoration, and family
+        html: `<div style="font-size: ${fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`, // Apply font weight, style, decoration, and family
         iconSize: [1000, 0],
         iconAnchor: [0, 0],
       }));
     });
-  }, [store.fontSize, store.bold, store.italicize, store.underline, store.fontStyle]);
+  }, [store.fontSize, store.currentMapObject?.mapProps?.fontSize, store.bold, store.currentMapObject?.mapProps?.bold, store.italicize, store.currentMapObject?.mapProps?.italicize, store.underline, store.currentMapObject?.mapProps?.underline, store.fontStyle]);
 
   return (
     <div>
