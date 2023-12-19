@@ -49,6 +49,10 @@ export default function PProportional() {
   };
 
   useEffect(() => {
+    store.setPropertyTable();
+  },[]);
+
+  useEffect(() => {
     let tfs = [];
     if (store.parsed_CSV_Data) {
       for (let idx in store.parsed_CSV_Data[store.key]) {

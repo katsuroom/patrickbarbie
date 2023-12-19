@@ -117,6 +117,8 @@ export default function EditScreen() {
   //   }
   // }, [store.currentMapObject]);
 
+
+
   const panelStyle = {
     width: "30%",
     position: "absolute",
