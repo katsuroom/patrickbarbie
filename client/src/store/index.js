@@ -104,7 +104,6 @@ function StoreContextProvider(props) {
     currentModal: CurrentModal.NONE, // the currently open modal
     uploadedFile: null,
     rawMapFile: null,
-    tableLabel: null,
     table: null,
     label: null,
     key: null, // csv key [column name] for map displaying
@@ -339,12 +338,6 @@ function StoreContextProvider(props) {
           currentView: View.COMMUNITY,
         });
       }
-      case StoreActionType.SET_TABLE_LABEL: {
-        return setStore({
-          ...store,
-          tableLabel: payload,
-        });
-      }
 
       case StoreActionType.SET_TABLE: {
         return setStore({
@@ -366,13 +359,7 @@ function StoreContextProvider(props) {
     }
   };
 
-  store.setTableLabel = function (label) {
-    store.tableLabel = label;
-    storeReducer({
-      type: StoreActionType.SET_TABLE_LABEL,
-      payload: label,
-    });
-  };
+
 
 
   store.setTable = function () {
@@ -789,7 +776,7 @@ function StoreContextProvider(props) {
         const csvObj = (await api.getCsvById(store.currentMapObject.csvData))
           .data.data;
         csvData = (
-          await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData, csvObj.tableLabel)
+          await api.createCSV(csvObj.key, csvObj.label, csvObj.csvData, store.currentMapObject.selectedLabel)
         ).data.csvData._id;
       }
 
@@ -1113,7 +1100,8 @@ function StoreContextProvider(props) {
         store.key,
         store.label,
         store.parsed_CSV_Data,
-        store.tableLabel
+        // store.tableLabel
+        store.currentMapObject.selectedLabel
       );
       console.log("response", response);
       const csvObj = response.data.csvData;
@@ -1128,7 +1116,7 @@ function StoreContextProvider(props) {
       csvObj.key = store.key;
       csvObj.label = store.label;
       csvObj.csvData = store.parsed_CSV_Data;
-      csvObj.tableLabel = store.tableLabel;
+      csvObj.tableLabel = store.currentMapObject.selectedLabel;
       console.log(csvObj);
       store.updateCSV(csvObj);
     }

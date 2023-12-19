@@ -33,9 +33,11 @@ export default function PHeatmap() {
   const { store } = useContext(StoreContext);
 
   const [menuItems, setMenuItems] = React.useState([]);
+
+  const [csvUploaded, setCsvUploaded] = React.useState(false);
   // const [table, setTable] = React.useState({});
 
-  if (!store.parsed_CSV_Data){
+  if (!store.parsed_CSV_Data) {
     const properties = store.rawMapFile.features.map(
       (element) => element.properties
     );
@@ -50,12 +52,11 @@ export default function PHeatmap() {
       });
     });
 
-    
     console.log(store.parsed_CSV_Data);
     const table = { ...generalProperty, ...store.parsed_CSV_Data };
     console.log(table);
 
-    store.setParsedCsvDataWOR
+    store.setParsedCsvDataWOR;
     store.setParsedCsvData(table);
 
     // store.setCsvLabel(Object.keys(store.parsed_CSV_Data)[0]);
@@ -80,24 +81,30 @@ export default function PHeatmap() {
   };
 
   function zip() {
-    if (!store.table || !store.tableLabel || !store.key) {
-      return [];
-    }
+    // if (!store.table || !store.tableLabel || !store.key) {
+    //   return [];
+    // }
 
     let res = [];
 
     // general property
     if (Object.keys(generalProperty).indexOf(store.key) !== -1) {
-      store.table[store.tableLabel].forEach((element, idx) => {
-        res.push([
-          element,
-          store.table[store.tableLabel].indexOf(element) === -1
-            ? ""
-            : store.table[store.key][
-                store.table[store.tableLabel].indexOf(element)
-              ],
-        ]);
-      });
+      store.table[store.currentMapObject.selectedLabel].forEach(
+        (element, idx) => {
+          res.push([
+            element,
+            store.table[store.currentMapObject.selectedLabel].indexOf(
+              element
+            ) === -1
+              ? ""
+              : store.table[store.key][
+                  store.table[store.currentMapObject.selectedLabel].indexOf(
+                    element
+                  )
+                ],
+          ]);
+        }
+      );
     } else {
       store.table[store.tableLabel].forEach((element, idx) => {
         res.push([
@@ -168,6 +175,7 @@ export default function PHeatmap() {
     store.setCsvLabel(keys[0]);
     store.setCsvKey(keys[1]);
 
+    setCsvUploaded(true);
   };
 
   const properties = store.rawMapFile.features.map(
@@ -192,52 +200,34 @@ export default function PHeatmap() {
     <div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
       <div style={{ overflow: "auto", maxHeight: "45vh" }}>
-        {/* <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ paddingRight: "10%" }}>Select Property: </div>
-          <Select
-            // labelId="demo-simple-select-standard-label"
-            // id="searchOn"
-            value={store.tableLabel}
-            required
-            onChange={handleChangeTableLabel}
-            sx={{ minWidth: "40%", marginLeft: "auto" }}
-            MenuProps={{
-              style: { maxHeight: "50%" },
-            }}
-          >
-            {Object.keys(generalProperty).map((mi) => (
-              <MenuItem key={mi} value={mi}>
-                {mi}
-              </MenuItem>
-            ))}
-          </Select>
-        </div> */}
-
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ paddingRight: "10%" }}>Merge CSV on: </div>
-          <Select
-            // labelId="demo-simple-select-standard-label"
-            // id="searchOn"
-            value={store.label ? store.label : "label"}
-            required
-            onChange={handleChangeCsvLabel}
-            sx={{ minWidth: "40%", marginLeft: "auto" }}
-            MenuProps={{
-              style: { maxHeight: "50%" },
-            }}
-          >
-            {store.parsed_CSV_Data && Object.keys(store.parsed_CSV_Data).map((mi) => (
-              <MenuItem key={mi} value={mi}>
-                {mi}
-              </MenuItem>
-            ))}
-            {/* <MenuItem>
+        {csvUploaded && (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ paddingRight: "10%" }}>Merge CSV on: </div>
+            <Select
+              // labelId="demo-simple-select-standard-label"
+              // id="searchOn"
+              value={store.label ? store.label : "label"}
+              required
+              onChange={handleChangeCsvLabel}
+              sx={{ minWidth: "40%", marginLeft: "auto" }}
+              MenuProps={{
+                style: { maxHeight: "50%" },
+              }}
+            >
+              {store.parsed_CSV_Data &&
+                Object.keys(store.parsed_CSV_Data).map((mi) => (
+                  <MenuItem key={mi} value={mi}>
+                    {mi}
+                  </MenuItem>
+                ))}
+              {/* <MenuItem>
                     <Button variant="text" startDecorator={<Add />}>
                       New Label
                     </Button>
                   </MenuItem> */}
-          </Select>
-        </div>
+            </Select>
+          </div>
+        )}
 
         <hr />
 
@@ -282,11 +272,12 @@ export default function PHeatmap() {
                     style: { maxHeight: "50%" },
                   }}
                 >
-                  {store.table && Object.keys(store.table).map((mi) => (
-                    <MenuItem key={mi} value={mi}>
-                      {mi}
-                    </MenuItem>
-                  ))}
+                  {store.table &&
+                    Object.keys(store.table).map((mi) => (
+                      <MenuItem key={mi} value={mi}>
+                        {mi}
+                      </MenuItem>
+                    ))}
                   {/* <MenuItem>
                     <Button variant="text" startDecorator={<Add />}>
                       New Column
@@ -322,13 +313,13 @@ export default function PHeatmap() {
         </Table>
       </div>
       <div>
-        <Typography sx={{padding: 1}}>Select Min Color: </Typography>
+        <Typography sx={{ padding: 1 }}>Select Min Color: </Typography>
         <CompactPicker
           onChange={handleMinColorChange}
           color={store.minColor || "#FFFFFF"}
           disableAlpha={true} // Disable alpha channel
         />
-        <Typography sx={{padding: 1}}>Select Max Color: </Typography>
+        <Typography sx={{ padding: 1 }}>Select Max Color: </Typography>
 
         <CompactPicker
           onChange={handleMaxColorChange}
