@@ -44,7 +44,10 @@ export default function MUISaveChanges() {
 
   const handleSave = async () => {
     console.log("saving map");
-    store.saveCSV();
+    if (store.currentMapObject.mapType !== MapType.TRAVEL_MAP) {
+      store.saveCSV();
+    }
+    
 
     // initialize mapProps to empty object if null
     if (!store.currentMapObject.mapProps) store.currentMapObject.mapProps = {};
