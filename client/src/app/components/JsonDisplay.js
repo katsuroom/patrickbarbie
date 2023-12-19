@@ -102,16 +102,21 @@ export default function JsonDisplay(props) {
   ]);
 
 
+
   useEffect(() => {
     markers.current.forEach(({ marker, text }) => {
+      const fontWeight = store.bold ? 'bold' : 'normal';
+      const fontStyle = store.italicize ? 'italic' : 'normal';
+      const textDecoration = store.underline ? 'underline' : 'none';
+      const fontFamily = store.fontStyle;
       marker.setIcon(L.divIcon({
         className: "countryLabel",
-        html: `<div style="font-size: ${store.fontSize}px;">${text}</div>`,
+        html: `<div style="font-size: ${store.fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`, // Apply font weight, style, decoration, and family
         iconSize: [1000, 0],
         iconAnchor: [0, 0],
       }));
     });
-  }, [store.fontSize]);
+  }, [store.fontSize, store.bold, store.italicize, store.underline, store.fontStyle]);
 
   return (
     <div>

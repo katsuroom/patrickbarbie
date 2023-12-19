@@ -113,41 +113,84 @@ const MapEditorToolbar = () => {
   };
 
 
-  const handleBoldClick = () => alert("Bold button clicked");
-  const handleItalicClick = () => alert("Italic button clicked");
-  const handleUnderlinedClick = () => alert("Underlined button clicked");
-  const handleFillColorClick = () => alert("Fill Color button clicked");
-  const handleBorderColorClick = () => alert("Border Color button clicked");
+  const handleBoldClick = () => {
+    store.setBoldTransaction(!store.bold)
+  }
+
+
+  const handleItalicClick =
+    () => { store.setItalicizeTransaction(!store.italicize) };
+
+
+  const handleUnderlinedClick = () => {
+    store.setUnderlineTransaction(!store.underline)
+  };
+
+
+  // const handleFillColorClick = () => alert("Fill Color button clicked");
+  // const handleBorderColorClick = () => alert("Border Color button clicked");
 
   const FontDropdown = () => (
     <div style={dropdownStyle}>
       <div
         style={dropdownItemStyle}
         onClick={() => {
-          console.log("Selected Font 1");
-          closeDropdown();
+          store.setFontStyleTransaction("Arial"); closeDropdown();
         }}
       >
-        Font Style 1
+        Arial
       </div>
       <div
         style={dropdownItemStyle}
         onClick={() => {
-          console.log("Selected Font 2");
+          store.setFontStyleTransaction("Times New Roman");
           closeDropdown();
         }}
       >
-        Font Style 2
+        Times New Roman
       </div>
       <div
         style={dropdownItemStyle}
         onClick={() => {
-          console.log("Selected Font 3");
+          store.setFontStyleTransaction("Courier New");
           closeDropdown();
         }}
       >
-        Font Style 3
+        Courier New
       </div>
+
+      <div
+        style={dropdownItemStyle}
+        onClick={() => {
+          store.setFontStyleTransaction("Sans Serif");
+          closeDropdown();
+        }}
+      >
+        Sans Serif
+      </div>
+
+
+      <div
+        style={dropdownItemStyle}
+        onClick={() => {
+          store.setFontStyleTransaction("Georgia");
+          closeDropdown();
+        }}
+      >
+        Georgia
+      </div>
+
+      <div
+        style={dropdownItemStyle}
+        onClick={() => {
+          store.setFontStyleTransaction("Comic Sans MS");
+          closeDropdown();
+        }}
+      >
+        Comic Sans MS
+      </div>
+
+        
     </div>
   );
 
@@ -325,12 +368,12 @@ const MapEditorToolbar = () => {
       <button style={buttonStyle} onClick={handleUnderlinedClick}>
         <FormatUnderlinedIcon />
       </button>
-      <button style={buttonStyle} onClick={handleFillColorClick}>
+      {/* <button style={buttonStyle} onClick={handleFillColorClick}>
         <FormatColorFillIcon />
       </button>
       <button style={buttonStyle} onClick={handleBorderColorClick}>
         <BorderColorIcon />
-      </button>
+      </button> */}
 
       {store.currentMapObject?.mapType === "Travel Map" ? (
         <div style={{ position: "relative" }}>
