@@ -20,6 +20,9 @@ export default function JsonDisplay(props) {
         fillOpacity: 0.2,
     };
 
+    useEffect(() => {
+      console.log(store.table);
+    }, [store.table]);
 
     useEffect(() => {
         const resizeListener = () => {

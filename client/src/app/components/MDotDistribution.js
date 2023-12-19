@@ -75,7 +75,7 @@ export default function DotDistribution() {
             fillColor: store.dotColor ? store.dotColor : "black",
             weight: 1,
             opacity: 1,
-            fillOpacity: 0.8,
+            fillOpacity: 1,
           });
 
           console.log(JSON.stringify(store.parsed_CSV_Data));
