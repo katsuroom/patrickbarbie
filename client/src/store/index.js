@@ -8,6 +8,7 @@ import DotColor_Transaction from "../transactions/DotColor_transaction";
 import HeatColorTransaction from "../transactions/HeatColorTransaction";
 import Procolor_transaction from "../transactions/Procolor_transaction";
 import GeneralProperty_Transaction from "../transactions/GeneralProperty_transaction";
+import CSV_Transaction from "@/transactions/CSVTransaction";
 
 import api from "./api";
 
@@ -1243,6 +1244,15 @@ function StoreContextProvider(props) {
     let transaction = new GeneralProperty_Transaction(index, selectedKey, oldValue, newValue, store);
     console.log(transaction);
     tps.addTransaction(transaction);
+  }
+
+  store.setCsvTransaction = function (newCSV) {
+    console.log("newCSV", newCSV);
+    console.log("store.parsed_CSV_Data", store.parsed_CSV_Data);
+    let transaction = new CSV_Transaction({...store.parsed_CSV_Data}, {...newCSV}, store);
+    console.log(transaction);
+    tps.addTransaction(transaction);
+
   }
   
 

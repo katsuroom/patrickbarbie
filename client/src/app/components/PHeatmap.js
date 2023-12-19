@@ -53,17 +53,20 @@ export default function PHeatmap() {
     const { rowIndex, columnIndex } = editingCell;
     console.log(rowIndex, columnIndex, value);
 
+    const table = JSON.parse(JSON.stringify(store.parsed_CSV_Data));
+
+
     if (columnIndex === 0) {
-      store.parsed_CSV_Data[store.currentMapObject.selectedLabel][rowIndex] = value;
+      table[store.currentMapObject.selectedLabel][rowIndex] = value;
     }
     else{
-      store.parsed_CSV_Data[store.key][rowIndex] = value;
+      table[store.key][rowIndex] = value;
     }
 
-    const table = { ...store.parsed_CSV_Data };
 
     console.log(table);
-    store.setParsedCsvData(table);
+    store.setCsvTransaction(table)
+    // store.setParsedCsvData(table);
 
     setEditingCell(null);
     
@@ -74,7 +77,6 @@ export default function PHeatmap() {
   };
 
 
-  useEffect(() => {
   if (!store.parsed_CSV_Data) {
     
     const properties = store.rawMapFile.features.map(
@@ -101,7 +103,6 @@ export default function PHeatmap() {
     // store.setCsvLabel(Object.keys(store.parsed_CSV_Data)[0]);
     store.setCsvKey(Object.keys(store.parsed_CSV_Data)[0]);
   }
-  }, []);
 
   const handleMinColorChange = (event) => {
     const color = event?.hex;
