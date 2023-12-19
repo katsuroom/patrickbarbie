@@ -1016,6 +1016,7 @@ function StoreContextProvider(props) {
 
   store.getMapListCommunity = async function () {
     await api.getPublishedMaps().then((response) => {
+      // store.pageLoading = true
       console.log("fetched published maps", response.data.data);
 
       let currentMapObj = null;

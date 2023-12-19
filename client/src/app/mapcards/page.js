@@ -25,6 +25,7 @@ export default function EditScreen() {
 
   useEffect(() => {
     const func = async () => {
+      store.setPageLoading(true)
         if (auth.loggedIn) {
           console.log("change view to home");
           console.log("auth.loggedIn", auth.loggedIn);
@@ -44,7 +45,7 @@ export default function EditScreen() {
       store.setCsvKey(null);
       store.setCsvLabel(null);
       store.setTableLabel(null)
-
+      store.setPageLoading(true)
       if (store.currentMapObject && store.currentMapObject.csvData) {
         const csvObj = await store.getCsvById(store.currentMapObject.csvData);
 
@@ -57,6 +58,7 @@ export default function EditScreen() {
   }, [store.currentMapObject]);
 
   const handleMapClick = (mapId) => {
+    store.setPageLoading(true)
     store.loadMapFile(mapId);
     router.push("/main");
   };
@@ -203,6 +205,8 @@ export default function EditScreen() {
 
   return (
     <>
+      {store.pageLoading && <div id="loader" className="custom-loader" />}
+
       <Box
         sx={{
           height: "8vh",
@@ -241,8 +245,6 @@ export default function EditScreen() {
           </Fab>
         ) : null}
       </Box>
-      {store.pageLoading && <div id="loader" className="custom-loader" />}
-
       <List
         component="nav"
         aria-label="map folders"
