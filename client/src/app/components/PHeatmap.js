@@ -35,6 +35,33 @@ export default function PHeatmap() {
   const [menuItems, setMenuItems] = React.useState([]);
   // const [table, setTable] = React.useState({});
 
+  if (!store.parsed_CSV_Data){
+    const properties = store.rawMapFile.features.map(
+      (element) => element.properties
+    );
+    const generalProperty = {};
+    properties.forEach((element) => {
+      Object.keys(element).forEach((key) => {
+        if (key in generalProperty) {
+          generalProperty[key].push(element[key]);
+        } else {
+          generalProperty[key] = [element[key]];
+        }
+      });
+    });
+
+    
+    console.log(store.parsed_CSV_Data);
+    const table = { ...generalProperty, ...store.parsed_CSV_Data };
+    console.log(table);
+
+    store.setParsedCsvDataWOR
+    store.setParsedCsvData(table);
+
+    // store.setCsvLabel(Object.keys(store.parsed_CSV_Data)[0]);
+    store.setCsvKey(Object.keys(store.parsed_CSV_Data)[0]);
+  }
+
   const handleMinColorChange = (event) => {
     const color = event?.hex;
     if (color) {
@@ -141,7 +168,6 @@ export default function PHeatmap() {
     store.setCsvLabel(keys[0]);
     store.setCsvKey(keys[1]);
 
-    store.setTable();
   };
 
   const properties = store.rawMapFile.features.map(
@@ -166,7 +192,7 @@ export default function PHeatmap() {
     <div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
       <div style={{ overflow: "auto", maxHeight: "45vh" }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
+        {/* <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ paddingRight: "10%" }}>Select Property: </div>
           <Select
             // labelId="demo-simple-select-standard-label"
@@ -185,10 +211,10 @@ export default function PHeatmap() {
               </MenuItem>
             ))}
           </Select>
-        </div>
+        </div> */}
 
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ paddingRight: "10%" }}>Select Matching CSV Label: </div>
+          <div style={{ paddingRight: "10%" }}>Merge CSV on: </div>
           <Select
             // labelId="demo-simple-select-standard-label"
             // id="searchOn"

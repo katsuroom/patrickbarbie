@@ -92,7 +92,6 @@ export default function EditScreen() {
         store.setCsvLabel(csvObj.label);
 
         store.setTableLabel(csvObj.tableLabel)
-        store.setTable();
       }
     };
     func();

@@ -395,7 +395,7 @@ function StoreContextProvider(props) {
     console.log(table);
 
     storeReducer({
-      type: StoreActionType.SET_TABLE,
+      type: StoreActionType.SET_PARSED_CSV_DATA,
       payload: table,
     });
 

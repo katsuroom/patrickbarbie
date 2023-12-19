@@ -171,10 +171,15 @@ export default function Heatmap() {
     let idx;
 
     try {
-      idx = store.table[store.label].indexOf(feature.properties.name);
-    } catch (error) {}
+      console.log(store.currentMapObject.selectedLabel)
+      console.log(feature.properties[store.currentMapObject.selectedLabel]);
+      console.log(store.parsed_CSV_Data[store.key]);
+      idx = store.parsed_CSV_Data[store.currentMapObject.selectedLabel].indexOf(feature.properties[store.currentMapObject.selectedLabel]);
+    } catch (error) {
+      console.log(error);
+    }
 
-    if (!idx || idx < 0 || !store.table) {
+    if (!idx || idx < 0 || !store.parsed_CSV_Data) {
       fillColor = "white";
     } else {
       fillColor = interpolateColor(
@@ -184,11 +189,13 @@ export default function Heatmap() {
         store.maxColor ||
           store.currentMapObject.mapProps?.maxColor ||
           "#FF0000",
-        Math.min(...store.table[store.key]),
-        Math.max(...store.table[store.key]),
-        store.table[store.key][idx]
+        Math.min(...store.parsed_CSV_Data[store.key]),
+        Math.max(...store.parsed_CSV_Data[store.key]),
+        store.parsed_CSV_Data[store.key][idx]
       );
     }
+
+    console.log("fillcolor" ,fillColor)
     return {
       stroke: true,
       color: "black",
@@ -395,7 +402,7 @@ export default function Heatmap() {
 
     heatmapOverlayRef.current.addTo(mapRef.current);
 
-    if (!(geoJsonData && store.label && store.key && store.table)) {
+    if (!(geoJsonData && store.key && store.parsed_CSV_Data)) {
       return;
     }
 
@@ -418,7 +425,7 @@ export default function Heatmap() {
             store.currentMapObject.mapProps?.minColor ||
             "#FFFFFF") +
           '"> Min: ' +
-          Math.min(...store.table[store.key]) +
+          Math.min(...store.parsed_CSV_Data[store.key]) +
           "</div> " +
           "<br>";
 
@@ -428,7 +435,7 @@ export default function Heatmap() {
             store.currentMapObject.mapProps?.maxColor ||
             "#FFFFFF") +
           '"> Max: ' +
-          Math.max(...store.table[store.key]) +
+          Math.max(...store.parsed_CSV_Data[store.key]) +
           "</div> " +
           "<br>";
 
@@ -443,7 +450,7 @@ export default function Heatmap() {
     geoJsonData,
     store.label,
     store.key,
-    store.table,
+    store.parsed_CSV_Data,
     store.minColor,
     store.maxColor,
   ]);
