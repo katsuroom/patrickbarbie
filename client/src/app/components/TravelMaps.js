@@ -73,137 +73,149 @@ const TravelMap = () => {
 
 
     const refreshMap = () => {
-
-        console.log('travel map + ' + store.rawMapFile)
-        if (!loadScripts || !geoJsonData) {
-            return;
-        }
-
-        if (!mapRef.current) {
-            var mapLayer = window.MQ.mapLayer();
-            mapRef.current = L.map('map-display', {
-                layers: [mapLayer],
-                center: [40.731701, -73.993411],
-                zoom: 10,
-            });
-        }
-        if (geoJsonLayerRef.current) {
-            mapRef.current.removeLayer(geoJsonLayerRef.current);
-        }
-        markers.current.forEach((marker) => {
-            mapRef.current.removeLayer(marker);
-        });
-        markers.current = [];
-
-        if (mapLayerRef.current) mapRef.current.removeLayer(mapLayerRef.current);
-        if (hybridLayerRef.current) mapRef.current.removeLayer(hybridLayerRef.current);
-        if (satelliteLayerRef.current) mapRef.current.removeLayer(satelliteLayerRef.current);
-        if (darkLayerRef.current) mapRef.current.removeLayer(darkLayerRef.current);
-        if (lightLayerRef.current) mapRef.current.removeLayer(lightLayerRef.current);
-
-        if (window.MQ) {
-            mapLayerRef.current = window.MQ.mapLayer();
-            hybridLayerRef.current = window.MQ.hybridLayer();
-            satelliteLayerRef.current = window.MQ.satelliteLayer();
-            darkLayerRef.current = window.MQ.darkLayer();
-            lightLayerRef.current = window.MQ.lightLayer();
-
-            if (settingLayerRef.current) {
-                mapRef.current.removeControl(settingLayerRef.current);
+        try {
+            console.log('travel map + ' + store.rawMapFile)
+            if (!loadScripts || !geoJsonData) {
+                return;
             }
 
-            // settingLayerRef.current = L.control.layers({
-            //     'Map': mapLayerRef.current,
-            //     'Hybrid': hybridLayerRef.current,
-            //     'Satellite': satelliteLayerRef.current,
-            //     'Dark': darkLayerRef.current,
-            //     'Light': lightLayerRef.current
-            // });
+            if (!mapRef.current) {
+                var mapLayer = window.MQ.mapLayer();
+                mapRef.current = L.map('map-display', {
+                    layers: [mapLayer],
+                    center: [40.731701, -73.993411],
+                    zoom: 10,
+                });
+            }
 
-            // settingLayerRef.current.addTo(mapRef.current);
-
-            // mapRef.current.on("baselayerchange", function (event) {
-            //     const layerName = event.name; // Name of the selected layer
-            //     const layer = event.layer; // Reference to the selected layer
-
-            //     if (!store.currentMapObject.mapProps) {
-            //         store.currentMapObject.mapProps = {};
-            //     }
-
-            //     store.currentMapObject.mapProps.layerName = layerName;
-
-            //     console.log("Base layer changed to:", layerName);
-            //     console.log("Base layer changed to:", layer);
-            //     console.log(mapRef.current);
-            //     setDefaultLayerAdded(true);
-            // });
-
-            if (!defaultLayerAdded && store.currentMapObject.mapProps?.layerName) {
-                console.log("changing layer...");
-                switch (store.currentMapObject.mapProps?.layerName) {
-                    case "Map":
-                        mapRef.current.addLayer(mapLayerRef.current);
-                        break;
-                    case "Hybrid":
-                        mapRef.current.addLayer(hybridLayerRef.current);
-                        break;
-                    case "Satellite":
-                        mapRef.current.addLayer(satelliteLayerRef.current);
-                        break;
-                    case "Dark":
-                        mapRef.current.addLayer(darkLayerRef.current);
-                        break;
-                    case "Light":
-                        mapRef.current.addLayer(lightLayerRef.current);
-                        break;
-                    default:
-                        break;
+            if (mapRef.current) {
+                try {
+                    if (mapLayerRef.current) mapRef.current.removeLayer(mapLayerRef.current);
+                    if (hybridLayerRef.current) mapRef.current.removeLayer(hybridLayerRef.current);
+                    if (satelliteLayerRef.current) mapRef.current.removeLayer(satelliteLayerRef.current);
+                    if (darkLayerRef.current) mapRef.current.removeLayer(darkLayerRef.current);
+                    if (lightLayerRef.current) mapRef.current.removeLayer(lightLayerRef.current);
+                } catch (removeLayerError) {
+                    console.error('Error removing layers:', removeLayerError);
                 }
             }
-        }
 
+            if (window.MQ) {
+                mapLayerRef.current = window.MQ.mapLayer();
+                hybridLayerRef.current = window.MQ.hybridLayer();
+                satelliteLayerRef.current = window.MQ.satelliteLayer();
+                darkLayerRef.current = window.MQ.darkLayer();
+                lightLayerRef.current = window.MQ.lightLayer();
 
-        if (geoJsonData) {
-            geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
-                onEachFeature: (feature, layer) => {
-                    let labelData = store.getJsonLabels(feature, layer);
-                    if (!labelData) return;
+                if (settingLayerRef.current && mapRef.current) {
+                    mapRef.current.removeControl(settingLayerRef.current);
+                }
 
-                    const [pos, text] = labelData;
+                // settingLayerRef.current = L.control.layers({
+                //     'Map': mapLayerRef.current,
+                //     'Hybrid': hybridLayerRef.current,
+                //     'Satellite': satelliteLayerRef.current,
+                //     'Dark': darkLayerRef.current,
+                //     'Light': lightLayerRef.current
+                // });
 
-                    const label = L.marker(
-                        pos, {
-                        icon: L.divIcon({
-                            className: "countryLabel",
-                            html: `<div style="font-size: 30px;">${text}</div>`,
-                            iconSize: [1000, 0],
-                            iconAnchor: [0, 0],
-                        }),
+                // settingLayerRef.current.addTo(mapRef.current);
+
+                // mapRef.current.on("baselayerchange", function (event) {
+                //     const layerName = event.name; // Name of the selected layer
+                //     const layer = event.layer; // Reference to the selected layer
+
+                //     if (!store.currentMapObject.mapProps) {
+                //         store.currentMapObject.mapProps = {};
+                //     }
+
+                //     store.currentMapObject.mapProps.layerName = layerName;
+
+                //     console.log("Base layer changed to:", layerName);
+                //     console.log("Base layer changed to:", layer);
+                //     console.log(mapRef.current);
+                //     setDefaultLayerAdded(true);
+                // });
+
+                if (!defaultLayerAdded && store.currentMapObject.mapProps?.layerName) {
+                    console.log("changing layer...");
+                    switch (store.currentMapObject.mapProps?.layerName) {
+                        case "Map":
+                            mapRef.current.addLayer(mapLayerRef.current);
+                            break;
+                        case "Hybrid":
+                            mapRef.current.addLayer(hybridLayerRef.current);
+                            break;
+                        case "Satellite":
+                            mapRef.current.addLayer(satelliteLayerRef.current);
+                            break;
+                        case "Dark":
+                            mapRef.current.addLayer(darkLayerRef.current);
+                            break;
+                        case "Light":
+                            mapRef.current.addLayer(lightLayerRef.current);
+                            break;
+                        default:
+                            break;
                     }
-                    ).addTo(mapRef.current);
-                    markers.current.push(label);
-                },
-            });
-
-            geoJsonLayerRef.current.addTo(mapRef.current);
-
-            if (geoJsonLayerRef.current) {
-                const bounds = geoJsonLayerRef.current.getBounds();
-                if (bounds.isValid()) {
-                    mapRef.current.fitBounds(bounds);
-                } else {
-                    console.log("bounds are not valid");
                 }
-            } else {
-                console.log("geoJsonLayerRef.current is undefined or empty");
             }
+
+            if (geoJsonLayerRef.current && mapRef.current) {
+                try {
+                    mapRef.current.removeLayer(geoJsonLayerRef.current);
+                } catch (removeLayerError) {
+                    console.error('Error removing geoJsonLayer:', removeLayerError);
+                }
+            }
+            
+            markers.current.forEach((marker) => {
+                mapRef.current.removeLayer(marker);
+            });
+            markers.current = [];
+
+            if (geoJsonData) {
+                geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
+                    onEachFeature: (feature, layer) => {
+                        let labelData = store.getJsonLabels(feature, layer);
+                        if (!labelData) return;
+
+                        const [pos, text] = labelData;
+
+                        const label = L.marker(
+                            pos, {
+                            icon: L.divIcon({
+                                className: "countryLabel",
+                                html: `<div style="font-size: 30px;">${text}</div>`,
+                                iconSize: [1000, 0],
+                                iconAnchor: [0, 0],
+                            }),
+                        }
+                        ).addTo(mapRef.current);
+                        markers.current.push(label);
+                    },
+                });
+
+                geoJsonLayerRef.current.addTo(mapRef.current);
+
+                if (geoJsonLayerRef.current) {
+                    const bounds = geoJsonLayerRef.current.getBounds();
+                    if (bounds.isValid()) {
+                        mapRef.current.fitBounds(bounds);
+                    } else {
+                        console.log("bounds are not valid");
+                    }
+                } else {
+                    console.log("geoJsonLayerRef.current is undefined or empty");
+                }
+            }
+
+            runDirection();
+
+        } catch (error) {
+            console.error('Error in refreshing map:', error);
         }
-
-        runDirection();
-
-        store.pageLoading = false
-    }
-
+    };
     useEffect(() => {
         refreshMap();
     }, [loadScripts]);
@@ -238,17 +250,18 @@ const TravelMap = () => {
                 iconAnchor: [12, 41]
             });
 
-            if (routeControlRef.current) {
+            if (routeControlRef.current && mapRef.current) {
                 mapRef.current.removeControl(routeControlRef.current);
             }
 
             const routingControl = L.Routing.control({
                 waypoints: store.waypoints,
-                // routeWhileDragging: true,
                 createMarker: function (i, waypoint, n) {
                     const markerIcon = i === 0 ? startIcon : (i > 0 && i < n - 1) ? inBetweenIcon : endIcon;
                     return L.marker(waypoint.latLng, { icon: markerIcon });
                 },
+                routeWhileDragging: false,
+                addWaypoints: false,
             });
 
             routingControl.on('waypointschanged', function (e) {
