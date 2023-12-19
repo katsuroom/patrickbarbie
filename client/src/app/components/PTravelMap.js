@@ -29,6 +29,20 @@ const PTravelMap = () => {
   const [defaultLayerAdded, setDefaultLayerAdded] = useState(false);
   const [geoJsonData, setGeoJsonData] = useState(null);
 
+  const updateMarkerIcon = (marker, text) => {
+    const fontWeight = store.bold ? 'bold' : 'normal';
+    const fontStyle = store.italicize ? 'italic' : 'normal';
+    const textDecoration = store.underline ? 'underline' : 'none';
+    const fontFamily = store.fontStyle;
+
+    marker.setIcon(L.divIcon({
+      className: "countryLabel",
+      html: `<div style="font-size: ${store.fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`,
+      iconSize: [1000, 0],
+      iconAnchor: [0, 0],
+    }));
+  };
+
 
   const startHere = (e) => {
     if (geoJsonLayerRef.current) {
@@ -214,10 +228,11 @@ const PTravelMap = () => {
             pos, {
             icon: L.divIcon({
               className: "countryLabel",
-              html: `<div style="font-size: 30px;">${text}</div>`,
+              html: `<div style="font-size: 12px;">${text}</div>`,
               iconSize: [1000, 0],
               iconAnchor: [0, 0],
             }),
+            text: text,
           }
           ).addTo(mapRef.current);
           markers.current.push(label);
@@ -242,6 +257,12 @@ const PTravelMap = () => {
 
     store.pageLoading = false
   }
+
+  useEffect(() => {
+    markers.current.forEach((marker) => {
+      updateMarkerIcon(marker, marker.options.text);
+    });
+  }, [store.fontSize, store.bold, store.italicize, store.underline, store.fontStyle]);
 
   useEffect(() => {
     setDefaultLayerAdded(false);
