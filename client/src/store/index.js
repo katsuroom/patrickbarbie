@@ -376,6 +376,7 @@ function StoreContextProvider(props) {
 
 
   store.setTable = function () {
+    console.log("setting table")
     const properties = store.rawMapFile.features.map(
       (element) => element.properties
     );
@@ -402,6 +403,7 @@ function StoreContextProvider(props) {
   }
 
   store.setPropertyTable = function () {
+    console.log("setting property table")
     const properties = store.rawMapFile.features.map(
       (element) => element.properties
     );
@@ -417,17 +419,17 @@ function StoreContextProvider(props) {
     });
 
     const table = { ...generalProperty};
-    store.table = table;
+    // store.table = table;
 
-    console.log(table);
 
     storeReducer({
-      type: StoreActionType.SET_TABLE,
-      payload: table,
+      type: StoreActionType.SET_PARSED_CSV_DATA,
+      payload: { parsed_CSV_Data: table },
     });
   };
 
   store.setNewTable = function (csvLabel) {
+    console.log("setting new table");
     const properties = store.rawMapFile.features.map(
       (element) => element.properties
     );
@@ -518,22 +520,20 @@ function StoreContextProvider(props) {
     const final = { ...generalProperty, ...reorderedParsedCSVData };
     console.log(final);
 
-    store.table = final;
-
     storeReducer({
-      type: StoreActionType.SET_TABLE,
-      payload: final,
+      type: StoreActionType.SET_PARSED_CSV_DATA,
+      payload: { parsed_CSV_Data: final },
     });
   };
 
   store.updateTable = function (key, value, index){
-    console.log("old Table: ", store.table);
-    let newTable = store.table;
+    console.log("updating table");
+    var newTable = {...store.parsed_CSV_Data};
     newTable[key][index] = value;
     
     storeReducer({
-      type: StoreActionType.SET_TABLE,
-      payload: newTable,
+      type: StoreActionType.SET_PARSED_CSV_DATA,
+      payload: { parsed_CSV_Data: newTable },
     });
   }
 

@@ -21,6 +21,8 @@ export default function PProportional() {
   // const [renderTable, setRenderTable] = React.useState(false);
   // const [page, setPage] = React.useState(0);
   const [textFields, setTextFields] = React.useState([]);
+  const [uploadedCsv, setUploadedCsv] = React.useState(false);
+  const [csvLabels, setCsvLabels] = React.useState([]);
 
   const [MinHex, setMinHex] = React.useState(store.minColor);
   const [MaxHex, setMaxHex] = React.useState(store.proColor);
@@ -56,8 +58,6 @@ export default function PProportional() {
     setTextFields(tfs);
   }, [store.parsed_CSV_Data, store.key, store.label]);
 
-
-
   function zip(...arrays) {
     let length;
     try {
@@ -71,10 +71,9 @@ export default function PProportional() {
     );
   }
 
-
   const handleChangeKey = (event) => {
     let tfs = [];
-    for (let idx in store.table[event.target.value]) {
+    for (let idx in store.parsed_CSV_Data[event.target.value]) {
       // console.log("gay", idx);
       tfs.push(
         // <input
@@ -84,11 +83,11 @@ export default function PProportional() {
         // />
         <TextField
           id={"tf-" + idx}
-          defaultValue={store.table[event.target.value][idx]}
+          defaultValue={store.parsed_CSV_Data[event.target.value][idx]}
           variant="standard"
           sx={{ m: 1, minWidth: 120 }}
           onChange={(e) =>
-            (store.table[event.target.value][idx] = e.target.value)
+            (store.parsed_CSV_Data[event.target.value][idx] = e.target.value)
           }
         />
       );
@@ -124,6 +123,7 @@ export default function PProportional() {
           csv_data[key].push(val);
         }
       }
+      setUploadedCsv(true);
     } catch (error) {
       console.log("parse CSV file failed", error);
     }
@@ -135,10 +135,16 @@ export default function PProportional() {
     store.setParsedCsvDataWOR(csv_data);
     // store.setCsvKeyWithoutRerendering(keys[1]);
     // store.setCsvKey(keys[1]);
+
+    console.log(store.parsed_CSV_Data);
+    setCsvLabels(Object.keys(store.parsed_CSV_Data));
+
+    setMenuItems(keys);
+
     console.log("setting key to", keys[1]);
     store.setCsvLabelWithoutRerendering(keys[0]);
     console.log("setting label to", keys[0]);
-    setMenuItems(keys);
+    
     console.log("setting menu item to", keys);
     // setRenderTable(true);
     store.setCsvLabel(keys[0]);
@@ -146,35 +152,47 @@ export default function PProportional() {
 
     // store.setTable();
     // console.log(store.table);
-
   };
 
   const handleEnterPress = (index, value) => {
-    store.updateTable(store.key, value, index); 
+    store.updateTable(store.key, value, index);
   };
 
   const handleChangeCsvLabel = (event) => {
+    console.log("changing csv Label");
     console.log(event.target.value);
     store.setNewTable(event.target.value);
+    setMenuItems(Object.keys(store.parsed_CSV_Data));
+    console.log(store.parsed_CSV_Data);
     store.setCsvLabel(event.target.value);
-    console.log(store.table);
+    // console.log(store.table);
     console.log(store.label);
-    
   };
 
-  if (store.table && menuItems.length !== Object.keys(store.table).length) {
-    setMenuItems(Object.keys(store.table));
-  }
+  // if (store.table && menuItems.length !== Object.keys(store.table).length) {
+  //   setMenuItems(Object.keys(store.table));
+  // }
+
+  
 
   console.log(store.table);
+  console.log(store.label);
+  console.log(store.currentMapObject.selectedLabel);
+  console.log(store.key);
+  console.log(store.parsed_CSV_Data);
+
+  if (menuItems.length === 0 && store.parsed_CSV_Data) {
+    setMenuItems(Object.keys(store.parsed_CSV_Data));
+  }
 
   return (
     <div>
       <CsvFileReader fileOnLoadComplete={fileOnLoadComplete} />
       <div style={{ overflow: "auto", maxHeight: "45vh" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ paddingRight: "10%" }}>Select CSV Label: </div>
+          <div style={{ paddingRight: "10%" }}>Select CSV Label Matching with General Properties: </div>
           <Select
+            disabled={uploadedCsv ? false : true}
             value={store.label ? store.label : "label"}
             required
             onChange={handleChangeCsvLabel}
@@ -183,8 +201,8 @@ export default function PProportional() {
               style: { maxHeight: "50%" },
             }}
           >
-            {store.parsed_CSV_Data &&
-              Object.keys(store.parsed_CSV_Data).map((mi) => (
+            {csvLabels &&
+              csvLabels.map((mi) => (
                 <MenuItem key={mi} value={mi}>
                   {mi}
                 </MenuItem>
@@ -229,11 +247,12 @@ export default function PProportional() {
             </tr>
           </thead>
           <tbody>
-            {store.table &&
-              store.key && store.currentMapObject.selectedLabel &&
+            {store.parsed_CSV_Data &&
+              store.key &&
+              store.currentMapObject.selectedLabel &&
               zip(
-                store.table[store.currentMapObject.selectedLabel],
-                store.table[store.key]
+                store.parsed_CSV_Data[store.currentMapObject.selectedLabel],
+                store.parsed_CSV_Data[store.key]
                 // textFields
               ).map((row, index) => (
                 <tr key={index}>

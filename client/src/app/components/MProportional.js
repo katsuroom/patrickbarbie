@@ -33,7 +33,7 @@ export default function ProportionalMap() {
   }
 
   function addLayer(mapRef) {
-    if (!(store.rawMapFile && store.key && store.table)) {
+    if (!(store.rawMapFile && store.key && store.parsed_CSV_Data)) {
       return;
     } else {
       // console.log("geoJsonData", geoJsonData);
@@ -61,8 +61,7 @@ export default function ProportionalMap() {
           };
 
           try {
-
-            var index = store.table[
+            var index = store.parsed_CSV_Data[
               store.currentMapObject.selectedLabel
             ].indexOf(feature.properties[store.currentMapObject.selectedLabel]);
             console.log("index", index);
@@ -74,7 +73,7 @@ export default function ProportionalMap() {
 
           // Extract the value from parsedCSV[store.key]
           console.log(store.key);
-          let gdp_md = store.table[store.key][index];
+          let gdp_md = store.parsed_CSV_Data[store.key][index];
           gdp_md = gdp_md === "" ? "NA" : Number(gdp_md);
 
           // Extract only the necessary properties
@@ -161,22 +160,24 @@ export default function ProportionalMap() {
             labels = [],
             categories = [
               store.proportional_value[1].toFixed(2),
-              (1 / 2) * (store.proportional_value[0] + store.proportional_value[1]).toFixed(2),
+              (1 / 2) *
+                (
+                  store.proportional_value[0] + store.proportional_value[1]
+                ).toFixed(2),
               store.proportional_value[0].toFixed(2),
             ];
 
           // console.log("store.proportional_value", store.proportional_value);
           // console.log("store.proColor", store.proColor);
           // for (var i = 0; i < categories.length; i++) {
-          div.innerHTML =
-            `<i class="circle1" style="background: ${store.proColor}"></i>
+          div.innerHTML = `<i class="circle1" style="background: ${store.proColor}"></i>
             <div style="text-align: center;">${categories[0]}</div>
             <br>
             <i class="circle2" style="background: ${store.proColor}"></i>
             <div style="text-align: center;">${categories[1]}</div>
             <br>
             <i class="circle3" style="background: ${store.proColor}"></i>
-            <div style="text-align: center;">${categories[2]}</div>`
+            <div style="text-align: center;">${categories[2]}</div>`;
           // }
 
           return div;
@@ -233,7 +234,7 @@ export default function ProportionalMap() {
     <JsonDisplay
       clearLayer={clearLayer}
       addLayer={addLayer}
-      triggers={[store.proColor, store.table]}
+      triggers={[store.proColor]}
     />
   );
 }
