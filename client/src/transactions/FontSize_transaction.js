@@ -1,18 +1,33 @@
 import jsTPS_Transaction from "@/app/common/jsTPS.js";
 
 export default class FontSize_Transaction extends jsTPS_Transaction {
-    constructor(fontSizeBefore, fontSize, initStore) {
+    constructor(currentMapObject, fontSizeBefore, fontSize,store) {
         super();
-        this.store = initStore;
+        this.currentMapObject = currentMapObject; 
+        this.fontSizeBefore = fontSizeBefore;
         this.fontSize = fontSize;
-        this.fontSizeBefore = fontSizeBefore
+        this.store = store;
     }
 
     doTransaction() {
-        this.store.setFontSize(this.fontSize)
+        if (this.currentMapObject && this.currentMapObject.mapProps) {
+            console.log("FontSize_Transaction: Doing Transaction");
+            this.store.setFontSize(this.fontSize)
+            this.currentMapObject.mapProps.fontSize = this.fontSize;
+            this.currentMapObject.mapProps = JSON.parse(JSON.stringify(this.currentMapObject.mapProps));
+            
+        }
     }
 
     undoTransaction() {
-        this.store.setFontSize(this.fontSizeBefore)
+        if (this.currentMapObject && this.currentMapObject.mapProps) {
+            console.log("FontSize_Transaction: Undoing Transaction");
+            this.store.setFontSize(this.fontSizeBefore)
+            this.currentMapObject.mapProps.fontSize = this.fontSizeBefore;
+        }
+    }
+
+    toString() {
+        return `FontSize_Transaction: ${this.fontSizeBefore} -> ${this.fontSize}`;
     }
 }

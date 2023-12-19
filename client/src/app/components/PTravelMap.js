@@ -29,6 +29,22 @@ const PTravelMap = () => {
   const [defaultLayerAdded, setDefaultLayerAdded] = useState(false);
   const [geoJsonData, setGeoJsonData] = useState(null);
 
+  const updateMarkerIcon = (marker, text) => {
+    const fontSize = store.currentMapObject?.mapProps?.fontSize || 12;
+    const fontWeight = store.currentMapObject?.mapProps?.bold ? 'bold' : 'normal';
+    const fontStyle = store.currentMapObject?.mapProps?.italicize ? 'italic' : 'normal';
+    const textDecoration = store.currentMapObject?.mapProps?.underline ? 'underline' : 'none';
+    const fontFamily = store.fontStyle;
+
+    marker.setIcon(L.divIcon({
+      className: "countryLabel",
+      html: `<div style="font-size: ${fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`, // Apply font weight, style, decoration, and family
+      iconSize: [1000, 0],
+      iconAnchor: [0, 0],
+    }));
+  };
+
+
 
   const startHere = (e) => {
     if (geoJsonLayerRef.current) {
@@ -209,15 +225,22 @@ const PTravelMap = () => {
           if (!labelData) return;
 
           const [pos, text] = labelData;
+          const fontSize = store.currentMapObject?.mapProps?.fontSize || 12; 
+          const fontWeight = store.currentMapObject?.mapProps?.bold ? 'bold' : 'normal';
+          const fontStyle =  store.currentMapObject?.mapProps?.italicize ? 'italic' : 'normal';
+          const textDecoration= store.currentMapObject?.mapProps?.underline ? 'underline' : 'normal';
+          const fontFamily = store.fontStyle;
+
 
           const label = L.marker(
             pos, {
             icon: L.divIcon({
               className: "countryLabel",
-              html: `<div style="font-size: 30px;">${text}</div>`,
+              html: `<div style="font-size: ${fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`, // Apply font weight, style, decoration, and family
               iconSize: [1000, 0],
               iconAnchor: [0, 0],
             }),
+            text: text,
           }
           ).addTo(mapRef.current);
           markers.current.push(label);
@@ -242,6 +265,24 @@ const PTravelMap = () => {
 
     store.pageLoading = false
   }
+
+  // useEffect(() => {
+  //   markers.current.forEach((marker) => {
+  //     updateMarkerIcon(marker, marker.options.text);
+  //   });
+  // }, [store.fontSize, store.bold, store.italicize, store.underline, store.fontStyle]);
+
+  useEffect(() => {
+    markers.current.forEach((marker) => {
+      updateMarkerIcon(marker, marker.options.text);
+    });
+  }, [
+    store.currentMapObject?.mapProps?.fontSize,
+    store.currentMapObject?.mapProps?.bold,
+    store.currentMapObject?.mapProps?.italicize,
+    store.currentMapObject?.mapProps?.underline,
+    store.fontStyle
+  ]);
 
   useEffect(() => {
     setDefaultLayerAdded(false);

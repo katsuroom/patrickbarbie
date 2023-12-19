@@ -57,6 +57,49 @@ export default function Heatmap() {
 
   const [loadScripts, setLoadScripts] = useState(false);
 
+
+  const updateMarkerIcon = (marker, text) => {
+    const fontSize = store.currentMapObject?.mapProps?.fontSize || 12;
+    const fontWeight = store.currentMapObject?.mapProps?.bold ? 'bold' : 'normal';
+    const fontStyle = store.currentMapObject?.mapProps?.italicize ? 'italic' : 'normal';
+    const textDecoration = store.currentMapObject?.mapProps?.underline ? 'underline' : 'none';
+    const fontFamily = store.fontStyle;
+
+    marker.setIcon(L.divIcon({
+      className: "countryLabel",
+      html: `<div style="font-size: ${fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`, // Apply font weight, style, decoration, and family
+      iconSize: [1000, 0],
+      iconAnchor: [0, 0],
+    }));
+  };
+
+
+  if (!store.parsed_CSV_Data) {
+    const properties = store.rawMapFile.features.map(
+      (element) => element.properties
+    );
+    const generalProperty = {};
+    properties.forEach((element) => {
+      Object.keys(element).forEach((key) => {
+        if (key in generalProperty) {
+          generalProperty[key].push(element[key]);
+        } else {
+          generalProperty[key] = [element[key]];
+        }
+      });
+    });
+
+    console.log(store.parsed_CSV_Data);
+    const table = { ...generalProperty, ...store.parsed_CSV_Data };
+    console.log(table);
+
+    store.setParsedCsvDataWOR(table);
+    store.setParsedCsvData(table);
+
+    // store.setCsvLabel(Object.keys(store.parsed_CSV_Data)[0]);
+    store.setCsvKey(Object.keys(store.parsed_CSV_Data)[0]);
+  }
+
   const loadScript = (src) => {
     return new Promise((resolve, reject) => {
       const script = document.createElement("script");
@@ -67,7 +110,6 @@ export default function Heatmap() {
     });
   };
 
-
   if (!loadScripts) {
     Promise.all([
       loadScript("./mq-map.js?key=S8d7L47mdyAG5nHG09dUnSPJjreUVPeC"),
@@ -77,13 +119,9 @@ export default function Heatmap() {
         setLoadScripts(true);
         store.setRawMapFile(store.rawMapFile);
         console.log("script loaded");
-
       })
       .catch((error) => console.error(error));
   }
-
-
-
 
   const initColor = () => {
     if (store.currentMapObject.mapProps) {
@@ -133,6 +171,18 @@ export default function Heatmap() {
   }
 
   useEffect(() => {
+    markers.current.forEach((marker) => {
+      updateMarkerIcon(marker, marker.options.text);
+    });
+  }, [
+    store.currentMapObject?.mapProps?.fontSize,
+    store.currentMapObject?.mapProps?.bold,
+    store.currentMapObject?.mapProps?.italicize,
+    store.currentMapObject?.mapProps?.underline,
+    store.fontStyle
+  ]);
+
+  useEffect(() => {
     const resizeListener = () => {
       setMapHeight(window.innerHeight / 2);
     };
@@ -176,10 +226,12 @@ export default function Heatmap() {
     let idx;
 
     try {
-      console.log(store.currentMapObject.selectedLabel)
+      console.log(store.currentMapObject.selectedLabel);
       console.log(feature.properties[store.currentMapObject.selectedLabel]);
       console.log(store.parsed_CSV_Data[store.key]);
-      idx = store.parsed_CSV_Data[store.currentMapObject.selectedLabel].indexOf(feature.properties[store.currentMapObject.selectedLabel]);
+      idx = store.parsed_CSV_Data[store.currentMapObject.selectedLabel].indexOf(
+        feature.properties[store.currentMapObject.selectedLabel]
+      );
     } catch (error) {
       console.log(error);
     }
@@ -189,18 +241,18 @@ export default function Heatmap() {
     } else {
       fillColor = interpolateColor(
         store.minColor ||
-          store.currentMapObject.mapProps?.minColor ||
-          "#FFFFFF",
+        store.currentMapObject.mapProps?.minColor ||
+        "#FFFFFF",
         store.maxColor ||
-          store.currentMapObject.mapProps?.maxColor ||
-          "#FF0000",
+        store.currentMapObject.mapProps?.maxColor ||
+        "#FF0000",
         Math.min(...store.parsed_CSV_Data[store.key]),
         Math.max(...store.parsed_CSV_Data[store.key]),
         store.parsed_CSV_Data[store.key][idx]
       );
     }
 
-    console.log("fillcolor" ,fillColor)
+    console.log("fillcolor", fillColor);
     return {
       stroke: true,
       color: "black",
@@ -269,24 +321,56 @@ export default function Heatmap() {
     });
     markers.current = [];
 
+    // if (geoJsonData) {
+    //   console.log(geoJsonData);
+    //   geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
+    //     onEachFeature: (feature, layer) => {
+    //       let labelData = store.getJsonLabels(feature, layer);
+    //       if (!labelData) return;
+
+    //       const [pos, text] = labelData;
+    //       const fontSize = store.currentMapObject?.mapProps?.fontSize || 12;
+    //       const fontWeight = store.currentMapObject?.mapProps?.bold ? 'bold' : 'normal';
+    //       const fontStyle = store.currentMapObject?.mapProps?.italicize ? 'italic' : 'normal';
+    //       const textDecoration = store.currentMapObject?.mapProps?.underline ? 'underline' : 'normal';
+    //       const fontFamily = store.fontStyle;
+
+    //       const label = L.marker(pos, {
+    //         icon: L.divIcon({
+    //           className: "countryLabel",
+    //           html: `<div style="font-size: ${fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`, // Apply font weight, style, decoration, and family
+    //           iconSize: [1000, 0],
+    //           iconAnchor: [0, 0],
+    //         }),
+    //       }).addTo(mapRef.current);
+    //       markers.current.push(label);
+    //     },
+    //   });
+
     if (geoJsonData) {
-      console.log(geoJsonData);
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
         onEachFeature: (feature, layer) => {
           let labelData = store.getJsonLabels(feature, layer);
-          if(!labelData) return;
+          if (!labelData) return;
 
           const [pos, text] = labelData;
+          const fontSize = store.currentMapObject?.mapProps?.fontSize || 12;
+          const fontWeight = store.currentMapObject?.mapProps?.bold ? 'bold' : 'normal';
+          const fontStyle = store.currentMapObject?.mapProps?.italicize ? 'italic' : 'normal';
+          const textDecoration = store.currentMapObject?.mapProps?.underline ? 'underline' : 'normal';
+          const fontFamily = store.fontStyle;
+
 
           const label = L.marker(
             pos, {
-              icon: L.divIcon({
-                className: "countryLabel",
-                html: `<div style="font-size: 12px;">${text}</div>`,
-                iconSize: [1000, 0],
-                iconAnchor: [0, 0],
-              }),
-            }
+            icon: L.divIcon({
+              className: "countryLabel",
+              html: `<div style="font-size: ${fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`, // Apply font weight, style, decoration, and family
+              iconSize: [1000, 0],
+              iconAnchor: [0, 0],
+            }),
+            text: text,
+          }
           ).addTo(mapRef.current);
           markers.current.push(label);
         },
@@ -330,7 +414,10 @@ export default function Heatmap() {
         Dark: darkLayerRef.current,
         Light: lightLayerRef.current,
       });
-      settingLayerRef.current.addTo(mapRef.current);
+
+      if (store.isEditPage()) {
+        settingLayerRef.current.addTo(mapRef.current);
+      }
 
       mapRef.current.on("baselayerchange", function (event) {
         // The 'event' object contains information about the change
@@ -352,8 +439,9 @@ export default function Heatmap() {
       console.log(store.currentMapObject);
 
       if (
-        // !defaultLayerAdded && 
-        store.currentMapObject.mapProps?.layerName) {
+        // !defaultLayerAdded &&
+        store.currentMapObject.mapProps?.layerName
+      ) {
         console.log("changing layer...");
         switch (store.currentMapObject.mapProps?.layerName) {
           case "Map":
@@ -381,13 +469,26 @@ export default function Heatmap() {
       mapRef.current.removeLayer(heatmapOverlayRef.current);
     }
 
-    
-
     heatmapOverlayRef.current = L.geoJSON(geoJsonData, {
       style: geoJsonStyle,
       onEachFeature: (feature, layer) => {
+        var popup =
+          "<p><b>" +
+          layer.feature.properties[store.currentMapObject.selectedLabel] +
+          "</b></p>" +
+          "<p>Value: " +
+          store.parsed_CSV_Data[store.key][
+          store.parsed_CSV_Data[store.currentMapObject.selectedLabel].indexOf
+            (
+              layer.feature.properties[store.currentMapObject.selectedLabel]
+            )
+          ] +
+          " </p>";
+
         layer.on({
           mouseover: function (e) {
+            layer.bindPopup(popup).openPopup();
+
             console.log(e.target);
             e.target.setStyle({
               weight: 10,
@@ -399,6 +500,7 @@ export default function Heatmap() {
               weight: 2,
               // color: "light blue"
             });
+            layer.bindPopup(popup).closePopup();
           },
           click: function (e) {
             console.log("Layer clicked!");
@@ -413,7 +515,6 @@ export default function Heatmap() {
       return;
     }
 
-    
     if (legendVisible) {
       console.log("adding legend");
 
@@ -460,8 +561,8 @@ export default function Heatmap() {
     store.parsed_CSV_Data,
     store.minColor,
     store.maxColor,
+    loadScripts,
   ]);
-
 
   return (
     <div>
@@ -471,10 +572,7 @@ export default function Heatmap() {
       <div
         id={"map-display"}
         style={{ height: `${mapHeight}px`, margin: "10px" }}
-        
-      >
-        
-      </div>
+      ></div>
       {loadScripts ? "" : "loading"}
     </div>
   );

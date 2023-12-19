@@ -642,61 +642,70 @@ function StoreContextProvider(props) {
     });
   };
 
+
+
   store.setFontSize = function (size) {
-    console.log("setFontSize", size);
-
-    store.fontSize = size;
-
-    storeReducer({
-      type: StoreActionType.SET_FONT_SIZE,
-      payload: size,
-    });
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      store.currentMapObject.mapProps.fontSize = size;
+      storeReducer({
+        type: StoreActionType.SET_FONT_SIZE,
+        payload: size,
+      });
+    }
   };
 
   store.setBold = function (bold) {
-    console.log("setBold", bold);
-
-    store.bold = bold;
-
-    storeReducer({
-      type: StoreActionType.SET_BOLD,
-      payload: bold,
-    });
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      store.currentMapObject.mapProps.bold = bold;
+      storeReducer({
+        type: StoreActionType.SET_BOLD,
+        payload: bold,
+      });
+    }
   };
-
 
   store.setItalicize = function (italicize) {
-    console.log("setItalicize", italicize);
-
-    store.italicize = italicize;
-
-    storeReducer({
-      type: StoreActionType.SET_ITALICIZE,
-      payload: italicize,
-    });
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      store.currentMapObject.mapProps.italicize = italicize;
+      storeReducer({
+        type: StoreActionType.SET_ITALICIZE,
+        payload: italicize,
+      });
+    }
   };
 
-  store.setUnderline = function (underline) {
-    console.log("setUnderline", underline);
+ store.setUnderline = function (underline) {
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      store.currentMapObject.mapProps.underline = underline;
+      storeReducer({
+        type: StoreActionType.SET_UNDERLINE,
+        payload: underline,
+      });
+    }
+  };
 
-    store.underline = underline;
 
-    storeReducer({
-      type: StoreActionType.SET_UNDERLINE,
-      payload: underline,
-    });
-  }
 
   store.setFontStyle = function (fontStyle) {
-    console.log("setFontStyle", fontStyle);
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      store.currentMapObject.mapProps.fontStyle = fontStyle;
+      storeReducer({
+        type: StoreActionType.SET_FONT_STYLE,
+        payload: fontStyle,
+      });
+    }
+  };
 
-    store.fontStyle = fontStyle;
+  // store.setFontStyle = function (fontStyle) {
+  //   console.log("setFontStyle", fontStyle);
 
-    storeReducer({
-      type: StoreActionType.SET_FONT_STYLE,
-      payload: fontStyle,
-    });
-  }
+  //   store.fontStyle = fontStyle;
+
+  //   storeReducer({
+  //     type: StoreActionType.SET_FONT_STYLE,
+  //     payload: fontStyle,
+  //   });
+  // }
 
 
   store.openModal = function (modal) {
@@ -1095,9 +1104,15 @@ function StoreContextProvider(props) {
   // fetches map list based on current view
   store.getMapList = async function () {
     if (store.isHomePage()) {
-      store.getMapListHome();
+      // store.pageLoading = true;
+      await store.getMapListHome();
+      // store.pageLoading = false;
+
     } else {
-      store.getMapListCommunity();
+      // store.pageLoading = true;
+      await store.getMapListCommunity();
+      // store.pageLoading = false;
+
     }
   };
 
@@ -1268,11 +1283,11 @@ function StoreContextProvider(props) {
     store.updateCategoryColorMappings([]);
     store.updateSelectedAttribute(null);
 
-    store.setFontSize(12);
-    store.setBold(false);
-    store.setItalicize(false);
-    store.setUnderline(false);
-    store.setFontStyle('Arial');
+    // store.setFontSize(12);
+    // store.setBold(false);
+    // store.setItalicize(false);
+    // store.setUnderline(false);
+    // store.setFontStyle('Arial');
   };
 
   store.isCommunityPage = () => {
@@ -1427,38 +1442,49 @@ function StoreContextProvider(props) {
   }
 
   store.setFontSizeTransaction = function (newSize) {
-    let oldSize = store.fontSize;
-    let transaction = new FontSize_Transaction(oldSize, newSize, store);
-    console.log(transaction);
-    tps.addTransaction(transaction);
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      let oldSize = store.currentMapObject.mapProps.fontSize;
+      let transaction = new FontSize_Transaction(store.currentMapObject, oldSize, newSize, store);
+      console.log(transaction);
+      tps.addTransaction(transaction);
+    }
   }
 
   store.setBoldTransaction = function (newBold) {
-    let oldBold = store.bold;
-    let transaction = new Bold_Transaction(oldBold, newBold, store);
-    console.log(transaction);
-    tps.addTransaction(transaction);
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      let oldBold = store.currentMapObject.mapProps.bold;
+      let transaction = new Bold_Transaction(store.currentMapObject, oldBold, newBold, store);
+      console.log(transaction);
+      tps.addTransaction(transaction);
+    }
   }
 
   store.setItalicizeTransaction = function (newItalicize) {
-    let oldItalicize = store.italicize;
-    let transaction = new Italicize_Transaction(oldItalicize, newItalicize, store);
-    console.log(transaction);
-    tps.addTransaction(transaction);
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      let oldItalicize = store.currentMapObject.mapProps.italicize;
+      let transaction = new Italicize_Transaction(store.currentMapObject, oldItalicize, newItalicize,store)
+      console.log(transaction);
+      tps.addTransaction(transaction);
+    }
   }
 
   store.setUnderlineTransaction = function (newUnderline) {
-    let oldUnderline = store.underline;
-    let transaction = new Underline_Transaction(oldUnderline, newUnderline, store);
-    console.log(transaction);
-    tps.addTransaction(transaction);
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      let oldUnderline = store.currentMapObject.mapProps.underline;
+      let transaction = new Underline_Transaction(store.currentMapObject, oldUnderline, newUnderline ,store)
+      console.log(transaction);
+      tps.addTransaction(transaction);
+    }
   }
 
+
   store.setFontStyleTransaction = function (newFontStyle) {
-    let oldFontStyle = store.fontStyle;
-    let transaction = new Fontstyle_Transaction(oldFontStyle, newFontStyle, store);
-    console.log(transaction);
-    tps.addTransaction(transaction);
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      let oldFontStyle = store.currentMapObject.mapProps.fontStyle;
+      let transaction = store.FontSize_Transaction(store.currentMapObject,oldFontStyle, newFontStyle, store);
+      console.log(transaction);
+      tps.addTransaction(transaction);
+    }
   }
 
   store.redo = function () {

@@ -28,6 +28,9 @@ import StarBorderIcon from "@mui/icons-material/StarBorder"; // Add star
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 
+import FontSize_Transaction from "@/transactions/FontSize_transaction";
+
+
 
 const buttonStyle = {
   margin: "0 5px",
@@ -99,32 +102,89 @@ const MapEditorToolbar = () => {
       const newSize = parseInt(e.target.value, 10);
       setTextSize(newSize);
       store.setFontSizeTransaction(newSize);
+      // store.currentMapObject.setFontSizeTransaction(newSize);
     }
   };
 
 
 
+  // const handleTextIncreaseClick = () => {
+  //   store.setFontSizeTransaction(store.fontSize + 1)
+  //   // store.currentMapObject.setFontSizeTransaction(store.fontSize + 1)
+  // };
+
+
   const handleTextIncreaseClick = () => {
-    store.setFontSizeTransaction(store.fontSize + 1)
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      let currentFontSize = store.currentMapObject.mapProps.fontSize || 12;
+      let newFontSize = currentFontSize + 1;
+      store.setFontSizeTransaction(newFontSize);
+    }
+    else {
+      store.currentMapObject.mapProps = {};
+      let currentFontSize = store.currentMapObject.mapProps.fontSize || 12;
+      let newFontSize = currentFontSize + 1;
+      store.setFontSizeTransaction(newFontSize);
+    }
   };
 
   const handleTextDecreaseClick = () => {
-    store.setFontSizeTransaction(store.fontSize - 1)
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      let currentFontSize = store.currentMapObject.mapProps.fontSize || 12;
+      let newFontSize = currentFontSize - 1;
+      store.setFontSizeTransaction(newFontSize);
+    }
+    else {
+      store.currentMapObject.mapProps = {};
+      let currentFontSize = store.currentMapObject.mapProps.fontSize || 12;
+      let newFontSize = currentFontSize - 1;
+      store.setFontSizeTransaction(newFontSize);
+    }
   };
-
 
   const handleBoldClick = () => {
-    store.setBoldTransaction(!store.bold)
-  }
-
-
-  const handleItalicClick =
-    () => { store.setItalicizeTransaction(!store.italicize) };
-
-
-  const handleUnderlinedClick = () => {
-    store.setUnderlineTransaction(!store.underline)
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      store.setBoldTransaction(!store.currentMapObject.mapProps.bold);
+    }
+    else {
+      store.currentMapObject.mapProps = {};
+      store.setBoldTransaction(true);
+    }
   };
+
+
+  // const handleBoldClick = () => {
+  //   store.setBoldTransaction(!store.bold)
+  // }
+
+
+  const handleItalicClick = () => {
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      store.setItalicizeTransaction(!store.currentMapObject.mapProps.italicize);
+    }
+    else {
+      store.currentMapObject.mapProps = {};
+      store.setItalicizeTransaction(true);
+    }
+  };
+
+
+  // const handleItalicClick =
+  //   () => {
+  //     store.setItalicizeTransaction(!store.italicize)
+  //   };
+
+
+  const handleUnderlinedClick= () => {
+    if (store.currentMapObject && store.currentMapObject.mapProps) {
+      store.setUnderlineTransaction(!store.currentMapObject.mapProps.underline);
+    }
+    else {
+      store.currentMapObject.mapProps = {};
+      store.setUnderlineTransaction(true);
+    }
+  };
+
 
 
   // const handleFillColorClick = () => alert("Fill Color button clicked");
@@ -190,7 +250,7 @@ const MapEditorToolbar = () => {
         Comic Sans MS
       </div>
 
-        
+
     </div>
   );
 
