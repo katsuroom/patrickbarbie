@@ -57,6 +57,23 @@ export default function Heatmap() {
 
   const [loadScripts, setLoadScripts] = useState(false);
 
+
+  const updateMarkerIcon = (marker, text) => {
+    const fontSize = store.currentMapObject?.mapProps?.fontSize || 12;
+    const fontWeight = store.currentMapObject?.mapProps?.bold ? 'bold' : 'normal';
+    const fontStyle = store.currentMapObject?.mapProps?.italicize ? 'italic' : 'normal';
+    const textDecoration = store.currentMapObject?.mapProps?.underline ? 'underline' : 'none';
+    const fontFamily = store.fontStyle;
+
+    marker.setIcon(L.divIcon({
+      className: "countryLabel",
+      html: `<div style="font-size: ${fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`, // Apply font weight, style, decoration, and family
+      iconSize: [1000, 0],
+      iconAnchor: [0, 0],
+    }));
+  };
+
+
   if (!store.parsed_CSV_Data) {
     const properties = store.rawMapFile.features.map(
       (element) => element.properties
@@ -154,6 +171,18 @@ export default function Heatmap() {
   }
 
   useEffect(() => {
+    markers.current.forEach((marker) => {
+      updateMarkerIcon(marker, marker.options.text);
+    });
+  }, [
+    store.currentMapObject?.mapProps?.fontSize,
+    store.currentMapObject?.mapProps?.bold,
+    store.currentMapObject?.mapProps?.italicize,
+    store.currentMapObject?.mapProps?.underline,
+    store.fontStyle
+  ]);
+
+  useEffect(() => {
     const resizeListener = () => {
       setMapHeight(window.innerHeight / 2);
     };
@@ -212,11 +241,11 @@ export default function Heatmap() {
     } else {
       fillColor = interpolateColor(
         store.minColor ||
-          store.currentMapObject.mapProps?.minColor ||
-          "#FFFFFF",
+        store.currentMapObject.mapProps?.minColor ||
+        "#FFFFFF",
         store.maxColor ||
-          store.currentMapObject.mapProps?.maxColor ||
-          "#FF0000",
+        store.currentMapObject.mapProps?.maxColor ||
+        "#FF0000",
         Math.min(...store.parsed_CSV_Data[store.key]),
         Math.max(...store.parsed_CSV_Data[store.key]),
         store.parsed_CSV_Data[store.key][idx]
@@ -292,23 +321,57 @@ export default function Heatmap() {
     });
     markers.current = [];
 
+    // if (geoJsonData) {
+    //   console.log(geoJsonData);
+    //   geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
+    //     onEachFeature: (feature, layer) => {
+    //       let labelData = store.getJsonLabels(feature, layer);
+    //       if (!labelData) return;
+
+    //       const [pos, text] = labelData;
+    //       const fontSize = store.currentMapObject?.mapProps?.fontSize || 12;
+    //       const fontWeight = store.currentMapObject?.mapProps?.bold ? 'bold' : 'normal';
+    //       const fontStyle = store.currentMapObject?.mapProps?.italicize ? 'italic' : 'normal';
+    //       const textDecoration = store.currentMapObject?.mapProps?.underline ? 'underline' : 'normal';
+    //       const fontFamily = store.fontStyle;
+
+    //       const label = L.marker(pos, {
+    //         icon: L.divIcon({
+    //           className: "countryLabel",
+    //           html: `<div style="font-size: ${fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`, // Apply font weight, style, decoration, and family
+    //           iconSize: [1000, 0],
+    //           iconAnchor: [0, 0],
+    //         }),
+    //       }).addTo(mapRef.current);
+    //       markers.current.push(label);
+    //     },
+    //   });
+
     if (geoJsonData) {
-      console.log(geoJsonData);
       geoJsonLayerRef.current = L.geoJSON(geoJsonData, {
         onEachFeature: (feature, layer) => {
           let labelData = store.getJsonLabels(feature, layer);
           if (!labelData) return;
 
           const [pos, text] = labelData;
+          const fontSize = store.currentMapObject?.mapProps?.fontSize || 12;
+          const fontWeight = store.currentMapObject?.mapProps?.bold ? 'bold' : 'normal';
+          const fontStyle = store.currentMapObject?.mapProps?.italicize ? 'italic' : 'normal';
+          const textDecoration = store.currentMapObject?.mapProps?.underline ? 'underline' : 'normal';
+          const fontFamily = store.fontStyle;
 
-          const label = L.marker(pos, {
+
+          const label = L.marker(
+            pos, {
             icon: L.divIcon({
               className: "countryLabel",
-              html: `<div style="font-size: 12px;">${text}</div>`,
+              html: `<div style="font-size: ${fontSize}px; font-weight: ${fontWeight}; font-style: ${fontStyle}; text-decoration: ${textDecoration}; font-family: ${fontFamily};">${text}</div>`, // Apply font weight, style, decoration, and family
               iconSize: [1000, 0],
               iconAnchor: [0, 0],
             }),
-          }).addTo(mapRef.current);
+            text: text,
+          }
+          ).addTo(mapRef.current);
           markers.current.push(label);
         },
       });
@@ -415,7 +478,7 @@ export default function Heatmap() {
           "</b></p>" +
           "<p>Value: " +
           store.parsed_CSV_Data[store.key][
-            store.parsed_CSV_Data[store.currentMapObject.selectedLabel].indexOf
+          store.parsed_CSV_Data[store.currentMapObject.selectedLabel].indexOf
             (
               layer.feature.properties[store.currentMapObject.selectedLabel]
             )
