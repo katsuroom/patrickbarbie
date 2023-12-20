@@ -250,6 +250,20 @@ export default function PDotDistribution() {
 
   useEffect(() => {
     store.setPropertyTable();
+    const func = async () => {
+      console.log("refreshing edit");
+      if (store.currentMapObject && store.currentMapObject.csvData) {
+        const csvObj = await store.getCsvById(store.currentMapObject.csvData);
+
+        console.log(csvObj);
+
+        store.setParsedCsvData(csvObj.csvData);
+        store.setCsvKey(csvObj.key);
+        store.setCsvLabel(csvObj.label);
+
+      }
+    };
+    func();
   }, []);
 
   useEffect(() => {
