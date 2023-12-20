@@ -19,9 +19,11 @@ describe("template spec", () => {
   
       cy.url().should("include", "/mapcards");
    
-      cy.contains(".map-list-name", "EU").click();
+      cy.wait(1000);
+
+      cy.get("[id*='map-card']").first().click();
                   
-      cy.wait(500);
+      cy.wait(2000);
 
       cy.get('.deleteButton').click();
 

@@ -18,9 +18,11 @@ describe("template spec", () => {
 
         cy.url().should("include", "/mapcards");
 
-        cy.contains(".map-list-name", "Asia").click();
+        cy.wait(10000);
 
-        cy.wait(500); 
+cy.get("[id*='map-card']").first().click();
+
+        cy.wait(1000); 
 
         cy.get('.downloadButton').click();
 

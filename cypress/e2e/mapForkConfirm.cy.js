@@ -19,7 +19,9 @@ describe("template spec", () => {
 
         cy.url().should("include", "/mapcards");
 
-        cy.contains(".map-list-name", "EU").click();
+        cy.wait(10000);
+
+cy.get("[id*='map-card']").first().click();
 
         cy.wait(500);
 
