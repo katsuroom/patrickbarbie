@@ -71,7 +71,7 @@ export default function EditScreen() {
   };
 
   const renderMapItem = (map) => (
-    <Grid item xs={12} sm={3} md={3} lg={3} key={map._id}>
+    <Grid item xs={12} sm={3} md={3} lg={3} key={map._id} id={`map-card-${map._id}`}>
       <ListItem
         onClick={() => handleMapClick(map._id)}
         sx={{
