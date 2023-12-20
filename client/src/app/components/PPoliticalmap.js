@@ -423,11 +423,11 @@ export default function PPoliticalmap() {
 
                 <div>
                     {Object.entries(store.categoryColorMappings).map(([value, color]) => (
+                        value ? 
                         <div key={value} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '10px' }}>
                             <div style={{ marginBottom: '5px' }}>{value}</div>
                             <CompactPicker color={color} onChange={color => handleColorChange(value, color)} style={{ marginBottom: '5px' }} />
-                            {/* <Button onClick={updateMapColors} variant="contained">Update</Button> */}
-                        </div>
+                        </div> : null
                     ))}
                 </div>
             </div>

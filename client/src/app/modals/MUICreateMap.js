@@ -25,7 +25,7 @@ export default function MUICreateMap() {
   const [creatingMap, setCreatingMap] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState("");
   const [progress, setProgress] = useState(0);
-  const [menuItems, setMenuItems] = React.useState([]);
+  const [menuItems, setMenuItems] = useState([]);
 
 
   const buttonStyle = {
@@ -47,6 +47,7 @@ export default function MUICreateMap() {
   };
 
   const handleClose = () => {
+    setSelectedLabel("");
     store.emptyRawMapFile();
     store.closeModal();
   };
@@ -93,10 +94,18 @@ export default function MUICreateMap() {
     // console.log("selectedLabel", store.selectedLabel);
   };
 
-  if (menuItems.length === 0 && store.uploadedFile) {
-    setMenuItems(Object.keys(store.uploadedFile.features[0].properties));
-    // console.log("menuItems", menuItems);
-  }
+  useEffect(() => {
+    if(store.uploadedFile)
+    {
+      setMenuItems(Object.keys(store.uploadedFile.features[0].properties));
+      setSelectedLabel(Object.keys(store.uploadedFile.features[0].properties)[0]);
+    }
+  }, [store.uploadedFile]);
+
+  // if (store.uploadedFile) {
+  //   setMenuItems(Object.keys(store.uploadedFile.features[0].properties));
+  //   // console.log("menuItems", menuItems);
+  // }
 
   return (
     <div>
@@ -158,6 +167,7 @@ export default function MUICreateMap() {
                 required
                 onChange={changeLabel}
                 style={selectStyle}
+                value={selectedLabel}
               >
                 {menuItems.map((mi, index) => (
                   <MenuItem key={index} value={mi}>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useState, useContext } from "react";
-import AuthContext from "../auth";
+import AuthContext from "@/auth";
 import { usePathname } from "next/navigation";
 import jsTPS from "../app/common/jsTPS";
 import DotColor_Transaction from "../transactions/DotColor_transaction";
@@ -1522,34 +1522,13 @@ function StoreContextProvider(props) {
   }
 
   store.getJsonLabels = function (feature, layer) {
-    // check if GeoJSON
-    if (feature.properties.label_y && feature.properties.label_x) {
-      return [[feature.properties.label_y, feature.properties.label_x], feature.properties.name];
-    }
 
-    // check if odd GeoJSON
-    if(feature.properties.name) {
-      return [layer.getBounds().getCenter(), feature.properties.name];
-    }
+    let pos = layer.getBounds().getCenter();
 
-    // check if KML
-    else if (feature.properties.shape_area) {
-      return [layer.getBounds().getCenter(), feature.properties.shape_area];
-    }
+    if(feature.properties.label_y && feature.properties.label_x)
+      pos = [feature.properties.label_y, feature.properties.label_x];
 
-    // check if Shapefile
-    else if (feature.properties.NAME_0 || feature.properties.NAME_1 || feature.properties.NAME_2) {
-      if (feature.properties.NAME_2)
-        return [layer.getBounds().getCenter(), feature.properties.NAME_2];
-
-      else if (feature.properties.NAME_1)
-        return [layer.getBounds().getCenter(), feature.properties.NAME_1];
-
-      else if (feature.properties.NAME_0)
-        return [layer.getBounds().getCenter(), feature.properties.NAME_0];
-    }
-
-    return null;
+    return [pos, feature.properties[store.currentMapObject.selectedLabel]];
   };
 
   return (

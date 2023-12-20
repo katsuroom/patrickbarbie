@@ -159,7 +159,7 @@ export default function MapCardList() {
                   <ListItemText
                     primaryTypographyProps={{
                       fontFamily: "Sen",
-                      fontSize: "1.25rem",
+                      fontSize: "1.1rem",
                       fontWeight: "bold",
                       // letterSpacing: "1px",
                     }}
@@ -172,7 +172,7 @@ export default function MapCardList() {
                         onKeyUp={handleKeyPress} // Add event listener for Enter key press
                       />
                     ) : (
-                      map.title
+                      map.title.length > 33 ? map.title.substring(0, 30) + "..." : map.title
                     )}
                   />
                   <Box

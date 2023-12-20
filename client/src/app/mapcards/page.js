@@ -106,11 +106,11 @@ export default function EditScreen() {
           <ListItemText
             primaryTypographyProps={{
               fontFamily: "Sen",
-              fontSize: "1.5rem",
-              fontWeight: "bold",
+              fontSize: "1.25rem",
+              fontWeight: "bold"
             }}
             className="map-list-name"
-            primary={map.title}
+            primary={map.title.length > 32 ? map.title.substring(0, 29) + "..." : map.title}
           />
 
           <Box
@@ -252,7 +252,7 @@ export default function EditScreen() {
         component="nav"
         aria-label="map folders"
         sx={{
-          maxHeight: "80vh",
+          maxHeight: "73vh",
           overflow: "auto",
           "&::-webkit-scrollbar": {
             width: "10px",
