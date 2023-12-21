@@ -15,9 +15,7 @@ describe('template spec', () => {
 
         cy.wait(10000);
 
-        cy.wait(10000);
-
-cy.get("[id*='map-card']").first().click();
+        cy.get("[id*='map-card']").first().click();
 
         cy.wait(1000); 
 
