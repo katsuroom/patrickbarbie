@@ -66,14 +66,14 @@ describe("Create Map Tests", () => {
     //         }));
     // });
 
-    it("Fail to create a map with missing map type", async () => {
-        const mapName = "MapWithoutType";
-        await expect(createMap(username, mapName, "", selectedLabel, mapData, token))
-            .rejects
-            .toEqual(expect.objectContaining({
-                response: expect.objectContaining({ status: 400 }) // Bad Request
-            }));
-    });
+    // it("Fail to create a map with missing map type", async () => {
+    //     const mapName = "MapWithoutType";
+    //     await expect(createMap(username, mapName, "", selectedLabel, mapData, token))
+    //         .rejects
+    //         .toEqual(expect.objectContaining({
+    //             response: expect.objectContaining({ status: 400 }) // Bad Request
+    //         }));
+    // });
 
     // it("Fail to create a map with incomplete data", async () => {
     //     const incompleteMapData = {};

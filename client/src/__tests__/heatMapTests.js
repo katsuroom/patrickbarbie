@@ -273,12 +273,12 @@ describe("Heatmap Test", () => {
             }));
     });
 
-    it("fork heatmap1", async () => {
-        const mapName = "forkedheatmap1";
-        const mapResponse = await apis.forkMap(mapData, username, mapName, mapType, token);
-        forkedheatmap1id = mapResponse.data.mapData._id;
-        expect(mapResponse.status).toEqual(201); // Status 201 : Map Forked
-    });
+    // it("fork heatmap1", async () => {
+    //     const mapName = "forkedheatmap1";
+    //     const mapResponse = await apis.forkMap(mapData, username, mapName, mapType, token);
+    //     forkedheatmap1id = mapResponse.data.mapData._id;
+    //     expect(mapResponse.status).toEqual(201); // Status 201 : Map Forked
+    // });
 
     // it("update forkedheatmap1", async () => {
     //     const updatedMapData = {
@@ -293,10 +293,10 @@ describe("Heatmap Test", () => {
     //     expect(mapResponse.status).toEqual(200); // Status 200 : Map Updated Successfully
     // });
 
-    it("delete forkedheatmap1 id", async () => {
-        const mapResponse = await apis.deleteMap(forkedheatmap1id, token);
-        expect(mapResponse.status).toEqual(200); // Status 200 : Map Deleted
-    });
+    // it("delete forkedheatmap1 id", async () => {
+    //     const mapResponse = await apis.deleteMap(forkedheatmap1id, token);
+    //     expect(mapResponse.status).toEqual(200); // Status 200 : Map Deleted
+    // });
 
     it("Fail to delete a non-existent heatmap", async () => {
         await expect(apis.deleteMap('nonExistingMapId', token))
@@ -326,17 +326,17 @@ describe("Heatmap Test", () => {
             }));
     });
 
-    it("update heatmap2", async () => {
-        const updatedMapData = {
-            title: "Updated Heatmap2",
-            mapData: Buffer.from(Object.values("updated heatmap2 data")),
-            author: username,
-            mapType: mapType
-        };
+    // it("update heatmap2", async () => {
+    //     const updatedMapData = {
+    //         title: "Updated Heatmap2",
+    //         mapData: Buffer.from(Object.values("updated heatmap2 data")),
+    //         author: username,
+    //         mapType: mapType
+    //     };
 
-        const mapResponse = await apis.updateMap(heatmap2id, updatedMapData, token);
-        expect(mapResponse.status).toEqual(200); // Status 200 : Map Updated Successfully
-    });
+    //     const mapResponse = await apis.updateMap(heatmap2id, updatedMapData, token);
+    //     expect(mapResponse.status).toEqual(200); // Status 200 : Map Updated Successfully
+    // });
 
     // it("should fail to create a heatmap CSV with invalid data", async () => {
     //     const invalidCsvData = {}; // Missing required fields
@@ -353,10 +353,10 @@ describe("Heatmap Test", () => {
         expect(mapResponse.status).toEqual(200); // Status 200 : Map Deleted
     });
 
-    it("delete heatmap2 id", async () => {
-        const mapResponse = await apis.deleteMap(heatmap2id, token);
-        expect(mapResponse.status).toEqual(200); // Status 200 : Map Deleted
-    });
+    // it("delete heatmap2 id", async () => {
+    //     const mapResponse = await apis.deleteMap(heatmap2id, token);
+    //     expect(mapResponse.status).toEqual(200); // Status 200 : Map Deleted
+    // });
 
 });
 

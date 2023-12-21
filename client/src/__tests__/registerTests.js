@@ -11,6 +11,7 @@ const registerUser = (username, email, password) => {
 
 const apis = { registerUser };
 
+
 describe("Registration Tests", () => {
     let username, email, password;
     let existingEmail = "Admin123@admin.com";
