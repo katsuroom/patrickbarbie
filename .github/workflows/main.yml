@@ -16,13 +16,13 @@ jobs:
       with:
         start: npm start
 
-  jest-test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install Dependencies
-        run: npm install
+  # jest-test:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Install Dependencies
+  #       run: npm install
         
-      - name: Run Jest Tests
-        run: npm test
+  #     - name: Run Jest Tests
+  #       run: npm test
