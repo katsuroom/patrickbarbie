@@ -63,10 +63,13 @@ const createMap = (username, mapName, mapType, selectedLabel, mapData, token) =>
 };
 
 describe("Fork Map Tests", () => {
+
     const email = "Admin123@admin.com";
     const password = "Admin123@admin.com";
     const username = "admin";
     const mapType = "Heatmap";
+    const selectedLabel = "name";
+    const mapData = Buffer.from(Object.values("test"));
     let token;
 
     // Run before all tests
@@ -74,20 +77,23 @@ describe("Fork Map Tests", () => {
         token = await loginAndGetToken(email, password);
     });
 
-    it("Successfully fork a map", async () => {
-        const mapData = Buffer.from(Object.values("fork test"));
-        const mapName = "Forked Heatmap";
-        const selectedLabel = "name";
-        const response = await createMap(
-          username,
-          mapName,
-          mapType,
-          selectedLabel,
-          mapData,
-          token
-        );
-        expect(response.status).toEqual(201); // Status 201: Map Forked
+
+    it("Successfully create a new map", async () => {
+        const mapName = "Test Map";
+        const response = await createMap(username, mapName, mapType, selectedLabel, mapData, token);
+        expect(response.status).toEqual(201); // Status 201: Map Created
+        expect(response.data.success).toBe(true);
+        expect(response.data.message).toBe("Map created!");
     });
+
+
+
+    // it("Successfully fork a map", async () => {
+    //     const mapData = Buffer.from(Object.values("fork test"));
+    //     const mapName = "Forked Heatmap";
+    //     const response = await forkMap(mapData, username, mapName, mapType, token);
+    //     expect(response.status).toEqual(201); // Status 201: Map Forked
+    // });
 
     // it("Fail to fork a map with missing data", async () => {
     //     const mapName = "Incomplete Fork";
