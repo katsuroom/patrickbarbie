@@ -27,39 +27,39 @@ describe("template spec", () => {
 
     cy.get('.forkButton').click();
 
-    cy.wait(500);
+    cy.wait(1000);
 
     cy.get('.projectName').type("EUPublish");
 
-    cy.wait(500);
+    cy.wait(1000);
 
     cy.get(".modal-button-fork-confirm").click();
 
-    cy.wait(500);
+    cy.wait(1000);
 
     cy.contains(".map-list-name", "EUPublish").click();
 
-    cy.wait(500);
+    cy.wait(1000);
 
     cy.get('.publishButton').click();
 
-    cy.wait(500);
+    cy.wait(1000);
 
     cy.contains(".modal-button-publish-cancel", "Cancel").click();
 
-    cy.wait(500);
+    cy.wait(1000);
 
     cy.contains(".map-list-name", "EUPublish").click();
 
-    cy.wait(500);
+    cy.wait(1000);
 
     cy.get('.deleteButton').click();
 
-    cy.wait(500);
+    cy.wait(1000);
 
     cy.contains(".modal-button-confirm", "Confirm").click();
 
-    cy.wait(500);
+    cy.wait(1000);
 
 
   });

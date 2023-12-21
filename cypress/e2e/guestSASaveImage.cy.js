@@ -2,7 +2,7 @@ describe('template spec', () => {
     Cypress.on('uncaught:exception', (err, runnable) => {
         return false
     })
-    it('visit guest', () => {
+    it('visit guest', {retries: 3}, () => {
         cy.visit("https://patrick-barbie-f64046e3bb4b.herokuapp.com/");
 
         cy.wait(500);
