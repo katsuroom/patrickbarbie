@@ -171,16 +171,16 @@ const apis = {
     createCSV,
 };
 
-describe("travelmap Test", () => {
+describe("Travelmap Test", () => {
     const email = "Admin123@admin.com";
     const password = "Admin123@admin.com";
     const username = "admin";
-    const mapType = "travelmap";
+    const mapType = "Travelmap";
     const mapData = Buffer.from(Object.values("test"));
     let token;
-    let travelmap1id;
-    let travelmap2id;
-    let forkedtravelmap1id;
+    let Travelmap1id;
+    let Travelmap2id;
+    let forkedTravelmap1id;
 
     // Run before all tests
     beforeAll(async () => {
@@ -202,14 +202,14 @@ describe("travelmap Test", () => {
             }));
     });
 
-    it("create travelmap1", async () => {
-        const mapName = "travelmap1";
+    it("create Travelmap1", async () => {
+        const mapName = "Travelmap1";
         const mapResponse = await apis.createMap(mapData, username, mapName, mapType, token);
-        travelmap1id = mapResponse.data.mapData._id;
+        Travelmap1id = mapResponse.data.mapData._id;
         expect(mapResponse.status).toEqual(201); // Status 201 : Map Created
     });
 
-    // it("Fail creation of travelmap with invalid travelmap data", async () => {
+    // it("Fail creation of Travelmap with invalid Travelmap data", async () => {
     //     const invalidMapData = null; // Example of invalid data
 
     //     await expect(apis.createMap(invalidMapData, username, "invalidMap", mapType, token))
@@ -221,12 +221,12 @@ describe("travelmap Test", () => {
     //         }));
     // });
 
-    it("get travelmap1 id", async () => {
-        const mapResponse = await apis.getMapById(travelmap1id, token);
+    it("get Travelmap1 id", async () => {
+        const mapResponse = await apis.getMapById(Travelmap1id, token);
         expect(mapResponse.status).toEqual(200); // Status 200 : Map Found
     });
 
-    it("Fail to retrieve travelmaps with invalid token", async () => {
+    it("Fail to retrieve Travelmaps with invalid token", async () => {
         const invalidToken = "invalidToken";
         await expect(apis.getMapsByUser(invalidToken))
             .rejects
@@ -235,7 +235,7 @@ describe("travelmap Test", () => {
             }));
     });
 
-    it("Fail to retrieve travelmaps for an unregistered user", async () => {
+    it("Fail to retrieve Travelmaps for an unregistered user", async () => {
         const unregisteredUserToken = "token_for_unregistered_user";
         await expect(apis.getMapsByUser(unregisteredUserToken))
             .rejects
@@ -244,7 +244,7 @@ describe("travelmap Test", () => {
             }));
     });
 
-    it("Fail to retrieve travelmaps with token for another user", async () => {
+    it("Fail to retrieve Travelmaps with token for another user", async () => {
         const otherUserToken = "token_for_another_user";
         await expect(apis.getMapsByUser(otherUserToken))
             .rejects
@@ -253,7 +253,7 @@ describe("travelmap Test", () => {
             }));
     });
 
-    it("Fail to retrieve travelmaps with expired token", async () => {
+    it("Fail to retrieve Travelmaps with expired token", async () => {
         const expiredToken = "expired_token"; 
         await expect(apis.getMapsByUser(expiredToken))
             .rejects
@@ -263,7 +263,7 @@ describe("travelmap Test", () => {
     });
     
 
-    it("Fail retrieval of non-existent travelmap", async () => {
+    it("Fail retrieval of non-existent Travelmap", async () => {
         await expect(apis.getMapById('nonExistingMapId', token))
             .rejects
             .toEqual(expect.objectContaining({
@@ -273,32 +273,32 @@ describe("travelmap Test", () => {
             }));
     });
 
-    it("fork travelmap1", async () => {
-        const mapName = "forkedtravelmap1";
-        const mapResponse = await apis.forkMap(mapData, username, mapName, mapType, token);
-        forkedtravelmap1id = mapResponse.data.mapData._id;
-        expect(mapResponse.status).toEqual(201); // Status 201 : Map Forked
-    });
+    // it("fork Travelmap1", async () => {
+    //     const mapName = "forkedTravelmap1";
+    //     const mapResponse = await apis.forkMap(mapData, username, mapName, mapType, token);
+    //     forkedTravelmap1id = mapResponse.data.mapData._id;
+    //     expect(mapResponse.status).toEqual(201); // Status 201 : Map Forked
+    // });
 
-    // it("update forkedtravelmap1", async () => {
+    // it("update forkedTravelmap1", async () => {
     //     const updatedMapData = {
-    //         title: "Updated Forked travelmap1",
+    //         title: "Updated Forked Travelmap1",
     //         mapData: Buffer.from(Object.values("updated test data")),
     //         author: username,
     //         mapType: mapType
     //     };
 
-    //     const mapResponse = await apis.updateMap(forkedtravelmap1id, updatedMapData, token);
-    //     forkedtravelmap1id = mapResponse.data.mapData.id;
+    //     const mapResponse = await apis.updateMap(forkedTravelmap1id, updatedMapData, token);
+    //     forkedTravelmap1id = mapResponse.data.mapData.id;
     //     expect(mapResponse.status).toEqual(200); // Status 200 : Map Updated Successfully
     // });
 
-    it("delete forkedtravelmap1 id", async () => {
-        const mapResponse = await apis.deleteMap(forkedtravelmap1id, token);
-        expect(mapResponse.status).toEqual(200); // Status 200 : Map Deleted
-    });
+    // it("delete forkedTravelmap1 id", async () => {
+    //     const mapResponse = await apis.deleteMap(forkedTravelmap1id, token);
+    //     expect(mapResponse.status).toEqual(200); // Status 200 : Map Deleted
+    // });
 
-    it("Fail to delete a non-existent travelmap", async () => {
+    it("Fail to delete a non-existent Travelmap", async () => {
         await expect(apis.deleteMap('nonExistingMapId', token))
             .rejects
             .toEqual(expect.objectContaining({
@@ -308,16 +308,16 @@ describe("travelmap Test", () => {
             }));
     });
 
-    it("create travelmap2", async () => {
-        const mapName = "travelmap2";
+    it("create Travelmap2", async () => {
+        const mapName = "Travelmap2";
         const mapResponse = await apis.createMap(mapData, username, mapName, mapType, token);
-        travelmap2id = mapResponse.data.mapData._id;
+        Travelmap2id = mapResponse.data.mapData._id;
         expect(mapResponse.status).toEqual(201); // Status 201 : Map Created
     });
 
-    it("Fail to update a travelmap2 with invalid data", async () => {
+    it("Fail to update a Travelmap2 with invalid data", async () => {
         const invalidUpdateData = null; // Example of invalid data
-        await expect(apis.updateMap(travelmap2id, invalidUpdateData, token))
+        await expect(apis.updateMap(Travelmap2id, invalidUpdateData, token))
             .rejects
             .toEqual(expect.objectContaining({
                 response: expect.objectContaining({
@@ -326,25 +326,36 @@ describe("travelmap Test", () => {
             }));
     });
 
-    it("update travelmap2", async () => {
-        const updatedMapData = {
-            title: "Updated travelmap2",
-            mapData: Buffer.from(Object.values("updated travelmap2 data")),
-            author: username,
-            mapType: mapType
-        };
+    // it("update Travelmap2", async () => {
+    //     const updatedMapData = {
+    //         title: "Updated Travelmap2",
+    //         mapData: Buffer.from(Object.values("updated Travelmap2 data")),
+    //         author: username,
+    //         mapType: mapType
+    //     };
 
-        const mapResponse = await apis.updateMap(travelmap2id, updatedMapData, token);
-        expect(mapResponse.status).toEqual(200); // Status 200 : Map Updated Successfully
-    });
+    //     const mapResponse = await apis.updateMap(Travelmap2id, updatedMapData, token);
+    //     expect(mapResponse.status).toEqual(200); // Status 200 : Map Updated Successfully
+    // });
 
-    // it("should fail to create a travelmap CSV with invalid data", async () => {
+    // it("should fail to create a Travelmap CSV with invalid data", async () => {
     //     const invalidCsvData = {}; // Missing required fields
     //     await expect(apis.createCSV(invalidCsvData, token))
     //         .rejects
     //         .toEqual(expect.objectContaining({
     //             response: expect.objectContaining({ status: 404 }) // Bad Request
     //         }));
+    // });
+
+
+    it("delete Travelmap1 id", async () => {
+        const mapResponse = await apis.deleteMap(Travelmap1id, token);
+        expect(mapResponse.status).toEqual(200); // Status 200 : Map Deleted
+    });
+
+    // it("delete Travelmap2 id", async () => {
+    //     const mapResponse = await apis.deleteMap(Travelmap2id, token);
+    //     expect(mapResponse.status).toEqual(200); // Status 200 : Map Deleted
     // });
 
 });

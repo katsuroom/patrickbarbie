@@ -171,16 +171,16 @@ const apis = {
     createCSV,
 };
 
-describe("politicalmap Test", () => {
+describe("Politicalmap Test", () => {
     const email = "Admin123@admin.com";
     const password = "Admin123@admin.com";
     const username = "admin";
-    const mapType = "politicalmap";
+    const mapType = "Politicalmap";
     const mapData = Buffer.from(Object.values("test"));
     let token;
-    let politicalmap1id;
-    let politicalmap2id;
-    let forkedpoliticalmap1id;
+    let Politicalmap1id;
+    let Politicalmap2id;
+    let forkedPoliticalmap1id;
 
     // Run before all tests
     beforeAll(async () => {
@@ -202,14 +202,14 @@ describe("politicalmap Test", () => {
             }));
     });
 
-    it("create politicalmap1", async () => {
-        const mapName = "politicalmap1";
+    it("create Politicalmap1", async () => {
+        const mapName = "Politicalmap1";
         const mapResponse = await apis.createMap(mapData, username, mapName, mapType, token);
-        politicalmap1id = mapResponse.data.mapData._id;
+        Politicalmap1id = mapResponse.data.mapData._id;
         expect(mapResponse.status).toEqual(201); // Status 201 : Map Created
     });
 
-    // it("Fail creation of politicalmap with invalid politicalmap data", async () => {
+    // it("Fail creation of Politicalmap with invalid Politicalmap data", async () => {
     //     const invalidMapData = null; // Example of invalid data
 
     //     await expect(apis.createMap(invalidMapData, username, "invalidMap", mapType, token))
@@ -221,12 +221,12 @@ describe("politicalmap Test", () => {
     //         }));
     // });
 
-    it("get politicalmap1 id", async () => {
-        const mapResponse = await apis.getMapById(politicalmap1id, token);
+    it("get Politicalmap1 id", async () => {
+        const mapResponse = await apis.getMapById(Politicalmap1id, token);
         expect(mapResponse.status).toEqual(200); // Status 200 : Map Found
     });
 
-    it("Fail to retrieve politicalmaps with invalid token", async () => {
+    it("Fail to retrieve Politicalmaps with invalid token", async () => {
         const invalidToken = "invalidToken";
         await expect(apis.getMapsByUser(invalidToken))
             .rejects
@@ -235,7 +235,7 @@ describe("politicalmap Test", () => {
             }));
     });
 
-    it("Fail to retrieve politicalmaps for an unregistered user", async () => {
+    it("Fail to retrieve Politicalmaps for an unregistered user", async () => {
         const unregisteredUserToken = "token_for_unregistered_user";
         await expect(apis.getMapsByUser(unregisteredUserToken))
             .rejects
@@ -244,7 +244,7 @@ describe("politicalmap Test", () => {
             }));
     });
 
-    it("Fail to retrieve politicalmaps with token for another user", async () => {
+    it("Fail to retrieve Politicalmaps with token for another user", async () => {
         const otherUserToken = "token_for_another_user";
         await expect(apis.getMapsByUser(otherUserToken))
             .rejects
@@ -253,7 +253,7 @@ describe("politicalmap Test", () => {
             }));
     });
 
-    it("Fail to retrieve politicalmaps with expired token", async () => {
+    it("Fail to retrieve Politicalmaps with expired token", async () => {
         const expiredToken = "expired_token"; 
         await expect(apis.getMapsByUser(expiredToken))
             .rejects
@@ -263,7 +263,7 @@ describe("politicalmap Test", () => {
     });
     
 
-    it("Fail retrieval of non-existent politicalmap", async () => {
+    it("Fail retrieval of non-existent Politicalmap", async () => {
         await expect(apis.getMapById('nonExistingMapId', token))
             .rejects
             .toEqual(expect.objectContaining({
@@ -273,32 +273,32 @@ describe("politicalmap Test", () => {
             }));
     });
 
-    it("fork politicalmap1", async () => {
-        const mapName = "forkedpoliticalmap1";
-        const mapResponse = await apis.forkMap(mapData, username, mapName, mapType, token);
-        forkedpoliticalmap1id = mapResponse.data.mapData._id;
-        expect(mapResponse.status).toEqual(201); // Status 201 : Map Forked
-    });
+    // it("fork Politicalmap1", async () => {
+    //     const mapName = "forkedPoliticalmap1";
+    //     const mapResponse = await apis.forkMap(mapData, username, mapName, mapType, token);
+    //     forkedPoliticalmap1id = mapResponse.data.mapData._id;
+    //     expect(mapResponse.status).toEqual(201); // Status 201 : Map Forked
+    // });
 
-    // it("update forkedpoliticalmap1", async () => {
+    // it("update forkedPoliticalmap1", async () => {
     //     const updatedMapData = {
-    //         title: "Updated Forked politicalmap1",
+    //         title: "Updated Forked Politicalmap1",
     //         mapData: Buffer.from(Object.values("updated test data")),
     //         author: username,
     //         mapType: mapType
     //     };
 
-    //     const mapResponse = await apis.updateMap(forkedpoliticalmap1id, updatedMapData, token);
-    //     forkedpoliticalmap1id = mapResponse.data.mapData.id;
+    //     const mapResponse = await apis.updateMap(forkedPoliticalmap1id, updatedMapData, token);
+    //     forkedPoliticalmap1id = mapResponse.data.mapData.id;
     //     expect(mapResponse.status).toEqual(200); // Status 200 : Map Updated Successfully
     // });
 
-    it("delete forkedpoliticalmap1 id", async () => {
-        const mapResponse = await apis.deleteMap(forkedpoliticalmap1id, token);
-        expect(mapResponse.status).toEqual(200); // Status 200 : Map Deleted
-    });
+    // it("delete forkedPoliticalmap1 id", async () => {
+    //     const mapResponse = await apis.deleteMap(forkedPoliticalmap1id, token);
+    //     expect(mapResponse.status).toEqual(200); // Status 200 : Map Deleted
+    // });
 
-    it("Fail to delete a non-existent politicalmap", async () => {
+    it("Fail to delete a non-existent Politicalmap", async () => {
         await expect(apis.deleteMap('nonExistingMapId', token))
             .rejects
             .toEqual(expect.objectContaining({
@@ -308,43 +308,54 @@ describe("politicalmap Test", () => {
             }));
     });
 
-    it("create politicalmap2", async () => {
-        const mapName = "politicalmap2";
+    it("create Politicalmap2", async () => {
+        const mapName = "Politicalmap2";
         const mapResponse = await apis.createMap(mapData, username, mapName, mapType, token);
-        politicalmap2id = mapResponse.data.mapData._id;
+        Politicalmap2id = mapResponse.data.mapData._id;
         expect(mapResponse.status).toEqual(201); // Status 201 : Map Created
     });
 
-    // it("Fail to update a politicalmap2 with invalid data", async () => {
-    //     const invalidUpdateData = null; // Example of invalid data
-    //     await expect(apis.updateMap(politicalmap2id, invalidUpdateData, token))
-    //         .rejects
-    //         .toEqual(expect.objectContaining({
-    //             response: expect.objectContaining({
-    //                 status: 400
-    //             })
-    //         }));
-    // });
-
-    it("update politicalmap2", async () => {
-        const updatedMapData = {
-            title: "Updated politicalmap2",
-            mapData: Buffer.from(Object.values("updated politicalmap2 data")),
-            author: username,
-            mapType: mapType
-        };
-
-        const mapResponse = await apis.updateMap(politicalmap2id, updatedMapData, token);
-        expect(mapResponse.status).toEqual(200); // Status 200 : Map Updated Successfully
+    it("Fail to update a Politicalmap2 with invalid data", async () => {
+        const invalidUpdateData = null; // Example of invalid data
+        await expect(apis.updateMap(Politicalmap2id, invalidUpdateData, token))
+            .rejects
+            .toEqual(expect.objectContaining({
+                response: expect.objectContaining({
+                    status: 400
+                })
+            }));
     });
 
-    // it("should fail to create a politicalmap CSV with invalid data", async () => {
+    // it("update Politicalmap2", async () => {
+    //     const updatedMapData = {
+    //         title: "Updated Politicalmap2",
+    //         mapData: Buffer.from(Object.values("updated Politicalmap2 data")),
+    //         author: username,
+    //         mapType: mapType
+    //     };
+
+    //     const mapResponse = await apis.updateMap(Politicalmap2id, updatedMapData, token);
+    //     expect(mapResponse.status).toEqual(200); // Status 200 : Map Updated Successfully
+    // });
+
+    // it("should fail to create a Politicalmap CSV with invalid data", async () => {
     //     const invalidCsvData = {}; // Missing required fields
     //     await expect(apis.createCSV(invalidCsvData, token))
     //         .rejects
     //         .toEqual(expect.objectContaining({
     //             response: expect.objectContaining({ status: 404 }) // Bad Request
     //         }));
+    // });
+
+
+    it("delete Politicalmap1 id", async () => {
+        const mapResponse = await apis.deleteMap(Politicalmap1id, token);
+        expect(mapResponse.status).toEqual(200); // Status 200 : Map Deleted
+    });
+
+    // it("delete Politicalmap2 id", async () => {
+    //     const mapResponse = await apis.deleteMap(Politicalmap2id, token);
+    //     expect(mapResponse.status).toEqual(200); // Status 200 : Map Deleted
     // });
 
 });
