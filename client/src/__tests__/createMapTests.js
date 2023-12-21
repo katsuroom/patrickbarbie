@@ -19,12 +19,13 @@ const loginAndGetToken = async (email, password) => {
 };
 
 // Function to create a map
-const createMap = (username, mapName, mapType, selectedLabel, token) => {
+const createMap = (username, mapName, mapType, selectedLabel, mapData, token) => {
     return mapApi.post(`/map/`, {
         title: mapName,
         author: username,
         mapType,
-        selectedLabel
+        selectedLabel,
+        mapData
     }, {
         headers: {
             Authorization: token
@@ -38,6 +39,7 @@ describe("Create Map Tests", () => {
     const username = "admin";
     const mapType = "Heatmap";
     const selectedLabel = "name";
+    const mapData = Buffer.from(Object.values("test"));
     let token;
 
     // Run before all tests
@@ -47,7 +49,7 @@ describe("Create Map Tests", () => {
 
     it("Successfully create a new map", async () => {
         const mapName = "Test Map";
-        const response = await createMap(username, mapName, mapType, selectedLabel, token);
+        const response = await createMap(username, mapName, mapType, selectedLabel, mapData, token);
         expect(response.status).toEqual(201); // Status 201: Map Created
         expect(response.data.success).toBe(true);
         expect(response.data.message).toBe("Map created!");
@@ -66,7 +68,7 @@ describe("Create Map Tests", () => {
 
     it("Fail to create a map with missing map type", async () => {
         const mapName = "MapWithoutType";
-        await expect(createMap(username, mapName, "", selectedLabel, token))
+        await expect(createMap(username, mapName, "", selectedLabel, mapData, token))
             .rejects
             .toEqual(expect.objectContaining({
                 response: expect.objectContaining({ status: 400 }) // Bad Request
