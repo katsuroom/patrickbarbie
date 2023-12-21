@@ -22,10 +22,10 @@ const loginAndGetToken = async (email, password) => {
 const createMap = (username, mapName, mapType, selectedLabel, mapData, token) => {
     return mapApi.post(`/map/`, {
         title: mapName,
+        mapData: mapData,
         author: username,
-        mapType,
-        selectedLabel,
-        mapData
+        mapType: mapType,
+        selectedLabel: selectedLabel,
     }, {
         headers: {
             Authorization: token
@@ -66,14 +66,17 @@ describe("Create Map Tests", () => {
     //         }));
     // });
 
-    // it("Fail to create a map with missing map type", async () => {
+    
+    // it("Fail to create a map with missing token", async () => {
     //     const mapName = "MapWithoutType";
-    //     await expect(createMap(username, mapName, "", selectedLabel, mapData, token))
+    //     await expect(createMap(username, mapName, null, selectedLabel, mapData))
     //         .rejects
     //         .toEqual(expect.objectContaining({
     //             response: expect.objectContaining({ status: 400 }) // Bad Request
     //         }));
     // });
+
+    
 
     // it("Fail to create a map with incomplete data", async () => {
     //     const incompleteMapData = {};

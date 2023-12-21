@@ -51,17 +51,16 @@ const forkMap = (mapData, username, mapName, mapType, token) => {
 const createMap = (username, mapName, mapType, selectedLabel, mapData, token) => {
     return mapApi.post(`/map/`, {
         title: mapName,
+        mapData: mapData,
         author: username,
-        mapType,
-        selectedLabel,
-        mapData
+        mapType: mapType,
+        selectedLabel: selectedLabel,
     }, {
         headers: {
             Authorization: token
         }
     });
 };
-
 
 describe("Fork Map Tests", () => {
 
