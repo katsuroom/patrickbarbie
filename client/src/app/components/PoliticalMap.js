@@ -233,6 +233,7 @@ export default function Politicalmap(props) {
           const textDecoration = store.currentMapObject?.mapProps?.underline ? 'underline' : 'normal';
           const fontFamily = store.fontStyle;
 
+          
 
           const label = L.marker(
             pos, {
