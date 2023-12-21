@@ -24,7 +24,7 @@ describe("template spec", () => {
 
         cy.get("[id*='map-card']").first().click();
 
-        cy.wait(1000); 
+        cy.wait(2000);
 
         cy.get('.downloadButton').click();
 
