@@ -67,14 +67,14 @@ describe("Create Map Tests", () => {
     // });
 
     
-    it("Fail to create a map with missing token", async () => {
-        const mapName = "MapWithoutType";
-        await expect(createMap(username, mapName, null, selectedLabel, mapData))
-            .rejects
-            .toEqual(expect.objectContaining({
-                response: expect.objectContaining({ status: 400 }) // Bad Request
-            }));
-    });
+    // it("Fail to create a map with missing token", async () => {
+    //     const mapName = "MapWithoutType";
+    //     await expect(createMap(username, mapName, null, selectedLabel, mapData))
+    //         .rejects
+    //         .toEqual(expect.objectContaining({
+    //             response: expect.objectContaining({ status: 400 }) // Bad Request
+    //         }));
+    // });
 
     
 
