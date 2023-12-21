@@ -47,6 +47,21 @@ const forkMap = (mapData, username, mapName, mapType, token) => {
     });
 };
 
+// Function to create a map
+const createMap = (username, mapName, mapType, selectedLabel, mapData, token) => {
+    return mapApi.post(`/map/`, {
+        title: mapName,
+        mapData: mapData,
+        author: username,
+        mapType: mapType,
+        selectedLabel: selectedLabel,
+    }, {
+        headers: {
+            Authorization: token
+        }
+    });
+};
+
 describe("Fork Map Tests", () => {
     const email = "Admin123@admin.com";
     const password = "Admin123@admin.com";
@@ -62,7 +77,15 @@ describe("Fork Map Tests", () => {
     it("Successfully fork a map", async () => {
         const mapData = Buffer.from(Object.values("fork test"));
         const mapName = "Forked Heatmap";
-        const response = await forkMap(mapData, username, mapName, mapType, token);
+        const selectedLabel = "name";
+        const response = await createMap(
+          username,
+          mapName,
+          mapType,
+          selectedLabel,
+          mapData,
+          token
+        );
         expect(response.status).toEqual(201); // Status 201: Map Forked
     });
 
